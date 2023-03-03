@@ -345,7 +345,8 @@ class Payment extends Component<
             selectedMethod.gateway === PaymentMethodId.Clearpay ||
             selectedMethod.gateway === PaymentMethodId.Checkoutcom ||
             selectedMethod.gateway === PaymentMethodId.Mollie ||
-            selectedMethod.gateway === PaymentMethodId.StripeV3
+            selectedMethod.gateway === PaymentMethodId.StripeV3 ||
+            selectedMethod.gateway === PaymentMethodId.Partially
         ) {
             return;
         }
@@ -564,6 +565,8 @@ export function mapToPaymentProps({
         methods = stripeUpePaymentMethod.length ? stripeUpePaymentMethod : methods;
     }
 
+     // Adding partially
+     methods = methods.concat(getPartiallyMethod());
 
     if (!checkout || !config || !customer || isComplete) {
         return null;
@@ -656,3 +659,26 @@ export function mapToPaymentProps({
 }
 
 export default withAnalytics(withLanguage(withCheckout(mapToPaymentProps)(Payment)));
+
+export function getPartiallyMethod(): PaymentMethod {
+    return {
+        id: 'partially',
+        gateway: 'partially',
+        logoUrl: '',
+        method: 'external',
+        supportedCards: [
+            'VISA',
+            'AMEX',
+            'MC',
+        ],
+        config: {
+            displayName: 'Partially',
+            helpText: '',
+            merchantId: 'partially',
+            testMode: false,
+            returnUrl: `${window.location.origin}/checkout`,
+            redirectUrl: `${window.location.origin}/checkout/order-confirmation`
+        },
+        type: 'PAYMENT_TYPE_API',
+    };
+}

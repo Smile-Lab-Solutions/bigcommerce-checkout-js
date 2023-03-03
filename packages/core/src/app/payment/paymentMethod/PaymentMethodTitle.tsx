@@ -204,6 +204,10 @@ function getPaymentMethodTitle(
                 logoUrl: '',
                 titleText: language.translate('payment.credit_debit_card_text'),
             },
+            [PaymentMethodId.Partially]: {
+                logoUrl: '',
+                titleText: methodDisplayName,
+            },
         };
 
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {
