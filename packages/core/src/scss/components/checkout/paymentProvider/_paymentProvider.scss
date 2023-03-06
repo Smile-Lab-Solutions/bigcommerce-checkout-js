@@ -141,3 +141,36 @@ body.klarna-payments-fso-open {
     margin-right: remCalc(8px);
     width: remCalc(12px);
 }
+
+
+.list-element {
+    list-style-type: none;
+    padding: 0 !important;
+
+    li {
+        padding-bottom: 12px;
+    }
+
+    .circleCheck {
+        background: url("../static/svg/circle-check-solid.svg") no-repeat center center;
+        display: inline-block;
+        font-weight: 900;
+        height: 15px;
+        margin-left: -1.5em;
+        margin-right: 0.5em;
+        width: 15px;
+    }
+}
+
+.paymentMethod {
+    h3,
+    .list-element {
+        margin-bottom: 1.5rem;
+    }
+
+    p,
+    li {
+        font-size: 15px;
+    }
+}
+
