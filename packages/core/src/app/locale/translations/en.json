@@ -53,7 +53,7 @@
             "billed_amount_text": "*You will be charged and invoiced {total} ({code}) for this order.",
             "based_on_currency_text": "Based on {total} {code}",
             "cart_heading": "Order Summary",
-            "digital_item_text": "Digital Item",
+            "digital_item_text": "",
             "discount_text": "Discount",
             "downloads_action": "Go to Downloads",
             "edit_cart_action": "Edit Cart",
