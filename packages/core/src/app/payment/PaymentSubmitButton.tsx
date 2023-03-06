@@ -116,6 +116,10 @@ const PaymentSubmitButtonText: FunctionComponent<PaymentSubmitButtonTextProps> =
             return <TranslatedString id="payment.klarna_continue_action" />;
         }
 
+        if (methodGateway === PaymentMethodId.Partially) {
+            return <TranslatedString id="payment.partially_continue_action" />;
+        }
+
         return <TranslatedString id="payment.place_order_action" />;
     },
 );
