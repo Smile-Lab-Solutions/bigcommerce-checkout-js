@@ -94,6 +94,22 @@ class BillingForm extends PureComponent<
                 getFields(billingAddress.countryCode),
             );
 
+            if (editableFormFields.length > 0){
+                // Remove company field
+                const companyIndex = editableFormFields.findIndex(x => x.name === 'company');
+                if (companyIndex > 0){
+                    editableFormFields.splice(companyIndex, 1);
+                }
+
+                // Only remove state/province for countries except US
+                if (values.countryCode !== 'US'){
+                    const stateOrProvinceIndex = editableFormFields.findIndex(x => x.name === 'stateOrProvince');
+                    if (stateOrProvinceIndex > 0){
+                        editableFormFields.splice(stateOrProvinceIndex, 1);
+                    }
+                }
+            }
+
         return (
             <Form autoComplete="on">
                 {shouldRenderStaticAddress && billingAddress && (
