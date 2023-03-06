@@ -60,6 +60,22 @@ class ShippingAddressForm extends Component<
             formFields,
         );
 
+        if (formFields.length > 0){
+            // Remove company field
+            const companyIndex = formFields.findIndex(x => x.name === 'company');
+            if (companyIndex > 0){
+                formFields.splice(companyIndex, 1);
+            }
+
+            // Only remove state/province for countries except US
+            if (formAddress && formAddress.countryCode !== 'US'){
+                const stateOrProvinceIndex = formFields.findIndex(x => x.name === 'stateOrProvince');
+                if (stateOrProvinceIndex > 0){
+                    formFields.splice(stateOrProvinceIndex, 1);
+                }
+            }
+        }
+
         return (
             <Fieldset id="checkoutShippingAddress">
                 {hasAddresses && (
