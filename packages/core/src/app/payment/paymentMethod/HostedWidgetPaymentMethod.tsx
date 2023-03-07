@@ -411,7 +411,17 @@ class HostedWidgetPaymentMethod extends Component<
     }
 
     private renderPaymentDescriptorIfAvailable() {
-        const { shouldShowDescriptor, paymentDescriptor } = this.props;
+        const { shouldShowDescriptor, paymentDescriptor, method } = this.props;
+
+        if (method.gateway === 'stripeupe'){
+            return (
+                <div className="payment-descriptor">
+                    <ul className="list-element">
+                        <li><div className="circleCheck"></div>All major credit and debit cards accepted</li>
+                    </ul>
+                </div>
+            );
+        } 
 
         if (shouldShowDescriptor && paymentDescriptor) {
             return <div className="payment-descriptor">{paymentDescriptor}</div>;

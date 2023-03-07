@@ -205,7 +205,7 @@ function getPaymentMethodTitle(
                 titleText: language.translate('payment.credit_debit_card_text'),
             },
             [PaymentMethodId.Partially]: {
-                logoUrl: '',
+                logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
             },
         };

@@ -8,6 +8,7 @@ import { MapToPropsFactory } from '../../common/hoc';
 import { WithLanguageProps, withLanguage } from '../../locale';
 import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';
+import { LoadingOverlay } from '../../ui/loading';
 
 export interface HostedPaymentMethodProps {
   method: PaymentMethod;
@@ -79,12 +80,25 @@ class PartiallyPaymentMethod extends Component<
   }
 
   render(): ReactNode {
-      const {
-      } = this.props;
+    const {
+    } = this.props;
 
-      return (
+    return (
+      <LoadingOverlay hideContentWhenLoading isLoading={false}>
+        <div className="paymentMethod paymentMethod--hosted">
+          <div className="payment-descriptor">
+            <h3>Ideal for people with an adverse credit rating.</h3>
+            <ul className="list-element">
+              <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
+              <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
+              <li><div className="circleCheck"></div>Frpm £150 deposit</li>
+              <li><div className="circleCheck"></div>No Payment Plan Charge</li>
+            </ul>
+          </div>
+        </div>
         <div id="partiallyCartButtonContainer"></div>
-      );
+      </LoadingOverlay>
+    );
   }
 }
 

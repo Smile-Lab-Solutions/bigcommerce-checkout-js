@@ -171,37 +171,49 @@ class HostedPaymentMethod extends Component<
 
     private renderPaymentDescriptorIfAvailable(isLoading: boolean) {
         const { method } = this.props;
-        if (method.id === 'laybuy'){
+        if (method.id === 'laybuy') {
             return (
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
-                        <div className="paymentMethod paymentMethod--hosted">
-                            <div className="payment-descriptor">
-                                <h3>Spread the cost over 6 weekly payments, 0% interest</h3>
-                                <p>Spread the total cost over 6 weekly automatic payments. Always interest-free. Make the first payment today
-                                    and spread the cost over 6 weeks with payments every week.
-                                </p>
-                                <ul className="list-element">
-                                    <li><div className="circleCheck"></div>Pay using Visa or MasterCard</li>
-                                    <li><div className="circleCheck"></div>Subject to soft credit check</li>
-                                    <li><div className="circleCheck"></div>0% interest</li>
-                                    <li><div className="circleCheck"></div>Payments every week</li>
-                                </ul>
-                                <p>After clicking "Place Order", you will be redirected to Laybuy to complete your purchase securely.</p>
-                            </div>
+                    <div className="paymentMethod paymentMethod--hosted">
+                        <div className="payment-descriptor">
+                            <h3>Spread the cost over 6 weekly payments, 0% interest.</h3>
+                            <p>Spread the total cost over 6 weekly automatic payments. Always interest-free. Make the first payment today
+                                and spread the cost over 6 weeks with payments every week.
+                            </p>
+                            <ul className="list-element">
+                                <li><div className="circleCheck"></div>Pay using Visa or MasterCard</li>
+                                <li><div className="circleCheck"></div>Subject to soft credit check</li>
+                                <li><div className="circleCheck"></div>0% interest</li>
+                                <li><div className="circleCheck"></div>Payments every week</li>
+                            </ul>
+                            <p>After clicking "Place Order", you will be redirected to Laybuy to complete your purchase securely.</p>
                         </div>
-            </LoadingOverlay>
+                    </div>
+                </LoadingOverlay>
             );
 
-        } else if (method.id === 'PAY_BY_INSTALLMENT'){
+        } else if (method.id === 'PAY_BY_INSTALLMENT') {
             return (
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
-                        <div className="paymentMethod paymentMethod--hosted">
-                            <div className="payment-descriptor">testing clearpay</div>
+                    <div className="paymentMethod paymentMethod--hosted">
+                        <div className="payment-descriptor">
+                            <h3>Pay in 4 interest-free instalments.</h3>
+                            <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today
+                                and spread the cost over 6 weeks.
+                            </p>
+                            <ul className="list-element">
+                                <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard</li>
+                                <li><div className="circleCheck"></div>No credit check needed</li>
+                                <li><div className="circleCheck"></div>0% interest</li>
+                                <li><div className="circleCheck"></div>Payments every 2 week</li>
+                            </ul>
+                            <p>After clicking "Place Order", you will be redirected to Clearpay to complete your purchase securely.</p>
                         </div>
-            </LoadingOverlay>
+                    </div>
+                </LoadingOverlay>
             );
 
-        } 
+        }
         else {
             return null;
         }
