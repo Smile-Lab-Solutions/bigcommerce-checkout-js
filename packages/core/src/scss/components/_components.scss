@@ -123,3 +123,26 @@
 
 // Dynamic Form Fields Component
 @import "checkout/dynamicFormField/component";
+
+.button:not(#addressToggle),
+.partiallyButton {
+    background-color: #14ccad;
+    border-color: #14ccad;
+    border-radius: 15px !important;
+    color: #fff;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+
+    &:hover {
+        background: #0069d9;
+        background-color: #0069d9 !important;
+        border-color: #0062cc;
+        color: #fff !important;
+    }
+}
+
+.partiallyButton {
+    font-size: 1rem !important;
+    padding: 1.1875rem 4.5rem !important;
+}
