@@ -91,7 +91,7 @@ class PartiallyPaymentMethod extends Component<
             <ul className="list-element">
               <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
               <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
-              <li><div className="circleCheck"></div>Frpm £150 deposit</li>
+              <li><div className="circleCheck"></div>From £150 deposit</li>
               <li><div className="circleCheck"></div>No Payment Plan Charge</li>
             </ul>
           </div>

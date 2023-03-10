@@ -69,3 +69,109 @@
         width: $printLayout-widthFixed;
     }
 }
+
+@media (max-width: 500px) {
+    .shippedKit,
+    .continueButtonContainer {
+        display: block !important;
+
+        p,
+        div,
+        form,
+        button {
+            width: 100% !important;
+        }
+    }
+}
+
+.iconShipping {
+    background: url("../static/svg/icon-shipping.svg") no-repeat center center;
+    font-weight: 900;
+    height: 62px;
+    width: 20%;
+}
+
+#checkout-app {
+    background-color: #f0f1f5;
+}
+
+.continueButtonContainer form:last-of-type button {
+    background-color: transparent !important;
+    border: 2px solid #14181e;
+    border-color: black !important;
+    color: #14181e !important;
+}
+
+.show-mobile {
+    display: block;
+}
+
+@media (min-width: 801px) {
+    .show-mobile {
+        display: none;
+    }
+}
+
+.show-desktop {
+    display: none;
+}
+
+@media (min-width: 801px) {
+    .show-desktop {
+        display: block;
+    }
+}
+
+.smile-step-clmn-1,
+.smile-step-clmn-2 {
+    padding-right: 20px;
+}
+
+.smile-step-title h2 {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.smile-step-text-over-1 {
+    background-image: url("https://cdn.instasmile.com/new-website/images/stepblock1-new.jpg");
+}
+
+.smile-step-text-over-2 {
+    background-image: url("https://cdn.instasmile.com/new-website/images/stepblock2-new.jpg");
+}
+
+.smile-step-text-over-3 {
+    background-image: url("https://cdn.instasmile.com/new-website/images/stepblock3.jpg");
+}
+
+.smile-step-text-over {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 280px;
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+}
+
+.smile-step-details {
+    padding-top: 25px;
+    text-align: center;
+}
+
+.smile-step-details a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.smile-step-details a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+@media (max-width: 991px) {
+    .check-smile-step-clmn {
+        margin: auto;
+        max-width: 450px;
+    }
+}

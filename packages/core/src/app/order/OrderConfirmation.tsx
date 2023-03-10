@@ -3,43 +3,25 @@ import {
     EmbeddedCheckoutMessenger,
     EmbeddedCheckoutMessengerOptions,
     Order,
-    ShopperConfig,
     StoreConfig,
 } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
-import DOMPurify from 'dompurify';
 import React, { Component, lazy, ReactNode } from 'react';
-
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
-
 import { withAnalytics } from '../analytics';
 import { CheckoutContextProps, withCheckout } from '../checkout';
 import { ErrorLogger, ErrorModal } from '../common/error';
 import { retry } from '../common/utility';
-import { getPasswordRequirementsFromConfig } from '../customer';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import {
     CreatedCustomer,
-    GuestSignUpForm,
-    PasswordSavedSuccessAlert,
-    SignedUpSuccessAlert,
     SignUpFormValues,
 } from '../guestSignup';
-import {
-    AccountCreationFailedError,
-    AccountCreationRequirementsError,
-} from '../guestSignup/errors';
-import { TranslatedString } from '../locale';
 import { Button, ButtonVariant } from '../ui/button';
 import { LazyContainer, LoadingSpinner } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
-
-import getPaymentInstructions from './getPaymentInstructions';
 import mapToOrderSummarySubtotalsProps from './mapToOrderSummarySubtotalsProps';
-import OrderConfirmationSection from './OrderConfirmationSection';
-import OrderStatus from './OrderStatus';
 import PrintLink from './PrintLink';
-import ThankYouHeader from './ThankYouHeader';
 
 const OrderSummary = lazy(() =>
     retry(
@@ -123,12 +105,10 @@ class OrderConfirmation extends Component<
             return <LoadingSpinner isLoading={true} />;
         }
 
-        const paymentInstructions = getPaymentInstructions(order);
         const {
-            storeProfile: { orderEmail, storePhoneNumber },
-            shopperConfig,
             links: { siteLink },
         } = config;
+        const accountLink = siteLink + '/account.php';
 
         return (
             <div
@@ -138,37 +118,109 @@ class OrderConfirmation extends Component<
             >
                 <div className="layout-main">
                     <div className="orderConfirmation">
-                        <ThankYouHeader name={order.billingAddress.firstName} />
+                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
+                            <h3>Thank you for your order {order.orderId}</h3>
+                            <div className='shippedKit' style={{backgroundColor: '#DCEFF5', borderRadius: '10px', padding: '15px 15px', margin: '15px 0px', display: 'flex'}}>
+                                <p style={{width: '80%'}}>When we have shipped your Impression Kit you will receive an activation SMS. It is important that you read the message as it provides essential information about the impression process.</p>
+                                <div className="iconShipping"></div>
+                            </div>
+                            <h3>Go to your account to track your order progress</h3>
+                            <img src='https://cdn.instasmile.com/new-website/images/checkout-track-order.jpg' style={{borderRadius: '10px', marginBottom: '15px'}} alt='Impression guide'></img>
+                            <div className="continueButtonContainer" style={{display: 'flex'}}>
+                                <form action={accountLink} method="get" target="_top" style={{width: '50%'}}>
+                                    <Button type="submit" variant={ButtonVariant.Secondary} style={{width: '95%'}}>
+                                        Go to your account
+                                    </Button>
+                                </form>
+                                <form action={siteLink} method="get" target="_top" style={{width: '50%'}}>
+                                    <Button type="submit" variant={ButtonVariant.Secondary} style={{width: '95%'}}>
+                                        Back to the website
+                                    </Button>
+                                </form>
+                            </div>
+                        </div>
+                        <div style={{ textAlign: 'center', borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
+                            <h2>Our Guide to Using Your Instasmile Impression Kit</h2>
+                            <p>We understand that this may be a new experience for you. Your impression kit and instructions leaflet will
+                                contain all the information you need to make a great impression for your new clip-on veneers.</p>
+                            <h4>NEW No Stress Impression Kit Video</h4>
+                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/2FWyDZ1ZCf8" title="YouTube video player"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                ></iframe>
+                            <p>You’ve watched the video, read through the instructions, and prepared everything you need. Now it’s time to
+                                take your impressions.</p>
+                            <p>Keep your instructions to hand and follow them carefully. You can download a copy here if you need to: </p>
+                            <p><a href="https://cdn.instasmile.com/docs/UK-NSI-InstructionsV3.pdf" target="_blank"><strong>Download
+                                Impression Instructions</strong></a></p>
+                        </div>
 
-                        <OrderStatus
-                            order={order}
-                            supportEmail={orderEmail}
-                            supportPhoneNumber={storePhoneNumber}
-                        />
 
-                        {paymentInstructions && (
-                            <OrderConfirmationSection>
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html: DOMPurify.sanitize(paymentInstructions),
-                                    }}
-                                    data-test="payment-instructions"
-                                />
-                            </OrderConfirmationSection>
-                        )}
 
-                        {this.renderGuestSignUp({
-                            shouldShowPasswordForm: order.customerCanBeCreated,
-                            customerCanBeCreated: !order.customerId,
-                            shopperConfig,
-                        })}
+                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px' }}>
+                            <div className="three-simple-steps section_padding block-content">
+                                <div className="container">
+                                    <div style={{textAlign: 'center'}}>
+                                        <h2>Three simple steps to your perfect instasmile</h2>
+                                    </div>
+                                    <div className="show-desktop">
+                                        <div style={{display: 'flex'}}>
+                                            <div className="smile-step-clmn-1">
+                                                <div className="smile-step-text-over smile-step-text-over-1"></div>
+                                                <div className="smile-step-details">
+                                                    <strong>Order Online</strong>
+                                                        <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
+                                                </div>
+                                            </div>
+                                            <div className="smile-step-clmn-2">
+                                                <div className="smile-step-text-over smile-step-text-over-2"></div>
+                                                <div className="smile-step-details">
+                                                    <strong>Make an Impression</strong>
+                                                        <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
+                                                </div>
+                                            </div>
+                                            <div className="smile-step-clmn-3">
+                                                <div className="smile-step-text-over smile-step-text-over-3"></div>
+                                                <div className="smile-step-details">
+                                                    <strong>Receive Your New Smile</strong>
+                                                        <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="show-mobile">
+                                        <div>
+                                            <div id="owl-demo" className="owl-carousel owl-theme">
+                                                <div className="item">
+                                                    <div className="smile-step-text-over smile-step-text-over-1"></div>
+                                                    <div className="smile-step-details">
+                                                        <strong>Order Online</strong>
+                                                            <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
+                                                    </div>
+                                                </div>
+                                                <div className="item">
+                                                    <div className="smile-step-text-over smile-step-text-over-2"></div>
+                                                    <div className="smile-step-details">
+                                                        <strong>Make an Impression</strong>
+                                                            <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
+                                                    </div>
+                                                </div>
+                                                <div className="item">
+                                                    <div className="smile-step-text-over smile-step-text-over-3"></div>
+                                                    <div className="smile-step-details">
+                                                        <strong>Receive Your New Smile</strong>
+                                                            <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div className="continueButtonContainer">
-                            <form action={siteLink} method="get" target="_top">
-                                <Button type="submit" variant={ButtonVariant.Secondary}>
-                                    <TranslatedString id="order_confirmation.continue_shopping" />
-                                </Button>
-                            </form>
+
+
+
+
                         </div>
                     </div>
                 </div>
@@ -176,36 +228,6 @@ class OrderConfirmation extends Component<
                 {this.renderOrderSummary()}
                 {this.renderErrorModal()}
             </div>
-        );
-    }
-
-    private renderGuestSignUp({
-        customerCanBeCreated,
-        shouldShowPasswordForm,
-        shopperConfig,
-    }: {
-        customerCanBeCreated: boolean;
-        shouldShowPasswordForm: boolean;
-        shopperConfig: ShopperConfig;
-    }): ReactNode {
-        const { isSigningUp, hasSignedUp } = this.state;
-
-        const { order } = this.props;
-
-        return (
-            <>
-                {shouldShowPasswordForm && !hasSignedUp && (
-                    <GuestSignUpForm
-                        customerCanBeCreated={customerCanBeCreated}
-                        isSigningUp={isSigningUp}
-                        onSignUp={this.handleSignUp}
-                        passwordRequirements={getPasswordRequirementsFromConfig(shopperConfig)}
-                    />
-                )}
-
-                {hasSignedUp &&
-                    (order?.customerId ? <PasswordSavedSuccessAlert /> : <SignedUpSuccessAlert />)}
-            </>
         );
     }
 
@@ -271,42 +293,6 @@ class OrderConfirmation extends Component<
 
     private handleErrorModalClose: () => void = () => {
         this.setState({ error: undefined });
-    };
-
-    private handleSignUp: (values: SignUpFormValues) => void = ({ password, confirmPassword }) => {
-        const { createAccount, config } = this.props;
-
-        const shopperConfig = config && config.shopperConfig;
-        const passwordRequirements =
-            (shopperConfig &&
-                shopperConfig.passwordRequirements &&
-                shopperConfig.passwordRequirements.error) ||
-            '';
-
-        this.setState({
-            isSigningUp: true,
-        });
-
-        createAccount({
-            password,
-            confirmPassword,
-        })
-            .then(() => {
-                this.setState({
-                    hasSignedUp: true,
-                    isSigningUp: false,
-                });
-            })
-            .catch((error) => {
-                this.setState({
-                    error:
-                        error.status < 500
-                            ? new AccountCreationRequirementsError(error, passwordRequirements)
-                            : new AccountCreationFailedError(error),
-                    hasSignedUp: false,
-                    isSigningUp: false,
-                });
-            });
     };
 
     private handleUnhandledError: (error: Error) => void = (error) => {
