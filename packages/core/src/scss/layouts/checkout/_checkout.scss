@@ -95,6 +95,10 @@
     background-color: #f0f1f5;
 }
 
+.remove-checkout-step-numbers {
+    background-color: white;
+}
+
 .continueButtonContainer form:last-of-type button {
     background-color: transparent !important;
     border: 2px solid #14181e;
@@ -106,7 +110,7 @@
     display: block;
 }
 
-@media (min-width: 801px) {
+@media (min-width: 968px) {
     .show-mobile {
         display: none;
     }
@@ -116,7 +120,7 @@
     display: none;
 }
 
-@media (min-width: 801px) {
+@media (min-width: 968px) {
     .show-desktop {
         display: block;
     }

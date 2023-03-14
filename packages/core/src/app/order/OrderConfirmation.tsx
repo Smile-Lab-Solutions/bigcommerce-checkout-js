@@ -22,6 +22,7 @@ import { LazyContainer, LoadingSpinner } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
 import mapToOrderSummarySubtotalsProps from './mapToOrderSummarySubtotalsProps';
 import PrintLink from './PrintLink';
+import { loadOwlCarousel } from '../../../../../scripts/custom/orderConfirmation';
 
 const OrderSummary = lazy(() =>
     retry(
@@ -153,78 +154,77 @@ class OrderConfirmation extends Component<
                             <p><a href="https://cdn.instasmile.com/docs/UK-NSI-InstructionsV3.pdf" target="_blank"><strong>Download
                                 Impression Instructions</strong></a></p>
                         </div>
-
-
-
-                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px' }}>
-                            <div className="three-simple-steps section_padding block-content">
-                                <div className="container">
-                                    <div style={{textAlign: 'center'}}>
-                                        <h2>Three simple steps to your perfect instasmile</h2>
-                                    </div>
-                                    <div className="show-desktop">
-                                        <div style={{display: 'flex'}}>
-                                            <div className="smile-step-clmn-1">
-                                                <div className="smile-step-text-over smile-step-text-over-1"></div>
-                                                <div className="smile-step-details">
-                                                    <strong>Order Online</strong>
-                                                        <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
-                                                </div>
-                                            </div>
-                                            <div className="smile-step-clmn-2">
-                                                <div className="smile-step-text-over smile-step-text-over-2"></div>
-                                                <div className="smile-step-details">
-                                                    <strong>Make an Impression</strong>
-                                                        <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
-                                                </div>
-                                            </div>
-                                            <div className="smile-step-clmn-3">
-                                                <div className="smile-step-text-over smile-step-text-over-3"></div>
-                                                <div className="smile-step-details">
-                                                    <strong>Receive Your New Smile</strong>
-                                                        <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
-                                                </div>
-                                            </div>
+                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <h2>Three simple steps to your perfect instasmile</h2>
+                            </div>
+                            <div className="show-desktop">
+                                <div style={{ display: 'flex' }}>
+                                    <div className="smile-step-clmn-1">
+                                        <div className="smile-step-text-over smile-step-text-over-1"></div>
+                                        <div className="smile-step-details">
+                                            <strong>Order Online</strong>
+                                            <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
                                         </div>
                                     </div>
-                                    <div className="show-mobile">
-                                        <div>
-                                            <div id="owl-demo" className="owl-carousel owl-theme">
-                                                <div className="item">
-                                                    <div className="smile-step-text-over smile-step-text-over-1"></div>
-                                                    <div className="smile-step-details">
-                                                        <strong>Order Online</strong>
-                                                            <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="smile-step-text-over smile-step-text-over-2"></div>
-                                                    <div className="smile-step-details">
-                                                        <strong>Make an Impression</strong>
-                                                            <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
-                                                    </div>
-                                                </div>
-                                                <div className="item">
-                                                    <div className="smile-step-text-over smile-step-text-over-3"></div>
-                                                    <div className="smile-step-details">
-                                                        <strong>Receive Your New Smile</strong>
-                                                            <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
-                                                    </div>
-                                                </div>
+                                    <div className="smile-step-clmn-2">
+                                        <div className="smile-step-text-over smile-step-text-over-2"></div>
+                                        <div className="smile-step-details">
+                                            <strong>Make an Impression</strong>
+                                            <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
+                                        </div>
+                                    </div>
+                                    <div className="smile-step-clmn-3">
+                                        <div className="smile-step-text-over smile-step-text-over-3"></div>
+                                        <div className="smile-step-details">
+                                            <strong>Receive Your New Smile</strong>
+                                            <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="show-mobile">
+                                <div>
+                                    <div id="owl-demo" className="owl-carousel owl-theme">
+                                        <div className="item">
+                                            <div className="smile-step-text-over smile-step-text-over-1"></div>
+                                            <div className="smile-step-details">
+                                                <strong>Order Online</strong>
+                                                <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
+                                            </div>
+                                        </div>
+                                        <div className="item">
+                                            <div className="smile-step-text-over smile-step-text-over-2"></div>
+                                            <div className="smile-step-details">
+                                                <strong>Make an Impression</strong>
+                                                <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
+                                            </div>
+                                        </div>
+                                        <div className="item">
+                                            <div className="smile-step-text-over smile-step-text-over-3"></div>
+                                            <div className="smile-step-details">
+                                                <strong>Receive Your New Smile</strong>
+                                                <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
+                        </div>
+                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px' }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <h2>Over 200,000 happy customers have already found their perfect smile</h2>
+                            </div>
+                            {/* <!-- TrustBox widget - Horizontal --> */}
+                            <div className="trustpilot-widget" data-locale="en-GB" data-template-id="5406e65db0d04a09e042d5fc" data-businessunit-id="58206a010000ff0005972a24" data-style-height="28px" data-style-width="100%" data-theme="light" data-text-color="#14181e">
+                                <a href="https://uk.trustpilot.com/review/instasmile.com" target="_blank" rel="noopener">Trustpilot</a>
+                            </div>
+                            {/* <!-- End TrustBox widget --> */}
                         </div>
                     </div>
                 </div>
 
+                {loadOwlCarousel()}
                 {this.renderOrderSummary()}
                 {this.renderErrorModal()}
             </div>
