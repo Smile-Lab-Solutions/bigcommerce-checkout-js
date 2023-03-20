@@ -120,13 +120,14 @@ class OrderConfirmation extends Component<
                 <div className="layout-main">
                     <div className="orderConfirmation">
                         <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
-                            <h3>Thank you for your order {order.orderId}</h3>
+                            <h3>{order.billingAddress.firstName}, Thank you for your order {order.orderId}</h3>
                             <div className='shippedKit' style={{backgroundColor: '#DCEFF5', borderRadius: '10px', padding: '15px 15px', margin: '15px 0px', display: 'flex'}}>
-                                <p style={{width: '80%'}}>When we have shipped your Impression Kit you will receive an activation SMS. It is important that you read the message as it provides essential information about the impression process.</p>
+                                <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using DPD's next-day
+                                service or Fedex if you're outside of the UK. <br></br> Look out for an email with your tracking information.</p>
                                 <div className="iconShipping"></div>
                             </div>
                             <h3>Go to your account to track your order progress</h3>
-                            <img src='https://cdn.instasmile.com/new-website/images/checkout-track-order.jpg' style={{borderRadius: '10px', marginBottom: '15px'}} alt='Impression guide'></img>
+                            <img src='https://cdn.instasmile.com/new-website/images/checkout-confirm-track-order.png' style={{borderRadius: '10px', marginBottom: '15px'}} alt='Impression guide'></img>
                             <div className="continueButtonContainer" style={{display: 'flex'}}>
                                 <form action={accountLink} method="get" target="_top" style={{width: '50%'}}>
                                     <Button type="submit" variant={ButtonVariant.Secondary} style={{width: '95%'}}>
@@ -139,6 +140,15 @@ class OrderConfirmation extends Component<
                                     </Button>
                                 </form>
                             </div>
+                        </div>
+                        <div style={{backgroundColor: '#DCEFF5', borderRadius: '25px', padding: '15px 15px', margin: '15px 0px'}}>
+                                <p>Your personal smile consultant will call you within 24 business hours to
+                                    run through your order and answer any questions you may have, so please save us to your trusted contacts.
+                                </p>
+                                <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri 11 am - 9:30 pm)</p>
+                                <p style={{marginBottom: '0px'}}>Tel: 0800 060 8077</p>
+                                <p style={{marginBottom: '0px'}}>Live Chat</p>
+                                <p style={{marginBottom: '0px'}}>Email: <a href="mailto:info@instasmile.com" target="_top">info@instasmile.com</a></p>
                         </div>
                         <div style={{ textAlign: 'center', borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
                             <h2>Our Guide to Using Your Instasmile Impression Kit</h2>
@@ -210,16 +220,6 @@ class OrderConfirmation extends Component<
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px' }}>
-                            <div style={{ textAlign: 'center' }}>
-                                <h2>Over 200,000 happy customers have already found their perfect smile</h2>
-                            </div>
-                            {/* <!-- TrustBox widget - Horizontal --> */}
-                            <div className="trustpilot-widget" data-locale="en-GB" data-template-id="5406e65db0d04a09e042d5fc" data-businessunit-id="58206a010000ff0005972a24" data-style-height="28px" data-style-width="100%" data-theme="light" data-text-color="#14181e">
-                                <a href="https://uk.trustpilot.com/review/instasmile.com" target="_blank" rel="noopener">Trustpilot</a>
-                            </div>
-                            {/* <!-- End TrustBox widget --> */}
                         </div>
                     </div>
                 </div>
