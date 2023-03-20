@@ -46,6 +46,7 @@ import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import withCheckout from './withCheckout';
+import { Modal, ModalTrigger, ModalTriggerModalProps } from '../ui/modal';
 
 const Billing = lazy(() =>
     retry(
@@ -96,6 +97,58 @@ const Shipping = lazy(() =>
             ),
     ),
 );
+
+const refundPolicyModal =
+    (props: ModalTriggerModalProps) => (
+        <Modal
+            additionalBodyClassName="modal--withText"
+            additionalModalClassName="modal--medium"
+            isOpen={props.isOpen}
+            shouldShowCloseButton={true}
+            onRequestClose={props.onRequestClose}
+        >
+            <p>test refund</p>
+        </Modal>
+    );
+
+const shippingPolicyModal =
+    (props: ModalTriggerModalProps) => (
+        <Modal
+            additionalBodyClassName="modal--withText"
+            additionalModalClassName="modal--medium"
+            isOpen={props.isOpen}
+            shouldShowCloseButton={true}
+            onRequestClose={props.onRequestClose}
+        >
+            <p>test shipping</p>
+        </Modal>
+    );
+
+const privacyPolicyModal =
+    (props: ModalTriggerModalProps) => (
+        <Modal
+            additionalBodyClassName="modal--withText"
+            additionalModalClassName="modal--medium"
+            isOpen={props.isOpen}
+            shouldShowCloseButton={true}
+            onRequestClose={props.onRequestClose}
+        >
+            <p>test privacy</p>
+        </Modal>
+    );
+
+const termsOfServiceModal =
+    (props: ModalTriggerModalProps) => (
+        <Modal
+            additionalBodyClassName="modal--withText"
+            additionalModalClassName="modal--medium"
+            isOpen={props.isOpen}
+            shouldShowCloseButton={true}
+            onRequestClose={props.onRequestClose}
+        >
+            <p>test terms</p>
+        </Modal>
+    );
 
 export interface CheckoutProps {
     checkoutId: string;
@@ -334,6 +387,12 @@ class Checkout extends Component<
                                 }),
                             )}
                     </ol>
+                    <div className="checkout-footer">
+                        {this.renderModal("Refund Policy", refundPolicyModal)}
+                        {this.renderModal("Shipping policy", shippingPolicyModal)}
+                        {this.renderModal("Privacy policy", privacyPolicyModal)}
+                        {this.renderModal("Terms of service", termsOfServiceModal)}
+                    </div>
                 </div>
 
                 {this.renderCartSummary()}
@@ -525,6 +584,20 @@ class Checkout extends Component<
                     );
                 }}
             </MobileView>
+        );
+    }
+
+    private renderModal(modalName: string, reactModal: (props: ModalTriggerModalProps) => ReactNode): ReactNode {
+        return (
+            <LazyContainer>
+                <ModalTrigger modal={reactModal}>
+                {({ onClick }) => (
+                    <button onClick={onClick} type="button" style={{color: '#4496f6', width: '25%'}}>
+                        {modalName}
+                    </button>
+                )}
+            </ModalTrigger>
+            </LazyContainer>
         );
     }
 

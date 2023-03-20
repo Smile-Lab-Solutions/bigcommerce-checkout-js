@@ -47,6 +47,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                     shopperCurrencyCode={shopperCurrency.code}
                     storeCurrencyCode={storeCurrency.code}
                 />
+                <p>Pay in Full or Spread the cost with our payment options</p>
             </OrderSummarySection>
         </article>
     );

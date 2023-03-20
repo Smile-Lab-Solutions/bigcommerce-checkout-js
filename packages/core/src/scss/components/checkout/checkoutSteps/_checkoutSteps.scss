@@ -11,20 +11,24 @@
     counter-reset: $checkoutStep-counter;
     list-style-type: none;
     margin: 0;
+}
 
+.checkout-footer,
+.checkout-steps {
     @include breakpoint("medium") {
-        padding-right: (spacing("double") + spacing("double"));
+        padding-right: (spacing("double") + spacing("double")) !important;
     }
+}
+
+.checkout-footer {
+    display: flex;
+    padding: 1.5rem 0;
 }
 
 .checkout-step {
     border-bottom: container("border");
     counter-increment: $checkoutStep-counter;
     padding: spacing("single") 0;
-
-    &:last-child {
-        border: 0;
-    }
 }
 
 .checkout-view-header {
@@ -131,6 +135,7 @@
     display: flex;
     height: remCalc($checkoutStep-counter-size);
     margin-right: $checkoutStep-header-body-margin;
+    width: 100%;
 }
 
 .stepHeader-title {
