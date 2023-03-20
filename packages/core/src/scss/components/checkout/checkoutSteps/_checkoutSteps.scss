@@ -23,6 +23,11 @@
 .checkout-footer {
     display: flex;
     padding: 1.5rem 0;
+    text-align: center;
+
+    a {
+        width: 25%;
+    }
 }
 
 .checkout-step {
