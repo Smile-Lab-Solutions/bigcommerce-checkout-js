@@ -32,11 +32,8 @@ class PartiallyPaymentMethod extends Component<
           method,
           checkout,
           config,
-          onUnhandledError = noop,
-          hidePaymentSubmitButton
+          onUnhandledError = noop
       } = this.props;
-
-      hidePaymentSubmitButton(method, true);
 
       try {
             if (checkout && method && config){
@@ -80,8 +77,7 @@ class PartiallyPaymentMethod extends Component<
   }
 
   render(): ReactNode {
-    const {
-    } = this.props;
+    const {} = this.props;
 
     return (
       <LoadingOverlay hideContentWhenLoading isLoading={false}>
@@ -96,7 +92,8 @@ class PartiallyPaymentMethod extends Component<
             </ul>
           </div>
         </div>
-        <div id="partiallyCartButtonContainer"></div>
+        <button className="partiallyButton" type='button' style={{backgroundColor: "#14CCAD", width:'100%', margin: '10px 0px'}} id="partiallySubmitBtn"><span>Proceed to Spread the Cost with Partially</span></button>
+        <div id="partiallyCartButtonContainer" style={{display: 'none'}}></div>
       </LoadingOverlay>
     );
   }
@@ -122,7 +119,7 @@ const mapFromCheckoutProps: MapToPropsFactory<
 
       const checkout = getCheckout();
       const config = getConfig();
-
+      
       return {
           checkout: checkout,
           method: method,
