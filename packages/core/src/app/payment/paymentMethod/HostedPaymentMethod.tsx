@@ -176,7 +176,6 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                         <div className="payment-descriptor">
-                            <h3>Spread the cost over 6 weekly payments, 0% interest.</h3>
                             <p>Spread the total cost over 6 weekly automatic payments. Always interest-free. Make the first payment today
                                 and spread the cost over 6 weeks with payments every week.
                             </p>
@@ -197,7 +196,6 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                         <div className="payment-descriptor">
-                            <h3>Pay in 4 interest-free instalments.</h3>
                             <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today
                                 and spread the cost over 6 weeks.
                             </p>

@@ -83,7 +83,6 @@ class PartiallyPaymentMethod extends Component<
       <LoadingOverlay hideContentWhenLoading isLoading={false}>
         <div className="paymentMethod paymentMethod--hosted">
           <div className="payment-descriptor">
-            <h3>Ideal for people with an adverse credit rating.</h3>
             <ul className="list-element">
               <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
               <li><div className="circleCheck"></div>Spread the cost over 12 months</li>

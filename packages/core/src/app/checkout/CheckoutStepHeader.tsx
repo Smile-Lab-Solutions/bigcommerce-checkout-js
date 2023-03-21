@@ -53,6 +53,13 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                 data-test="step-info"
             >
                 {!isActive && isComplete && summary}
+
+                {type === CheckoutStepType.Payment && (
+                    <div style={{ textAlign: 'center', color: '#7b7b7b', display: 'flex', alignItems: 'center' }}>
+                        <div className='iconLock'></div>
+                        <p style={{ display: 'contents' }}>Secure Payment Options</p>
+                    </div>
+                )}
             </div>
 
             {isEditable && !isActive && (

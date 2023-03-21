@@ -95,7 +95,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
-                titleText: methodName,
+                titleText: methodDisplayName,
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
@@ -119,7 +119,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Laybuy]: {
                 logoUrl: cdnPath('/img/payment-providers/laybuy-checkout-header.png'),
-                titleText: '',
+                titleText: methodDisplayName,
             },
             [PaymentMethodId.Masterpass]: {
                 logoUrl: 'https://masterpass.com/dyn/img/acc/global/mp_mark_hor_blk.svg',
@@ -198,7 +198,7 @@ function getPaymentMethodTitle(
                 titleText:
                     method.method === 'iban'
                         ? language.translate('payment.stripe_sepa_display_name_text')
-                        : methodName,
+                        : methodDisplayName,
             },
             [PaymentMethodId.WorldpayAccess]: {
                 logoUrl: '',
@@ -267,11 +267,18 @@ const PaymentMethodTitle: FunctionComponent<
         method.supportedCards = ["VISA", "AMEX", "MC", "DISCOVER", "DINERS"];
     }
 
+    if (method.gateway === PaymentMethodId.Clearpay){
+        method.supportedCards = ["VISA", "MC"];
+    }
+
+    var displaystyle = titleText ? 'block' : 'flex';
+
     return (
         <div className="paymentProviderHeader-container">
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
+                style={{display: displaystyle}}
             >
                 {logoUrl && (
                     <img
