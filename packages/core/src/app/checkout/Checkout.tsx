@@ -297,60 +297,21 @@ class Checkout extends Component<
                 <div className="layout optimizedCheckout-contentPrimary">
                     {this.renderContent()}
                 </div>
-                
-
-                <div style={{ display: 'flex', backgroundColor: '#fcfcfc', borderTop: '1px solid #ebebeb' }}>
-                        <div style={{ width: '33%', padding: '2rem 0 2rem 2rem', textAlign: 'center' }}>
-                            <p>Purchase Safely</p>
-                        </div>
-                        <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
-                            <p>Convenient Payment</p>
-                            <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_nov_22_v2.png"></img>
-                        </div>
-                        <div style={{ width: '33%', padding: '2rem 2rem 2rem 0', textAlign: 'center' }}>
-                            <p>Fast Delivery</p>
-                        </div>
+                <div id='checkout-footer-icons' style={{ display: 'flex', backgroundColor: '#fcfcfc', borderTop: '1px solid #ebebeb' }}>
+                    <div style={{ width: '33%', padding: '2rem 0 2rem 2rem', textAlign: 'center' }}>
+                        <p style={{ marginBottom: '0px' }}>Purchase Safely</p>
+                        <img src="https://cdn.instasmile.com/new-website/images/purchase-safely.png" width={'25%'}></img>
                     </div>
-                {errorModal}
-            </div>
-        );
-    }
-
-    private renderContent(): ReactNode {
-        const { isPending, loginUrl, promotions = [], steps } = this.props;
-
-        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting, isWalletButtonsOnTop } = this.state;
-
-        if (isCartEmpty) {
-            return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
-        }
-
-        return (
-            <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
-                <div className="layout-main">
-                    <LoadingNotification isLoading={isPending} />
-
-                    <PromotionBannerList promotions={promotions} />
-
-                    {isWalletButtonsOnTop && <CheckoutButtonContainer
-                        checkEmbeddedSupport={this.checkEmbeddedSupport}
-                        onUnhandledError={this.handleUnhandledError}
-                    />}
-
-                    <ol className="checkout-steps">
-                        {steps
-                            .filter((step) => step.isRequired)
-                            .map((step) =>
-                                this.renderStep({
-                                    ...step,
-                                    isActive: activeStepType
-                                        ? activeStepType === step.type
-                                        : defaultStepType === step.type,
-                                    isBusy: isPending,
-                                }),
-                            )}
-                    </ol>
-                    <div className="checkout-footer">
+                    <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
+                        <p style={{ marginBottom: '1rem' }}>Convenient Payment</p>
+                        <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_nov_22_v2.png" width={'75%'}></img>
+                    </div>
+                    <div style={{ width: '33%', padding: '2rem 2rem 2rem 0', textAlign: 'center' }}>
+                        <p style={{ marginBottom: '0px' }}>Fast Delivery</p>
+                        <img src="https://cdn.instasmile.com/new-website/images/shipping-footer.png" width={'50%'}></img>
+                    </div>
+                </div>
+                <div className="checkout-footer">
                         <ModalLink
                             body={this.renderRefundPolicyContent()}
                             header={
@@ -392,6 +353,45 @@ class Checkout extends Component<
                             Terms of service
                         </ModalLink>
                     </div>
+                {errorModal}
+            </div>
+        );
+    }
+
+    private renderContent(): ReactNode {
+        const { isPending, loginUrl, promotions = [], steps } = this.props;
+
+        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting, isWalletButtonsOnTop } = this.state;
+
+        if (isCartEmpty) {
+            return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
+        }
+
+        return (
+            <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
+                <div className="layout-main">
+                    <LoadingNotification isLoading={isPending} />
+
+                    <PromotionBannerList promotions={promotions} />
+
+                    {isWalletButtonsOnTop && <CheckoutButtonContainer
+                        checkEmbeddedSupport={this.checkEmbeddedSupport}
+                        onUnhandledError={this.handleUnhandledError}
+                    />}
+
+                    <ol className="checkout-steps">
+                        {steps
+                            .filter((step) => step.isRequired)
+                            .map((step) =>
+                                this.renderStep({
+                                    ...step,
+                                    isActive: activeStepType
+                                        ? activeStepType === step.type
+                                        : defaultStepType === step.type,
+                                    isBusy: isPending,
+                                }),
+                            )}
+                    </ol>
                 </div>
 
                 {this.renderCartSummary()}

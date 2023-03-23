@@ -8,7 +8,7 @@
     @include grid-row;
 
     min-height: remCalc(200px);
-    padding: 0 spacing("single") 5 * spacing("single");
+    padding: 0 spacing("single") spacing("single");
 
     @include breakpoint("large") {
         padding-bottom: spacing("single");

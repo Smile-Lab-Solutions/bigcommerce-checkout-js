@@ -13,7 +13,6 @@
     margin: 0;
 }
 
-.checkout-footer,
 .checkout-steps {
     @include breakpoint("medium") {
         padding-right: (spacing("double") + spacing("double")) !important;
@@ -22,11 +21,34 @@
 
 .checkout-footer {
     display: flex;
+    margin: auto;
     padding: 1.5rem 0;
     text-align: center;
+    width: 50%;
 
     a {
         width: 25%;
+    }
+}
+
+@media (max-width: 968px) {
+    .checkout-footer {
+        padding-bottom: 8.5rem;
+        width: 100%;
+    }
+
+    #checkout-footer-icons {
+        display: block !important;
+
+        div {
+            margin: auto !important;
+            padding: 2rem !important;
+            width: 100% !important;
+
+            p {
+                margin-bottom: 0 !important;
+            }
+        }
     }
 }
 
