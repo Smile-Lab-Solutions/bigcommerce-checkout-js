@@ -685,7 +685,7 @@ export function getPartiallyMethod(): PaymentMethod {
             merchantId: 'partially',
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
-            redirectUrl: `${window.location.origin}/checkout/order-confirmation`
+            redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
     };
