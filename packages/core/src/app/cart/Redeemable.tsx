@@ -183,7 +183,7 @@ const RedeemableForm: FunctionComponent<
     );
 
     return (
-        <fieldset className="form-fieldset redeemable-entry" id='couponFieldSet'>
+        <fieldset className="form-fieldset redeemable-entry couponFieldSet">
             <FormProvider>{renderContent}</FormProvider>
         </fieldset>
     );

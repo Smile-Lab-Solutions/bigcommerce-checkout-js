@@ -9,9 +9,8 @@ export const loadPartiallyJs = () => {
 }
 
 export function toggleCouponBlock (isPartiallyOpen) {
-    var couponInputBlock = document.getElementById('couponFieldSet');
-
-    var couponButton = [...document.getElementsByClassName('couponButton')];
+    var couponInputBlock = [...document.getElementsByClassName('couponFieldSet')];
+    var couponLabel = [...document.getElementsByClassName('redeemable-label')];
     var couponWarning = [...document.getElementsByClassName('partiallyCouponWarning')];
 
     if (isPartiallyOpen){
@@ -20,17 +19,21 @@ export function toggleCouponBlock (isPartiallyOpen) {
         }); 
 
         if (couponInputBlock !== null && couponInputBlock !== undefined){
-            couponInputBlock.style.display = 'none';
+            couponInputBlock.forEach(inputBlock => {
+                inputBlock.style.display = 'none';
+            });
         }
-        couponButton.forEach(button => {
-            button.style.display = 'none';
+        couponLabel.forEach(label => {
+            label.style.display = 'none';
         });
     } else {
         if (couponInputBlock !== null && couponInputBlock !== undefined){
-            couponInputBlock.style.display = 'block';
+            couponInputBlock.forEach(inputBlock => {
+                inputBlock.style.display = 'block';
+            });
         }
-        couponButton.forEach(button => {
-            button.style.display = 'block';
+        couponLabel.forEach(label => {
+            label.style.display = 'block';
         });
 
         couponWarning.forEach(warning => {

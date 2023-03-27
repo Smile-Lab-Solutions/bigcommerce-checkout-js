@@ -108,7 +108,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
-                titleText: methodName,
+                titleText: '',
                 titleSubText: 'Pay in 4 interest-free instalments.',
             },
             [PaymentMethodType.GooglePay]: {
