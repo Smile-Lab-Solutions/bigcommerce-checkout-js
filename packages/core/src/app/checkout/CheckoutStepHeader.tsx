@@ -44,23 +44,22 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                         { 'stepHeader-counter--complete': isComplete },
                     )}
                 />
+                {type === CheckoutStepType.Payment && (
+                        <div className='iconLock'></div>
+                )}
 
                 <h2 className="stepHeader-title optimizedCheckout-headingPrimary">{heading}</h2>
             </div>
 
-            <div
-                className="stepHeader-body stepHeader-column optimizedCheckout-contentPrimary"
-                data-test="step-info"
-            >
-                {!isActive && isComplete && summary}
+            {type !== CheckoutStepType.Payment && (
+                <div
+                    className="stepHeader-body stepHeader-column optimizedCheckout-contentPrimary"
+                    data-test="step-info"
+                >
+                    {!isActive && isComplete && summary}
 
-                {type === CheckoutStepType.Payment && (
-                    <div style={{ textAlign: 'center', color: '#7b7b7b', display: 'flex', alignItems: 'center' }}>
-                        <div className='iconLock'></div>
-                        <p style={{ display: 'contents' }}>Secure Payment Options</p>
-                    </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {isEditable && !isActive && (
                 <div className="stepHeader-actions stepHeader-column">

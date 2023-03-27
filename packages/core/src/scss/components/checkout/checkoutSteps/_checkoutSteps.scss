@@ -56,14 +56,6 @@
     padding: spacing("single") 0;
 }
 
-.checkout-view-header {
-    margin-bottom: remCalc(10px);
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-}
-
 .checkout-view-content {
     @include breakpoint("large") {
         @include collapse;
@@ -140,7 +132,7 @@
     align-items: top;
     display: flex;
     flex-wrap: wrap;
-    padding: spacing("single") 0;
+    padding: 1rem 0;
 
     @include breakpoint("small") {
         flex-wrap: nowrap;

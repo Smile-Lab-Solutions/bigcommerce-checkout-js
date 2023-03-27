@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from 'react';
-import { configurePartiallyButton, loadPartiallyJs } from '../../../../../../scripts/custom/partially.js';
+import { configurePartiallyButton, loadPartiallyJs, toggleCouponBlock } from '../../../../../../scripts/custom/partially.js';
 import { CheckoutContextProps, withCheckout } from '../../checkout';
-import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig } from '@bigcommerce/checkout-sdk';
+import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ConnectFormikProps, connectFormik } from '../../common/form';
 import { MapToPropsFactory } from '../../common/hoc';
@@ -18,6 +18,7 @@ export interface HostedPaymentMethodProps {
 interface WithCheckoutHostedPaymentMethodProps {
   checkout: Checkout | undefined;
   config: StoreConfig | undefined;
+  removeCoupon(code: string): void;
 }
 
 class PartiallyPaymentMethod extends Component<
@@ -30,11 +31,23 @@ class PartiallyPaymentMethod extends Component<
   async componentDidMount(): Promise<CheckoutSelectors | void> {
       const {
           method,
-          setSubmit
+          setSubmit,
+          checkout,
+          removeCoupon
       } = this.props;
 
       setSubmit(method, this.handleSubmit);
       loadPartiallyJs();
+
+      try {
+        if (checkout && checkout.coupons.length > 0){
+          checkout.coupons.forEach(coupon => {
+            removeCoupon(coupon.code);
+          });
+        }
+
+        toggleCouponBlock(true);
+      } catch(e){}
   }
 
   render(): ReactNode {
@@ -62,11 +75,15 @@ class PartiallyPaymentMethod extends Component<
       method,
       checkout,
       config,
-      onUnhandledError = noop
+      onUnhandledError = noop,
     } = this.props;
 
     try {
       if (checkout && method && config) {
+        if (checkout && checkout.coupons.length > 0){
+          throw new Error('coupon');
+        }
+
         // Merge physical/digital items in cart
         var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
 
@@ -110,9 +127,22 @@ class PartiallyPaymentMethod extends Component<
         throw new Error();
       }
     } catch (error) {
-      onUnhandledError("Failed to load partial.ly, please try again later.");
+      var errorMessage = "Failed to load partial.ly, please try again later.";
+
+      // Replace default error message to coupon error 
+      if (error instanceof Error && error.message === 'coupon') {
+        errorMessage = "Discount codes cannot be used with Partially";
+      }
+
+      onUnhandledError(new Error(errorMessage) as CustomError);
     }
   };
+
+  componentWillUnmount(): void {
+    {
+      toggleCouponBlock(false);
+    }
+  }
 }
 
 const mapFromCheckoutProps: MapToPropsFactory<
@@ -122,10 +152,10 @@ const mapFromCheckoutProps: MapToPropsFactory<
 > = () => {
   return (context, props) => {
       const {
-        method
+        method,
       } = props;
 
-      const { checkoutState } = context;
+      const { checkoutState, checkoutService } = context;
 
       const {
           data: {
@@ -139,7 +169,8 @@ const mapFromCheckoutProps: MapToPropsFactory<
       return {
           checkout: checkout,
           method: method,
-          config
+          config,
+          removeCoupon: checkoutService.removeCoupon
       };
   };
 };

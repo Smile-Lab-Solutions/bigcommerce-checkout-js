@@ -8,7 +8,7 @@
 .customerEmail-container {
     @include grid-row;
 
-    margin-bottom: spacing("single");
+    margin-bottom: 1rem;
 
     .customerEmail-floating--enabled {
         @include breakpoint("small") {
@@ -25,7 +25,7 @@
 .customerEmail-action {
     @include grid-column($collapse: true, $columns: $total-columns);
 
-    margin-bottom: spacing("single");
+    margin-bottom: 0;
     padding: 0;
 
     @include breakpoint("small") {

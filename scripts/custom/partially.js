@@ -8,6 +8,37 @@ export const loadPartiallyJs = () => {
     })();
 }
 
+export function toggleCouponBlock (isPartiallyOpen) {
+    var couponInputBlock = document.getElementById('couponFieldSet');
+
+    var couponButton = [...document.getElementsByClassName('couponButton')];
+    var couponWarning = [...document.getElementsByClassName('partiallyCouponWarning')];
+
+    if (isPartiallyOpen){
+        couponWarning.forEach(warning => {
+            warning.style.display = 'block';
+        }); 
+
+        if (couponInputBlock !== null && couponInputBlock !== undefined){
+            couponInputBlock.style.display = 'none';
+        }
+        couponButton.forEach(button => {
+            button.style.display = 'none';
+        });
+    } else {
+        if (couponInputBlock !== null && couponInputBlock !== undefined){
+            couponInputBlock.style.display = 'block';
+        }
+        couponButton.forEach(button => {
+            button.style.display = 'block';
+        });
+
+        couponWarning.forEach(warning => {
+            warning.style.display = 'none';
+        }); 
+    }
+}
+
 export function configurePartiallyButton (lineItems, total, returnUrl, redirectUrl, offer) {
     var partiallyButtonConfig = {
         offer: offer,

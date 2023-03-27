@@ -43,6 +43,7 @@ export type RedeemableProps = {
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
 > = ({ shouldCollapseCouponCode, showAppliedRedeemables, ...formProps }) => (
+
     <Toggle openByDefault={!shouldCollapseCouponCode}>
         {({ toggle, isOpen }) => (
             <>
@@ -50,7 +51,7 @@ const Redeemable: FunctionComponent<
                     <a
                         aria-controls="redeemable-collapsable"
                         aria-expanded={isOpen}
-                        className="redeemable-label"
+                        className="redeemable-label couponButton"
                         data-test="redeemable-label"
                         href="#"
                         onClick={preventDefault(toggle)}
@@ -63,6 +64,7 @@ const Redeemable: FunctionComponent<
                         <TranslatedString id="redeemable.toggle_action" />
                     </div>
                 )}
+                <p className='partiallyCouponWarning' style={{display: 'none', marginTop: '1rem'}}>Discount codes cannot be used with Partially</p>
                 {(isOpen || !shouldCollapseCouponCode) && (
                     <div data-test="redeemable-collapsable" id="redeemable-collapsable">
                         <RedeemableForm {...formProps} />
@@ -181,7 +183,7 @@ const RedeemableForm: FunctionComponent<
     );
 
     return (
-        <fieldset className="form-fieldset redeemable-entry">
+        <fieldset className="form-fieldset redeemable-entry" id='couponFieldSet'>
             <FormProvider>{renderContent}</FormProvider>
         </fieldset>
     );

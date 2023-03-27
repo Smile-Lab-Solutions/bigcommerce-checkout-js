@@ -99,6 +99,13 @@
     width: 2rem;
 }
 
+.arrowLeft {
+    background: url("../static/svg/arrow-left.svg") no-repeat center center;
+    height: 2rem;
+    margin-right: 0.5rem;
+    width: 2rem;
+}
+
 #checkout-app {
     background-color: #f0f1f5;
 }
@@ -185,5 +192,11 @@
     .check-smile-step-clmn {
         margin: auto;
         max-width: 450px;
+    }
+}
+
+@media (max-width: 350px) {
+    .stepHeader {
+        display: block;
     }
 }

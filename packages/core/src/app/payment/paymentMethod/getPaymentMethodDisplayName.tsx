@@ -34,22 +34,6 @@ export default function getPaymentMethodDisplayName(
             return language.translate('payment.credit_card_text');
         }
 
-        if (method.id === PaymentMethodId.Laybuy){
-            return 'Buy now and pay over 6 weekly interest-free instalments';
-        }
-
-        if (method.gateway === PaymentMethodId.StripeUPE){
-            return displayName + ' All major credit and debit cards accepted';
-        }
-
-        if (method.gateway === PaymentMethodId.Partially){
-            return displayName + ' Ideal for people with an adverse credit rating.';
-        }
-
-        if (method.gateway === PaymentMethodId.Clearpay){
-            return 'Pay in 4 interest-free instalments.';
-        }
-
         return displayName || '';
     };
 }
