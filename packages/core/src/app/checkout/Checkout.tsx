@@ -335,16 +335,6 @@ class Checkout extends Component<
                         >
                             Shipping policy
                         </ModalLink>
-                        <ModalLink
-                            body={this.renderPrivacyPolicyContent()}
-                            header={
-                                <ModalHeader>
-                                    Privacy policy
-                                </ModalHeader>
-                            }
-                        >
-                            Privacy policy
-                        </ModalLink>
                         <a
                             href={termsAndConditionsUrl}
                         >
@@ -865,41 +855,6 @@ class Checkout extends Component<
                 <p>You own the Self-Impression Kit from the point you receive it.</p>
                 <p><strong>Excluded locations</strong></p>
                 <p>Unfortunately, we do not deliver to the following territories: Belarus, Burma/Myanmar, Democratic Republic of Congo, Eritrea, Former Federal Republic of Yugoslavia &amp; Serbia, International Criminal Tribunal for The Former Yugoslavia, Iran, Iraq, Ivory Coast, Lebanon and Syria, Liberia, North Korea (Democratic People's Republic of Korea), Republic of Guinea, Somalia, Sudan, Zimbabwe, Cuba or the Balkans. Please note that we do have a number of international websites which can be accessed using the links in the tab at the top of our website.</p>
-            </>
-        );
-    }
-
-    private renderPrivacyPolicyContent(): ReactNode {
-        const { siteUrl } = this.props;
-        const contactUsUrl = siteUrl + '/pages/contact-us';
-        const termsAndConditionsUrl = siteUrl + '/pages/terms-and-conditions';
-
-        return (
-            <>
-                <p>Thank you for visiting&nbsp;<a href={siteUrl} target="_top">{siteUrl}</a>&nbsp;(the “Web Site”). Your privacy is important to us. To better protect your privacy, we provide this notice explaining our online information practices and the choices you can make about the way your information is collected and used at this site. All capitalised terms not defined in this Privacy policy shall have the meanings assigned to them in the Terms and conditions for use of the Web Site,&nbsp;<a href={termsAndConditionsUrl} target="_top">located here</a>. From time to time we may update this Privacy Policy. When we do, we will publish the changes on this Web Site. If you do not agree to these changes, please do not continue to use the Web Site. If material changes are made to this Privacy Policy, we will notify you placing a prominent notice of the Web Site.</p>
-                <h4>The information we collect</h4>
-                <p>In order to purchase an instasmile product, this site requires that User provides certain personal information. The types of personally identifiable information that we collect may include: name, address, email address, telephone number, fax number and credit card information. The Web Site also allows you to submit information about other people. For example, you might submit a person’s information to purchase a gift for that person. The types of personally identifiable information that may be collected about other people at these pages may include: recipient’s name, address, email address, and telephone number.</p>
-                <p>We also automatically collect certain information when you visit the Web Site, such as the type of browser you are using (e.g., Google Chrome, Internet Explorer etc), the type of operating system you are using, (e.g., Windows XP or Mac OS) the domain name of your Internet service provider (e.g., America Online, Earthlink) and collect information on site navigation. We employ third party experts to help us analyse this information, however, we ensure that anyone we employ treats all of the information with the same sensitivity and security that we treat it.</p>
-                <h4>How we use the information</h4>
-                <p>We sometimes use this information to communicate with you, such as to notify you when we make changes to our subscriber agreements, to fulfil an online order for instasmile products, to answer your enquiries or to contact you about issues regarding your account with us. From time to time we would like to send you information about our products and services. We may occasionally use your information to carry out customer and market research. For this purpose we may contact you via letter, phone, SMS or email. You may opt-out of receiving such information by selecting the relevant option on our website when you place an order or by sending us an email at&nbsp;<a href="mailto:info@instasmile.com" target="_top">info@instasmile.com</a>&nbsp;. We will only use the information that you provide about others to enable us to send them the relevant products which you have purchased for them.</p>
-                <p>We will also use the information collected about your computer and your browser settings to improve the design and content of our site and to enable us to provide a more tailored interface for individual Users.</p>
-                <p>We may also use this information in aggregate (so that no individuals are identified) to analyse site usage and for strategic development purposes. Furthermore, there may be occasions where we are under a legal obligation to disclose a User’s personally identifiable information, for example, in response to a court order or a law enforcement agency’s request.</p>
-                <h4>Information we do not collect</h4>
-                <p>We do not store any credit or debit card details or our customers. All transactions are handled by PayPal.</p>
-                <h4>Use of cookies</h4>
-                <p>A cookie is a small piece of information sent by a web server to a web browser, which enables the server to collect information from the browser. Find out more about the use of cookies on&nbsp;<a href="http://www.allaboutcookies.org/" target="_top" aria-describedby="forwarding-external-message">http://www.allaboutcookies.org/&nbsp;</a>. We use cookies to identify you when you visit this website and to keep track of your browsing patterns and build up a demographic profile. Our use of cookies also allows registered users to be presented with a personalised version of the site, carry out transactions and have access to information about their account. Most browsers allow you to turn off cookies or to receive a warning before a cookie is stored on your hard drive. Please refer to your browser instructions or help screen to learn more about how to do this. However, should you decide to disable any cookies we place on your computer you may not be able to use certain services or facilities on the Web Site.</p>
-                <h4>Disclosure</h4>
-                <p>We will only disclose personal information to agents and contractors of instasmile who are engaged to process data on our behalf. Such organisations are required to protect this information in a manner that is consistent with this Privacy Notice by, for example, not using the information for any purpose other than to carry out the services they are performing for instasmile.</p>
-                <h4>Internet-based transfers</h4>
-                <p>Given that the Internet is a global environment, using the Internet to collect and process personal data necessarily involves the transmission of data on an international basis. Therefore, by browsing this website and communicating electronically with us, you acknowledge our processing of personal data in this way. However, we will endeavour to protect all personal information collected through this website in accordance with strict data protection standards.</p>
-                <h4>Our commitment to security</h4>
-                <p>We have put in place appropriate physical, electronic, and managerial procedures to safeguard and help prevent unauthorised access, maintain data security, and correctly use the information we collect online.</p>
-                <h4>How you can access or correct information</h4>
-                <p>For instructions on how you can access the personally identifiable information that this instasmile site has collected about you online, or how to correct factual errors in such information, please contact us at&nbsp;<a href="mailto:info@instasmile.com" target="_top">info@instasmile.com</a>&nbsp;. To protect your privacy and security, we will take reasonable steps to help verify your identity before granting access or making corrections.</p>
-                <h4>Klarna's Privacy Policy</h4>
-                <p>In order to offer you Klarna’s payment methods, we might in the checkout pass your personal data in the form of contact and order details to Klarna, in order for Klarna to assess whether you qualify for their payment methods and to tailor those payment methods for you. Your personal data transferred is processed in line with<span>&nbsp;</span><a href="https://www.klarna.com/international/privacy-policy/" target="_blank" aria-describedby="forwarding-external-new-window-message">Klarna’s own privacy notice</a>.</p>
-                <h4>How to contact us</h4>
-                <p>If you have any questions or concerns about this policy or its implementation you may&nbsp;<a href={contactUsUrl} target="_top">contact us here</a>.</p>
             </>
         );
     }

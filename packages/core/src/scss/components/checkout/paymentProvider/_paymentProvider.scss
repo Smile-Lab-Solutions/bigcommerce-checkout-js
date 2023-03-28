@@ -172,3 +172,11 @@ body.klarna-payments-fso-open {
         font-size: 15px;
     }
 }
+
+#stripeIconImg {
+    width: 50%;
+
+    @media (max-width: 500px) {
+        width: 100%;
+    }
+}

@@ -231,7 +231,7 @@ function getPaymentMethodTitle(
                     method.method === 'iban'
                         ? language.translate('payment.stripe_sepa_display_name_text')
                         : methodName,
-                titleSubText: 'All major credit and debit cards accepted',
+                titleSubText: '',
             },
             [PaymentMethodId.WorldpayAccess]: {
                 logoUrl: '',
@@ -325,6 +325,11 @@ const PaymentMethodTitle: FunctionComponent<
                 {titleSubText && (
                     <div style={{width: '100%', fontSize: '1rem', fontWeight: '500'}}>
                         {titleSubText}
+                    </div>
+                )}
+                {method.gateway === PaymentMethodId.StripeUPE && (
+                    <div style={{width: '100%'}}>
+                        <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-2.png'></img>
                     </div>
                 )}
             </div>

@@ -254,7 +254,7 @@
             "payment_cancelled": "Payment was cancelled",
             "payment_error": "An error occurred while processing your payment. Please try again.",
             "payment_error_heading": "Payment Failed",
-            "payment_heading": "Secure Payment Options",
+            "payment_heading": "Secure Payments",
             "payment_invalid_error_heading": "Payment Unavailable",
             "payment_method_disabled_error": "The selected payment method is no longer valid. Click OK to see the most up-to-date payment methods.",
             "payment_method_error": "Response from payment provider: {message}",
