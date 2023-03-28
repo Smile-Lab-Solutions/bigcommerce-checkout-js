@@ -324,7 +324,12 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {titleSubText && (
                     <div style={{width: '100%', fontSize: '1rem', fontWeight: '500'}}>
-                        {titleSubText}
+                        <p style={{marginBottom: '0px'}}>{titleSubText}</p>
+                        {method.gateway === PaymentMethodId.Partially && (
+                            <p className='couponWarning' style={{marginBottom: '0px'}}>
+                                <strong>Discount codes cannot be used with Partial.ly</strong>
+                            </p>
+                        )}
                     </div>
                 )}
                 {method.gateway === PaymentMethodId.StripeUPE && (

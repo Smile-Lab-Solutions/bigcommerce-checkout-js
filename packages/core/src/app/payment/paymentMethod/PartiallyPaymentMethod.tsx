@@ -131,7 +131,7 @@ class PartiallyPaymentMethod extends Component<
 
       // Replace default error message to coupon error 
       if (error instanceof Error && error.message === 'coupon') {
-        errorMessage = "Discount codes cannot be used with Partially";
+        errorMessage = "Discount codes cannot be used with Partial.ly";
       }
 
       onUnhandledError(new Error(errorMessage) as CustomError);
