@@ -303,7 +303,7 @@ class Checkout extends Component<
                 <div id='checkout-footer-icons' style={{ display: 'flex', backgroundColor: '#fcfcfc', borderTop: '1px solid #ebebeb' }}>
                     <div style={{ width: '33%', padding: '2rem 0 2rem 2rem', textAlign: 'center' }}>
                         <p style={{ marginBottom: '0px' }}>Purchase Safely</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/purchase-safely.png" width={'25%'}></img>
+                        <img src="https://cdn.instasmile.com/new-website/images/ssl-logo.png" width={'25%'}></img>
                     </div>
                     <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '1rem' }}>Convenient Payment</p>
@@ -348,7 +348,7 @@ class Checkout extends Component<
                         <a
                             href={termsAndConditionsUrl}
                         >
-                            Terms of service
+                            Terms & Conditions
                         </a>
                     </div>
                 {errorModal}

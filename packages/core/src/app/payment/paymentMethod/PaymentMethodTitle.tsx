@@ -297,14 +297,8 @@ const PaymentMethodTitle: FunctionComponent<
         }
     };
 
-    // Set card icons for Stripe
-    if (method.gateway === PaymentMethodId.StripeUPE){
-        method.supportedCards = ["VISA", "AMEX", "MC", "DISCOVER", "DINERS"];
-    }
-
-    if (method.gateway === PaymentMethodId.Clearpay){
-        method.supportedCards = ["VISA", "MC"];
-    }
+    // Set card icons array to empty
+    method.supportedCards = [];
 
     return (
         <div className="paymentProviderHeader-container">

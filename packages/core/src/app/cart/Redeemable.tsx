@@ -62,6 +62,7 @@ const Redeemable: FunctionComponent<
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
                         <TranslatedString id="redeemable.toggle_action" />
+                        <p>Discount codes cannot be used with Partially</p>
                     </div>
                 )}
                 <p className='partiallyCouponWarning' style={{display: 'none', marginTop: '1rem'}}>Discount codes cannot be used with Partially</p>

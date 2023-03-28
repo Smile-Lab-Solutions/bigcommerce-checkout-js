@@ -29,14 +29,12 @@
 // -----------------------------------------------------------------------------
 
 .cart-header {
-    background-color: #ff2688;
     display: table;
     padding: $checkoutCart-padding;
     width: 100%;
 }
 
 .cart-title {
-    color: white !important;
     display: table-cell;
     margin-bottom: 0;
     vertical-align: middle;

@@ -674,11 +674,7 @@ export function getPartiallyMethod(): PaymentMethod {
         gateway: 'partially',
         logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-partially.svg',
         method: 'external',
-        supportedCards: [
-            'VISA',
-            'AMEX',
-            'MC',
-        ],
+        supportedCards: [],
         config: {
             displayName: 'Partially',
             helpText: '',
