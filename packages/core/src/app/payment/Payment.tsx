@@ -36,6 +36,7 @@ import {
     PaymentMethodId,
     PaymentMethodProviderType,
 } from './paymentMethod';
+import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
 
 export interface PaymentProps {
     errorLogger: ErrorLogger;
@@ -578,6 +579,7 @@ export function mapToPaymentProps({
         (checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP'))
         {
             methods = methods.concat(getPartiallyMethod());
+            loadPartiallyJs();
         }
 
     const {

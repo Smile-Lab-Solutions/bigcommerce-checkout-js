@@ -62,9 +62,4 @@ export function configurePartiallyButton (lineItems, total, returnUrl, redirectU
     //  this will trigger retrieving BC cart
     var btn = new PartiallyButton(partiallyButtonConfig);
     btn.init();
-
-    // Manually call generate URL and return
-    var url = btn.generateUrl();
-
-    return url;
 };

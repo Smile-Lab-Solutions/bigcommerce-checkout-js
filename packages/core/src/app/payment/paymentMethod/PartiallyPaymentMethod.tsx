@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { configurePartiallyButton, loadPartiallyJs, toggleCouponBlock } from '../../../../../../scripts/custom/partially.js';
+import { configurePartiallyButton, toggleCouponBlock } from '../../../../../../scripts/custom/partially.js';
 import { CheckoutContextProps, withCheckout } from '../../checkout';
 import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
@@ -37,7 +37,6 @@ class PartiallyPaymentMethod extends Component<
       } = this.props;
 
       setSubmit(method, this.handleSubmit);
-      loadPartiallyJs();
 
       try {
         if (checkout && checkout.coupons.length > 0){
@@ -113,15 +112,25 @@ class PartiallyPaymentMethod extends Component<
         let key = config.shopperCurrency.code + iconicItemsCount;
         let offer = offerList[key];
 
-        var partiallyUrl = configurePartiallyButton(lineItems, total, method.config.returnUrl, method.config.redirectUrl, offer);
-        
-        if (typeof partiallyUrl !== undefined &&
-          typeof partiallyUrl !== null &&
-          typeof partiallyUrl === 'string'){
-            window.location.replace(partiallyUrl);
+        configurePartiallyButton(lineItems, total, method.config.returnUrl, method.config.redirectUrl, offer);
+
+        // Delay the redirect by one second
+        // This ensures partially JS can retrieve BC cart data and create the redirect URL
+        setTimeout(function () {
+          var btn = document.getElementsByClassName('partiallyButton');
+          if (btn.length > 0) {
+            var partiallyUrl = btn[0].getAttribute('href');
+            if (typeof partiallyUrl !== undefined &&
+              typeof partiallyUrl !== null &&
+              typeof partiallyUrl === 'string') {
+              window.location.replace(partiallyUrl);
+            } else {
+              throw new Error();
+            }
           } else {
             throw new Error();
           }
+        }, 1000);
 
       } else {
         throw new Error();
