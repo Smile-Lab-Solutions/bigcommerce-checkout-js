@@ -678,7 +678,7 @@ export function getPartiallyMethod(): PaymentMethod {
         method: 'external',
         supportedCards: [],
         config: {
-            displayName: 'Partial.ly',
+            displayName: 'Partial.ly Payment Plan',
             helpText: '',
             merchantId: 'partially',
             testMode: false,

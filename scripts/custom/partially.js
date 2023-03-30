@@ -63,3 +63,7 @@ export function configurePartiallyButton (lineItems, total, returnUrl, redirectU
     var btn = new PartiallyButton(partiallyButtonConfig);
     btn.init();
 };
+
+export function firePartially (btn){
+    btn.click();
+}

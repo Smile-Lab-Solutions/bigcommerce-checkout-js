@@ -72,6 +72,50 @@
     }
 }
 
-.couponWarning {
-    color: red;
+.checkout-notifications {
+    .notification {
+        border-radius: 0.4rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        margin: 1rem 0;
+        padding: 1rem;
+        position: relative;
+        transition: 0.5s opacity;
+        width: 100%;
+
+        &::before {
+            content: '';
+            display: block;
+            height: 2rem;
+            left: 1.5rem;
+            position: absolute;
+            width: 2rem;
+        }
+
+        .notification__content {
+            display: flex;
+            flex-direction: column;
+            padding: 0 2rem 0 3rem;
+
+            p {
+                color: #444;
+                font-weight: 400;
+                margin: 0;
+
+                i {
+                    font-style: italic;
+                }
+            }
+        }
+    }
+
+    .notification--info {
+        background: #e6f2f7;
+
+        &::before {
+            background: url("https://cdn.instasmile.com/new-website/images/icon-info-blue-24.svg") center no-repeat;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { configurePartiallyButton, toggleCouponBlock } from '../../../../../../scripts/custom/partially.js';
+import { configurePartiallyButton, toggleCouponBlock, firePartially } from '../../../../../../scripts/custom/partially.js';
 import { CheckoutContextProps, withCheckout } from '../../checkout';
 import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
@@ -116,14 +116,21 @@ class PartiallyPaymentMethod extends Component<
 
         // Delay the redirect by one second
         // This ensures partially JS can retrieve BC cart data and create the redirect URL
-        setTimeout(function () {
+        setTimeout(() => {
           var btn = document.getElementsByClassName('partiallyButton');
           if (btn.length > 0) {
             var partiallyUrl = btn[0].getAttribute('href');
             if (typeof partiallyUrl !== undefined &&
               typeof partiallyUrl !== null &&
               typeof partiallyUrl === 'string') {
-              window.location.replace(partiallyUrl);
+              var gaCookie = this.getCookie("_ga");
+
+              if (gaCookie !== "") {
+                partiallyUrl += "&_ga=" + gaCookie;
+              }
+
+              btn[0].setAttribute('href', partiallyUrl);
+              firePartially(btn[0]);
             } else {
               throw new Error();
             }
@@ -140,12 +147,28 @@ class PartiallyPaymentMethod extends Component<
 
       // Replace default error message to coupon error 
       if (error instanceof Error && error.message === 'coupon') {
-        errorMessage = "Discount codes cannot be used with Partial.ly";
+        errorMessage = "Sorry, discount codes cannot be used with Partial.ly";
       }
 
       onUnhandledError(new Error(errorMessage) as CustomError);
     }
   };
+
+  private getCookie: (cname: string) => string = (cname) => {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
 
   componentWillUnmount(): void {
     {

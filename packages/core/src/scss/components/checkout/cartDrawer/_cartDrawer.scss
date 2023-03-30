@@ -46,9 +46,9 @@
     border: 1px solid color("greys", "light");
     height: $cartDrawer-figure-size;
     margin: 0;
-    min-width: $cartDrawer-figure-size;
+    min-width: 75px;
     position: relative;
-    width: $cartDrawer-figure-size;
+    width: 75px;
 }
 
 .cartDrawer-figure--stack::after {

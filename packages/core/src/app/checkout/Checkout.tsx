@@ -307,7 +307,7 @@ class Checkout extends Component<
                     </div>
                     <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '1rem' }}>Convenient Payment</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_nov_22_v2.png" width={'75%'}></img>
+                        <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png" width={'75%'}></img>
                     </div>
                     <div style={{ width: '33%', padding: '2rem 2rem 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '0px' }}>Fast Delivery</p>

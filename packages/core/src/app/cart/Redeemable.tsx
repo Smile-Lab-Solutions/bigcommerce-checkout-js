@@ -62,14 +62,26 @@ const Redeemable: FunctionComponent<
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
                         <TranslatedString id="redeemable.toggle_action" />
-                        <p className='couponWarning'>
-                            <strong>Discount codes cannot be used with Partial.ly</strong>
-                        </p>
+                        <div className='checkout-notifications'>
+                            <div className="notification notification--info">
+                                <div className="notification__content">
+                                    <p>
+                                        <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
-                <p className='partiallyCouponWarning couponWarning' style={{display: 'none', marginTop: '1rem'}}>
-                    <strong>Discount codes cannot be used with Partial.ly</strong>
-                </p>
+                <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>
+                    <div className="notification notification--info">
+                        <div className="notification__content">
+                            <p>
+                                <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 {(isOpen || !shouldCollapseCouponCode) && (
                     <div data-test="redeemable-collapsable" id="redeemable-collapsable">
                         <RedeemableForm {...formProps} />

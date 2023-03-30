@@ -326,9 +326,15 @@ const PaymentMethodTitle: FunctionComponent<
                     <div style={{width: '100%', fontSize: '1rem', fontWeight: '500'}}>
                         <p style={{marginBottom: '0px'}}>{titleSubText}</p>
                         {method.gateway === PaymentMethodId.Partially && (
-                            <p className='couponWarning' style={{marginBottom: '0px'}}>
-                                <strong>Discount codes cannot be used with Partial.ly</strong>
-                            </p>
+                            <div className='checkout-notifications'>
+                                <div className="notification notification--info">
+                                    <div className="notification__content">
+                                        <p>
+                                            <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         )}
                     </div>
                 )}
