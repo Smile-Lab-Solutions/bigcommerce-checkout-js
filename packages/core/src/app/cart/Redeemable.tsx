@@ -43,6 +43,7 @@ export type RedeemableProps = {
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
 > = ({ shouldCollapseCouponCode, showAppliedRedeemables, ...formProps }) => (
+
     <Toggle openByDefault={!shouldCollapseCouponCode}>
         {({ toggle, isOpen }) => (
             <>
@@ -50,7 +51,7 @@ const Redeemable: FunctionComponent<
                     <a
                         aria-controls="redeemable-collapsable"
                         aria-expanded={isOpen}
-                        className="redeemable-label"
+                        className="redeemable-label couponButton"
                         data-test="redeemable-label"
                         href="#"
                         onClick={preventDefault(toggle)}
@@ -61,8 +62,26 @@ const Redeemable: FunctionComponent<
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
                         <TranslatedString id="redeemable.toggle_action" />
+                        <div className='checkout-notifications'>
+                            <div className="notification notification--info">
+                                <div className="notification__content">
+                                    <p>
+                                        <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
+                <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>
+                    <div className="notification notification--info">
+                        <div className="notification__content">
+                            <p>
+                                <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 {(isOpen || !shouldCollapseCouponCode) && (
                     <div data-test="redeemable-collapsable" id="redeemable-collapsable">
                         <RedeemableForm {...formProps} />
@@ -181,7 +200,7 @@ const RedeemableForm: FunctionComponent<
     );
 
     return (
-        <fieldset className="form-fieldset redeemable-entry">
+        <fieldset className="form-fieldset redeemable-entry couponFieldSet">
             <FormProvider>{renderContent}</FormProvider>
         </fieldset>
     );

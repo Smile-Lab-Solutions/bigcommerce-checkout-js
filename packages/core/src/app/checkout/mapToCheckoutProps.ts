@@ -20,6 +20,7 @@ export default function mapToCheckoutProps({
             loginLink: loginUrl = '',
             createAccountLink: createAccountUrl = '',
             cartLink: cartUrl = '',
+            siteLink: siteUrl = '',
         } = {},
         displaySettings: { hidePriceFromGuests: isPriceHiddenFromGuests = false } = {},
     } = data.getConfig() || {};
@@ -45,6 +46,7 @@ export default function mapToCheckoutProps({
         loginUrl,
         cartUrl,
         createAccountUrl,
+        siteUrl,
         canCreateAccountInCheckout: features['CHECKOUT-4941.account_creation_in_checkout'],
         promotions,
         subscribeToConsignments: subscribeToConsignmentsSelector({

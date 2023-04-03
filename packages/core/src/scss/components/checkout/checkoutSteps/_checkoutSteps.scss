@@ -13,7 +13,40 @@
     margin: 0;
 
     @include breakpoint("medium") {
-        padding-right: (spacing("double") + spacing("double"));
+        padding-right: (spacing("double") + spacing("double")) !important;
+    }
+}
+
+.checkout-footer {
+    display: flex;
+    margin: auto;
+    padding: 1.5rem 0;
+    text-align: center;
+    width: 50%;
+
+    a {
+        width: 33%;
+    }
+}
+
+@media (max-width: 968px) {
+    .checkout-footer {
+        padding-bottom: 8.5rem;
+        width: 100%;
+    }
+
+    #checkout-footer-icons {
+        display: block !important;
+
+        div {
+            margin: auto !important;
+            padding: 2rem !important;
+            width: 100% !important;
+
+            p {
+                margin-bottom: 0 !important;
+            }
+        }
     }
 }
 
@@ -21,18 +54,6 @@
     border-bottom: container("border");
     counter-increment: $checkoutStep-counter;
     padding: spacing("single") 0;
-
-    &:last-child {
-        border: 0;
-    }
-}
-
-.checkout-view-header {
-    margin-bottom: remCalc(10px);
-
-    &:last-child {
-        margin-bottom: 0;
-    }
 }
 
 .checkout-view-content {
@@ -111,7 +132,7 @@
     align-items: top;
     display: flex;
     flex-wrap: wrap;
-    padding: spacing("single") 0;
+    padding: 1rem 0;
 
     @include breakpoint("small") {
         flex-wrap: nowrap;
@@ -131,6 +152,7 @@
     display: flex;
     height: remCalc($checkoutStep-counter-size);
     margin-right: $checkoutStep-header-body-margin;
+    width: 100%;
 }
 
 .stepHeader-title {

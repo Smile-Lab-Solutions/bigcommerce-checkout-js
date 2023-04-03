@@ -114,7 +114,7 @@ class HostedPaymentMethod extends Component<
             isInstrumentFeatureAvailableProp && (instruments.length > 0 || isNewAddress);
 
         if (!description && !isInstrumentFeatureAvailableProp) {
-            return null;
+            return this.renderPaymentDescriptorIfAvailable(isLoading);
         }
 
         return (
@@ -168,6 +168,54 @@ class HostedPaymentMethod extends Component<
             selectedInstrument: find(instruments, { bigpayToken: id }),
         });
     };
+
+    private renderPaymentDescriptorIfAvailable(isLoading: boolean) {
+        const { method } = this.props;
+        if (method.id === 'laybuy') {
+            return (
+                <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
+                    <div className="paymentMethod paymentMethod--hosted">
+                        <div className="payment-descriptor">
+                            <p>Spread the total cost over 6 weekly automatic payments. Always interest-free. Make the first payment today
+                                and spread the cost over 6 weeks with payments every week.
+                            </p>
+                            <ul className="list-element">
+                                <li><div className="circleCheck"></div>Pay using Visa or MasterCard</li>
+                                <li><div className="circleCheck"></div>Subject to soft credit check</li>
+                                <li><div className="circleCheck"></div>0% interest</li>
+                                <li><div className="circleCheck"></div>Payments every week</li>
+                            </ul>
+                            <p>After clicking "Place Order", you will be redirected to Laybuy to complete your purchase securely.</p>
+                        </div>
+                    </div>
+                </LoadingOverlay>
+            );
+
+        } else if (method.id === 'PAY_BY_INSTALLMENT') {
+            return (
+                <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
+                    <div className="paymentMethod paymentMethod--hosted">
+                        <div className="payment-descriptor">
+                            <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today
+                                and spread the cost over 6 weeks.
+                            </p>
+                            <ul className="list-element">
+                                <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard</li>
+                                <li><div className="circleCheck"></div>No credit check needed</li>
+                                <li><div className="circleCheck"></div>0% interest</li>
+                                <li><div className="circleCheck"></div>Payments every 2 week</li>
+                            </ul>
+                            <p>After clicking "Place Order", you will be redirected to Clearpay to complete your purchase securely.</p>
+                        </div>
+                    </div>
+                </LoadingOverlay>
+            );
+
+        }
+        else {
+            return null;
+        }
+    }
 }
 
 const mapFromCheckoutProps: MapToPropsFactory<

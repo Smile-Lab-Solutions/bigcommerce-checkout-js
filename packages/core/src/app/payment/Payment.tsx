@@ -36,6 +36,7 @@ import {
     PaymentMethodId,
     PaymentMethodProviderType,
 } from './paymentMethod';
+import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
 
 export interface PaymentProps {
     errorLogger: ErrorLogger;
@@ -565,12 +566,21 @@ export function mapToPaymentProps({
         methods = stripeUpePaymentMethod.length ? stripeUpePaymentMethod : methods;
     }
 
-     // Adding partially
-     methods = methods.concat(getPartiallyMethod());
-
+    
     if (!checkout || !config || !customer || isComplete) {
         return null;
     }
+
+    // Adding partially
+    // Billing address and currency must match
+    // Only for UK, US & AU
+    if ((checkout.billingAddress?.countryCode === 'AU' && config.shopperCurrency.code === 'AUD') ||
+        (checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD') ||
+        (checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP'))
+        {
+            methods = methods.concat(getPartiallyMethod());
+            loadPartiallyJs();
+        }
 
     const {
         enableTermsAndConditions: isTermsConditionsEnabled,
@@ -664,20 +674,16 @@ export function getPartiallyMethod(): PaymentMethod {
     return {
         id: 'partially',
         gateway: 'partially',
-        logoUrl: '',
+        logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-partially.svg',
         method: 'external',
-        supportedCards: [
-            'VISA',
-            'AMEX',
-            'MC',
-        ],
+        supportedCards: [],
         config: {
-            displayName: 'Partially',
+            displayName: 'Partial.ly Payment Plan',
             helpText: '',
             merchantId: 'partially',
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
-            redirectUrl: `${window.location.origin}/checkout/order-confirmation`
+            redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
     };
