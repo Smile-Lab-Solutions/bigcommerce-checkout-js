@@ -60,7 +60,7 @@ class PartiallyPaymentMethod extends Component<
               <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
               <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
               <li><div className="circleCheck"></div>From £150 deposit</li>
-              <li><div className="circleCheck"></div>No Payment Plan Charge</li>
+              <li><div className="circleCheck"></div>£25 Payment Plan Admin Fee (Non Refundable)</li>
             </ul>
           </div>
         </div>
