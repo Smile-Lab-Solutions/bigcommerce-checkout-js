@@ -16,6 +16,7 @@ import { find, findIndex } from 'lodash';
 import React, { Component, lazy, ReactNode } from 'react';
 
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { AddressFormSkeleton, ChecklistSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
@@ -32,7 +33,6 @@ import {
     CustomerViewType,
 } from '../customer';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
-import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping, StaticConsignment } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
@@ -117,9 +117,7 @@ export interface CheckoutState {
     isCartEmpty: boolean;
     isRedirecting: boolean;
     hasSelectedShippingOptions: boolean;
-    isBuyNowCartEnabled: boolean;
     isHidingStepNumbers: boolean;
-    isWalletButtonsOnTop: boolean;
     isSubscribed: boolean;
 }
 
@@ -134,6 +132,7 @@ export interface WithCheckoutProps {
     isLoadingCheckout: boolean;
     isPending: boolean;
     isPriceHiddenFromGuests: boolean;
+    isShowingWalletButtonsOnTop: boolean;
     loginUrl: string;
     cartUrl: string;
     createAccountUrl: string;
@@ -155,9 +154,7 @@ class Checkout extends Component<
         isRedirecting: false,
         isMultiShippingMode: false,
         hasSelectedShippingOptions: false,
-        isBuyNowCartEnabled: false,
         isHidingStepNumbers: true,
-        isWalletButtonsOnTop: false,
         isSubscribed: false,
     };
 
@@ -231,15 +228,8 @@ class Checkout extends Component<
                 data.getConfig()?.checkoutSettings.hasMultiShippingEnabled;
             const checkoutBillingSameAsShippingEnabled =
                 data.getConfig()?.checkoutSettings.checkoutBillingSameAsShippingEnabled ?? true;
-            const buyNowCartFlag =
-                data.getConfig()?.checkoutSettings.features['CHECKOUT-3190.enable_buy_now_cart'] ??
-                false;
             const removeStepNumbersFlag =
               data.getConfig()?.checkoutSettings.features['CHECKOUT-7255.remove_checkout_step_numbers'] ??
-              false;
-            const walletButtonsOnTopFlag =
-              (data.getConfig()?.checkoutSettings.features['CHECKOUT-7222.checkout_settings_styling_section'] &&
-              data.getUserExperienceSettings()?.walletButtonsOnTop) ??
               false;
             const defaultNewsletterSignupOption =
                 data.getConfig()?.shopperConfig.defaultNewsletterSignup ??
@@ -252,10 +242,8 @@ class Checkout extends Component<
 
             this.setState({
                 isBillingSameAsShipping: checkoutBillingSameAsShippingEnabled,
-                isBuyNowCartEnabled: buyNowCartFlag,
                 isHidingStepNumbers: removeStepNumbersFlag,
                 isSubscribed: defaultNewsletterSignupOption,
-                isWalletButtonsOnTop: walletButtonsOnTopFlag,
             });
 
             if (isMultiShippingMode) {
@@ -301,25 +289,32 @@ class Checkout extends Component<
     }
 
     private renderContent(): ReactNode {
-        const { isPending, loginUrl, promotions = [], steps } = this.props;
+        const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop } = this.props;
 
-        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting, isWalletButtonsOnTop } = this.state;
+        const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
         if (isCartEmpty) {
             return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
         }
 
+        const isPaymentStepActive = activeStepType
+            ? activeStepType === CheckoutStepType.Payment
+            : defaultStepType === CheckoutStepType.Payment;
+
         return (
             <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
                 <div className="layout-main">
-                    <LoadingNotification isLoading={isPending} />
+                    <LoadingNotification isLoading={!isShowingWalletButtonsOnTop && isPending} />
 
                     <PromotionBannerList promotions={promotions} />
 
-                    {isWalletButtonsOnTop && <CheckoutButtonContainer
-                        checkEmbeddedSupport={this.checkEmbeddedSupport}
-                        onUnhandledError={this.handleUnhandledError}
-                    />}
+                    {isShowingWalletButtonsOnTop && (
+                        <CheckoutButtonContainer
+                            checkEmbeddedSupport={this.checkEmbeddedSupport}
+                            isPaymentStepActive={isPaymentStepActive}
+                            onUnhandledError={this.handleUnhandledError}
+                        />
+                    )}
 
                     <ol className="checkout-steps">
                         {steps
@@ -361,11 +356,10 @@ class Checkout extends Component<
     }
 
     private renderCustomerStep(step: CheckoutStepStatus): ReactNode {
-        const { isGuestEnabled } = this.props;
+        const { isGuestEnabled, isShowingWalletButtonsOnTop } = this.props;
         const {
             customerViewType = isGuestEnabled ? CustomerViewType.Guest : CustomerViewType.Login,
             isSubscribed,
-            isWalletButtonsOnTop,
         } = this.state;
 
         return (
@@ -387,7 +381,7 @@ class Checkout extends Component<
                     checkEmbeddedSupport={this.checkEmbeddedSupport}
                     isEmbedded={isEmbedded()}
                     isSubscribed={isSubscribed}
-                    isWalletButtonsOnTop = {isWalletButtonsOnTop}
+                    isWalletButtonsOnTop = {isShowingWalletButtonsOnTop }
                     onAccountCreated={this.navigateToNextIncompleteStep}
                     onChangeViewType={this.setCustomerViewType}
                     onContinueAsGuest={this.navigateToNextIncompleteStep}
@@ -580,7 +574,6 @@ class Checkout extends Component<
 
     private navigateToOrderConfirmation: (orderId?: number) => void = (orderId) => {
         const { steps, analyticsTracker } = this.props;
-        const { isBuyNowCartEnabled } = this.state;
 
         analyticsTracker.trackStepCompleted(steps[steps.length - 1].type);
 
@@ -589,7 +582,7 @@ class Checkout extends Component<
         }
 
         this.setState({ isRedirecting: true }, () => {
-            navigateToOrderConfirmation(isBuyNowCartEnabled, orderId);
+            navigateToOrderConfirmation(orderId);
         });
     };
 

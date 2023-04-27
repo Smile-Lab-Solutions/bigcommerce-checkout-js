@@ -9,6 +9,7 @@ import { FormikProps, withFormik } from 'formik';
 import React, { createRef, PureComponent, ReactNode, RefObject } from 'react';
 import { lazy } from 'yup';
 
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { AddressFormSkeleton } from '@bigcommerce/checkout/ui';
 
 import {
@@ -21,7 +22,6 @@ import {
     mapAddressToFormValues,
 } from '../address';
 import { getCustomFormFieldsValidationSchema } from '../formFields';
-import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { OrderComments } from '../orderComments';
 import { Button, ButtonVariant } from '../ui/button';
 import { Fieldset, Form } from '../ui/form';
@@ -41,7 +41,7 @@ export interface BillingFormProps {
     isUpdating: boolean;
     methodId?: string;
     shouldShowOrderComments: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     getFields(countryCode?: string): FormField[];
     onSubmit(values: BillingFormValues): void;
     onUnhandledError(error: Error): void;
@@ -75,7 +75,7 @@ class BillingForm extends PureComponent<
             shouldShowOrderComments,
             values,
             methodId,
-            useFloatingLabel,
+            isFloatingLabelEnabled,
         } = this.props;
 
         const shouldRenderStaticAddress = methodId === 'amazonpay';
@@ -126,9 +126,9 @@ class BillingForm extends PureComponent<
                                 countryCode={values.countryCode}
                                 formFields={editableFormFields}
                                 googleMapsApiKey={googleMapsApiKey}
+                                isFloatingLabelEnabled={isFloatingLabelEnabled}
                                 setFieldValue={setFieldValue}
                                 shouldShowSaveAddress={!isGuest}
-                                useFloatingLabel={useFloatingLabel}
                             />
                         </AddressFormSkeleton>
                     )}

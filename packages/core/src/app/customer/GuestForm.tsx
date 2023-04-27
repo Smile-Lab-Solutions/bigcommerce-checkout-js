@@ -3,7 +3,8 @@ import { FieldProps, FormikProps, withFormik } from 'formik';
 import React, { FunctionComponent, memo, ReactNode, useCallback } from 'react';
 import { object, string } from 'yup';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+
 import { getPrivacyPolicyValidationSchema, PrivacyPolicyField } from '../privacyPolicy';
 import { Button, ButtonVariant } from '../ui/button';
 import { BasicFormField, Fieldset, Form, Legend } from '../ui/form';
@@ -20,7 +21,7 @@ export interface GuestFormProps {
     email?: string;
     isLoading: boolean;
     privacyPolicyUrl?: string;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     onChangeEmail(email: string): void;
     onContinueAsGuest(data: GuestFormValues): void;
     onShowLogin(): void;
@@ -42,7 +43,7 @@ const GuestForm: FunctionComponent<
     onShowLogin,
     privacyPolicyUrl,
     requiresMarketingConsent,
-    useFloatingLabel,
+    isFloatingLabelEnabled,
 }) => {
     const renderField = useCallback(
         (fieldProps: FieldProps<boolean>) => (
@@ -66,7 +67,7 @@ const GuestForm: FunctionComponent<
             >
                 <div className="customerEmail-container">
                     <div className="customerEmail-body">
-                        <EmailField onChange={onChangeEmail} useFloatingLabel={useFloatingLabel}/>
+                        <EmailField isFloatingLabelEnabled={isFloatingLabelEnabled} onChange={onChangeEmail}/>
 
                         {(canSubscribe || requiresMarketingConsent) && (
                             <BasicFormField name="shouldSubscribe" render={renderField} />
@@ -77,7 +78,7 @@ const GuestForm: FunctionComponent<
 
                     <div
                         className={classNames('form-actions customerEmail-action', {
-                            'customerEmail-floating--enabled': useFloatingLabel,
+                            'customerEmail-floating--enabled': isFloatingLabelEnabled,
                         })}
                     >
                         <Button
