@@ -205,6 +205,7 @@ export default withLanguage(
             getAddressFormFieldsValidationSchema({
                 language,
                 formFields: getFields(billingAddress.countryCode),
+                countryCode: billingAddress.countryCode,
             }).isValidSync(billingAddress),
         validationSchema: ({
             language,
@@ -222,6 +223,7 @@ export default withLanguage(
                       getAddressFormFieldsValidationSchema({
                           language,
                           formFields: getFields(values && values.countryCode),
+                          countryCode: values.countryCode,
                       }),
                   ),
         enableReinitialize: true,

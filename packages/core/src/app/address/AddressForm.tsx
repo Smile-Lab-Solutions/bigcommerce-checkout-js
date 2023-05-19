@@ -142,6 +142,9 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         field.custom ? (
                                             field.label
                                         ) : (
+                                            field.name === 'postalCode' && countryCode === 'US'? 
+                                            "ZIP Code"
+                                            :
                                             <TranslatedString id={LABEL[field.name]} />
                                         )
                                     }
