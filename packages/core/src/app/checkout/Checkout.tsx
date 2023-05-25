@@ -295,6 +295,21 @@ class Checkout extends Component<
             }
         }
 
+        // Use cart currency to figure out store
+        // Display image based on currency
+        var paymentImg = "";
+        var deliveryImg = ""
+        var deliveryImgWidth = "";
+
+        if (cart?.currency.code === 'GBP'){
+            paymentImg = "https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png";
+            deliveryImg = "https://cdn.instasmile.com/new-website/images/shipping-footer.png";
+            deliveryImgWidth = "50%";
+        } else if (cart?.currency.code === "USD"){
+            paymentImg = "https://cdn.instasmile.com/new-website/images/payment_type_usa_may23.webp";
+            deliveryImg = "https://cdn.instasmile.com/new-website/images/us-shipping-footer.png";
+        }
+
         return (
             <div className={classNames({ 'is-embedded': isEmbedded(), 'remove-checkout-step-numbers': isHidingStepNumbers })}>
                 <div className="layout optimizedCheckout-contentPrimary">
@@ -307,11 +322,11 @@ class Checkout extends Component<
                     </div>
                     <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '1rem' }}>Convenient Payment</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png" width={'75%'}></img>
+                        <img src={paymentImg}></img>
                     </div>
                     <div style={{ width: '33%', padding: '2rem 2rem 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '0px' }}>Fast Delivery</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/shipping-footer.png" width={'50%'}></img>
+                        <img src={deliveryImg} width={deliveryImgWidth}></img>
                     </div>
                 </div>
                 <div className="checkout-footer">

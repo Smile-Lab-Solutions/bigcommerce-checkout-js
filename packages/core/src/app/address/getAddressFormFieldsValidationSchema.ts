@@ -41,7 +41,7 @@ export function getTranslateAddressError(
             if (requiredFieldErrorTranslationIds[name]) {
                 var translationKey = `${requiredFieldErrorTranslationIds[name]}_required_error`;
 
-                if (name === 'postalCode' && countryCode === 'US'){
+                if ((name === 'postalCode' || name === 'phone') && countryCode === 'US'){
                     translationKey = `${requiredFieldErrorTranslationIds[name]}_us_required_error`;
                 }
 

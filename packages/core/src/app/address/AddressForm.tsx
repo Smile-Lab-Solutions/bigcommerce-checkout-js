@@ -142,10 +142,14 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         field.custom ? (
                                             field.label
                                         ) : (
-                                            field.name === 'postalCode' && countryCode === 'US'? 
+                                            field.name === 'postalCode' && countryCode === 'US' ? 
                                             "ZIP Code"
-                                            :
-                                            <TranslatedString id={LABEL[field.name]} />
+                                            : (
+                                                field.name === 'phone' && countryCode === 'US' ?
+                                                "Cell Number"
+                                                :
+                                                <TranslatedString id={LABEL[field.name]} />
+                                            )
                                         )
                                     }
                                     onChange={this.handleDynamicFormFieldChange(addressFieldName)}

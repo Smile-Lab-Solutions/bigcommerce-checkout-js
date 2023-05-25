@@ -46,7 +46,8 @@
 
 .paymentMethod--creditCard,
 .paymentMethod--hosted,
-.paymentMethod--walletButton {
+.paymentMethod--walletButton,
+.paymentMethod--offline {
     clear: both;
     padding: (spacing("base") / 1.5) 0;
 }

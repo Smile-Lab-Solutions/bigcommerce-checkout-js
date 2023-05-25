@@ -31,6 +31,7 @@
             "last_name_required_error": "Last Name is required",
             "phone_number_label": "Phone Number",
             "phone_number_required_error": "Phone Number is required",
+            "phone_number_us_required_error": "Cell Number is required",
             "postal_code_label": "Postal Code",
             "postal_code_required_error": "Postal Code is required",
             "postal_code_us_required_error": "ZIP Code is required",

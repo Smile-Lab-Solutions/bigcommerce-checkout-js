@@ -24,6 +24,7 @@ import {
 } from '../storedInstrument';
 import StoreInstrumentFieldset from '../StoreInstrumentFieldset';
 import withPayment, { WithPaymentProps } from '../withPayment';
+import PaymentMethodId from './PaymentMethodId';
 
 export interface HostedPaymentMethodProps {
     description?: ReactNode;
@@ -171,6 +172,8 @@ class HostedPaymentMethod extends Component<
 
     private renderPaymentDescriptorIfAvailable(isLoading: boolean) {
         const { method } = this.props;
+        
+        // UK laybuy payment method block content
         if (method.id === 'laybuy') {
             return (
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
@@ -191,6 +194,7 @@ class HostedPaymentMethod extends Component<
                 </LoadingOverlay>
             );
 
+        // UK clearpay payment method block content
         } else if (method.id === 'PAY_BY_INSTALLMENT') {
             return (
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
@@ -206,6 +210,26 @@ class HostedPaymentMethod extends Component<
                                 <li><div className="circleCheck"></div>Payments every 2 week</li>
                             </ul>
                             <p>After clicking "Place Order", you will be redirected to Clearpay to complete your purchase securely.</p>
+                        </div>
+                    </div>
+                </LoadingOverlay>
+            );
+
+        // US afterpay payment method block content
+        } else if (method.gateway === PaymentMethodId.Afterpay) {
+            return (
+                <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
+                    <div className="paymentMethod paymentMethod--hosted">
+                    <div className="payment-descriptor">
+                            <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today and spread the cost over 6 weeks.
+                            </p>
+                            <ul className="list-element">
+                                <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard</li>
+                                <li><div className="circleCheck"></div>May conduct a soft credit check</li>
+                                <li><div className="circleCheck"></div>0% interest</li>
+                                <li><div className="circleCheck"></div>Payments every 2 week</li>
+                            </ul>
+                            <p>After clicking "Place Order", you will be redirected to Afterpay to complete your purchase securely.</p>
                         </div>
                     </div>
                 </LoadingOverlay>

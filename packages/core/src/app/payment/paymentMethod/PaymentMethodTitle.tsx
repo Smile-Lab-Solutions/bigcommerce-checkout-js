@@ -83,8 +83,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Afterpay]: {
                 logoUrl: cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
-                titleText: methodName,
-                titleSubText: '',
+                titleText: '',
+                titleSubText: 'Pay in 4 interest-free instalments',
             },
             [PaymentMethodId.AmazonPay]: {
                 logoUrl: cdnPath('/img/payment-providers/amazon-header.png'),
@@ -109,7 +109,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
                 titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments.',
+                titleSubText: 'Pay in 4 interest-free instalments',
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
@@ -241,7 +241,13 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Partially]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Ideal for people with an adverse credit rating.',
+                titleSubText: 'Ideal for people with an adverse credit rating',
+            },
+            // Cash on Delivery is used for Bread
+            ['cod']: {
+                logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
+                titleText: '',
+                titleSubText: 'Flexible Ways to Buy Now and Pay Later',
             },
         };
 
@@ -338,9 +344,16 @@ const PaymentMethodTitle: FunctionComponent<
                         )}
                     </div>
                 )}
+                {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
                     <div style={{width: '100%'}}>
                         <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-2.png'></img>
+                    </div>
+                )}
+                {/* US NMI payment card icons */}
+                {method.id === 'nmi' && (
+                    <div style={{width: '100%'}}>
+                        <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/payment_type_usa_may23.webp'></img>
                     </div>
                 )}
             </div>
