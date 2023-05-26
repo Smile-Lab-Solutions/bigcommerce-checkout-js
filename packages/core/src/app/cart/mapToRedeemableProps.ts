@@ -45,5 +45,6 @@ export default function mapToRedeemableProps(
         onRemovedGiftCertificate: checkoutService.removeGiftCertificate,
         removedRedeemableError: getRemoveCouponError() || getRemoveGiftCertificateError(),
         shouldCollapseCouponCode: config.checkoutSettings.isCouponCodeCollapsed,
+        storeCurrencyCode: config.shopperCurrency.code,
     };
 }

@@ -24,6 +24,7 @@ export interface PaymentMethodTitleProps {
 
 interface WithCdnPathProps {
     cdnBasePath: string;
+    storeCurrency: string;
 }
 
 function getPaymentMethodTitle(
@@ -279,7 +280,7 @@ const PaymentMethodTitle: FunctionComponent<
         WithLanguageProps &
         WithCdnPathProps &
         ConnectFormikProps<PaymentFormValues>
-> = ({ cdnBasePath, formik: { values }, isSelected, language, method }) => {
+> = ({ cdnBasePath, formik: { values }, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
     const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath)(method);
 
@@ -336,7 +337,11 @@ const PaymentMethodTitle: FunctionComponent<
                                 <div className="notification notification--info">
                                     <div className="notification__content">
                                         <p>
-                                            <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                            {storeCurrency === 'USD' ?
+                                                <i>Sorry, promo codes cannot be used with Partial.ly</i>
+                                                :
+                                                <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                            }
                                         </p>
                                     </div>
                                 </div>
@@ -353,7 +358,7 @@ const PaymentMethodTitle: FunctionComponent<
                 {/* US NMI payment card icons */}
                 {method.id === 'nmi' && (
                     <div style={{width: '100%'}}>
-                        <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/payment_type_usa_may23.webp'></img>
+                        <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_may23.jpg'></img>
                     </div>
                 )}
             </div>
@@ -379,6 +384,7 @@ function mapToCdnPathProps({ checkoutState }: CheckoutContextProps): WithCdnPath
 
     return {
         cdnBasePath: config.cdnPath,
+        storeCurrency: config.currency.code
     };
 }
 

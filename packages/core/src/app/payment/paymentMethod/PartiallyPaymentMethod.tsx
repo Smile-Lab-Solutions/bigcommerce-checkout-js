@@ -96,9 +96,9 @@ class PartiallyPaymentMethod extends Component<
           AUD0: "046f59a9-f59c-45f2-9081-266b02a8f920",
           AUD1: "5315c331-474d-40e9-ab65-7ac1627183e3",
           AUD2: "6ec63bb0-a2e5-4980-919e-633fd2f9ea3d",
-          USD0: "31f1943e-cdf1-40dd-9135-8883dbeceaaf",
-          USD1: "31f1943e-cdf1-40dd-9135-8883dbeceaaf",
-          USD2: "31f1943e-cdf1-40dd-9135-8883dbeceaaf",
+          USD0: "98160829-d003-4598-8d23-49bca7012012",
+          USD1: "98160829-d003-4598-8d23-49bca7012012",
+          USD2: "98160829-d003-4598-8d23-49bca7012012",
         };
 
         // Filter line items to Iconic count
@@ -143,7 +143,11 @@ class PartiallyPaymentMethod extends Component<
 
       // Replace default error message to coupon error 
       if (error instanceof Error && error.message === 'coupon') {
-        errorMessage = "Sorry, discount codes cannot be used with Partial.ly";
+        if (config?.shopperCurrency.code === 'USD'){
+          errorMessage = "Sorry, promo codes cannot be used with Partial.ly";
+        } else {
+          errorMessage = "Sorry, discount codes cannot be used with Partial.ly";
+        }
       }
 
       onUnhandledError(new Error(errorMessage) as CustomError);

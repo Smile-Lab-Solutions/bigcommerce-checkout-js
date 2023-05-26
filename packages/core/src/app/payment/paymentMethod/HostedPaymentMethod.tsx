@@ -227,7 +227,7 @@ class HostedPaymentMethod extends Component<
                                 <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard</li>
                                 <li><div className="circleCheck"></div>May conduct a soft credit check</li>
                                 <li><div className="circleCheck"></div>0% interest</li>
-                                <li><div className="circleCheck"></div>Payments every 2 week</li>
+                                <li><div className="circleCheck"></div>Payments every 2 weeks</li>
                             </ul>
                             <p>After clicking "Place Order", you will be redirected to Afterpay to complete your purchase securely.</p>
                         </div>
