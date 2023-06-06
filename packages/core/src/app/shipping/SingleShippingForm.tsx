@@ -62,6 +62,7 @@ export interface SingleShippingFormProps {
         address: Partial<Address>,
         options?: RequestOptions<CheckoutParams>,
     ): Promise<CheckoutSelectors>;
+    storeCurrencyCode: string;
 }
 
 export interface SingleShippingFormValues {
@@ -140,6 +141,7 @@ class SingleShippingForm extends PureComponent<
             values: { shippingAddress: addressForm },
             isShippingStepPending,
             useFloatingLabel,
+            storeCurrencyCode,
         } = this.props;
 
         const { isResettingAddress, isUpdatingShippingData, hasRequestedShippingOptions } =
@@ -173,6 +175,7 @@ class SingleShippingForm extends PureComponent<
                         shippingAddress={shippingAddress}
                         shouldShowSaveAddress={shouldShowSaveAddress}
                         useFloatingLabel={useFloatingLabel}
+                        storeCurrencyCode={storeCurrencyCode}
                     />
                     {shouldShowBillingSameAsShipping && (
                         <div className="form-body">

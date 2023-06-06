@@ -111,6 +111,8 @@ class OrderConfirmation extends Component<
         } = config;
         const accountLink = siteLink + '/account.php';
 
+        const currencyCode = config.currency.code;
+
         return (
             <div
                 className={classNames('layout optimizedCheckout-contentPrimary', {
@@ -122,8 +124,13 @@ class OrderConfirmation extends Component<
                         <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
                             <h3>{order.billingAddress.firstName}, Thank you for your order {order.orderId}</h3>
                             <div className='shippedKit' style={{backgroundColor: '#DCEFF5', borderRadius: '10px', padding: '15px 15px', margin: '15px 0px', display: 'flex'}}>
-                                <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using DPD's next-day
-                                service or Fedex if you're outside of the UK. <br></br> Look out for an email with your tracking information.</p>
+                                {currencyCode === 'USD' && (
+                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using UPS. <br></br> Look out for an email with your tracking information.</p>
+                                )}
+                                {currencyCode === 'GBP' && (
+                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using DPD's next-day
+                                    service or Fedex if you're outside of the UK. <br></br> Look out for an email with your tracking information.</p>
+                                )}
                                 <div className="iconShipping"></div>
                             </div>
                             <h3>Go to your account to track your order progress</h3>
@@ -145,8 +152,18 @@ class OrderConfirmation extends Component<
                                 <p>Your personal smile consultant will call you within 24 business hours to
                                     run through your order and answer any questions you may have, so please save us to your trusted contacts.
                                 </p>
-                                <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri 11 am - 9:30 pm)</p>
-                                <p style={{marginBottom: '0px'}}>Tel: 0800 060 8077</p>
+                                {currencyCode === "USD" && (
+                                    <>
+                                        <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri EDT 6 am - 4:30 pm)</p>
+                                        <p style={{marginBottom: '0px'}}>Tel: +1 (855) 955-5910</p>
+                                    </>
+                                )}
+                                {currencyCode === "GBP" && (
+                                    <>
+                                        <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri 11 am - 9:30 pm)</p>
+                                        <p style={{marginBottom: '0px'}}>Tel: 0800 060 8077</p>
+                                    </>
+                                )}
                                 <p style={{marginBottom: '0px'}}>Live Chat</p>
                                 <p style={{marginBottom: '0px'}}>Email: <a href="mailto:info@instasmile.com" target="_top">info@instasmile.com</a></p>
                         </div>

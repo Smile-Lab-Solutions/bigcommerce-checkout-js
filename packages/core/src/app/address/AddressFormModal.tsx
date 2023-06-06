@@ -30,6 +30,7 @@ export interface AddressFormProps {
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
+    storeCurrencyCode: string;
 }
 
 const SaveAddress: FunctionComponent<
@@ -44,6 +45,7 @@ const SaveAddress: FunctionComponent<
     isLoading,
     onRequestClose,
     useFloatingLabel,
+    storeCurrencyCode,
 }) => (
     <Form autoComplete="on">
         <LoadingOverlay isLoading={isLoading}>
@@ -56,6 +58,7 @@ const SaveAddress: FunctionComponent<
                 setFieldValue={setFieldValue}
                 shouldShowSaveAddress={false}
                 useFloatingLabel={useFloatingLabel}
+                storeCurrencyCode={storeCurrencyCode}
             />
             <div className="form-actions">
                 <a

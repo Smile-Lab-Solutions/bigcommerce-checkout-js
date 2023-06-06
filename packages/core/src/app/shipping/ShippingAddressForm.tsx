@@ -28,6 +28,7 @@ export interface ShippingAddressFormProps {
     onUseNewAddress(): void;
     onFieldChange(fieldName: string, value: string): void;
     onAddressSelect(address: Address): void;
+    storeCurrencyCode: string;
 }
 
 const addressFieldName = 'shippingAddress';
@@ -48,6 +49,7 @@ class ShippingAddressForm extends Component<
             isLoading,
             googleMapsApiKey,
             useFloatingLabel,
+            storeCurrencyCode,
             formik: {
                 values: { shippingAddress: formAddress },
             },
@@ -107,6 +109,7 @@ class ShippingAddressForm extends Component<
                             setFieldValue={this.setFieldValue}
                             shouldShowSaveAddress={shouldShowSaveAddress}
                             useFloatingLabel={useFloatingLabel}
+                            storeCurrencyCode={storeCurrencyCode}
                         />
                     </LoadingOverlay>
                 )}

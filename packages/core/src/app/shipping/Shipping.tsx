@@ -80,6 +80,7 @@ export interface WithCheckoutShippingProps {
     updateBillingAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
     updateCheckout(payload: CheckoutRequestBody): Promise<CheckoutSelectors>;
     updateShippingAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
+    storeCurrencyCode: string;
 }
 
 interface ShippingState {
@@ -129,6 +130,7 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             providerWithCustomCheckout,
             step,
             useFloatingLabel,
+            storeCurrencyCode,
             ...shippingFormProps
         } = this.props;
 
@@ -178,6 +180,7 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
                         shouldShowSaveAddress={!isGuest}
                         updateAddress={updateShippingAddress}
                         useFloatingLabel={useFloatingLabel}
+                        storeCurrencyCode={storeCurrencyCode}
                     />
                 </div>
             </AddressFormSkeleton>
@@ -426,6 +429,7 @@ export function mapToShippingProps({
         updateCheckout: checkoutService.updateCheckout,
         updateShippingAddress: checkoutService.updateShippingAddress,
         useFloatingLabel: isFloatingLabelEnabled(config.checkoutSettings),
+        storeCurrencyCode: config.currency.code,
     };
 }
 

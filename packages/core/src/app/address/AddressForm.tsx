@@ -28,6 +28,7 @@ export interface AddressFormProps {
     onAutocompleteToggle?(state: { inputValue: string; isOpen: boolean }): void;
     onChange?(fieldName: string, value: string | string[]): void;
     setFieldValue?(fieldName: string, value: string | string[]): void;
+    storeCurrencyCode: string;
 }
 
 const LABEL: AddressKeyMap = {
@@ -93,6 +94,7 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
             onAutocompleteToggle,
             shouldShowSaveAddress,
             useFloatingLabel,
+            storeCurrencyCode,
         } = this.props;
 
         return (
@@ -142,10 +144,10 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         field.custom ? (
                                             field.label
                                         ) : (
-                                            field.name === 'postalCode' && countryCode === 'US' ? 
+                                            field.name === 'postalCode' && (countryCode === 'US' || (storeCurrencyCode === "USD" && (countryCode === '' || countryCode === 'GB')))  ? 
                                             "ZIP Code"
                                             : (
-                                                field.name === 'phone' && countryCode === 'US' ?
+                                                field.name === 'phone' && (countryCode === 'US' || (storeCurrencyCode === "USD" && (countryCode === '' || countryCode === 'GB'))) ?
                                                 "Cell Number"
                                                 :
                                                 <TranslatedString id={LABEL[field.name]} />
