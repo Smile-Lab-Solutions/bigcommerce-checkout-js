@@ -57,6 +57,7 @@ export interface MultiShippingFormProps {
     onSubmit(values: MultiShippingFormValues): void;
     onUnhandledError(error: Error): void;
     onUseNewAddress(address: Address, itemId: string): void;
+    storeCurrencyCode: string;
 }
 
 interface ShippableItemId {
@@ -104,6 +105,7 @@ class MultiShippingForm extends PureComponent<
             countriesWithAutocomplete,
             googleMapsApiKey,
             useFloatingLabel,
+            storeCurrencyCode,
         } = this.props;
 
         const { items, itemAddingAddress, createCustomerAddressError } = this.state;
@@ -151,6 +153,7 @@ class MultiShippingForm extends PureComponent<
                     onRequestClose={this.handleCloseAddAddressForm}
                     onSaveAddress={this.handleSaveAddress}
                     useFloatingLabel={useFloatingLabel}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
 
                 <Form>

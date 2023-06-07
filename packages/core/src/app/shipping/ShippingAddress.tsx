@@ -36,6 +36,7 @@ export interface ShippingAddressProps {
     onFieldChange(name: string, value: string): void;
     onUnhandledError?(error: Error): void;
     onUseNewAddress(): void;
+    storeCurrencyCode: string;
 }
 
 const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
@@ -58,6 +59,7 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         shouldShowSaveAddress,
         isShippingStepPending,
         useFloatingLabel,
+        storeCurrencyCode,
     } = props;
 
     const { setSubmitted } = useContext(FormContext);
@@ -123,6 +125,7 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
             onUseNewAddress={onUseNewAddress}
             shouldShowSaveAddress={shouldShowSaveAddress}
             useFloatingLabel={useFloatingLabel}
+            storeCurrencyCode={storeCurrencyCode}
         />
     );
 };

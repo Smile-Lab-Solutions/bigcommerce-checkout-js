@@ -189,6 +189,7 @@ export default withLanguage(
             getAddressFormFieldsValidationSchema({
                 language,
                 formFields: getFields(shippingAddress.countryCode),
+                countryCode: shippingAddress.countryCode,
             }).isValidSync(shippingAddress),
         validationSchema: ({
                                language,
@@ -209,6 +210,7 @@ export default withLanguage(
                         getAddressFormFieldsValidationSchema({
                             language,
                             formFields: getFields(formValues && formValues.countryCode),
+                            countryCode: formValues.countryCode,
                         }),
                     ),
                 }),

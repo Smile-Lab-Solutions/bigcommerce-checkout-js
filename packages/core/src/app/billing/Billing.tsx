@@ -43,6 +43,7 @@ export interface WithCheckoutBillingProps {
     initialize(): Promise<CheckoutSelectors>;
     updateAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
     updateCheckout(payload: CheckoutRequestBody): Promise<CheckoutSelectors>;
+    storeCurrencyCode: string;
 }
 
 class Billing extends Component<BillingProps & WithCheckoutBillingProps> {
@@ -166,6 +167,7 @@ function mapToBillingProps({
         updateAddress: checkoutService.updateBillingAddress,
         updateCheckout: checkoutService.updateCheckout,
         useFloatingLabel: isFloatingLabelEnabled(config.checkoutSettings),
+        storeCurrencyCode: config.currency.code,
     };
 }
 

@@ -50,17 +50,13 @@ class PartiallyPaymentMethod extends Component<
   }
 
   render(): ReactNode {
-    const {} = this.props;
-
+    const { config } = this.props;
     return (
       <LoadingOverlay hideContentWhenLoading isLoading={false}>
         <div className="paymentMethod paymentMethod--hosted">
           <div className="payment-descriptor">
             <ul className="list-element">
-              <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
-              <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
-              <li><div className="circleCheck"></div>From £150 deposit</li>
-              <li><div className="circleCheck"></div>£25 Payment Plan Admin Fee (Non Refundable)</li>
+              {this.getListText(config?.currency.code)}
             </ul>
           </div>
         </div>
@@ -100,9 +96,9 @@ class PartiallyPaymentMethod extends Component<
           AUD0: "046f59a9-f59c-45f2-9081-266b02a8f920",
           AUD1: "5315c331-474d-40e9-ab65-7ac1627183e3",
           AUD2: "6ec63bb0-a2e5-4980-919e-633fd2f9ea3d",
-          USD0: "046f59a9-f59c-45f2-9081-266b02a8f920",
-          USD1: "5315c331-474d-40e9-ab65-7ac1627183e3",
-          USD2: "6ec63bb0-a2e5-4980-919e-633fd2f9ea3d",
+          USD0: "98160829-d003-4598-8d23-49bca7012012",
+          USD1: "98160829-d003-4598-8d23-49bca7012012",
+          USD2: "98160829-d003-4598-8d23-49bca7012012",
         };
 
         // Filter line items to Iconic count
@@ -147,7 +143,11 @@ class PartiallyPaymentMethod extends Component<
 
       // Replace default error message to coupon error 
       if (error instanceof Error && error.message === 'coupon') {
-        errorMessage = "Sorry, discount codes cannot be used with Partial.ly";
+        if (config?.shopperCurrency.code === 'USD'){
+          errorMessage = "Sorry, promo codes cannot be used with Partial.ly";
+        } else {
+          errorMessage = "Sorry, discount codes cannot be used with Partial.ly";
+        }
       }
 
       onUnhandledError(new Error(errorMessage) as CustomError);
@@ -168,6 +168,31 @@ class PartiallyPaymentMethod extends Component<
       }
     }
     return "";
+  }
+
+  private getListText: (currency: string | undefined) => ReactNode = (currency) => {
+    if (currency === "GBP") {
+      return <>
+        <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
+        <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
+        <li><div className="circleCheck"></div>From £150 deposit</li>
+        <li><div className="circleCheck"></div>£25 Payment Plan Admin Fee (Non Refundable)</li>
+      </>
+    } else if (currency === "USD") {
+      return <>
+        <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
+        <li><div className="circleCheck"></div>Weekly payment as low as <b>$22</b></li>
+        <li><div className="circleCheck"></div>Spread the cost over <b>16 weeks</b></li>
+        <li><div className="circleCheck"></div>No Credit Check</li>
+        <li><div className="circleCheck"></div><b>$25</b> Payment Plan Admin Fee (Non Refundable)</li>
+      </>
+    } else if (currency === "AUD") {
+      return <>
+        <li>aud</li>
+      </>
+    }
+
+    return <></>;
   }
 
   componentWillUnmount(): void {

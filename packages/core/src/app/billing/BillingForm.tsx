@@ -46,6 +46,7 @@ export interface BillingFormProps {
     onSubmit(values: BillingFormValues): void;
     onUnhandledError(error: Error): void;
     updateAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
+    storeCurrencyCode: string;
 }
 
 interface BillingFormState {
@@ -76,6 +77,7 @@ class BillingForm extends PureComponent<
             values,
             methodId,
             useFloatingLabel,
+            storeCurrencyCode,
         } = this.props;
 
         const shouldRenderStaticAddress = methodId === 'amazonpay';
@@ -145,6 +147,7 @@ class BillingForm extends PureComponent<
                                 setFieldValue={setFieldValue}
                                 shouldShowSaveAddress={!isGuest}
                                 useFloatingLabel={useFloatingLabel}
+                                storeCurrencyCode={storeCurrencyCode}
                             />
                         </AddressFormSkeleton>
                     )}
@@ -205,6 +208,7 @@ export default withLanguage(
             getAddressFormFieldsValidationSchema({
                 language,
                 formFields: getFields(billingAddress.countryCode),
+                countryCode: billingAddress.countryCode,
             }).isValidSync(billingAddress),
         validationSchema: ({
             language,
@@ -222,6 +226,7 @@ export default withLanguage(
                       getAddressFormFieldsValidationSchema({
                           language,
                           formFields: getFields(values && values.countryCode),
+                          countryCode: values.countryCode,
                       }),
                   ),
         enableReinitialize: true,

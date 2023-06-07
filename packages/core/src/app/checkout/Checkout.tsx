@@ -276,7 +276,7 @@ class Checkout extends Component<
 
     render(): ReactNode {
         const { error, isHidingStepNumbers } = this.state;
-        const { siteUrl } = this.props
+        const { siteUrl, cart } = this.props
 
         let errorModal = null;
         const termsAndConditionsUrl = siteUrl + '/pages/terms-and-conditions';
@@ -295,6 +295,21 @@ class Checkout extends Component<
             }
         }
 
+        // Use cart currency to figure out store
+        // Display image based on currency
+        var paymentImg = "";
+        var deliveryImg = ""
+        var deliveryImgWidth = "";
+
+        if (cart?.currency.code === 'GBP'){
+            paymentImg = "https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png";
+            deliveryImg = "https://cdn.instasmile.com/new-website/images/shipping-footer.png";
+            deliveryImgWidth = "50%";
+        } else if (cart?.currency.code === "USD"){
+            paymentImg = "https://cdn.instasmile.com/new-website/images/payment_type_usa_may23.webp";
+            deliveryImg = "https://cdn.instasmile.com/new-website/images/us-shipping-footer.png";
+        }
+
         return (
             <div className={classNames({ 'is-embedded': isEmbedded(), 'remove-checkout-step-numbers': isHidingStepNumbers })}>
                 <div className="layout optimizedCheckout-contentPrimary">
@@ -307,16 +322,16 @@ class Checkout extends Component<
                     </div>
                     <div style={{ width: '34%', padding: '2rem 0 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '1rem' }}>Convenient Payment</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png" width={'75%'}></img>
+                        <img src={paymentImg}></img>
                     </div>
                     <div style={{ width: '33%', padding: '2rem 2rem 2rem 0', textAlign: 'center' }}>
                         <p style={{ marginBottom: '0px' }}>Fast Delivery</p>
-                        <img src="https://cdn.instasmile.com/new-website/images/shipping-footer.png" width={'50%'}></img>
+                        <img src={deliveryImg} width={deliveryImgWidth}></img>
                     </div>
                 </div>
                 <div className="checkout-footer">
                         <ModalLink
-                            body={this.renderRefundPolicyContent()}
+                            body={this.renderRefundPolicyContent(cart?.currency.code)}
                             header={
                                 <ModalHeader>
                                     Refund policy
@@ -326,7 +341,7 @@ class Checkout extends Component<
                             Refund policy
                         </ModalLink>
                         <ModalLink
-                            body={this.renderShippingPolicyContent()}
+                            body={this.renderShippingPolicyContent(cart?.currency.code)}
                             header={
                                 <ModalHeader>
                                     Shipping policy
@@ -793,12 +808,12 @@ class Checkout extends Component<
         analyticsTracker.exitCheckout();
     }
 
-    private renderRefundPolicyContent(): ReactNode {
+    private renderRefundPolicyContent: (currency: string | undefined) => ReactNode = (currency) => {
         const { siteUrl } = this.props;
         const contactUsUrl = siteUrl + '/pages/contact-us';
 
-        return (
-            <>
+        if (currency === "GBP") {
+            return <>
                 <p><strong>RIGHT TO CANCEL (REFUND POLICY)</strong></p>
                 <ol>
                     <li>Your right to cancel will not apply if we have already started manufacturing your Veneers. We deem manufacturing to have commenced once your physical impressions have been accepted and scanned into our system.</li>
@@ -823,12 +838,47 @@ class Checkout extends Component<
                     <li>If you have paid via a payment plan we will reduce the value of the plan to the relevant fee and we will still 'collect' the payments until this has been cleared</li>
                 </ul>
             </>
-        );
+        } else if (currency === "USD") {
+            return <>
+                <p><strong>RIGHT TO CANCEL (REFUND POLICY)</strong></p>
+                <ol>
+                    <li>Your right to cancel will not apply if we have already started manufacturing your Veneers. We deem manufacturing to have commenced once your physical impressions have been accepted and scanned into our system.</li>
+                    <li>You may be entitled to cancel this contract and receive a refund within 3 days of receiving the Self-Impression Kit (cooling off period), provided it has not been used.</li>
+                    <li>To meet the cancellation deadline, you must let us know that you wish to exercise your right to cancel before the 3-day cancellation period expires by contacting us. <a href={contactUsUrl} target="_top">Our details are set out here</a>.</li>
+                    <li>We will request that you return your unopened self impressions kit in a resalable condition using a tracked service at your own cost.&nbsp; If these are not received within 21 days of the cancellation, or they are not in a resalable condition, an administration charge of US$149 will apply.</li>
+                    <li>If you refuse delivery from us we reserve the right to apply a charge of US$35.</li>
+                    <li>If you have used the Self-Impression Kit but still wish to cancel the contract, you may do so, however you will be liable to pay a US$149 administrative fee.&nbsp; Once you have commenced the impressions process, your cooling off period ends even if this is within 3 days.</li>
+                    <li>If you cancel this contract we will reimburse all payments received from you, less the US$149 administrative fee (if applicable) and the US$25 Payment Plan admin fee (if applicable). We will make the reimbursement without undue delay, and not later than:</li>
+                </ol>
+                <ul>
+                    <li>21 days after the day we accepted the cancellation</li>
+                    <li>if the Self-Impression Kit was not supplied, 21 days after the day on which we are informed about your decision to cancel this contract.</li>
+                </ul>
+                <ol>
+                    <li>We will make the reimbursement to the original payment method only as you used for the initial transaction, unless we have expressly agreed otherwise. If we agree to send you a check we reserve the right to deduct a US$30 discretionary charge from the refund to cover shipping costs.</li>
+                    <li>If you are deemed unsuitable for the Instasmile, we will cancel the order and return any monies paid to date and/or cancel your finance plan. We will retain the administration fee(s) to cover our costs which will be advised to you at the time unless you are still within your cooling off period and have not used your kit, and are able to return it to us.</li>
+                </ol>
+                <p>Please note</p>
+                <ul>
+                    <li>Any purchased impressions materials are non refundable.</li>
+                    <li>If you have paid via a payment plan we will reduce the value of the plan to the relevant fee and we will still 'collect' the payments until this has been cleared</li>
+                </ul>
+            </>
+        } else if (currency === "AUD") {
+            return <>
+                <li>aud</li>
+            </>
+        }
+
+        return <></>;
     }
 
-    private renderShippingPolicyContent(): ReactNode {
-        return (
-            <>
+    private renderShippingPolicyContent: (currency: string | undefined) => ReactNode = (currency) => {
+        const { siteUrl } = this.props;
+        const faqUrl = siteUrl + '/pages/faq';
+
+        if (currency === "GBP") {
+            return <>
                 <p><strong>DELIVERY</strong></p>
                 <ol>
                     <li>We use a courier service to deliver our Products to you. They may be sent either to the shipping address provided at the time you place your Order, or to a designated parcel collection point. We will provide further delivery information to you after you have placed your Order.</li>
@@ -856,7 +906,43 @@ class Checkout extends Component<
                 <p><strong>Excluded locations</strong></p>
                 <p>Unfortunately, we do not deliver to the following territories: Belarus, Burma/Myanmar, Democratic Republic of Congo, Eritrea, Former Federal Republic of Yugoslavia &amp; Serbia, International Criminal Tribunal for The Former Yugoslavia, Iran, Iraq, Ivory Coast, Lebanon and Syria, Liberia, North Korea (Democratic People's Republic of Korea), Republic of Guinea, Somalia, Sudan, Zimbabwe, Cuba or the Balkans. Please note that we do have a number of international websites which can be accessed using the links in the tab at the top of our website.</p>
             </>
-        );
+        } else if (currency === "USD") {
+            return <>
+                <p><strong>DELIVERY</strong></p>
+                <ol>
+                    <li>We use a courier service to deliver our Products to you. They may be sent either to the shipping address provided at the time you place your Order, or to a designated parcel collection point. We will provide further delivery information to you after you have placed your Order.</li>
+                    <li>Our delivery information will be communicated to you when you place an Order with us, and will depend on what is being delivered to you, as follows:</li>
+                </ol>
+                <p>2.1. Self-Impression Kit : we will dispatch this on the next working day after your order has been placed</p>
+                <p>2.2. Veneers : your estimated delivery date will be within 21 days from the date we have received an accurate impression that it is suitable for us to use to manufacture your Veneers. We also have an express manufacturing option if you would like your Veneers delivered sooner.</p>
+                <p>Please see our separate <a href={faqUrl} target="_top">delivery and return guide</a> for full instructions on how to complete the returns process.</p>
+                <p><strong>Events outside our control</strong></p>
+                <p>We are not responsible for delays in providing the Products to you for reasons outside our control. However, if something happens which means that there will be a delay in delivering the Products to you, we will contact you as soon as possible and will take such reasonable steps to minimize the delay.</p>
+                <p><strong>If you are not at home when the products are delivered</strong></p>
+                <p>If no one is available at your shipping address to take delivery our chosen courier will leave you a note informing you of how to rearrange delivery or collect the Products from a local collection point.</p>
+                <p><strong>If you do not re-arrange delivery i.e.</strong></p>
+                <ul>
+                    <li>do not collect the Products as arranged;</li>
+                    <li>refuse delivery of the Products; or</li>
+                    <li>after a failed delivery to you, you do not re-arrange delivery or collect them from a delivery depot,</li>
+                </ul>
+                <p>We will contact you for further instructions and may charge you for storage costs and any further delivery costs. If, despite our reasonable efforts, we are unable to contact you or re-arrange delivery or collection we may end the contract in line with the above terms.</p>
+                <p><strong>Risk and ownership of the Products</strong></p>
+                <p>Delivery of the Products will take place when we deliver them to the address that you gave to us.</p>
+                <p>You are responsible for the Products when delivery has taken place. In other words, the risk in the Products passes to you when you take possession of the Products (which includes if the Products are left in your chosen 'safe-place', such as an outbuilding or porch).</p>
+                <p><strong>When you own the Products</strong></p>
+                <p>You own the Veneers only once payment in full has been received and we deliver them to the shipping address you gave us when you made the Order.</p>
+                <p>You own the Self-Impression Kit from the point you receive it.</p>
+                <p><strong>Excluded locations</strong></p>
+                <p>Unfortunately, we do not deliver to the following territories: Belarus, Burma/Myanmar, Democratic Republic of Congo, Eritrea, Former Federal Republic of Yugoslavia &amp; Serbia, International Criminal Tribunal for The Former Yugoslavia, Iran, Iraq, Ivory Coast, Lebanon and Syria, Liberia, North Korea (Democratic People's Republic of Korea), Republic of Guinea, Somalia, Sudan, Zimbabwe, Cuba or the Balkans. Please note that we do have a number of international websites which can be accessed using the links in the tab at the top of our website.</p>
+            </>
+        } else if (currency === "AUD") {
+            return <>
+                <li>aud</li>
+            </>
+        }
+
+        return <></>;
     }
 }
 

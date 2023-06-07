@@ -46,7 +46,8 @@
 
 .paymentMethod--creditCard,
 .paymentMethod--hosted,
-.paymentMethod--walletButton {
+.paymentMethod--walletButton,
+.paymentMethod--offline {
     clear: both;
     padding: (spacing("base") / 1.5) 0;
 }
@@ -173,7 +174,8 @@ body.klarna-payments-fso-open {
     }
 }
 
-#stripeIconImg {
+#stripeIconImg,
+#nmiIconImg {
     width: 50%;
 
     @media (max-width: 500px) {

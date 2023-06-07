@@ -11,10 +11,12 @@ import {
 export interface AddressFormFieldsValidationSchemaOptions {
     formFields: FormField[];
     language?: LanguageService;
+    countryCode?: String;
 }
 
 export function getTranslateAddressError(
     language?: LanguageService,
+    countryCode?: String,
 ): TranslateValidationErrorFunction {
     const requiredFieldErrorTranslationIds: { [fieldName: string]: string } = {
         countryCode: 'address.country',
@@ -37,8 +39,14 @@ export function getTranslateAddressError(
 
         if (type === 'required') {
             if (requiredFieldErrorTranslationIds[name]) {
+                var translationKey = `${requiredFieldErrorTranslationIds[name]}_required_error`;
+
+                if ((name === 'postalCode' || name === 'phone') && countryCode === 'US'){
+                    translationKey = `${requiredFieldErrorTranslationIds[name]}_us_required_error`;
+                }
+
                 return language.translate(
-                    `${requiredFieldErrorTranslationIds[name]}_required_error`,
+                    translationKey
                 );
             }
 
@@ -62,9 +70,10 @@ export function getTranslateAddressError(
 export default memoize(function getAddressFormFieldsValidationSchema({
     formFields,
     language,
+    countryCode,
 }: AddressFormFieldsValidationSchemaOptions): ObjectSchema<FormFieldValues> {
     return getFormFieldsValidationSchema({
         formFields,
-        translate: getTranslateAddressError(language),
+        translate: getTranslateAddressError(language, countryCode),
     });
 });
