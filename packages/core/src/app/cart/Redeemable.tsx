@@ -39,6 +39,7 @@ export type RedeemableProps = {
     applyGiftCertificate(code: string): Promise<CheckoutSelectors>;
     clearError(error: Error): void;
     storeCurrencyCode?: string;
+    storeCurrencyCode2?: string;
 } & AppliedRedeemablesProps;
 
 const Redeemable: FunctionComponent<
@@ -66,7 +67,12 @@ const Redeemable: FunctionComponent<
                 )}
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
-                        <TranslatedString id="redeemable.toggle_action" />
+                        {storeCurrencyCode === 'USD' && (
+                           <TranslatedString id="redeemable.toggle_action_us" />
+                        )}
+                        {storeCurrencyCode !== 'USD' && (
+                            <TranslatedString id="redeemable.toggle_action" />
+                        )}
                         <div className='checkout-notifications'>
                             <div className="notification notification--info">
                                 <div className="notification__content">
@@ -110,7 +116,7 @@ const Redeemable: FunctionComponent<
 
 const RedeemableForm: FunctionComponent<
     Partial<RedeemableProps> & FormikProps<RedeemableFormValues> & WithLanguageProps
-> = ({ appliedRedeemableError, isApplyingRedeemable, storeCurrencyCode, clearError = noop, submitForm, language }) => {
+> = ({ appliedRedeemableError, isApplyingRedeemable, storeCurrencyCode2, clearError = noop, submitForm, language }) => {
     const handleKeyDown = useCallback(
         memoizeOne((setSubmitted: FormContextType['setSubmitted']) => (event: KeyboardEvent) => {
             if (appliedRedeemableError) {
@@ -139,41 +145,41 @@ const RedeemableForm: FunctionComponent<
     const renderLabel = useCallback(
         (name: string) => (
             <Label hidden htmlFor={name}>
-                {storeCurrencyCode === 'USD' && (
+                {storeCurrencyCode2 === 'USD' && (
                     <TranslatedString id="redeemable.code_label_us" />
                 )}
-                {storeCurrencyCode !== 'USD' && (
+                {storeCurrencyCode2 !== 'USD' && (
                     <TranslatedString id="redeemable.code_label" />
                 )}
             </Label>
         ),
-        [storeCurrencyCode],
+        [storeCurrencyCode2],
     );
 
     const renderErrorMessage = useCallback((errorCode: string) => {
         switch (errorCode) {
             case 'min_purchase':
-                if (storeCurrencyCode === 'USD'){
+                if (storeCurrencyCode2 === 'USD'){
                     return <TranslatedString id="redeemable.coupon_min_order_total_us" />;
                 } else {
                     return <TranslatedString id="redeemable.coupon_min_order_total" />;
                 }
 
             case 'not_applicable':
-                if (storeCurrencyCode === 'USD'){
+                if (storeCurrencyCode2 === 'USD'){
                     return <TranslatedString id="redeemable.coupon_location_error_us" />;
                 } else {
                     return <TranslatedString id="redeemable.coupon_location_error" />;
                 }
 
             default:
-                if (storeCurrencyCode === 'USD'){
+                if (storeCurrencyCode2 === 'USD'){
                     return <TranslatedString id="redeemable.code_invalid_error_us" />;
                 } else {
                     return <TranslatedString id="redeemable.code_invalid_error" />;
                 }
         }
-    }, [storeCurrencyCode]);
+    }, [storeCurrencyCode2]);
 
     const renderInput = useCallback(
         (setSubmitted: FormContextType['setSubmitted']) =>
@@ -189,7 +195,7 @@ const RedeemableForm: FunctionComponent<
                             )}
 
                         <div className="form-prefixPostfix">
-                            {storeCurrencyCode === 'USD' && (
+                            {storeCurrencyCode2 === 'USD' && (
                                 <TextInput
                                     {...field}
                                     aria-label={language.translate('redeemable.code_label_us')}
@@ -199,7 +205,7 @@ const RedeemableForm: FunctionComponent<
                                 />
                             )}
 
-                            {storeCurrencyCode !== 'USD' && (
+                            {storeCurrencyCode2 !== 'USD' && (
                                 <TextInput
                                     {...field}
                                     aria-label={language.translate('redeemable.code_label')}
@@ -229,7 +235,7 @@ const RedeemableForm: FunctionComponent<
             isApplyingRedeemable,
             language,
             renderErrorMessage,
-            storeCurrencyCode,
+            storeCurrencyCode2,
         ],
     );
 
