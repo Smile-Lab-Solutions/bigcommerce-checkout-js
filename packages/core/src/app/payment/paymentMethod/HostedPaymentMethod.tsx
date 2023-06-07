@@ -200,15 +200,21 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                         <div className="payment-descriptor">
-                            <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today
-                                and spread the cost over 6 weeks.
+                            <p>Pay in 4 interest-free instalments, payable every 2 weeks. Make the first payment today and spread the cost over 6 weeks.
                             </p>
                             <ul className="list-element">
                                 <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard</li>
-                                <li><div className="circleCheck"></div>No credit check needed</li>
+                                <li><div className="circleCheck"></div>Identity check required</li>
                                 <li><div className="circleCheck"></div>0% interest</li>
-                                <li><div className="circleCheck"></div>Payments every 2 week</li>
+                                <li><div className="circleCheck"></div>Payments due every 2 weeks</li>
                             </ul>
+                            <p style={{fontSize: 'smaller'}}>Clearpay lends you a fixed amount of credit so you can pay for your purchase over 4 instalments, due every 2 weeks. 
+                                Ensure you can make repayments on time. You must be 18+ and a permanent UK resident (excl Channel Islands). 
+                                Clearpay charges a £6 late fee for each late instalment and a further £6 if it’s still unpaid 7 days later. 
+                                Late fees are capped at £6 for orders under £24 and the lower of £24 or 25% of the order value for orders over £24. 
+                                Missed payments may affect your ability to use Clearpay in the future and your details may be passed onto a debt 
+                                collection agency working on Clearpay’s behalf. Clearpay is credit that is not regulated by the Financial Conduct Authority. 
+                                T&Cs and other eligibility criteria apply at <a href="https://www.clearpay.co.uk/en-GB/terms-of-service" target="_blank">clearpay.co.uk/terms</a></p>
                             <p>After clicking "Place Order", you will be redirected to Clearpay to complete your purchase securely.</p>
                         </div>
                     </div>

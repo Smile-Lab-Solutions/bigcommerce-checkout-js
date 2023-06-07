@@ -178,8 +178,8 @@ function appConfig(options, argv) {
                             loader: 'babel-loader',
                             include: join(__dirname, 'node_modules'),
                             exclude: [
-                                /\/node_modules\/core-js\//,
-                                /\/node_modules\/webpack\//,
+                                /\bcore-js\b/,
+                                /\bwebpack\b/,
                             ],
                             options: {
                                 presets: [
@@ -306,8 +306,8 @@ function loaderConfig(options, argv) {
                             loader: 'babel-loader',
                             include: join(__dirname, 'node_modules'),
                             exclude: [
-                                /\/node_modules\/core-js\//,
-                                /\/node_modules\/webpack\//,
+                                /\bcore-js\b/,
+                                /\bwebpack\b/,
                             ],
                             options: {
                                 presets: [
