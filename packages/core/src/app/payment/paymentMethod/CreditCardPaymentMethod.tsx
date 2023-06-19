@@ -14,9 +14,9 @@ import React, { Component, ReactNode } from 'react';
 import { ObjectSchema } from 'yup';
 
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 
-import { CheckoutContextProps, withCheckout } from '../../checkout';
+import { withCheckout } from '../../checkout';
 import { connectFormik, ConnectFormikProps } from '../../common/form';
 import { MapToPropsFactory } from '../../common/hoc';
 import { withForm, WithFormProps } from '../../ui/form';
@@ -208,7 +208,7 @@ class CreditCardPaymentMethod extends Component<
 
         return (
             <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
-                <div className="paymentMethod paymentMethod--creditCard">
+                <div className="paymentMethod paymentMethod--creditCard" data-test='credit-cart-payment-method'>
                     {shouldShowInstrumentFieldset && (
                         <CardInstrumentFieldset
                             instruments={instruments}

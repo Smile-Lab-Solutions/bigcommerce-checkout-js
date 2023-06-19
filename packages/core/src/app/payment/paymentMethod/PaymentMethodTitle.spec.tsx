@@ -5,9 +5,8 @@ import { noop } from 'lodash';
 import React, { FunctionComponent } from 'react';
 
 import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
-import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { CheckoutProvider , PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 
-import { CheckoutProvider } from '../../checkout';
 import { getStoreConfig } from '../../config/config.mock';
 import { CreditCardIconList } from '../creditCard';
 import { getPaymentMethod } from '../payment-methods.mock';
@@ -174,7 +173,6 @@ describe('PaymentMethodTitle', () => {
         const methodIds = [
             PaymentMethodId.Affirm,
             PaymentMethodId.Afterpay,
-            PaymentMethodId.Clearpay,
             PaymentMethodId.Klarna,
             PaymentMethodId.Quadpay,
             PaymentMethodId.Sezzle,
@@ -222,6 +220,7 @@ describe('PaymentMethodTitle', () => {
         const methodIds = [
             PaymentMethodId.AmazonPay,
             PaymentMethodId.ChasePay,
+            PaymentMethodId.Clearpay,
             PaymentMethodId.Humm,
             PaymentMethodId.Opy,
             PaymentMethodId.PaypalCommerce,
