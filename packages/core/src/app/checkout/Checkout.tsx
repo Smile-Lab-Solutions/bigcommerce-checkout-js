@@ -302,11 +302,11 @@ class Checkout extends Component<
         var deliveryImgWidth = "";
 
         if (cart?.currency.code === 'GBP'){
-            paymentImg = "https://cdn.instasmile.com/new-website/images/uk_payment_type_footer_mar_23.png";
+            paymentImg = "https://cdn11.bigcommerce.com/s-ynd68mlbhg/images/stencil/original/image-manager/uk-footer-payments.png?t=1687264735";
             deliveryImg = "https://cdn.instasmile.com/new-website/images/shipping-footer.png";
             deliveryImgWidth = "50%";
         } else if (cart?.currency.code === "USD"){
-            paymentImg = "https://cdn.instasmile.com/new-website/images/payment_type_usa_may23.webp";
+            paymentImg = "https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-payments.png?t=1687262393";
             deliveryImg = "https://cdn.instasmile.com/new-website/images/us-shipping-footer.png";
         }
 
