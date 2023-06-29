@@ -306,7 +306,7 @@ class Checkout extends Component<
             deliveryImg = "https://cdn.instasmile.com/new-website/images/shipping-footer.png";
             deliveryImgWidth = "50%";
         } else if (cart?.currency.code === "USD"){
-            paymentImg = "https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-payments.png?t=1687262393";
+            paymentImg = "https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-payments-290623.png?t=1688028490";
             deliveryImg = "https://cdn.instasmile.com/new-website/images/us-shipping-footer.png";
         }
 
