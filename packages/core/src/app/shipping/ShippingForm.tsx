@@ -16,7 +16,7 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { Component, ReactNode } from 'react';
 
-import { withLanguage, WithLanguageProps } from '../locale';
+import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 
 import MultiShippingForm, { MultiShippingFormValues } from './MultiShippingForm';
 import SingleShippingForm, { SingleShippingFormValues } from './SingleShippingForm';
@@ -40,7 +40,7 @@ export interface ShippingFormProps {
     shouldShowSaveAddress?: boolean;
     shouldShowOrderComments: boolean;
     shouldShowAddAddressInCheckout: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     assignItem(consignment: ConsignmentAssignmentRequestBody): Promise<CheckoutSelectors>;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     deleteConsignments(): Promise<Address | undefined>;
@@ -98,6 +98,7 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
             isShippingStepPending,
             useFloatingLabel,
             storeCurrencyCode,
+            isFloatingLabelEnabled,
         } = this.props;
 
         return isMultiShippingMode ? (
@@ -114,6 +115,7 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
                 defaultCountryCode={shippingAddress?.countryCode}
                 getFields={getFields}
                 googleMapsApiKey={googleMapsApiKey}
+                isFloatingLabelEnabled={isFloatingLabelEnabled}
                 isGuest={isGuest}
                 isLoading={isLoading}
                 onCreateAccount={onCreateAccount}
@@ -140,6 +142,7 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
                 googleMapsApiKey={googleMapsApiKey}
                 initialize={initialize}
                 isBillingSameAsShipping={isBillingSameAsShipping}
+                isFloatingLabelEnabled={isFloatingLabelEnabled}
                 isLoading={isLoading}
                 isMultiShippingMode={isMultiShippingMode}
                 isShippingStepPending={isShippingStepPending}

@@ -3,14 +3,15 @@ import { noop } from 'lodash';
 import React, { FunctionComponent, memo, useCallback } from 'react';
 import { object, string } from 'yup';
 
-import { preventDefault } from '../common/dom';
 import {
     TranslatedHtml,
     TranslatedLink,
     TranslatedString,
     withLanguage,
     WithLanguageProps,
-} from '../locale';
+} from '@bigcommerce/checkout/locale';
+
+import { preventDefault } from '../common/dom';
 import { Alert, AlertType } from '../ui/alert';
 import { Button, ButtonVariant } from '../ui/button';
 import { Fieldset, Form, Legend } from '../ui/form';
@@ -34,7 +35,7 @@ export interface LoginFormProps {
     viewType?: Omit<CustomerViewType, 'guest'>;
     passwordlessLogin?: boolean;
     shouldShowCreateAccountLink?: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     onCancel?(): void;
     onCreateAccount?(): void;
     onChangeEmail?(email: string): void;
@@ -65,7 +66,7 @@ const LoginForm: FunctionComponent<
     onSendLoginEmail = noop,
     signInError,
     shouldShowCreateAccountLink,
-    useFloatingLabel,
+    isFloatingLabelEnabled,
     viewType = CustomerViewType.Login,
 }) => {
     const changeEmailLink = useCallback(() => {
@@ -127,10 +128,10 @@ const LoginForm: FunctionComponent<
 
                 {(viewType === CustomerViewType.Login ||
                     viewType === CustomerViewType.EnforcedLogin) && (
-                    <EmailField onChange={onChangeEmail} useFloatingLabel={useFloatingLabel} />
+                    <EmailField isFloatingLabelEnabled={isFloatingLabelEnabled} onChange={onChangeEmail} />
                 )}
 
-                <PasswordField useFloatingLabel={useFloatingLabel} />
+                <PasswordField isFloatingLabelEnabled={isFloatingLabelEnabled} />
 
                 <p className="form-legend-container">
                     <span>

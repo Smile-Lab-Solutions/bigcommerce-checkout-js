@@ -13,6 +13,8 @@ import {
 import { FormikProps, withFormik } from 'formik';
 import React, { PureComponent, ReactNode } from 'react';
 
+import { TranslatedLink, TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+
 import {
     AddressFormModal,
     AddressFormValues,
@@ -21,7 +23,6 @@ import {
 } from '../address';
 import { preventDefault } from '../common/dom';
 import { ErrorModal } from '../common/error';
-import { TranslatedLink, TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { Form } from '../ui/form';
 
 import { AssignItemFailedError, AssignItemInvalidAddressError } from './errors';
@@ -48,7 +49,7 @@ export interface MultiShippingFormProps {
     countriesWithAutocomplete: string[];
     googleMapsApiKey?: string;
     shouldShowAddAddressInCheckout: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     assignItem(consignment: ConsignmentAssignmentRequestBody): Promise<CheckoutSelectors>;
     onCreateAccount(): void;
     createCustomerAddress(address: AddressRequestBody): void;
@@ -106,6 +107,7 @@ class MultiShippingForm extends PureComponent<
             googleMapsApiKey,
             useFloatingLabel,
             storeCurrencyCode,
+            isFloatingLabelEnabled,
         } = this.props;
 
         const { items, itemAddingAddress, createCustomerAddressError } = this.state;
@@ -148,6 +150,7 @@ class MultiShippingForm extends PureComponent<
                     defaultCountryCode={defaultCountryCode}
                     getFields={getFields}
                     googleMapsApiKey={googleMapsApiKey}
+                    isFloatingLabelEnabled={isFloatingLabelEnabled}
                     isLoading={isLoading}
                     isOpen={!!itemAddingAddress}
                     onRequestClose={this.handleCloseAddAddressForm}
