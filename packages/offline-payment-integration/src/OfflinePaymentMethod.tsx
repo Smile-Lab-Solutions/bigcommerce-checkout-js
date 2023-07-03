@@ -50,8 +50,7 @@ const OfflinePaymentMethod: FunctionComponent<PaymentMethodProps> = ({
         return <>
             <div className="paymentMethod paymentMethod--offline">
                 <div className="payment-descriptor">
-                    <p>Bread Pay™ offers you an easy and convenient way to buy the things you want now and pay over time.
-                    </p>
+                    <p>For more information visit the Bread Pay™ financing page <a href="https://us.instasmile.com/breadpay-faqs/" target="_blank">here</a></p>
                     <ul className="list-element">
                         <li><div className="circleCheck"></div>Low Monthly Payments*</li>
                         <li><div className="circleCheck"></div>Easy Monthly Payments over 6, 12 or 18 months*</li>
