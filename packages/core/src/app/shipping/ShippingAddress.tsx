@@ -58,7 +58,6 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         addresses,
         shouldShowSaveAddress,
         isShippingStepPending,
-        useFloatingLabel,
         storeCurrencyCode,
         isFloatingLabelEnabled,
     } = props;
@@ -126,7 +125,6 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
             onFieldChange={handleFieldChange}
             onUseNewAddress={onUseNewAddress}
             shouldShowSaveAddress={shouldShowSaveAddress}
-            useFloatingLabel={useFloatingLabel}
             storeCurrencyCode={storeCurrencyCode}
         />
     );

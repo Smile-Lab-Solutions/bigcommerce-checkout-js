@@ -24,7 +24,6 @@ export interface OrderSummarySubtotalsProps {
 
 const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     discountAmount,
-    isTaxIncluded,
     giftCertificates,
     giftWrappingAmount,
     shippingAmount,
@@ -97,15 +96,6 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
                     testId="cart-handling"
                 />
             )}
-
-            {!isTaxIncluded && (taxes || []).map((tax, index) => (
-                <OrderSummaryPrice
-                    amount={tax.amount}
-                    key={index}
-                    label={tax.name}
-                    testId="cart-taxes"
-                />
-            ))}
 
             {!!storeCreditAmount && (
                 <OrderSummaryDiscount

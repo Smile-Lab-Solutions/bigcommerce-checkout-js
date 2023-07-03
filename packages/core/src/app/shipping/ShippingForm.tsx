@@ -96,7 +96,6 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
             signOut,
             updateAddress,
             isShippingStepPending,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
         } = this.props;
@@ -125,7 +124,6 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
                 onUseNewAddress={onUseNewAddress}
                 shouldShowAddAddressInCheckout={shouldShowAddAddressInCheckout}
                 shouldShowOrderComments={shouldShowOrderComments}
-                useFloatingLabel={useFloatingLabel}
                 storeCurrencyCode={storeCurrencyCode}
             />
         ) : (
@@ -154,7 +152,6 @@ class ShippingForm extends Component<ShippingFormProps & WithLanguageProps> {
                 shouldShowSaveAddress={shouldShowSaveAddress}
                 signOut={signOut}
                 updateAddress={updateAddress}
-                useFloatingLabel={useFloatingLabel}
                 storeCurrencyCode={storeCurrencyCode}
             />
         );

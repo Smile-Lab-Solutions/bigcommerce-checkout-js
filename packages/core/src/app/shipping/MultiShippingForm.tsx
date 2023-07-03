@@ -105,7 +105,6 @@ class MultiShippingForm extends PureComponent<
             countries,
             countriesWithAutocomplete,
             googleMapsApiKey,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
         } = this.props;
@@ -155,7 +154,6 @@ class MultiShippingForm extends PureComponent<
                     isOpen={!!itemAddingAddress}
                     onRequestClose={this.handleCloseAddAddressForm}
                     onSaveAddress={this.handleSaveAddress}
-                    useFloatingLabel={useFloatingLabel}
                     storeCurrencyCode={storeCurrencyCode}
                 />
 

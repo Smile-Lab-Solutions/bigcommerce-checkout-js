@@ -76,7 +76,6 @@ class BillingForm extends PureComponent<
             shouldShowOrderComments,
             values,
             methodId,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
         } = this.props;
@@ -148,7 +147,6 @@ class BillingForm extends PureComponent<
                                 isFloatingLabelEnabled={isFloatingLabelEnabled}
                                 setFieldValue={setFieldValue}
                                 shouldShowSaveAddress={!isGuest}
-                                useFloatingLabel={useFloatingLabel}
                                 storeCurrencyCode={storeCurrencyCode}
                             />
                         </AddressFormSkeleton>

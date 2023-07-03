@@ -94,7 +94,6 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
             googleMapsApiKey,
             onAutocompleteToggle,
             shouldShowSaveAddress,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
         } = this.props;

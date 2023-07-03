@@ -124,6 +124,9 @@
 // Dynamic Form Fields Component
 @import "checkout/dynamicFormField/component";
 
+// Checkout Ach
+@import "checkout/achForm/component";
+
 .button:not(#addressToggle),
 .partiallyButton {
     background-color: #14ccad;
@@ -146,5 +149,3 @@
     font-size: 1rem !important;
     padding: 1.1875rem 4.5rem !important;
 }
-// Checkout Ach
-@import "checkout/achForm/component";

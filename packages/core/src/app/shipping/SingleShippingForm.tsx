@@ -141,7 +141,6 @@ class SingleShippingForm extends PureComponent<
             deinitialize,
             values: { shippingAddress: addressForm },
             isShippingStepPending,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
         } = this.props;
@@ -177,7 +176,6 @@ class SingleShippingForm extends PureComponent<
                         onUseNewAddress={this.onUseNewAddress}
                         shippingAddress={shippingAddress}
                         shouldShowSaveAddress={shouldShowSaveAddress}
-                        useFloatingLabel={useFloatingLabel}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                     {shouldShowBillingSameAsShipping && (

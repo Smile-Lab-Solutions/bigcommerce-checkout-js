@@ -45,7 +45,6 @@ const SaveAddress: FunctionComponent<
     setFieldValue,
     isLoading,
     onRequestClose,
-    useFloatingLabel,
     storeCurrencyCode,
     isFloatingLabelEnabled,
 }) => (
@@ -60,7 +59,6 @@ const SaveAddress: FunctionComponent<
                 isFloatingLabelEnabled={isFloatingLabelEnabled}
                 setFieldValue={setFieldValue}
                 shouldShowSaveAddress={false}
-                useFloatingLabel={useFloatingLabel}
                 storeCurrencyCode={storeCurrencyCode}
             />
             <div className="form-actions">

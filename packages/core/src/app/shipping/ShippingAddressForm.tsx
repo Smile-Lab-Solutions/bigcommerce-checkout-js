@@ -48,7 +48,6 @@ class ShippingAddressForm extends Component<
             formFields,
             isLoading,
             googleMapsApiKey,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
             formik: {
@@ -110,7 +109,6 @@ class ShippingAddressForm extends Component<
                             onChange={this.handleChange}
                             setFieldValue={this.setFieldValue}
                             shouldShowSaveAddress={shouldShowSaveAddress}
-                            useFloatingLabel={useFloatingLabel}
                             storeCurrencyCode={storeCurrencyCode}
                         />
                     </LoadingOverlay>

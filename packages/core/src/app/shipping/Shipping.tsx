@@ -130,7 +130,6 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             onToggleMultiShipping,
             providerWithCustomCheckout,
             step,
-            useFloatingLabel,
             storeCurrencyCode,
             isFloatingLabelEnabled,
             ...shippingFormProps
@@ -182,7 +181,6 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
                         onUseNewAddress={this.handleUseNewAddress}
                         shouldShowSaveAddress={!isGuest}
                         updateAddress={updateShippingAddress}
-                        useFloatingLabel={useFloatingLabel}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                 </div>
@@ -431,7 +429,6 @@ export function mapToShippingProps({
         updateBillingAddress: checkoutService.updateBillingAddress,
         updateCheckout: checkoutService.updateCheckout,
         updateShippingAddress: checkoutService.updateShippingAddress,
-        useFloatingLabel: isFloatingLabelEnabled(config.checkoutSettings),
         storeCurrencyCode: config.currency.code,
         isFloatingLabelEnabled: isFloatingLabelEnabled(config.checkoutSettings),
     };

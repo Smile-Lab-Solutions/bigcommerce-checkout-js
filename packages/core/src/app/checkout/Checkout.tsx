@@ -46,7 +46,6 @@ import CheckoutStepType from './CheckoutStepType';
 import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
-import withCheckout from './withCheckout';
 import { ModalHeader, ModalLink } from '../ui/modal';
 
 const Billing = lazy(() =>
@@ -351,8 +350,7 @@ class Checkout extends Component<
     }
 
     private renderContent(): ReactNode {
-        const { isPending, loginUrl, promotions = [], steps, cartUrl } = this.props;
-        const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop } = this.props;
+        const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop, cartUrl } = this.props;
 
         const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 

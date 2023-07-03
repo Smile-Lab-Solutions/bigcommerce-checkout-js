@@ -8,7 +8,6 @@ import {
 import classNames from 'classnames';
 import React, { Component, lazy, ReactNode } from 'react';
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
-import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withAnalytics } from '../analytics';
@@ -20,10 +19,6 @@ import {
     CreatedCustomer,
     SignUpFormValues,
 } from '../guestSignup';
-import {
-    AccountCreationFailedError,
-    AccountCreationRequirementsError,
-} from '../guestSignup/errors';
 import { Button, ButtonVariant } from '../ui/button';
 import { LazyContainer, LoadingSpinner } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
