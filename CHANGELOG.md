@@ -2,6 +2,68 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.334.0](https://github.com/bigcommerce/checkout-js/compare/v1.333.2...v1.334.0) (2023-07-03)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#1351](https://github.com/bigcommerce/checkout-js/issues/1351)) ([f9619bd](https://github.com/bigcommerce/checkout-js/commit/f9619bd810b92db993571b37dd15293dfc303607))
+
+### [1.333.2](https://github.com/bigcommerce/checkout-js/compare/v1.333.1...v1.333.2) (2023-06-29)
+
+### [1.333.1](https://github.com/bigcommerce/checkout-js/compare/v1.333.0...v1.333.1) (2023-06-28)
+
+## [1.333.0](https://github.com/bigcommerce/checkout-js/compare/v1.332.0...v1.333.0) (2023-06-27)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#1331](https://github.com/bigcommerce/checkout-js/issues/1331)) ([5d6a6de](https://github.com/bigcommerce/checkout-js/commit/5d6a6de8599e234933781f3145628aa1df53922a))
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-00 bump checkout-sdk-js version ([f6e5bf8](https://github.com/bigcommerce/checkout-js/commit/f6e5bf8bf2af00ce690e2faa9a281969b428b47a))
+
+## [1.332.0](https://github.com/bigcommerce/checkout-js/compare/v1.331.0...v1.332.0) (2023-06-23)
+
+
+### Features
+
+* **payment:** PI-99 [Sezzle] - Text is overflowing and cropped for the Sezzle Payment gateway on mobile ([#1334](https://github.com/bigcommerce/checkout-js/issues/1334)) ([5e04971](https://github.com/bigcommerce/checkout-js/commit/5e049711f1c7dd3f4df68e0e7a8c40c8ff3ba163))
+
+## [1.331.0](https://github.com/bigcommerce/checkout-js/compare/v1.330.3...v1.331.0) (2023-06-22)
+
+
+### Features
+
+* **payment:** PI-34 [AmazonPay] Update Amazon Pay to use the latest button design ([#1329](https://github.com/bigcommerce/checkout-js/issues/1329)) ([f99f2c4](https://github.com/bigcommerce/checkout-js/commit/f99f2c45791e9b563f05ebdda04398761979c25b))
+
+### [1.330.3](https://github.com/bigcommerce/checkout-js/compare/v1.330.2...v1.330.3) (2023-06-22)
+
+### [1.330.2](https://github.com/bigcommerce/checkout-js/compare/v1.330.1...v1.330.2) (2023-06-22)
+
+### [1.330.1](https://github.com/bigcommerce/checkout-js/compare/v1.330.0...v1.330.1) (2023-06-21)
+
+
+### Bug Fixes
+
+* DATA-10928 Fire analytics selectedPaymentMethod event when payment methods are loaded ([#1335](https://github.com/bigcommerce/checkout-js/issues/1335)) ([aa5f8ad](https://github.com/bigcommerce/checkout-js/commit/aa5f8adaa7dd53554dbf9561e83e96cf7c6d4c25))
+
+## [1.330.0](https://github.com/bigcommerce/checkout-js/compare/v1.329.0...v1.330.0) (2023-06-21)
+
+
+### Features
+
+* **payment:** PI-120 bump checkout-sdk version for Autofilling cardholder name ([535b1c4](https://github.com/bigcommerce/checkout-js/commit/535b1c4bfca2f25782bc2f74efb5c242785bf995))
+
+## [1.329.0](https://github.com/bigcommerce/checkout-js/compare/v1.328.2...v1.329.0) (2023-06-20)
+
+
+### Features
+
+* **payment:** PAYPAL-2502 bump checkout-sdk-js version ([e352b48](https://github.com/bigcommerce/checkout-js/commit/e352b48169eac24a649c47c2f8b5bdee4726e25b))
+
 ### [1.328.2](https://github.com/bigcommerce/checkout-js/compare/v1.328.1...v1.328.2) (2023-06-14)
 
 
