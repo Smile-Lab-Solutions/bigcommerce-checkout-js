@@ -11,11 +11,12 @@ import React, { Component, ReactNode } from 'react';
 import { ObjectSchema } from 'yup';
 
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
-import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ChecklistSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
-import { CheckoutContextProps, withCheckout } from '../checkout';
+import { withCheckout } from '../checkout';
 import {
     ErrorLogger,
     ErrorModal,
@@ -24,7 +25,6 @@ import {
     isErrorWithType,
 } from '../common/error';
 import { EMPTY_ARRAY } from '../common/utility';
-import { withLanguage, WithLanguageProps } from '../locale';
 import { TermsConditionsType } from '../termsConditions';
 
 import mapSubmitOrderErrorMessage, { mapSubmitOrderErrorTitle } from './mapSubmitOrderErrorMessage';
@@ -118,13 +118,9 @@ class Payment extends Component<
             onReady = noop,
             onUnhandledError = noop,
             usableStoreCredit,
-            defaultMethod,
             analyticsTracker
         } = this.props;
 
-        const { selectedMethod } = this.state;
-
-        analyticsTracker.selectedPaymentMethod((selectedMethod || defaultMethod)?.config.displayName);
 
         if (usableStoreCredit) {
             this.handleStoreCreditChange(true);
@@ -132,6 +128,9 @@ class Payment extends Component<
 
         try {
             await loadPaymentMethods();
+
+            const selectedMethod = this.state.selectedMethod || this.props.defaultMethod;
+            analyticsTracker.selectedPaymentMethod(selectedMethod?.config.displayName);
         } catch (error) {
             onUnhandledError(error);
         }

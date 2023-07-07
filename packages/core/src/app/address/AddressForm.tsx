@@ -3,7 +3,8 @@ import { memoize } from '@bigcommerce/memoize';
 import { forIn, noop } from 'lodash';
 import React, { Component, createRef, ReactNode, RefObject } from 'react';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+
 import { AutocompleteItem } from '../ui/autocomplete';
 import { CheckboxFormField, DynamicFormField, DynamicFormFieldType, Fieldset } from '../ui/form';
 
@@ -23,7 +24,7 @@ export interface AddressFormProps {
     formFields: FormField[];
     googleMapsApiKey?: string;
     shouldShowSaveAddress?: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     onAutocompleteSelect?(address: Partial<Address>): void;
     onAutocompleteToggle?(state: { inputValue: string; isOpen: boolean }): void;
     onChange?(fieldName: string, value: string | string[]): void;
@@ -93,8 +94,8 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
             googleMapsApiKey,
             onAutocompleteToggle,
             shouldShowSaveAddress,
-            useFloatingLabel,
             storeCurrencyCode,
+            isFloatingLabelEnabled,
         } = this.props;
 
         return (
@@ -118,6 +119,7 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         apiKey={googleMapsApiKey}
                                         countryCode={countryCode}
                                         field={field}
+                                        isFloatingLabelEnabled={isFloatingLabelEnabled}
                                         key={field.id}
                                         nextElement={this.nextElement || undefined}
                                         onChange={this.handleAutocompleteChange}
@@ -125,7 +127,6 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         onToggleOpen={onAutocompleteToggle}
                                         parentFieldName={fieldName}
                                         supportedCountries={countriesWithAutocomplete}
-                                        useFloatingLabel={useFloatingLabel}
                                     />
                                 );
                             }
@@ -139,6 +140,7 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                     field={field}
                                     inputId={getAddressFormFieldInputId(addressFieldName)}
                                     // stateOrProvince can sometimes be a dropdown or input, so relying on id is not sufficient
+                                    isFloatingLabelEnabled={isFloatingLabelEnabled}
                                     key={`${field.id}-${field.name}`}
                                     label={
                                         field.custom ? (
@@ -166,7 +168,6 @@ class AddressForm extends Component<AddressFormProps & WithLanguageProps> {
                                         field,
                                         translatedPlaceholderId,
                                     )}
-                                    useFloatingLabel={useFloatingLabel}
                                 />
                             );
                         })}

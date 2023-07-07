@@ -17,10 +17,11 @@ import { noop } from 'lodash';
 import React, { Component, ReactNode } from 'react';
 import { createSelector } from 'reselect';
 
+import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 import { AddressFormSkeleton } from '@bigcommerce/checkout/ui';
 
 import { isEqualAddress, mapAddressFromFormValues } from '../address';
-import { CheckoutContextProps, withCheckout } from '../checkout';
+import { withCheckout } from '../checkout';
 import CheckoutStepStatus from '../checkout/CheckoutStepStatus';
 import { EMPTY_ARRAY, isFloatingLabelEnabled } from '../common/utility';
 import { PaymentMethodId } from '../payment/paymentMethod';
@@ -66,7 +67,7 @@ export interface WithCheckoutShippingProps {
     shouldShowMultiShipping: boolean;
     shouldShowOrderComments: boolean;
     providerWithCustomCheckout?: string;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     assignItem(consignment: ConsignmentAssignmentRequestBody): Promise<CheckoutSelectors>;
     deinitializeShippingMethod(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     deleteConsignments(): Promise<Address | undefined>;
@@ -129,8 +130,8 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             onToggleMultiShipping,
             providerWithCustomCheckout,
             step,
-            useFloatingLabel,
             storeCurrencyCode,
+            isFloatingLabelEnabled,
             ...shippingFormProps
         } = this.props;
 
@@ -147,8 +148,8 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
                 isBillingSameAsShipping={isBillingSameAsShipping}
                 isGuest={ isGuest }
                 isLoading={ isInitializing }
-                isShippingMethodLoading={ this.props.isLoading }
                 isMultiShippingMode={isMultiShippingMode}
+                isShippingMethodLoading={ this.props.isLoading }
                 onMultiShippingChange={ this.handleMultiShippingModeSwitch }
                 onSubmit={this.handleSingleShippingSubmit}
                 shouldShowMultiShipping={ shouldShowMultiShipping }
@@ -172,6 +173,7 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
                         deinitialize={deinitializeShippingMethod}
                         initialize={initializeShippingMethod}
                         isBillingSameAsShipping={isBillingSameAsShipping}
+                        isFloatingLabelEnabled={isFloatingLabelEnabled}
                         isGuest={isGuest}
                         isMultiShippingMode={isMultiShippingMode}
                         onMultiShippingSubmit={this.handleMultiShippingSubmit}
@@ -179,7 +181,6 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
                         onUseNewAddress={this.handleUseNewAddress}
                         shouldShowSaveAddress={!isGuest}
                         updateAddress={updateShippingAddress}
-                        useFloatingLabel={useFloatingLabel}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                 </div>
@@ -428,8 +429,8 @@ export function mapToShippingProps({
         updateBillingAddress: checkoutService.updateBillingAddress,
         updateCheckout: checkoutService.updateCheckout,
         updateShippingAddress: checkoutService.updateShippingAddress,
-        useFloatingLabel: isFloatingLabelEnabled(config.checkoutSettings),
         storeCurrencyCode: config.currency.code,
+        isFloatingLabelEnabled: isFloatingLabelEnabled(config.checkoutSettings),
     };
 }
 

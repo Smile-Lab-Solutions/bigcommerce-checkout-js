@@ -12,9 +12,11 @@ import {
     ShippingRequestOptions,
 } from '@bigcommerce/checkout-sdk';
 import { FormikProps, withFormik } from 'formik';
-import { debounce, noop } from 'lodash';
+import { debounce, isEqual, noop } from 'lodash';
 import React, { PureComponent, ReactNode } from 'react';
 import { lazy, object } from 'yup';
+
+import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 
 import {
     AddressFormValues,
@@ -25,7 +27,6 @@ import {
     mapAddressToFormValues,
 } from '../address';
 import { getCustomFormFieldsValidationSchema } from '../formFields';
-import { withLanguage, WithLanguageProps } from '../locale';
 import { Fieldset, Form, FormContext } from '../ui/form';
 
 import BillingSameAsShippingField from './BillingSameAsShippingField';
@@ -50,7 +51,7 @@ export interface SingleShippingFormProps {
     shippingAddress?: Address;
     shouldShowSaveAddress?: boolean;
     shouldShowOrderComments: boolean;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     deleteConsignments(): Promise<Address | undefined>;
     getFields(countryCode?: string): FormField[];
@@ -140,8 +141,8 @@ class SingleShippingForm extends PureComponent<
             deinitialize,
             values: { shippingAddress: addressForm },
             isShippingStepPending,
-            useFloatingLabel,
             storeCurrencyCode,
+            isFloatingLabelEnabled,
         } = this.props;
 
         const { isResettingAddress, isUpdatingShippingData, hasRequestedShippingOptions } =
@@ -165,6 +166,7 @@ class SingleShippingForm extends PureComponent<
                         googleMapsApiKey={googleMapsApiKey}
                         hasRequestedShippingOptions={hasRequestedShippingOptions}
                         initialize={initialize}
+                        isFloatingLabelEnabled={isFloatingLabelEnabled}
                         isLoading={isResettingAddress}
                         isShippingStepPending={isShippingStepPending}
                         methodId={methodId}
@@ -174,7 +176,6 @@ class SingleShippingForm extends PureComponent<
                         onUseNewAddress={this.onUseNewAddress}
                         shippingAddress={shippingAddress}
                         shouldShowSaveAddress={shouldShowSaveAddress}
-                        useFloatingLabel={useFloatingLabel}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                     {shouldShowBillingSameAsShipping && (
@@ -239,6 +240,13 @@ class SingleShippingForm extends PureComponent<
         } = this.props;
 
         const updatedShippingAddress = addressForm && mapAddressFromFormValues(addressForm);
+
+        if (Array.isArray(shippingAddress?.customFields)) {
+            includeShippingOptions = !isEqual(
+                shippingAddress?.customFields,
+                updatedShippingAddress?.customFields
+            ) || includeShippingOptions;
+        }
 
         if (!updatedShippingAddress || isEqualAddress(updatedShippingAddress, shippingAddress)) {
             return;

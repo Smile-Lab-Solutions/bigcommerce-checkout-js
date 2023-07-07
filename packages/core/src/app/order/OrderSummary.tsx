@@ -18,6 +18,8 @@ export interface OrderSummaryProps {
 }
 
 const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsProps> = ({
+    isTaxIncluded,
+    taxes,
     storeCurrency,
     shopperCurrency,
     headerLink,
@@ -33,11 +35,11 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
             <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
 
             <OrderSummarySection>
-                <OrderSummaryItems items={nonBundledLineItems} />
+                <OrderSummaryItems displayLineItemsCount items={nonBundledLineItems} />
             </OrderSummarySection>
 
             <OrderSummarySection>
-                <OrderSummarySubtotals {...orderSummarySubtotalsProps} />
+                <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
                 {additionalLineItems}
             </OrderSummarySection>
 

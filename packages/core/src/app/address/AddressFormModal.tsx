@@ -3,8 +3,9 @@ import { FormikProps, withFormik } from 'formik';
 import React, { FunctionComponent } from 'react';
 import { lazy } from 'yup';
 
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+
 import { preventDefault } from '../common/dom';
-import { TranslatedString, withLanguage, WithLanguageProps } from '../locale';
 import { Button, ButtonVariant } from '../ui/button';
 import { Form } from '../ui/form';
 import { LoadingOverlay } from '../ui/loading';
@@ -26,7 +27,7 @@ export interface AddressFormProps {
     isLoading: boolean;
     shouldShowSaveAddress?: boolean;
     defaultCountryCode?: string;
-    useFloatingLabel?: boolean;
+    isFloatingLabelEnabled?: boolean;
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
@@ -44,8 +45,8 @@ const SaveAddress: FunctionComponent<
     setFieldValue,
     isLoading,
     onRequestClose,
-    useFloatingLabel,
     storeCurrencyCode,
+    isFloatingLabelEnabled,
 }) => (
     <Form autoComplete="on">
         <LoadingOverlay isLoading={isLoading}>
@@ -55,9 +56,9 @@ const SaveAddress: FunctionComponent<
                 countryCode={values.countryCode}
                 formFields={getFields(values.countryCode)}
                 googleMapsApiKey={googleMapsApiKey}
+                isFloatingLabelEnabled={isFloatingLabelEnabled}
                 setFieldValue={setFieldValue}
                 shouldShowSaveAddress={false}
-                useFloatingLabel={useFloatingLabel}
                 storeCurrencyCode={storeCurrencyCode}
             />
             <div className="form-actions">

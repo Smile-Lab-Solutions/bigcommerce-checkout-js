@@ -8,8 +8,10 @@ import {
 import classNames from 'classnames';
 import React, { Component, lazy, ReactNode } from 'react';
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+
 import { withAnalytics } from '../analytics';
-import { CheckoutContextProps, withCheckout } from '../checkout';
+import { withCheckout } from '../checkout';
 import { ErrorLogger, ErrorModal } from '../common/error';
 import { retry } from '../common/utility';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
@@ -268,6 +270,7 @@ class OrderConfirmation extends Component<
                                     headerLink={
                                         <PrintLink className="modal-header-link cart-modal-link" />
                                     }
+                                    isUpdatedCartSummayModal={false}
                                     lineItems={order.lineItems}
                                     shopperCurrency={shopperCurrency}
                                     storeCurrency={currency}
