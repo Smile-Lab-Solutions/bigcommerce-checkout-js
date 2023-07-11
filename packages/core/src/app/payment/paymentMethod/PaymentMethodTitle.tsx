@@ -260,6 +260,11 @@ function getPaymentMethodTitle(
                 titleText: '',
                 titleSubText: 'Flexible Ways to Buy Now and Pay Later',
             },
+            [PaymentMethodId.TerraceFinance]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'Terrace subtext',
+            },
         };
 
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {

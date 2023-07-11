@@ -346,7 +346,8 @@ class Payment extends Component<
             selectedMethod.gateway === PaymentMethodId.Checkoutcom ||
             selectedMethod.gateway === PaymentMethodId.Mollie ||
             selectedMethod.gateway === PaymentMethodId.StripeV3 ||
-            selectedMethod.gateway === PaymentMethodId.Partially
+            selectedMethod.gateway === PaymentMethodId.Partially ||
+            selectedMethod.gateway === PaymentMethodId.TerraceFinance
         ) {
             return;
         }
@@ -581,6 +582,14 @@ export function mapToPaymentProps({
             loadPartiallyJs();
         }
 
+    // Adding partially
+    // Billing address and currency must match
+    // Only for US
+    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD'))
+        {
+            methods = methods.concat(getTerraceFinanceMethod());
+        }
+
     const {
         enableTermsAndConditions: isTermsConditionsEnabled,
         features,
@@ -680,6 +689,25 @@ export function getPartiallyMethod(): PaymentMethod {
             displayName: 'Partial.ly Payment Plan',
             helpText: '',
             merchantId: 'partially',
+            testMode: false,
+            returnUrl: `${window.location.origin}/checkout`,
+            redirectUrl: `${window.location.origin}/pages/complete`
+        },
+        type: 'PAYMENT_TYPE_API',
+    };
+}
+
+export function getTerraceFinanceMethod(): PaymentMethod {
+    return {
+        id: 'terracefinance',
+        gateway: 'terracefinance',
+        logoUrl: 'https://terracefinance.com/wp-content/uploads/2019/12/Terrace-Logo-Retina-360px.png',
+        method: 'external',
+        supportedCards: [],
+        config: {
+            displayName: 'Terrace Finance',
+            helpText: '',
+            merchantId: 'terracefinance',
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
             redirectUrl: `${window.location.origin}/pages/complete`
