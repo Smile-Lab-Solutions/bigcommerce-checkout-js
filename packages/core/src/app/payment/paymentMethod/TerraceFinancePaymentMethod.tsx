@@ -66,7 +66,7 @@ class TerraceFinancePaymentMethod extends Component<
         // Terrace Finance Token API call
         var data = new FormData();
         data.append("UserName", "hamzah@seblgroup.com");
-        data.append("Password", "Welcome@123");
+        data.append("Password", "");
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = false;
         xhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
@@ -97,18 +97,62 @@ class TerraceFinancePaymentMethod extends Component<
 
             xhr.onreadystatechange = function () {
               if (this.readyState == 4) {
+
                 // Parse response
                 let leadResponse: TerraceFinanceLeadResponse = JSON.parse(this.responseText);
 
-                
-                // Redirect customer from lead response
+                // Merge physical/digital items in cart
+                var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
+                let invoiceItems: TerraceFinanceInvoiceItems[] = 
+                  lineItems.map(x =>
+                  (
+                    {
+                      ItemDescription: x.name,
+                      Brand: x.brand,
+                      SKU: x.sku,
+                      Price: x.salePrice.toString(),
+                      Quantity: x.quantity.toString(),
+                      Discount: x.discountAmount.toString(),
+                    }
+                  ));
 
+                // Terrace Finance Invoice API call
+                var data = new FormData();
+                data.append("InvoiceNumber", "1"); // Property will be replaced with checkout ID
+                data.append("InvoiceDate", checkout.createdTime);
+                data.append("LeadID", leadResponse.Result.toString());
+                data.append("DeliveryDate", checkout.createdTime);
+
+                let discountAmount: string = "";
+
+                if (checkout.discounts){
+                  discountAmount = checkout.discounts.reduce((acc, discount) => acc + discount.discountedAmount, 0).toString()
+                }
+                
+                data.append("Discount", discountAmount);
+                data.append("DownPayment", "0");
+                data.append("Shipping", checkout.shippingCostTotal.toString());
+                data.append("Tax", "0");
+                data.append("Items", invoiceItems.toString());
+
+                console.log(JSON.stringify(invoiceItems));
+
+                var xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
+                xhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
+                xhr.send(data);
+
+                xhr.onreadystatechange = function () {
+                  if (this.readyState == 4) {
+                    // Redirect customer from lead response
+                    console.log(this.responseText);
+                  }
+                }
               };
             }
-
           };
         }
-        
 
       } else {
         throw new Error();
@@ -198,4 +242,13 @@ interface TerraceFinanceLeadResponse {
   UserName: string;
   Authenticate: boolean;
   RequestId: number;
+}
+
+interface TerraceFinanceInvoiceItems {
+  ItemDescription: string;
+  Brand: string;
+  SKU: string;
+  Price: string;
+  Quantity: string;
+  Discount: string;
 }
