@@ -176,7 +176,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
                 titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4. Interest free.',
+                titleSubText: 'Zip now, pay later. Pay in 4.',
             },
             [PaymentMethodId.Sezzle]: {
                 logoUrl: cdnPath('/img/payment-providers/sezzle-checkout-header.png'),
@@ -186,7 +186,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Zip]: {
                 logoUrl: cdnPath('/img/payment-providers/zip.png'),
                 titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4. Interest free.',
+                titleSubText: 'Zip now, pay later. Pay in 4.',
             },
             [PaymentMethodType.Barclaycard]: {
                 logoUrl: cdnPath(
