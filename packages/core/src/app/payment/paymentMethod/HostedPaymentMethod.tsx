@@ -257,12 +257,12 @@ class HostedPaymentMethod extends Component<
                             </ul>
                             <p style={{fontSize: 'smaller'}}>
                             Zip can only be used for US purchases. 
-                            Late fees may apply, subject to eligibility. See complete <a href='https://zip.co/us/quadpay-terms-of-service'>US Terms </a> 
-                            or <a href='https://zip.co/en-ca/quadpay-terms-of-service'>Canada Terms</a> for more detail. 
+                            Late fees may apply, subject to eligibility. See complete <a href='https://zip.co/us/quadpay-terms-of-service' target="_blank">US Terms </a> 
+                            or <a href='https://zip.co/en-ca/quadpay-terms-of-service' target="_blank">Canada Terms</a> for more detail. 
                             Est. payments on product pages exclude taxes, shipping and consumer fees added at checkout. 
                             Loans to California residents are pursuant to CFL license #60DBO-110414. Zip is the originator of all loans in CO, NV, MA, and MD. 
                             Where indicated in the terms and conditions, loans in other states are originated by WebBank. 
-                            All loans subject to approval. Zip Co US Inc. ID 1963958 <a href='https://mortgage.nationwidelicensingsystem.org/about/Pages/NMLSConsumerAccess.aspx'>NMLS Consumer Access</a>.
+                            All loans subject to approval. Zip Co US Inc. ID 1963958 <a href='https://mortgage.nationwidelicensingsystem.org/about/Pages/NMLSConsumerAccess.aspx' target="_blank">NMLS Consumer Access</a>.
                             </p>
                             <p>After clicking "Continue With Zip", you will be redirected to Zip to complete your purchase securely.</p>
                         </div>
