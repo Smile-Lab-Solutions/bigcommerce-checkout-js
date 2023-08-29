@@ -258,7 +258,13 @@ function getPaymentMethodTitle(
             ['cod']: {
                 logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
                 titleText: '',
-                titleSubText: 'Flexible Ways to Buy Now and Pay Later',
+                titleSubText: '6, 12 or 18 monthly repayments. From 0% APR',
+            },
+            // Cheque is used for PayTomorrow
+            ['cheque']: {
+                logoUrl: '',
+                titleText: '',
+                titleSubText: 'For consumers with a fair credit rating',
             },
         };
 
@@ -333,6 +339,11 @@ const PaymentMethodTitle: FunctionComponent<
                     />
                 )}
 
+                {/* US PayTomorrow payment icon */}
+                {method.id === 'cheque' && (
+                    <img id='pt-img' src='https://cdn.paytomorrow.com/image/PayTomorrow_Checkout.png'></img>
+                )}
+
                 {titleText && (
                     <div className="paymentProviderHeader-name" data-test="payment-method-name">
                         {titleText}
@@ -352,6 +363,18 @@ const PaymentMethodTitle: FunctionComponent<
                                                 :
                                                 <i>Sorry, discount codes cannot be used with Partial.ly</i>
                                             }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {/* US PayTomorrow promo code info */}
+                        {method.id === 'cheque' && (
+                            <div className='checkout-notifications'>
+                                <div className="notification notification--info">
+                                    <div className="notification__content">
+                                        <p>
+                                            <i>Sorry, promo codes cannot be used with Paytomorrow</i>
                                         </p>
                                     </div>
                                 </div>

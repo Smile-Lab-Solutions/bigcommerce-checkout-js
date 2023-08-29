@@ -37,6 +37,7 @@ import {
     PaymentMethodProviderType,
 } from './paymentMethod';
 import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
+import _ from 'lodash';
 
 export interface PaymentProps {
     errorLogger: ErrorLogger;
@@ -580,6 +581,17 @@ export function mapToPaymentProps({
             methods = methods.concat(getPartiallyMethod());
             loadPartiallyJs();
         }
+
+    console.log(methods);
+
+    // Reorder methods US
+    if (config.shopperCurrency.code === 'USD'){
+        let paymentOrder = [ 'nmi', 'paypal', 'venmo', 'cod', 'klarna', 'afterpay', 'quadpay', 'cheque', 'partially'];
+    
+        methods = _.sortBy(methods, function(pm){
+            return paymentOrder.indexOf(pm.id);
+        });
+    }
 
     const {
         enableTermsAndConditions: isTermsConditionsEnabled,
