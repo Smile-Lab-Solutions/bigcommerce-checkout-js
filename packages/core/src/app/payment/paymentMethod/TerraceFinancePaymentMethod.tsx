@@ -6,7 +6,7 @@ import { ConnectFormikProps, connectFormik } from '../../common/form';
 import { MapToPropsFactory } from '../../common/hoc';
 import { WithLanguageProps, withLanguage } from '@bigcommerce/checkout/locale';
 import withPayment, { WithPaymentProps } from '../withPayment';
-import { noop, sum } from 'lodash';
+import { noop } from 'lodash';
 import { LoadingOverlay } from '../../ui/loading';
 import { withCheckout } from '../../checkout';
 
@@ -32,8 +32,10 @@ class TerraceFinancePaymentMethod extends Component<
       const {
           method,
           setSubmit,
+          disableSubmit
       } = this.props;
 
+      disableSubmit(method, false);
       setSubmit(method, this.handleSubmit);
   }
 
@@ -58,11 +60,16 @@ class TerraceFinancePaymentMethod extends Component<
       checkout,
       config,
       onUnhandledError = noop,
+      disableSubmit
     } = this.props;
+
+    disableSubmit(method, true);
 
     try {
       if (checkout && method && config && checkout.billingAddress) {
 
+        // ONLY ENTER PASSWORD WHEN DEPLOYING
+        // DO NOT PUSH TO REPO
         let terraceUsername = 'hamzah@seblgroup.com';
         let terracePwd = '';
         
@@ -124,12 +131,16 @@ class TerraceFinancePaymentMethod extends Component<
                           ItemDescription: x.name,
                           Brand: x.brand,
                           SKU: x.sku,
-                          Price: x.salePrice, // change to prediscount value
+                          //Price: x.listPrice,
+                          Price: x.listPrice == 0 ? 1 : x.listPrice,
                           Quantity: x.quantity,
                           Discount: x.discountAmount,
-                          Total: x.salePrice
+                          //Total: x.salePrice
+                          Total: x.salePrice == 0 ? 1 : x.salePrice
                         }
                       ));
+
+                      console.log(lineItems);
     
                     // Terrace Finance Invoice data
                     let invoiceData: TerraceFinanceInvoiceData = {
@@ -137,7 +148,7 @@ class TerraceFinancePaymentMethod extends Component<
                       InvoiceDate: checkout.createdTime,
                       LeadID: leadResponse.Result,
                       DeliveryDate: checkout.createdTime,
-                      Discount: invoiceItems.reduce((acc, lineItem) => acc + lineItem.Discount, 0),
+                      Discount: lineItems.reduce((acc, lineItem) => acc + lineItem.couponAmount, 0),
                       DownPayment: 0,
                       Shipping: checkout.shippingCostTotal,
                       Tax: 0,
@@ -181,6 +192,7 @@ class TerraceFinancePaymentMethod extends Component<
         throw new Error();
       }
     } catch (error) {
+      disableSubmit(method, false);
       var errorMessage = "Failed to load Terrace Finance, please try again later.";
       onUnhandledError(new Error(errorMessage) as CustomError);
     }
@@ -227,7 +239,7 @@ const mapFromCheckoutProps: MapToPropsFactory<
       const {
           data: {
               getCheckout, getConfig
-          },
+          }
       } = checkoutState;
 
       const checkout = getCheckout();
