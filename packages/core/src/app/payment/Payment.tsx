@@ -584,6 +584,17 @@ export function mapToPaymentProps({
 
     // Reorder methods US
     if (config.shopperCurrency.code === 'USD'){
+        // Order is as follows
+        //  Method ID is used which is a different value than the commented list below
+        // Debit/credit Card
+        // Paypal
+        // Venmo
+        // Bread Pay
+        // Klarna
+        // Afterpay
+        // Zip
+        // Paytomorrow
+        // Partially
         let paymentOrder = [ 'nmi', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){

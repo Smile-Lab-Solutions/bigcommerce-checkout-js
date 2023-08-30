@@ -190,3 +190,10 @@ body.klarna-payments-fso-open {
         width: 100%;
     }
 }
+
+#cod,
+#pay_over_time,
+#pay_by_installment,
+#quadpay {
+    height: 3rem !important;
+}
