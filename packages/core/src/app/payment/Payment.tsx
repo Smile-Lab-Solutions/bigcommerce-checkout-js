@@ -582,11 +582,9 @@ export function mapToPaymentProps({
             loadPartiallyJs();
         }
 
-    console.log(methods);
-
     // Reorder methods US
     if (config.shopperCurrency.code === 'USD'){
-        let paymentOrder = [ 'nmi', 'paypal', 'venmo', 'cod', 'klarna', 'afterpay', 'quadpay', 'cheque', 'partially'];
+        let paymentOrder = [ 'nmi', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
