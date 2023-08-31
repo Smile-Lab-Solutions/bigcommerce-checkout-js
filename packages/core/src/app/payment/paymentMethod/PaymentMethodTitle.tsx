@@ -30,6 +30,7 @@ interface WithCdnPathProps {
 function getPaymentMethodTitle(
     language: LanguageService,
     basePath: string,
+    storeCurrency: string,
 ): (method: PaymentMethod) => { logoUrl: string; titleText: string; titleSubText: string } {
     const cdnPath = (path: string) => `${basePath}${path}`;
 
@@ -119,8 +120,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
-                titleText: '',
-                titleSubText: 'Pay in 4 interest-free installments',
+                titleText: 'Pay in 4 interest-free installments',
+                titleSubText: '',
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
@@ -144,7 +145,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Klarna]: {
                 logoUrl: cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: 'Pay in 4 interest free installments',
+                titleText: storeCurrency === 'USD' ? 'Pay in 4 interest free installments' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -298,7 +299,7 @@ const PaymentMethodTitle: FunctionComponent<
         ConnectFormikProps<PaymentFormValues>
 > = ({ cdnBasePath, formik: { values }, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
-    const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath)(method);
+    const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
 
     const getSelectedCardType = () => {
         if (!isSelected) {
