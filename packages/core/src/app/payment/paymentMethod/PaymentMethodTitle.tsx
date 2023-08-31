@@ -94,7 +94,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Afterpay]: {
                 logoUrl: cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
-                titleText: 'Pay in 4 interest free instalments',
+                titleText: 'Pay in 4 interest free installments',
                 titleSubText: '',
             },
             [PaymentMethodId.AmazonPay]: {
@@ -120,7 +120,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
                 titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments',
+                titleSubText: 'Pay in 4 interest-free installments',
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
@@ -328,7 +328,7 @@ const PaymentMethodTitle: FunctionComponent<
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
-                style={{flexWrap: 'wrap', width: '100%'}}
+                style={method.id === 'paypalcommerce' ? {flexWrap: 'wrap'} : {flexWrap: 'wrap', width: '100%'}}
             >
                 {logoUrl && (
                     <img
@@ -342,12 +342,23 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {/* US PayTomorrow payment icon */}
                 {method.id === 'cheque' && (
-                    <img 
+                    <img
                         alt={methodName}
                         className="paymentProviderHeader-img"
                         data-test="payment-method-logo"
                         src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
-                        id='pt-img' 
+                        id='pt-img'
+                    />
+                )}
+
+                {/* Paypal payment second icon */}
+                {method.id === 'paypalcommerce' && (
+                    <img
+                        alt={methodName}
+                        className="paymentProviderHeader-img"
+                        data-test="payment-method-logo"
+                        src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                        id='paypalcommerceSecondIcon'
                     />
                 )}
 
@@ -362,12 +373,12 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {titleSubText && (
                     <div style={method.id !== 'partially' && method.id !== 'cod' ? {width: '100%', fontSize: '1rem', fontWeight: '500'} : {}}>
-                        <p style={method.id === 'partially' || method.id === 'cod' ? {marginBottom: '0px', fontSize: '1.15rem'} : {marginBottom: '0px'}}>{titleSubText}</p>
+                        <p style={method.id === 'partially' || method.id === 'cod' ? {marginBottom: '0px', fontSize: '1.15rem', fontWeight: '500'} : {marginBottom: '0px'}}>{titleSubText}</p>
                     </div>
                 )}
 
                 {method.gateway === PaymentMethodId.Partially && (
-                    <div className='checkout-notifications' style={{width: '100%'}}>
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
                         <div className="notification notification--info">
                             <div className="notification__content">
                                 <p>
@@ -383,7 +394,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
                 {/* US PayTomorrow promo code info */}
                 {method.id === 'cheque' && (
-                    <div className='checkout-notifications' style={{width: '100%'}}>
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
                         <div className="notification notification--info">
                             <div className="notification__content">
                                 <p>

@@ -197,3 +197,14 @@ body.klarna-payments-fso-open {
 #quadpay {
     height: 3rem !important;
 }
+
+#paypalcommerceSecondIcon{
+    height: 4rem!important;
+    margin-left: 1rem;
+}
+
+@media (max-width: $screen-large) {
+    .checkout-notifications.merchant{
+        display: none;
+    }
+}
