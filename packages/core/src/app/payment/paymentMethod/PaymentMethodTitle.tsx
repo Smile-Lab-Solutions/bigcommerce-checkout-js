@@ -94,8 +94,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Afterpay]: {
                 logoUrl: cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
-                titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodId.AmazonPay]: {
                 logoUrl: cdnPath('/img/payment-providers/amazon-header.png'),
@@ -120,7 +120,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
                 titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments',
+                titleSubText: 'Pay in 4 interest-free installments',
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
@@ -144,7 +144,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Klarna]: {
                 logoUrl: cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: methodDisplayName,
+                titleText: 'Pay in 4 interest free installments',
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -175,8 +175,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
-                titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4.',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodId.Sezzle]: {
                 logoUrl: cdnPath('/img/payment-providers/sezzle-checkout-header.png'),
@@ -185,8 +185,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Zip]: {
                 logoUrl: cdnPath('/img/payment-providers/zip.png'),
-                titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4.',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodType.Barclaycard]: {
                 logoUrl: cdnPath(
@@ -252,13 +252,19 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Partially]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Ideal for people with an adverse credit rating',
+                titleSubText: 'For people with a bad or zero credit',
             },
             // Cash on Delivery is used for Bread
             ['cod']: {
                 logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
                 titleText: '',
-                titleSubText: 'Flexible Ways to Buy Now and Pay Later',
+                titleSubText: 'Up to 18 months credit from 0% apr',
+            },
+            // Cheque is used for PayTomorrow
+            ['cheque']: {
+                logoUrl: '',
+                titleText: 'Pay over 6 months 0% APR',
+                titleSubText: 'For people with a fair credit rating',
             },
         };
 
@@ -322,7 +328,7 @@ const PaymentMethodTitle: FunctionComponent<
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
-                style={{flexWrap: 'wrap'}}
+                style={method.id === 'paypalcommerce' ? {flexWrap: 'wrap'} : {flexWrap: 'wrap', width: '100%'}}
             >
                 {logoUrl && (
                     <img
@@ -330,35 +336,75 @@ const PaymentMethodTitle: FunctionComponent<
                         className="paymentProviderHeader-img"
                         data-test="payment-method-logo"
                         src={logoUrl}
+                        id={method.id}
+                    />
+                )}
+
+                {/* US PayTomorrow payment icon */}
+                {method.id === 'cheque' && (
+                    <img
+                        alt={methodName}
+                        className="paymentProviderHeader-img"
+                        data-test="payment-method-logo"
+                        src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
+                        id='pt-img'
+                    />
+                )}
+
+                {/* Paypal payment second icon */}
+                {method.id === 'paypalcommerce' && (
+                    <img
+                        alt={methodName}
+                        className="paymentProviderHeader-img"
+                        data-test="payment-method-logo"
+                        src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                        id='paypalcommerceSecondIcon'
                     />
                 )}
 
                 {titleText && (
-                    <div className="paymentProviderHeader-name" data-test="payment-method-name">
+                    <div 
+                        className="paymentProviderHeader-name" 
+                        data-test="payment-method-name" 
+                        style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
                         {titleText}
                     </div>
                 )}
 
                 {titleSubText && (
-                    <div style={{width: '100%', fontSize: '1rem', fontWeight: '500'}}>
-                        <p style={{marginBottom: '0px'}}>{titleSubText}</p>
-                        {method.gateway === PaymentMethodId.Partially && (
-                            <div className='checkout-notifications'>
-                                <div className="notification notification--info">
-                                    <div className="notification__content">
-                                        <p>
-                                            {storeCurrency === 'USD' ?
-                                                <i>Sorry, promo codes cannot be used with Partial.ly</i>
-                                                :
-                                                <i>Sorry, discount codes cannot be used with Partial.ly</i>
-                                            }
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                    <div style={method.id !== 'partially' && method.id !== 'cod' ? {width: '100%', fontSize: '1rem', fontWeight: '500'} : {}}>
+                        <p style={method.id === 'partially' || method.id === 'cod' ? {marginBottom: '0px', fontSize: '1.15rem', fontWeight: '500'} : {marginBottom: '0px'}}>{titleSubText}</p>
                     </div>
                 )}
+
+                {method.gateway === PaymentMethodId.Partially && (
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    {storeCurrency === 'USD' ?
+                                        <i>Sorry, promo codes cannot be used with Partial.ly</i>
+                                        :
+                                        <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {/* US PayTomorrow promo code info */}
+                {method.id === 'cheque' && (
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    <i>Sorry, promo codes cannot be used with Paytomorrow</i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
                     <div style={{width: '100%'}}>
