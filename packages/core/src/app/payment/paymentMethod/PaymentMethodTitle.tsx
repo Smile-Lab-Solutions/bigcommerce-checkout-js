@@ -259,7 +259,7 @@ function getPaymentMethodTitle(
             ['cod']: {
                 logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
                 titleText: '',
-                titleSubText: 'Up to 18 months credit from 0% apr',
+                titleSubText: 'Up to 18 months credit from 0% APR',
             },
             // Cheque is used for PayTomorrow
             ['cheque']: {
