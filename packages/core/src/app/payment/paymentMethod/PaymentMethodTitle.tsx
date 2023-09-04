@@ -265,7 +265,7 @@ function getPaymentMethodTitle(
             ['cheque']: {
                 logoUrl: '',
                 titleText: 'Pay over 6 months 0% APR',
-                titleSubText: 'For people with a fair credit rating',
+                titleSubText: 'For people with a 600+ FICO credit score',
             },
         };
 
