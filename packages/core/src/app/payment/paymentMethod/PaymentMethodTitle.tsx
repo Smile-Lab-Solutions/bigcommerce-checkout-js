@@ -80,7 +80,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.PaypalCommerceAlternativeMethod]: {
                 logoUrl: method.logoUrl || '',
-                titleText: method.logoUrl ? '' : methodDisplayName,
+                titleText: 'Make payment with your Venmo account',
                 titleSubText: '',
             },
             [PaymentMethodType.VisaCheckout]: {
@@ -125,7 +125,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
-                titleText: '',
+                titleText: 'Make payment with your Google Pay account',
                 titleSubText: '',
             },
             [PaymentMethodType.PayWithGoogle]: {
@@ -145,13 +145,13 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Klarna]: {
                 logoUrl: cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: storeCurrency === 'USD' ? 'Pay in 4 interest free installments' : methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
                 logoUrl: cdnPath('/img/payment-providers/laybuy-checkout-header.png'),
-                titleText: '',
-                titleSubText: 'Buy now and pay over 6 weekly interest-free instalments',
+                titleText: 'Buy now and pay over 6 weekly interest-free instalments',
+                titleSubText: '',
             },
             [PaymentMethodId.Masterpass]: {
                 logoUrl: 'https://masterpass.com/dyn/img/acc/global/mp_mark_hor_blk.svg',
@@ -329,7 +329,7 @@ const PaymentMethodTitle: FunctionComponent<
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
-                style={method.id === 'paypalcommerce' ? {flexWrap: 'wrap'} : {flexWrap: 'wrap', width: '100%'}}
+                style={method.id === 'paypalcommerce' ? {} : {flexWrap: 'wrap', width: '100%'}}
             >
                 {logoUrl && (
                     <img
@@ -354,13 +354,16 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {/* Paypal payment second icon */}
                 {method.id === 'paypalcommerce' && (
-                    <img
-                        alt={methodName}
-                        className="paymentProviderHeader-img"
-                        data-test="payment-method-logo"
-                        src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
-                        id='paypalcommerceSecondIcon'
-                    />
+                    <>
+                        <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
+                        <img
+                            alt={methodName}
+                            className="paymentProviderHeader-img"
+                            data-test="payment-method-logo"
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                            id='paypalcommerceSecondIcon'
+                        />
+                    </>
                 )}
 
                 {titleText && (
@@ -409,14 +412,20 @@ const PaymentMethodTitle: FunctionComponent<
                 {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
                     <div style={{width: '100%'}}>
-                        <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-2.png'></img>
+                        <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-sep23.png'></img>
                     </div>
                 )}
-                {/* US NMI payment card icons */}
+
+                {/* US NMI subtext & payment card icons */}
                 {method.id === 'nmi' && (
-                    <div style={{width: '100%'}}>
-                        <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_may23.jpg'></img>
-                    </div>
+                    <>
+                        <div style={{ width: '100%', fontSize: '1rem', fontWeight: '500' }}>
+                            <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
+                        </div>
+                        <div style={{ width: '100%' }}>
+                            <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
+                        </div>
+                    </>
                 )}
             </div>
             <div className="paymentProviderHeader-cc">

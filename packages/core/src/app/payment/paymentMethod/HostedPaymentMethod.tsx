@@ -264,7 +264,7 @@ class HostedPaymentMethod extends Component<
                             Where indicated in the terms and conditions, loans in other states are originated by WebBank. 
                             All loans subject to approval. Zip Co US Inc. ID 1963958 <a href='https://mortgage.nationwidelicensingsystem.org/about/Pages/NMLSConsumerAccess.aspx' target="_blank">NMLS Consumer Access</a>.
                             </p>
-                            <p>After clicking "Continue With Zip", you will be redirected to Zip to complete your purchase securely.</p>
+                            <p>After clicking "Place Order", you will be redirected to Zip to complete your purchase securely.</p>
                         </div>
                     </div>
                 </LoadingOverlay>
