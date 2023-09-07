@@ -149,3 +149,23 @@
     font-size: 1rem !important;
     padding: 1.1875rem 4.5rem !important;
 }
+
+#lender-button {
+    background-color: #14ccad!important;
+    border-color: #14ccad;
+    border-radius: 15px !important;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+
+    &:hover {
+        background: #000070;
+        background-color: #000070 !important;
+        border-color: #000070 !important;
+        color: #fff !important;
+    }
+}
+
+#lender-label {
+    color: white!important;
+}

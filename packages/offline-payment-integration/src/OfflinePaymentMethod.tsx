@@ -61,7 +61,8 @@ const OfflinePaymentMethod: FunctionComponent<PaymentMethodProps> = ({
         return <>
             <div className="paymentMethod paymentMethod--offline">
                 <div className="payment-descriptor">
-                    <p>Applying with Pay Tomorrow will not affect your credit score.</p>
+                    <p style={{marginBottom: '0px!important'}}>Applying with Pay Tomorrow will not affect your credit score.</p>
+                    <p>For people with a 600+ FICO credit score.</p>
                     <ul className="list-element">
                         <li><div className="circleCheck"></div>Payment plans over 6 months*</li>
                         <li><div className="circleCheck"></div>$99 down payment at checkout</li>
