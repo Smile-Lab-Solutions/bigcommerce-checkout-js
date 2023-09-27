@@ -68,18 +68,12 @@ const Redeemable: FunctionComponent<
                 )}
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
-                        {storeCurrencyCode === 'USD' && (
-                           <TranslatedString id="redeemable.toggle_action_us" />
-                        )}
-                        {storeCurrencyCode !== 'USD' && (
-                            <TranslatedString id="redeemable.toggle_action" />
-                        )}
                         <div className='checkout-notifications'>
                             <div className="notification notification--info">
                                 <div className="notification__content">
                                     <p>
                                         {storeCurrencyCode === 'USD' && (
-                                            <i>Sorry, promo codes cannot be used with Partial.ly/Paytomorrow</i>
+                                            <i>Sorry, promo codes cannot be used with Partial.ly</i>
                                         )}
                                         {storeCurrencyCode !== 'USD' && (
                                             <i>Sorry, discount codes cannot be used with Partial.ly</i>
@@ -88,6 +82,16 @@ const Redeemable: FunctionComponent<
                                 </div>
                             </div>
                         </div>
+                        <span style={{ fontSize: '14px' }}>
+                            <b>
+                                {storeCurrencyCode === 'USD' && (
+                                    <TranslatedString id="redeemable.toggle_action_us" />
+                                )}
+                                {storeCurrencyCode !== 'USD' && (
+                                    <TranslatedString id="redeemable.toggle_action" />
+                                )}
+                            </b>
+                        </span>
                     </div>
                 )}
                 <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>
@@ -95,7 +99,7 @@ const Redeemable: FunctionComponent<
                         <div className="notification__content">
                             <p>
                                 {storeCurrencyCode === 'USD' && (
-                                    <i>Sorry, promo codes cannot be used with Partial.ly/Paytomorrow</i>
+                                    <i>Sorry, promo codes cannot be used with Partial.ly</i>
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
                                     <i>Sorry, discount codes cannot be used with Partial.ly</i>
