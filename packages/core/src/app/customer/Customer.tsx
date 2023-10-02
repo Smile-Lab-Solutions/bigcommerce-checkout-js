@@ -547,8 +547,6 @@ export function mapToWithCheckoutCustomerProps({
         return null;
     }
 
-    console.log(config);
-
     const {
         checkoutSettings: {
             privacyPolicyUrl,
