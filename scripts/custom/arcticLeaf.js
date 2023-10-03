@@ -68,7 +68,6 @@ function updateKlaviyo(id, items, isEmpty) {
     totalValue = Number(totalValue);
     var thisUrl = encodeURIComponent(window.location.origin);
     var url = appDomain + '/rebuild_cart?id=' + encodeURIComponent(id) + '&hash=' + encodeURIComponent(hash) + '&domain=' + encodeURIComponent(thisUrl);
-    console.log(url);
     _learnq.push(['track', 'Updated Cart (Cart Rebuilder App)', { categories: cartCategories.split(','), cart_url: url, isEmpty: isEmpty, itemNames: itemNames, brands: brands, items: currentItems, totalValue: totalValue, itemCount: itemCount }]);
 }
 

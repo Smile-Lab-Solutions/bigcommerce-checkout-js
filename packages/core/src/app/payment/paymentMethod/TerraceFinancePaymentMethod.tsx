@@ -131,16 +131,12 @@ class TerraceFinancePaymentMethod extends Component<
                           ItemDescription: x.name,
                           Brand: x.brand,
                           SKU: x.sku,
-                          //Price: x.listPrice,
-                          Price: x.listPrice == 0 ? 1 : x.listPrice,
+                          Price: x.listPrice,
                           Quantity: x.quantity,
                           Discount: x.discountAmount,
-                          //Total: x.salePrice
-                          Total: x.salePrice == 0 ? 1 : x.salePrice
+                          Total: x.salePrice
                         }
                       ));
-
-                      console.log(lineItems);
     
                     // Terrace Finance Invoice data
                     let invoiceData: TerraceFinanceInvoiceData = {
