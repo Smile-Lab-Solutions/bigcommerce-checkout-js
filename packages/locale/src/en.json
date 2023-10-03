@@ -300,7 +300,7 @@
             "account_instrument_new_shipping_address": "<strong>We noticed this is a new shipping address.</strong><p>For security reasons, you will need to re-link your PayPal account when shipping to an address for the first time or if the shipping address was edited recently.</p>",
             "instrument_trusted_shipping_address_text": "This additional security step is applied to your card when shipping to an address for the first time or if the shipping address was edited recently.",
             "instrument_trusted_shipping_address_title_text": "Please re-enter your card number to authorize this transaction.",
-            "quadpay_continue_action": "Continue with Zip",
+            "quadpay_continue_action": "Place Order",
             "quadpay_display_name_text": "Pay in 4 installments",
             "ppsdk_continue_action": "Continue with {methodName}",
             "select_your_bank": "Select your bank",
@@ -315,7 +315,7 @@
             "tax_provider_unavailable": "Sales tax could not be calculated. Please try again. If unsuccessful, please reach out to our support team to complete checkout.",
             "vco_name_text": "Click to pay",
             "visa_checkout_continue_action": "Continue with Click to pay",
-            "zip_continue_action": "Continue with Zip",
+            "zip_continue_action": "Place Order",
             "zip_name_text": "Zip",
             "zip_display_name_text": "Own it now, pay later",
             "errors": {

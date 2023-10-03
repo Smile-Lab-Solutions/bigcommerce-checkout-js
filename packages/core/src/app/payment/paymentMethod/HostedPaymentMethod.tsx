@@ -248,25 +248,23 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                     <div className="payment-descriptor">
-                            <p>Pay in 4 interest free payments over 6 weeks. 1st payment due at checkout.
+                            <p>Pay in 4 payments over 6 weeks. 1st payment due at checkout.
                             </p>
                             <ul className="list-element">
-                                <li><div className="circleCheck"></div>Pay using Amex, Visa or MasterCard (as long as they are not pre-paid)</li>
-                                <li><div className="circleCheck"></div>No hard credit check</li>
-                                <li><div className="circleCheck"></div>No impact on your credit score</li>
-                                <li><div className="circleCheck"></div>0% interest</li>
-                                <li><div className="circleCheck"></div>Payments every 2 weeks</li>
+                                <li><div className="circleCheck"></div>Pay using Amex, Visa or Mastercard (as long as they are not pre-paid)</li>
+                                <li><div className="circleCheck"></div>Buy now, pay later</li>
+                                <li><div className="circleCheck"></div>Easy payments</li>
                             </ul>
                             <p style={{fontSize: 'smaller'}}>
-                            Zip can only be used for US purchases. Certain merchant, product, goods, and service restrictions apply. 
-                            For example, for a $335 purchase, you’d make four $85.25 payments every two weeks starting today for a 31.11% annual percentage rate and a total of payments of $341. 
-                            A $6 installment fee is charged at commencement - you pay $1.50 of this fee as a prepaid finance charge when you make your initial payment today. 
-                            The remaining $4.50 is included in your future payments. Actual installment fees vary and can range from $0 to $7.50 depending on the purchase price and Zip product used. 
-                            Actual amount of fee for your purchase will be reflected in checkout. 
-                            Estimation of installment payment and annual percentage rate excludes potential tax and shipping costs. 
-                            Zip Pay Anywhere and Zip Checkout financing through Zip issued by WebBank, except for Zip-originated loans in CO, NV, MA, and MD. All loans are subject to credit approval."
+                            Zip can only be used for US purchases. 
+                            Late fees may apply, subject to eligibility. See complete <a href='https://zip.co/us/quadpay-terms-of-service' target="_blank">US Terms </a> 
+                            or <a href='https://zip.co/en-ca/quadpay-terms-of-service' target="_blank">Canada Terms</a> for more detail. 
+                            Est. payments on product pages exclude taxes, shipping and consumer fees added at checkout. 
+                            Loans to California residents are pursuant to CFL license #60DBO-110414. Zip is the originator of all loans in CO, NV, MA, and MD. 
+                            Where indicated in the terms and conditions, loans in other states are originated by WebBank. 
+                            All loans subject to approval. Zip Co US Inc. ID 1963958 <a href='https://mortgage.nationwidelicensingsystem.org/about/Pages/NMLSConsumerAccess.aspx' target="_blank">NMLS Consumer Access</a>.
                             </p>
-                            <p>After clicking "Continue With Zip", you will be redirected to Zip to complete your purchase securely.</p>
+                            <p>After clicking "Place Order", you will be redirected to Zip to complete your purchase securely.</p>
                         </div>
                     </div>
                 </LoadingOverlay>

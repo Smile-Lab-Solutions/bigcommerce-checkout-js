@@ -68,12 +68,6 @@ const Redeemable: FunctionComponent<
                 )}
                 {!shouldCollapseCouponCode && (
                     <div className="redeemable-label">
-                        {storeCurrencyCode === 'USD' && (
-                           <TranslatedString id="redeemable.toggle_action_us" />
-                        )}
-                        {storeCurrencyCode !== 'USD' && (
-                            <TranslatedString id="redeemable.toggle_action" />
-                        )}
                         <div className='checkout-notifications'>
                             <div className="notification notification--info">
                                 <div className="notification__content">
@@ -88,6 +82,16 @@ const Redeemable: FunctionComponent<
                                 </div>
                             </div>
                         </div>
+                        <span style={{ fontSize: '14px' }}>
+                            <b>
+                                {storeCurrencyCode === 'USD' && (
+                                    <TranslatedString id="redeemable.toggle_action_us" />
+                                )}
+                                {storeCurrencyCode !== 'USD' && (
+                                    <TranslatedString id="redeemable.toggle_action" />
+                                )}
+                            </b>
+                        </span>
                     </div>
                 )}
                 <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>

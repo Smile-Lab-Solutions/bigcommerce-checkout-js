@@ -30,6 +30,7 @@ interface WithCdnPathProps {
 function getPaymentMethodTitle(
     language: LanguageService,
     basePath: string,
+    storeCurrency: string,
 ): (method: PaymentMethod) => { logoUrl: string; titleText: string; titleSubText: string } {
     const cdnPath = (path: string) => `${basePath}${path}`;
 
@@ -79,7 +80,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.PaypalCommerceAlternativeMethod]: {
                 logoUrl: method.logoUrl || '',
-                titleText: method.logoUrl ? '' : methodDisplayName,
+                titleText: 'Make payment with your Venmo account',
                 titleSubText: '',
             },
             [PaymentMethodType.VisaCheckout]: {
@@ -94,8 +95,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Afterpay]: {
                 logoUrl: cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
-                titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodId.AmazonPay]: {
                 logoUrl: cdnPath('/img/payment-providers/amazon-header.png'),
@@ -119,12 +120,12 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
-                titleText: '',
-                titleSubText: 'Pay in 4 interest-free instalments',
+                titleText: 'Pay in 4 interest-free installments',
+                titleSubText: '',
             },
             [PaymentMethodType.GooglePay]: {
                 logoUrl: cdnPath('/img/payment-providers/google-pay.png'),
-                titleText: '',
+                titleText: 'Make payment with your Google Pay account',
                 titleSubText: '',
             },
             [PaymentMethodType.PayWithGoogle]: {
@@ -144,13 +145,13 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Klarna]: {
                 logoUrl: cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
                 logoUrl: cdnPath('/img/payment-providers/laybuy-checkout-header.png'),
-                titleText: '',
-                titleSubText: 'Buy now and pay over 6 weekly interest-free instalments',
+                titleText: 'Buy now and pay over 6 weekly interest-free instalments',
+                titleSubText: '',
             },
             [PaymentMethodId.Masterpass]: {
                 logoUrl: 'https://masterpass.com/dyn/img/acc/global/mp_mark_hor_blk.svg',
@@ -175,8 +176,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
-                titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4. Interest free.',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodId.Sezzle]: {
                 logoUrl: cdnPath('/img/payment-providers/sezzle-checkout-header.png'),
@@ -185,8 +186,8 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Zip]: {
                 logoUrl: cdnPath('/img/payment-providers/zip.png'),
-                titleText: '',
-                titleSubText: 'Zip now, pay later. Pay in 4. Interest free.',
+                titleText: 'Pay in 4 interest free installments',
+                titleSubText: '',
             },
             [PaymentMethodType.Barclaycard]: {
                 logoUrl: cdnPath(
@@ -252,13 +253,19 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Partially]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Ideal for people with an adverse credit rating',
+                titleSubText: 'For people with a bad or zero credit',
             },
             // Cash on Delivery is used for Bread
             ['cod']: {
                 logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
                 titleText: '',
-                titleSubText: 'Flexible Ways to Buy Now and Pay Later',
+                titleSubText: 'Up to 18 months credit from 0% APR',
+            },
+            // Cheque is used for PayTomorrow
+            ['cheque']: {
+                logoUrl: '',
+                titleText: 'Pay over 6 months 0% APR',
+                titleSubText: 'For people with a 600+ FICO credit score',
             },
             [PaymentMethodId.TerraceFinance]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
@@ -297,7 +304,7 @@ const PaymentMethodTitle: FunctionComponent<
         ConnectFormikProps<PaymentFormValues>
 > = ({ cdnBasePath, formik: { values }, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
-    const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath)(method);
+    const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
 
     const getSelectedCardType = () => {
         if (!isSelected) {
@@ -327,7 +334,7 @@ const PaymentMethodTitle: FunctionComponent<
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
-                style={{flexWrap: 'wrap'}}
+                style={method.id === 'paypalcommerce' ? {} : {flexWrap: 'wrap', width: '100%'}}
             >
                 {logoUrl && (
                     <img
@@ -335,46 +342,95 @@ const PaymentMethodTitle: FunctionComponent<
                         className="paymentProviderHeader-img"
                         data-test="payment-method-logo"
                         src={logoUrl}
+                        id={method.id}
                     />
                 )}
 
+                {/* US PayTomorrow payment icon */}
+                {method.id === 'cheque' && (
+                    <img
+                        alt={methodName}
+                        className="paymentProviderHeader-img"
+                        data-test="payment-method-logo"
+                        src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
+                        id='pt-img'
+                    />
+                )}
+
+                {/* Paypal payment second icon */}
+                {method.id === 'paypalcommerce' && (
+                    <>
+                        <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
+                        <img
+                            alt={methodName}
+                            className="paymentProviderHeader-img"
+                            data-test="payment-method-logo"
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                            id='paypalcommerceSecondIcon'
+                        />
+                    </>
+                )}
+
                 {titleText && (
-                    <div className="paymentProviderHeader-name" data-test="payment-method-name">
+                    <div 
+                        className="paymentProviderHeader-name" 
+                        data-test="payment-method-name" 
+                        style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
                         {titleText}
                     </div>
                 )}
 
                 {titleSubText && (
-                    <div style={{width: '100%', fontSize: '1rem', fontWeight: '500'}}>
-                        <p style={{marginBottom: '0px'}}>{titleSubText}</p>
-                        {method.gateway === PaymentMethodId.Partially && (
-                            <div className='checkout-notifications'>
-                                <div className="notification notification--info">
-                                    <div className="notification__content">
-                                        <p>
-                                            {storeCurrency === 'USD' ?
-                                                <i>Sorry, promo codes cannot be used with Partial.ly</i>
-                                                :
-                                                <i>Sorry, discount codes cannot be used with Partial.ly</i>
-                                            }
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                    <div style={method.id !== 'partially' && method.id !== 'cod' ? {width: '100%', fontSize: '1rem', fontWeight: '500'} : {}}>
+                        <p style={method.id === 'partially' || method.id === 'cod' ? {marginBottom: '0px', fontSize: '1.15rem', fontWeight: '500'} : {marginBottom: '0px'}}>{titleSubText}</p>
                     </div>
                 )}
+
+                {method.gateway === PaymentMethodId.Partially && (
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    {storeCurrency === 'USD' ?
+                                        <i>Sorry, promo codes cannot be used with Partial.ly</i>
+                                        :
+                                        <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {/* US PayTomorrow promo code info */}
+                {method.id === 'cheque' && (
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    <i>Sorry, promo codes cannot be used with Paytomorrow</i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
                     <div style={{width: '100%'}}>
-                        <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-2.png'></img>
+                        <img id='stripeIconImg' src='https://cdn.instasmile.com/new-website/images/uk-cart-cards-sep23.png'></img>
                     </div>
                 )}
-                {/* US NMI payment card icons */}
+
+                {/* US NMI subtext & payment card icons */}
                 {method.id === 'nmi' && (
-                    <div style={{width: '100%'}}>
-                        <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_may23.jpg'></img>
-                    </div>
+                    <>
+                        <div style={{ width: '100%', fontSize: '1rem', fontWeight: '500' }}>
+                            <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
+                        </div>
+                        <div style={{ width: '100%' }}>
+                            <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
+                        </div>
+                    </>
                 )}
             </div>
             <div className="paymentProviderHeader-cc">

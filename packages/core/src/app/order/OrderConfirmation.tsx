@@ -173,8 +173,8 @@ class OrderConfirmation extends Component<
                             <h2>Our Guide to Using Your Instasmile Impression Kit</h2>
                             <p>We understand that this may be a new experience for you. Your impression kit and instructions leaflet will
                                 contain all the information you need to make a great impression for your new clip-on veneers.</p>
-                            <h4>NEW No Stress Impression Kit Video</h4>
-                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/2FWyDZ1ZCf8" title="YouTube video player"
+                            <h4>Stressfree Impression Kit Video</h4>
+                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/Ar1Qr7JmYzQ" title="YouTube video player"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 ></iframe>
                             <p>You’ve watched the video, read through the instructions, and prepared everything you need. Now it’s time to
