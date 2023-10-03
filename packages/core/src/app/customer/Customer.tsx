@@ -35,6 +35,8 @@ import LoginForm from './LoginForm';
 import mapCreateAccountFromFormValues from './mapCreateAccountFromFormValues';
 import StripeGuestForm from './StripeGuestForm';
 
+import { fireArctic } from '../../../../../scripts/custom/arcticLeaf';
+
 export interface CustomerProps {
     viewType: CustomerViewType;
     step: CheckoutStepStatus;
@@ -89,6 +91,7 @@ export interface WithCheckoutCustomerProps {
     sendLoginEmail(params: { email: string }): Promise<CheckoutSelectors>;
     signIn(credentials: CustomerCredentials): Promise<CheckoutSelectors>;
     createAccount(values: CustomerAccountRequestBody): Promise<CheckoutSelectors>;
+    storeHash: string;
 }
 
 export interface CustomerState {
@@ -365,6 +368,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
             onContinueAsGuest = noop,
             onContinueAsGuestError = noop,
             onSubscribeToNewsletter,
+            storeHash
         } = this.props;
 
         const email = formValues.email.trim();
@@ -386,6 +390,11 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
             onSubscribeToNewsletter(formValues.shouldSubscribe);
 
             const customer = data.getCustomer();
+
+            // Handle arctic leaf call here
+            // Fires when customer enters email and continues
+            // No need to wait for customer to sign in
+            fireArctic(email, storeHash);
 
             if (customer && customer.shouldEncourageSignIn && customer.isGuest && !customer.isStripeLinkAuthenticated) {
                 return onChangeViewType(CustomerViewType.SuggestedLogin);
@@ -581,6 +590,7 @@ export function mapToWithCheckoutCustomerProps({
         signIn: checkoutService.signInCustomer,
         signInError: getSignInError(),
         isFloatingLabelEnabled: isFloatingLabelEnabled(config.checkoutSettings),
+        storeHash: config.storeProfile.storeHash
     };
 }
 
