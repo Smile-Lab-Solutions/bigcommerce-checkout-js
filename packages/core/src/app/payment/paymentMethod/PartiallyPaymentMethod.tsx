@@ -198,7 +198,7 @@ class PartiallyPaymentMethod extends Component<
     } else if (currency === "USD") {
       return <>
         <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
-        <li><div className="circleCheck"></div>Weekly payment as low as <b>$22</b></li>
+        <li><div className="circleCheck"></div>Low payments every 2 weeks</li>
         <li><div className="circleCheck"></div>Spread the cost over <b>16 weeks</b></li>
         <li><div className="circleCheck"></div>No Credit Check</li>
         <li><div className="circleCheck"></div><b>$25</b> Payment Plan Admin Fee (Non Refundable)</li>
