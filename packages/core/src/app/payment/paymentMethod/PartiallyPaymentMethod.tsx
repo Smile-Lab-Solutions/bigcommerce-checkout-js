@@ -129,6 +129,8 @@ class PartiallyPaymentMethod extends Component<
               var utmSource = sessionStorage.getItem("utm_source");
               var utmMedium = sessionStorage.getItem("utm_medium");
               var utmCampaign = sessionStorage.getItem("utm_campaign");
+              var gad = sessionStorage.getItem("gad");
+              var gclid = sessionStorage.getItem("gclid");
 
               if (utmSource !== null && utmSource !== ""){
                 partiallyUrl += "&utm_source=" + utmSource;
@@ -140,6 +142,14 @@ class PartiallyPaymentMethod extends Component<
 
               if (utmCampaign !== null && utmCampaign !== ""){
                 partiallyUrl += "&utm_campaign=" + utmCampaign;
+              }
+
+              if (gad !== null && gad !== ""){
+                partiallyUrl += "&gad=" + gad;
+              }
+
+              if (gclid !== null && gclid !== ""){
+                partiallyUrl += "&gclid=" + gclid;
               }
 
               btn[0].setAttribute('href', partiallyUrl);
@@ -198,7 +208,7 @@ class PartiallyPaymentMethod extends Component<
     } else if (currency === "USD") {
       return <>
         <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
-        <li><div className="circleCheck"></div>Weekly payment as low as <b>$22</b></li>
+        <li><div className="circleCheck"></div>Low payments every 2 weeks</li>
         <li><div className="circleCheck"></div>Spread the cost over <b>16 weeks</b></li>
         <li><div className="circleCheck"></div>No Credit Check</li>
         <li><div className="circleCheck"></div><b>$25</b> Payment Plan Admin Fee (Non Refundable)</li>
