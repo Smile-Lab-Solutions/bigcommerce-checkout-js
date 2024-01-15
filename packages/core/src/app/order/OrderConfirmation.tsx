@@ -174,13 +174,13 @@ class OrderConfirmation extends Component<
                             <p>We understand that this may be a new experience for you. Your impression kit and instructions leaflet will
                                 contain all the information you need to make a great impression for your new clip-on veneers.</p>
                             <h4>Stressfree Impression Kit Video</h4>
-                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/Ar1Qr7JmYzQ" title="YouTube video player"
+                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/Yb27ezbwpac" title="instasmile Stress-Free Impression Kit Instructions"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 ></iframe>
                             <p>You’ve watched the video, read through the instructions, and prepared everything you need. Now it’s time to
                                 take your impressions.</p>
                             <p>Keep your instructions to hand and follow them carefully. You can download a copy here if you need to: </p>
-                            <p><a href="https://cdn.instasmile.com/docs/UK-NSI-InstructionsV3.pdf" target="_blank"><strong>Download
+                            <p><a href="https://cdn.instasmile.com/docs/NSI-InstructionsV5.pdf" target="_blank"><strong>Download
                                 Impression Instructions</strong></a></p>
                         </div>
                         <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
