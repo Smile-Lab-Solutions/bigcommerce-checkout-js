@@ -66,7 +66,7 @@ const Redeemable: FunctionComponent<
                         )}
                     </a>
                 )}
-                {!shouldCollapseCouponCode && (
+                {(!shouldCollapseCouponCode && storeCurrencyCode !== 'AUD') && (
                     <div className="redeemable-label">
                         <div className='checkout-notifications'>
                             <div className="notification notification--info">

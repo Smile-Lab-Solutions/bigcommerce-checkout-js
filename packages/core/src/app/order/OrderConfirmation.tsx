@@ -133,6 +133,9 @@ class OrderConfirmation extends Component<
                                     <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using DPD's next-day
                                     service or Fedex if you're outside of the UK. <br></br> Look out for an email with your tracking information.</p>
                                 )}
+                                {currencyCode === 'AUD' && (
+                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using Australia Post. <br></br> Look out for an email with your tracking information.</p>
+                                )}
                                 <div className="iconShipping"></div>
                             </div>
                             <h3>Go to your account to track your order progress</h3>
