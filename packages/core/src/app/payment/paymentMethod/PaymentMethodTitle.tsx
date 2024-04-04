@@ -416,14 +416,14 @@ const PaymentMethodTitle: FunctionComponent<
                     </div>
                 )}
 
-                {/* US NMI subtext & payment card icons */}
-                {method.id === 'nmi' && (
+                {/* US Authorize.net subtext & payment card icons */}
+                {method.id === 'authorizenet' && (
                     <>
                         <div style={{ width: '100%', fontSize: '1rem', fontWeight: '500' }}>
                             <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
                         </div>
                         <div style={{ width: '100%' }}>
-                            <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
+                            <img id='authorizenetIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
                         </div>
                     </>
                 )}
