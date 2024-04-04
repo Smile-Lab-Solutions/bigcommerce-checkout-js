@@ -87,7 +87,7 @@ class TerraceFinancePaymentMethod extends Component<
 
             // Error during auth call
             if (this.status !== 200){
-              var errorMessage = "Failed to load Terrace Finance, please try again later.";
+              var errorMessage = "Failed to load Terrace Finance, please try again later. (auth)";
               onUnhandledError(new Error(errorMessage) as CustomError);
             } else {
               // Parse response
@@ -116,7 +116,7 @@ class TerraceFinancePaymentMethod extends Component<
   
                   // Error during lead call
                   if (this.status !== 200){
-                    var errorMessage = "Failed to load Terrace Finance, please try again later.";
+                    var errorMessage = "Failed to load Terrace Finance, please try again later. (Lead)";
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
@@ -167,7 +167,7 @@ class TerraceFinancePaymentMethod extends Component<
 
                         // Error during invoice call
                         if (this.status !== 200) {
-                          var errorMessage = "Failed to load Terrace Finance, please try again later.";
+                          var errorMessage = "Failed to load Terrace Finance, please try again later. (Inv)";
                           onUnhandledError(new Error(errorMessage) as CustomError);
                         } else {
                           // Parse response - Commented as not needed at the moment
@@ -189,7 +189,7 @@ class TerraceFinancePaymentMethod extends Component<
       }
     } catch (error) {
       disableSubmit(method, false);
-      var errorMessage = "Failed to load Terrace Finance, please try again later.";
+      var errorMessage = "Failed to load Terrace Finance, please try again later. (catch)";
       onUnhandledError(new Error(errorMessage) as CustomError);
     }
   };
@@ -204,11 +204,7 @@ class TerraceFinancePaymentMethod extends Component<
       </>
     } else if (currency === "USD") {
       return <>
-        <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
-        <li><div className="circleCheck"></div>Weekly payment as low as <b>$22</b></li>
-        <li><div className="circleCheck"></div>Spread the cost over <b>16 weeks</b></li>
-        <li><div className="circleCheck"></div>No Credit Check</li>
-        <li><div className="circleCheck"></div><b>$25</b> Payment Plan Admin Fee (Non Refundable)</li>
+        <p>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
       </>
     } else if (currency === "AUD") {
       return <>

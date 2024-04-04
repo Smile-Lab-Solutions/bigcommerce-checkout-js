@@ -270,7 +270,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.TerraceFinance]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Terrace subtext',
+                titleSubText: 'Payment solutions tailored for you',
             },
         };
 
