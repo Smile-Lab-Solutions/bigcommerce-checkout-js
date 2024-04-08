@@ -262,11 +262,11 @@ function getPaymentMethodTitle(
                 titleSubText: 'Up to 18 months credit from 0% APR',
             },
             // Cheque is used for PayTomorrow
-            ['cheque']: {
-                logoUrl: '',
-                titleText: 'Pay over 6 months 0% APR',
-                titleSubText: 'For people with a 600+ FICO credit score',
-            },
+            // ['cheque']: {
+            //     logoUrl: '',
+            //     titleText: 'Pay over 6 months 0% APR',
+            //     titleSubText: 'For people with a 600+ FICO credit score',
+            // },
             [PaymentMethodId.TerraceFinance]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
@@ -347,7 +347,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {/* US PayTomorrow payment icon */}
-                {method.id === 'cheque' && (
+                {/* {method.id === 'cheque' && (
                     <img
                         alt={methodName}
                         className="paymentProviderHeader-img"
@@ -355,7 +355,7 @@ const PaymentMethodTitle: FunctionComponent<
                         src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
                         id='pt-img'
                     />
-                )}
+                )} */}
 
                 {/* Paypal payment second icon */}
                 {method.id === 'paypalcommerce' && (
@@ -402,7 +402,7 @@ const PaymentMethodTitle: FunctionComponent<
                     </div>
                 )}
                 {/* US PayTomorrow promo code info */}
-                {method.id === 'cheque' && (
+                {/* {method.id === 'cheque' && (
                     <div className='checkout-notifications merchant' style={{width: '100%'}}>
                         <div className="notification notification--info">
                             <div className="notification__content">
@@ -412,7 +412,7 @@ const PaymentMethodTitle: FunctionComponent<
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
@@ -421,14 +421,14 @@ const PaymentMethodTitle: FunctionComponent<
                     </div>
                 )}
 
-                {/* US NMI subtext & payment card icons */}
-                {method.id === 'nmi' && (
+                {/* US Authorize.net subtext & payment card icons */}
+                {method.id === 'authorizenet' && (
                     <>
                         <div style={{ width: '100%', fontSize: '1rem', fontWeight: '500' }}>
                             <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
                         </div>
                         <div style={{ width: '100%' }}>
-                            <img id='nmiIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
+                            <img id='authorizenetIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
                         </div>
                     </>
                 )}

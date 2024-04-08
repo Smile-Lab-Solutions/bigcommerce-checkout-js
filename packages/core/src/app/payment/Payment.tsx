@@ -574,9 +574,8 @@ export function mapToPaymentProps({
 
     // Adding partially
     // Billing address and currency must match
-    // Only for UK, US & AU
-    if ((checkout.billingAddress?.countryCode === 'AU' && config.shopperCurrency.code === 'AUD') ||
-        (checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD') ||
+    // Only for UK & US
+    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD') ||
         (checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP'))
         {
             methods = methods.concat(getPartiallyMethod());
