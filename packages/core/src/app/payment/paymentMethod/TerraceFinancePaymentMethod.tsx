@@ -74,53 +74,57 @@ class TerraceFinancePaymentMethod extends Component<
         let terracePwd = '';
         
         // Terrace Finance Token API call
-        var data = new FormData();
-        data.append("UserName", terraceUsername);
-        data.append("Password", terracePwd);
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = false;
-        xhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
-        xhr.send(data);
+        var authData = new FormData();
+        authData.append("UserName", terraceUsername);
+        authData.append("Password", terracePwd);
+        var authXhr = new XMLHttpRequest();
+        authXhr.withCredentials = false;
+        authXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
 
-        xhr.onreadystatechange = function () {
-          if (this.readyState == 4) {
+        console.log("auth fire");
+        authXhr.send(authData);
+
+        authXhr.onreadystatechange = function () {
+          if (authXhr.readyState == 4) {
 
             // Error during auth call
-            if (this.status !== 200){
+            if (authXhr.status !== 200){
               var errorMessage = "Failed to load Terrace Finance, please try again later. (auth)";
               onUnhandledError(new Error(errorMessage) as CustomError);
             } else {
               // Parse response
-              let tokenResponse: TerraceFinanceTokenResponse = JSON.parse(this.responseText);
+              let tokenResponse: TerraceFinanceTokenResponse = JSON.parse(authXhr.responseText);
   
               // Terrace Finance Lead API call
-              var data = new FormData();
-              data.append("FirstName", checkout.billingAddress?.firstName ?? "");
-              data.append("LastName", checkout.billingAddress?.lastName ?? "");
-              data.append("PhoneNumber", checkout.billingAddress?.phone ?? "");
-              data.append("Address", checkout.billingAddress?.address1 ?? "");
-              data.append("City", checkout.billingAddress?.city ?? "");
-              data.append("State", checkout.billingAddress?.stateOrProvinceCode ?? "");
-              data.append("Zip", checkout.billingAddress?.postalCode ?? "");
-              data.append("Email", checkout.billingAddress?.email ?? "");
-              data.append("ProductInformation", "Medical Equipment");
-              var xhr = new XMLHttpRequest();
-              xhr.withCredentials = false;
-              xhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Lead");
-              xhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
-              xhr.setRequestHeader("name", terraceUsername);
-              xhr.send(data);
+              var leadData = new FormData();
+              leadData.append("FirstName", checkout.billingAddress?.firstName ?? "");
+              leadData.append("LastName", checkout.billingAddress?.lastName ?? "");
+              leadData.append("PhoneNumber", checkout.billingAddress?.phone ?? "");
+              leadData.append("Address", checkout.billingAddress?.address1 ?? "");
+              leadData.append("City", checkout.billingAddress?.city ?? "");
+              leadData.append("State", checkout.billingAddress?.stateOrProvinceCode ?? "");
+              leadData.append("Zip", checkout.billingAddress?.postalCode ?? "");
+              leadData.append("Email", checkout.billingAddress?.email ?? "");
+              leadData.append("ProductInformation", "Medical Equipment");
+              var leadXhr = new XMLHttpRequest();
+              leadXhr.withCredentials = false;
+              leadXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Lead");
+              leadXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
+              leadXhr.setRequestHeader("name", terraceUsername);
+
+              console.log("lead fire");
+              leadXhr.send(leadData);
   
-              xhr.onreadystatechange = function () {
-                if (this.readyState == 4) {
+              leadXhr.onreadystatechange = function () {
+                if (leadXhr.readyState == 4) {
   
                   // Error during lead call
-                  if (this.status !== 200){
+                  if (leadXhr.status !== 200){
                     var errorMessage = "Failed to load Terrace Finance, please try again later. (Lead)";
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
-                    let leadResponse: TerraceFinanceLeadResponse = JSON.parse(this.responseText);
+                    let leadResponse: TerraceFinanceLeadResponse = JSON.parse(leadXhr.responseText);
     
                     // Merge physical/digital items in cart
                     var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
@@ -154,19 +158,21 @@ class TerraceFinancePaymentMethod extends Component<
                     };
     
                     // Terrace Finance Invoice API call
-                    var xhr = new XMLHttpRequest();
-                    xhr.withCredentials = false;
-                    xhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.setRequestHeader("name", terraceUsername);
-                    xhr.send(JSON.stringify(invoiceData));
+                    var invXhr = new XMLHttpRequest();
+                    invXhr.withCredentials = false;
+                    invXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
+                    invXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
+                    invXhr.setRequestHeader('Content-Type', 'application/json');
+                    invXhr.setRequestHeader("name", terraceUsername);
+
+                    console.log("inv fire");
+                    invXhr.send(JSON.stringify(invoiceData));
     
-                    xhr.onreadystatechange = function () {
-                      if (this.readyState == 4) {
+                    invXhr.onreadystatechange = function () {
+                      if (invXhr.readyState == 4) {
 
                         // Error during invoice call
-                        if (this.status !== 200) {
+                        if (invXhr.status !== 200) {
                           var errorMessage = "Failed to load Terrace Finance, please try again later. (Inv)";
                           onUnhandledError(new Error(errorMessage) as CustomError);
                         } else {
