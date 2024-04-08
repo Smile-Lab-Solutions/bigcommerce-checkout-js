@@ -57,25 +57,25 @@ const OfflinePaymentMethod: FunctionComponent<PaymentMethodProps> = ({
     }
 
     // Cheque is used for PayTomorrow
-    if (method.id === 'cheque') {
-        return <>
-            <div className="paymentMethod paymentMethod--offline">
-                <div className="payment-descriptor">
-                    <p style={{marginBottom: '0px!important'}}>Applying with Pay Tomorrow will not affect your credit score.</p>
-                    <p>For people with a 600+ FICO credit score.</p>
-                    <ul className="list-element">
-                        <li><div className="circleCheck"></div>Payment plans over 6 months*</li>
-                        <li><div className="circleCheck"></div>$99 down payment at checkout</li>
-                        <li><div className="circleCheck"></div>0% interest</li>
-                        <li><div className="circleCheck"></div>Flexible Payment frequency weekly, bi weekly semi monthly</li>
-                        <li><div className="circleCheck"></div>No hidden fees</li>
-                        <li><div className="circleCheck"></div>90 day early payoff option</li>
-                    </ul>
-                    <p><small>*Qualified Customers Only</small></p>
-                </div>
-            </div>
-        </>
-    }
+    // if (method.id === 'cheque') {
+    //     return <>
+    //         <div className="paymentMethod paymentMethod--offline">
+    //             <div className="payment-descriptor">
+    //                 <p style={{marginBottom: '0px!important'}}>Applying with Pay Tomorrow will not affect your credit score.</p>
+    //                 <p>For people with a 600+ FICO credit score.</p>
+    //                 <ul className="list-element">
+    //                     <li><div className="circleCheck"></div>Payment plans over 6 months*</li>
+    //                     <li><div className="circleCheck"></div>$99 down payment at checkout</li>
+    //                     <li><div className="circleCheck"></div>0% interest</li>
+    //                     <li><div className="circleCheck"></div>Flexible Payment frequency weekly, bi weekly semi monthly</li>
+    //                     <li><div className="circleCheck"></div>No hidden fees</li>
+    //                     <li><div className="circleCheck"></div>90 day early payoff option</li>
+    //                 </ul>
+    //                 <p><small>*Qualified Customers Only</small></p>
+    //             </div>
+    //         </div>
+    //     </>
+    // }
 
     return null;
 };

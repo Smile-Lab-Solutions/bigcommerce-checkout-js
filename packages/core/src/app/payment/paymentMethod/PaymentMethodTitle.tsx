@@ -262,11 +262,11 @@ function getPaymentMethodTitle(
                 titleSubText: 'Up to 18 months credit from 0% APR',
             },
             // Cheque is used for PayTomorrow
-            ['cheque']: {
-                logoUrl: '',
-                titleText: 'Pay over 6 months 0% APR',
-                titleSubText: 'For people with a 600+ FICO credit score',
-            },
+            // ['cheque']: {
+            //     logoUrl: '',
+            //     titleText: 'Pay over 6 months 0% APR',
+            //     titleSubText: 'For people with a 600+ FICO credit score',
+            // },
         };
 
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {
@@ -342,7 +342,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {/* US PayTomorrow payment icon */}
-                {method.id === 'cheque' && (
+                {/* {method.id === 'cheque' && (
                     <img
                         alt={methodName}
                         className="paymentProviderHeader-img"
@@ -350,7 +350,7 @@ const PaymentMethodTitle: FunctionComponent<
                         src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
                         id='pt-img'
                     />
-                )}
+                )} */}
 
                 {/* Paypal payment second icon */}
                 {method.id === 'paypalcommerce' && (
@@ -397,7 +397,7 @@ const PaymentMethodTitle: FunctionComponent<
                     </div>
                 )}
                 {/* US PayTomorrow promo code info */}
-                {method.id === 'cheque' && (
+                {/* {method.id === 'cheque' && (
                     <div className='checkout-notifications merchant' style={{width: '100%'}}>
                         <div className="notification notification--info">
                             <div className="notification__content">
@@ -407,7 +407,7 @@ const PaymentMethodTitle: FunctionComponent<
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 {/* UK Stripe payment card icons */}
                 {method.gateway === PaymentMethodId.StripeUPE && (
