@@ -423,7 +423,7 @@ const PaymentMethodTitle: FunctionComponent<
                             <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
                         </div>
                         <div style={{ width: '100%' }}>
-                            <img id='authorizenetIconImg' src='https://cdn.instasmile.com/new-website/images/nmi_payment_type_cards-usa_sep23.png'></img>
+                            <img id='authorizenetIconImg' src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-160424.png?t=1713255511'></img>
                         </div>
                     </>
                 )}
