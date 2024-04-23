@@ -9,6 +9,7 @@ import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';
 import { LoadingOverlay } from '../../ui/loading';
 import { withCheckout } from '../../checkout';
+import { toggleCouponBlock } from '../../../../../../scripts/custom/terraceFinance';
 
 export interface HostedPaymentMethodProps {
   method: PaymentMethod;
@@ -31,22 +32,33 @@ class TerraceFinancePaymentMethod extends Component<
   async componentDidMount(): Promise<CheckoutSelectors | void> {
       const {
           method,
+          checkout,
           setSubmit,
-          disableSubmit
+          disableSubmit,
+          removeCoupon
       } = this.props;
+
+      try {
+        if (checkout && checkout.coupons.length > 0){
+          checkout.coupons.forEach(coupon => {
+            removeCoupon(coupon.code);
+          });
+        }
+
+        toggleCouponBlock(true);
+      } catch(e){}
 
       disableSubmit(method, false);
       setSubmit(method, this.handleSubmit);
   }
 
   render(): ReactNode {
-    const { config } = this.props;
     return (
       <LoadingOverlay hideContentWhenLoading isLoading={false}>
         <div className="paymentMethod paymentMethod--hosted">
           <div className="payment-descriptor">
             <ul className="list-element">
-              {this.getListText(config?.currency.code)}
+              {this.getListText()}
             </ul>
           </div>
         </div>
@@ -67,10 +79,13 @@ class TerraceFinancePaymentMethod extends Component<
 
     try {
       if (checkout && method && config && checkout.billingAddress) {
+        if (checkout && checkout.coupons.length > 0){
+          throw new Error('coupon');
+        }
 
         // ONLY ENTER PASSWORD WHEN DEPLOYING
         // DO NOT PUSH TO REPO
-        let terraceUsername = 'hamzah@seblgroup.com';
+        let terraceUsername = 'apiinstasmile@instasmile.com';
         let terracePwd = '';
         
         // Terrace Finance Token API call
@@ -79,9 +94,7 @@ class TerraceFinancePaymentMethod extends Component<
         authData.append("Password", terracePwd);
         var authXhr = new XMLHttpRequest();
         authXhr.withCredentials = false;
-        authXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
-
-        console.log("auth fire");
+        authXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
         authXhr.send(authData);
 
         authXhr.onreadystatechange = function () {
@@ -89,7 +102,7 @@ class TerraceFinancePaymentMethod extends Component<
 
             // Error during auth call
             if (authXhr.status !== 200){
-              var errorMessage = "Failed to load Terrace Finance, please try again later. (auth)";
+              var errorMessage = "Failed to load Terrace Finance, please try again later.";
               onUnhandledError(new Error(errorMessage) as CustomError);
             } else {
               // Parse response
@@ -108,11 +121,9 @@ class TerraceFinancePaymentMethod extends Component<
               leadData.append("ProductInformation", "Medical Equipment");
               var leadXhr = new XMLHttpRequest();
               leadXhr.withCredentials = false;
-              leadXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Lead");
+              leadXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Lead");
               leadXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
               leadXhr.setRequestHeader("name", terraceUsername);
-
-              console.log("lead fire");
               leadXhr.send(leadData);
   
               leadXhr.onreadystatechange = function () {
@@ -120,7 +131,7 @@ class TerraceFinancePaymentMethod extends Component<
   
                   // Error during lead call
                   if (leadXhr.status !== 200){
-                    var errorMessage = "Failed to load Terrace Finance, please try again later. (Lead)";
+                    var errorMessage = "Failed to load Terrace Finance, please try again later.";
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
@@ -160,12 +171,10 @@ class TerraceFinancePaymentMethod extends Component<
                     // Terrace Finance Invoice API call
                     var invXhr = new XMLHttpRequest();
                     invXhr.withCredentials = false;
-                    invXhr.open("POST", "https://tfc-qa-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
+                    invXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
                     invXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
                     invXhr.setRequestHeader('Content-Type', 'application/json');
                     invXhr.setRequestHeader("name", terraceUsername);
-
-                    console.log("inv fire");
                     invXhr.send(JSON.stringify(invoiceData));
     
                     invXhr.onreadystatechange = function () {
@@ -173,7 +182,7 @@ class TerraceFinancePaymentMethod extends Component<
 
                         // Error during invoice call
                         if (invXhr.status !== 200) {
-                          var errorMessage = "Failed to load Terrace Finance, please try again later. (Inv)";
+                          var errorMessage = "Failed to load Terrace Finance, please try again later.";
                           onUnhandledError(new Error(errorMessage) as CustomError);
                         } else {
                           // Parse response - Commented as not needed at the moment
@@ -194,31 +203,37 @@ class TerraceFinancePaymentMethod extends Component<
         throw new Error();
       }
     } catch (error) {
+      var errorMessage = "Failed to load Terrace Finance, please try again later.";
+
+      // Replace default error message to coupon error 
+      if (error instanceof Error && error.message === 'coupon') {
+        errorMessage = "Sorry, promo codes cannot be used with Terrace Finance";
+      }
+
       disableSubmit(method, false);
-      var errorMessage = "Failed to load Terrace Finance, please try again later. (catch)";
       onUnhandledError(new Error(errorMessage) as CustomError);
     }
   };
 
-  private getListText: (currency: string | undefined) => ReactNode = (currency) => {
-    if (currency === "GBP") {
-      return <>
-        <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
-        <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
-        <li><div className="circleCheck"></div>From £150 deposit</li>
-        <li><div className="circleCheck"></div>£25 Payment Plan Admin Fee (Non Refundable)</li>
-      </>
-    } else if (currency === "USD") {
-      return <>
-        <p>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
-      </>
-    } else if (currency === "AUD") {
-      return <>
-        <li>aud</li>
-      </>
-    }
+  private getListText: () => ReactNode = () => {
+    return <>
+      <p>Terrace Finance Corp links applicants to payment solution providers with less than perfect credit.</p>
 
-    return <></>;
+      <li><div className="circleCheck"></div>$1 First Payment</li>
+      <li><div className="circleCheck"></div>Variable Term Lengths</li>
+      <li><div className="circleCheck"></div>Instant Decision</li>
+      <li><div className="circleCheck"></div>30 Days Same As Cash Option</li>
+      <li><div className="circleCheck"></div>Pay Off Anytime</li>
+      <li><div className="circleCheck"></div>Skip-A-Payment Option</li>
+
+      <p style={{ fontSize: 'smaller' }}>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
+    </>
+  }
+
+  componentWillUnmount(): void {
+    {
+      toggleCouponBlock(false);
+    }
   }
 }
 

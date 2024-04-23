@@ -401,6 +401,18 @@ const PaymentMethodTitle: FunctionComponent<
                         </div>
                     </div>
                 )}
+
+                {method.gateway === PaymentMethodId.TerraceFinance && (
+                    <div className='checkout-notifications merchant' style={{width: '100%'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    <i>Sorry, promo codes cannot be used with Terrace Finance</i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {/* US PayTomorrow promo code info */}
                 {/* {method.id === 'cheque' && (
                     <div className='checkout-notifications merchant' style={{width: '100%'}}>

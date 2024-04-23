@@ -73,7 +73,7 @@ const Redeemable: FunctionComponent<
                                 <div className="notification__content">
                                     <p>
                                         {storeCurrencyCode === 'USD' && (
-                                            <i>Sorry, promo codes cannot be used with Partial.ly</i>
+                                            <i>Sorry, promo codes cannot be used with Partial.ly and Terrace Finance</i>
                                         )}
                                         {storeCurrencyCode !== 'USD' && (
                                             <i>Sorry, discount codes cannot be used with Partial.ly</i>
@@ -94,12 +94,12 @@ const Redeemable: FunctionComponent<
                         </span>
                     </div>
                 )}
-                <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>
+                <div className='checkout-notifications partiallyCouponWarning tfCouponWarning' style={{display: 'none'}}>
                     <div className="notification notification--info">
                         <div className="notification__content">
                             <p>
                                 {storeCurrencyCode === 'USD' && (
-                                    <i>Sorry, promo codes cannot be used with Partial.ly</i>
+                                    <i>Sorry, promo codes cannot be used with Partial.ly and Terrace Finance</i>
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
                                     <i>Sorry, discount codes cannot be used with Partial.ly</i>
