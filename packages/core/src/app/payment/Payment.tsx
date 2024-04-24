@@ -582,11 +582,19 @@ export function mapToPaymentProps({
             loadPartiallyJs();
         }
 
+    // Adding partially
+    // Billing address and currency must match
+    // Only for US
+    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
+        methods = methods.concat(getTerraceFinanceMethod());
+    }
+
     // Reorder methods US
     if (config.shopperCurrency.code === 'USD'){
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card
+        // Terrace Finance
         // Paypal
         // Venmo
         // Bread Pay
@@ -595,20 +603,12 @@ export function mapToPaymentProps({
         // Zip
         // Paytomorrow
         // Partially
-        let paymentOrder = [ 'nmi', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
+        let paymentOrder = [ 'nmi', 'terracefinance', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
         });
     }
-
-    // Adding partially
-    // Billing address and currency must match
-    // Only for US
-    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD'))
-        {
-            methods = methods.concat(getTerraceFinanceMethod());
-        }
 
     const {
         enableTermsAndConditions: isTermsConditionsEnabled,
