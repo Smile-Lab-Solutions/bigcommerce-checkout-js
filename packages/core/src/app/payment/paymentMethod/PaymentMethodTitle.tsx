@@ -368,10 +368,9 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {titleText && (
                     <div 
-                        className="paymentProviderHeader-name" 
                         data-test="payment-method-name" 
                         style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
-                        {titleText}
+                        <p style={{marginBottom: '0px', fontSize: '1.15rem', marginTop: '0.5rem', fontWeight: '500'}}>{titleText}</p>
                     </div>
                 )}
 
