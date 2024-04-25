@@ -219,12 +219,12 @@ class TerraceFinancePaymentMethod extends Component<
     return <>
       <p>Terrace Finance Corp links applicants to payment solution providers with less than perfect credit.</p>
 
-      <li><div className="circleCheck"></div>$1 First Payment</li>
-      <li><div className="circleCheck"></div>Variable Term Lengths</li>
-      <li><div className="circleCheck"></div>Instant Decision</li>
-      <li><div className="circleCheck"></div>30 Days Same As Cash Option</li>
-      <li><div className="circleCheck"></div>Pay Off Anytime</li>
-      <li><div className="circleCheck"></div>Skip-A-Payment Option</li>
+      <li><div className="circleCheck"></div>$1 Down today </li>
+      <li><div className="circleCheck"></div>Up to 24 month term length</li>
+      <li><div className="circleCheck"></div>Instant decision</li>
+      <li><div className="circleCheck"></div>30 Days same-as-cash option</li>
+      <li><div className="circleCheck"></div>Pay-off anytime</li>
+      <li><div className="circleCheck"></div>Skip-a-payment option</li>
 
       <p style={{ fontSize: 'smaller' }}>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
     </>

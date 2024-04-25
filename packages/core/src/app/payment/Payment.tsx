@@ -725,7 +725,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
         method: 'external',
         supportedCards: [],
         config: {
-            displayName: 'Apply. Shop. Pay Later.',
+            displayName: '$1 Down today. Up to 24 month term',
             helpText: '',
             merchantId: 'terracefinance',
             testMode: false,
