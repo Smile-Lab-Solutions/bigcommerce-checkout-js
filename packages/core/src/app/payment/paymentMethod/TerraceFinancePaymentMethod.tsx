@@ -131,7 +131,7 @@ class TerraceFinancePaymentMethod extends Component<
   
                   // Error during lead call
                   if (leadXhr.status !== 200){
-                    var errorMessage = "Failed to load Terrace Finance, please try again later.";
+                    var errorMessage = JSON.parse(this.responseText).Errors;
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
