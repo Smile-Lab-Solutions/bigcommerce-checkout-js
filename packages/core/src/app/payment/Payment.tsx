@@ -572,25 +572,40 @@ export function mapToPaymentProps({
         return null;
     }
 
-    // Adding partially
-    // Billing address and currency must match
-    // Only for UK & US
-    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD') ||
-        (checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP'))
-        {
-            methods = methods.concat(getPartiallyMethod());
-            loadPartiallyJs();
+    // Attempt to find In Store payment method
+    //  In Store is used for manual custom payment integrations
+    const inStoreMethod = methods.filter(method => method.id === 'instore');
+ 
+    // Check In Store payment method is enabled on store
+    if (inStoreMethod.length) {
+        // Only for US payment methods
+        // Billing address and currency must match
+        if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
+            // Adding Terrace Finance
+            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS')) {
+                methods = methods.concat(getTerraceFinanceMethod());
+            }
+
+            // Adding Partially
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+                methods = methods.concat(getPartiallyMethod());
+                loadPartiallyJs();
+            }
         }
 
-    // Adding partially
-    // Billing address and currency must match
-    // Only for US
-    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
-        methods = methods.concat(getTerraceFinanceMethod());
+        // Only for UK payment methods
+        // Billing address and currency must match
+        if ((checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP')) {
+            // Adding Partially
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+                methods = methods.concat(getPartiallyMethod());
+                loadPartiallyJs();
+            }
+        }
     }
 
     // Reorder methods US
-    if (config.shopperCurrency.code === 'USD'){
+    if (config.shopperCurrency.code === 'USD') {
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card
@@ -631,6 +646,12 @@ export function mapToPaymentProps({
     filteredMethods = methods.filter((method: PaymentMethod) => {
         if (method.id === PaymentMethodId.Bolt && method.initializationData) {
             return !!method.initializationData.showInCheckout;
+        }
+
+        // Remove In Store as this payment method
+        //  is only for checking custom payment merchant integration
+        if (method.id === 'instore'){
+            return false;
         }
 
         return true;
