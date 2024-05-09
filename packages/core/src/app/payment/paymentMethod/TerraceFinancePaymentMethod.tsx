@@ -217,9 +217,10 @@ class TerraceFinancePaymentMethod extends Component<
 
   private getListText: () => ReactNode = () => {
     return <>
-      <p>Terrace Finance Corp links applicants to payment solution providers with less than perfect credit.</p>
-
-      <li><div className="circleCheck"></div>$1 Down today </li>
+      <li><div className="circleCheck"></div>Vantage Score 520+ needed</li>
+      <li><div className="circleCheck"></div>Soft Credit pull on application</li>
+      <li><div className="circleCheck"></div>ACH enabled bank account only</li>
+      <li><div className="circleCheck"></div>$1 Down today</li>
       <li><div className="circleCheck"></div>Up to 24 month term length</li>
       <li><div className="circleCheck"></div>Instant decision</li>
       <li><div className="circleCheck"></div>30 Days same-as-cash option</li>
