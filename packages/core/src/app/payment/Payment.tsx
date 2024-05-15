@@ -347,7 +347,8 @@ class Payment extends Component<
             selectedMethod.gateway === PaymentMethodId.Checkoutcom ||
             selectedMethod.gateway === PaymentMethodId.Mollie ||
             selectedMethod.gateway === PaymentMethodId.StripeV3 ||
-            selectedMethod.gateway === PaymentMethodId.Partially
+            selectedMethod.gateway === PaymentMethodId.Partially ||
+            selectedMethod.gateway === PaymentMethodId.TerraceFinance
         ) {
             return;
         }
@@ -571,21 +572,44 @@ export function mapToPaymentProps({
         return null;
     }
 
-    // Adding partially
-    // Billing address and currency must match
-    // Only for UK & US
-    if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD') ||
-        (checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP'))
-        {
-            methods = methods.concat(getPartiallyMethod());
-            loadPartiallyJs();
+    // Attempt to find In Store payment method
+    //  In Store is used for manual custom payment integrations
+    const inStoreMethod = methods.filter(method => method.id === 'instore');
+ 
+    // Check In Store payment method is enabled on store
+    if (inStoreMethod.length) {
+        // Only for US payment methods
+        // Billing address and currency must match
+        if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
+            // Adding Terrace Finance
+            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS')) {
+                methods = methods.concat(getTerraceFinanceMethod());
+            }
+
+            // Adding Partially
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+                methods = methods.concat(getPartiallyMethod());
+                loadPartiallyJs();
+            }
         }
 
+        // Only for UK payment methods
+        // Billing address and currency must match
+        if ((checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP')) {
+            // Adding Partially
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+                methods = methods.concat(getPartiallyMethod());
+                loadPartiallyJs();
+            }
+        }
+    }
+
     // Reorder methods US
-    if (config.shopperCurrency.code === 'USD'){
+    if (config.shopperCurrency.code === 'USD') {
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card
+        // Terrace Finance
         // Paypal
         // Venmo
         // Bread Pay
@@ -594,7 +618,7 @@ export function mapToPaymentProps({
         // Zip
         // Paytomorrow
         // Partially
-        let paymentOrder = [ 'nmi', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
+        let paymentOrder = [ 'nmi', 'terracefinance', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
@@ -622,6 +646,12 @@ export function mapToPaymentProps({
     filteredMethods = methods.filter((method: PaymentMethod) => {
         if (method.id === PaymentMethodId.Bolt && method.initializationData) {
             return !!method.initializationData.showInCheckout;
+        }
+
+        // Remove In Store as this payment method
+        //  is only for checking custom payment merchant integration
+        if (method.id === 'instore'){
+            return false;
         }
 
         return true;
@@ -700,6 +730,25 @@ export function getPartiallyMethod(): PaymentMethod {
             displayName: 'Partial.ly Payment Plan',
             helpText: '',
             merchantId: 'partially',
+            testMode: false,
+            returnUrl: `${window.location.origin}/checkout`,
+            redirectUrl: `${window.location.origin}/pages/complete`
+        },
+        type: 'PAYMENT_TYPE_API',
+    };
+}
+
+export function getTerraceFinanceMethod(): PaymentMethod {
+    return {
+        id: 'terracefinance',
+        gateway: 'terracefinance',
+        logoUrl: 'https://terracefinance.com/wp-content/uploads/2019/12/Terrace-Logo-Retina-360px.png',
+        method: 'external',
+        supportedCards: [],
+        config: {
+            displayName: '$1 Down today. Up to 24 month term',
+            helpText: '',
+            merchantId: 'terracefinance',
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
             redirectUrl: `${window.location.origin}/pages/complete`

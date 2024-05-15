@@ -267,6 +267,11 @@ function getPaymentMethodTitle(
             //     titleText: 'Pay over 6 months 0% APR',
             //     titleSubText: 'For people with a 600+ FICO credit score',
             // },
+            [PaymentMethodId.TerraceFinance]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'Payment solutions tailored for you',
+            },
         };
 
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {
@@ -395,6 +400,20 @@ const PaymentMethodTitle: FunctionComponent<
                         </div>
                     </div>
                 )}
+
+                {/* US Terrace Finance promo code info */}
+                {/* {method.gateway === PaymentMethodId.TerraceFinance && (
+                    <div className='checkout-notifications merchant' style={{ width: '100%' }}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
+                                    <i>Sorry, promo codes cannot be used with Terrace Finance</i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )} */}
+
                 {/* US PayTomorrow promo code info */}
                 {/* {method.id === 'cheque' && (
                     <div className='checkout-notifications merchant' style={{width: '100%'}}>

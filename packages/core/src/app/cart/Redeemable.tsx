@@ -68,20 +68,17 @@ const Redeemable: FunctionComponent<
                 )}
                 {(!shouldCollapseCouponCode && storeCurrencyCode !== 'AUD') && (
                     <div className="redeemable-label">
-                        <div className='checkout-notifications'>
-                            <div className="notification notification--info">
-                                <div className="notification__content">
-                                    <p>
-                                        {storeCurrencyCode === 'USD' && (
-                                            <i>Sorry, promo codes cannot be used with Partial.ly</i>
-                                        )}
-                                        {storeCurrencyCode !== 'USD' && (
+                        {storeCurrencyCode !== 'USD' && (
+                            <div className='checkout-notifications'>
+                                <div className="notification notification--info">
+                                    <div className="notification__content">
+                                        <p>
                                             <i>Sorry, discount codes cannot be used with Partial.ly</i>
-                                        )}
-                                    </p>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                         <span style={{ fontSize: '14px' }}>
                             <b>
                                 {storeCurrencyCode === 'USD' && (
@@ -94,20 +91,17 @@ const Redeemable: FunctionComponent<
                         </span>
                     </div>
                 )}
-                <div className='checkout-notifications partiallyCouponWarning' style={{display: 'none'}}>
-                    <div className="notification notification--info">
-                        <div className="notification__content">
-                            <p>
-                                {storeCurrencyCode === 'USD' && (
-                                    <i>Sorry, promo codes cannot be used with Partial.ly</i>
-                                )}
-                                {storeCurrencyCode !== 'USD' && (
+                {storeCurrencyCode !== 'USD' && (
+                    <div className='checkout-notifications partiallyCouponWarning tfCouponWarning' style={{display: 'none'}}>
+                        <div className="notification notification--info">
+                            <div className="notification__content">
+                                <p>
                                     <i>Sorry, discount codes cannot be used with Partial.ly</i>
-                                )}
-                            </p>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
                 {(isOpen || !shouldCollapseCouponCode) && (
                     <div data-test="redeemable-collapsable" id="redeemable-collapsable">
                         <RedeemableForm {...formProps} />
