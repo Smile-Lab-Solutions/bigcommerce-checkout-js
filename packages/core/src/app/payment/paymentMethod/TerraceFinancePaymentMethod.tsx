@@ -32,21 +32,9 @@ class TerraceFinancePaymentMethod extends Component<
   async componentDidMount(): Promise<CheckoutSelectors | void> {
       const {
           method,
-          checkout,
           setSubmit,
           disableSubmit,
-          removeCoupon
       } = this.props;
-
-      try {
-        if (checkout && checkout.coupons.length > 0){
-          checkout.coupons.forEach(coupon => {
-            removeCoupon(coupon.code);
-          });
-        }
-
-        toggleCouponBlock(true);
-      } catch(e){}
 
       disableSubmit(method, false);
       setSubmit(method, this.handleSubmit);
@@ -79,9 +67,6 @@ class TerraceFinancePaymentMethod extends Component<
 
     try {
       if (checkout && method && config && checkout.billingAddress) {
-        if (checkout && checkout.coupons.length > 0){
-          throw new Error('coupon');
-        }
 
         // ONLY ENTER PASSWORD WHEN DEPLOYING
         // DO NOT PUSH TO REPO
@@ -205,11 +190,6 @@ class TerraceFinancePaymentMethod extends Component<
     } catch (error) {
       var errorMessage = "Failed to load Terrace Finance, please try again later.";
 
-      // Replace default error message to coupon error 
-      if (error instanceof Error && error.message === 'coupon') {
-        errorMessage = "Sorry, promo codes cannot be used with Terrace Finance";
-      }
-
       disableSubmit(method, false);
       onUnhandledError(new Error(errorMessage) as CustomError);
     }
@@ -227,6 +207,7 @@ class TerraceFinancePaymentMethod extends Component<
       <li><div className="circleCheck"></div>Pay-off anytime</li>
       <li><div className="circleCheck"></div>Skip-a-payment option</li>
 
+      <p style={{ fontSize: 'smaller' }}><strong>Not available in the following states: VT (Vermont), MN (Minnesota), NJ (New Jersey), WI (Wisconsin)</strong></p>
       <p style={{ fontSize: 'smaller' }}>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
     </>
   }
