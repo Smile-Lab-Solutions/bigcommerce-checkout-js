@@ -8,6 +8,7 @@ import {
 import { mount, ReactWrapper } from 'enzyme';
 import React, { FunctionComponent } from 'react';
 
+import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 
@@ -18,6 +19,7 @@ import { getCheckout } from '../checkout/checkouts.mock';
 import CheckoutStepType from '../checkout/CheckoutStepType';
 import { getStoreConfig } from '../config/config.mock';
 import { getCustomer } from '../customer/customers.mock';
+import { getCountries } from '../geography/countries.mock';
 import { PaymentMethodId } from '../payment/paymentMethod';
 
 import { getConsignment } from './consignment.mock';
@@ -25,7 +27,17 @@ import Shipping, { ShippingProps, WithCheckoutShippingProps } from './Shipping';
 import { getShippingAddress } from './shipping-addresses.mock';
 import ShippingForm from './ShippingForm';
 
+jest.mock('./stripeUPE/StripeShipping', () => {
+    const StripeShipping = () => {
+        return <div />;
+    }
+
+    return StripeShipping;
+  });
+
 describe('Shipping Component', () => {
+    
+
     let component: ReactWrapper;
     let localeContext: LocaleContextType;
     let checkoutService: CheckoutService;
@@ -57,6 +69,10 @@ describe('Shipping Component', () => {
         };
 
         jest.spyOn(checkoutService, 'loadShippingAddressFields').mockResolvedValue(
+            {} as CheckoutSelectors,
+        );
+
+        jest.spyOn(checkoutService, 'loadBillingAddressFields').mockResolvedValue(
             {} as CheckoutSelectors,
         );
 
@@ -108,16 +124,76 @@ describe('Shipping Component', () => {
         ComponentTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleContext.Provider value={localeContext}>
-                    <Shipping {...props} />
+                    <ExtensionProvider checkoutService={checkoutService}>
+                        <Shipping {...props} />
+                    </ExtensionProvider>
                 </LocaleContext.Provider>
             </CheckoutProvider>
         );
+    });
+
+    it('renders StripeShipping if enabled', async () => {
+        const config = getStoreConfig();
+
+        jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
+            ...config,
+            checkoutSettings: {
+                ...config.checkoutSettings,
+                providerWithCustomCheckout: PaymentMethodId.StripeUPE,
+            }
+        });
+        jest.spyOn(checkoutState.data, 'getCustomer')
+            .mockReturnValue({ ...getCustomer(), email: '' ,addresses: [] });
+
+        jest.spyOn(checkoutState.data, 'getShippingCountries')
+            .mockReturnValue(getCountries())
+        jest.spyOn(checkoutState.data, 'getBillingCountries').mockReturnValue(getCountries());
+
+        component = mount(<ComponentTest {...defaultProps} />);
+
+        await new Promise((resolve) => process.nextTick(resolve));
+        component.update();
+
+        expect(component.find('StripeShipping')).toHaveLength(1);
+        expect(component.find(ShippingForm)).toHaveLength(0);
+    });
+
+    it("doesn't render StripeShipping if it enabled but cart amount is smaller then Stripe requires", async () => {
+        const config = getStoreConfig();
+
+        jest.spyOn(checkoutState.data, 'getCart').mockReturnValue({
+            ...getCart(),
+            cartAmount: 0.4,
+        } as Cart);
+
+        jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
+            ...config,
+            checkoutSettings: {
+                ...config.checkoutSettings,
+                providerWithCustomCheckout: PaymentMethodId.StripeUPE,
+            }
+        });
+        jest.spyOn(checkoutState.data, 'getCustomer')
+            .mockReturnValue({ ...getCustomer(), email: '' ,addresses: [] });
+
+        jest.spyOn(checkoutState.data, 'getShippingCountries')
+            .mockReturnValue(getCountries())
+        jest.spyOn(checkoutState.data, 'getBillingCountries').mockReturnValue(getCountries());
+
+        component = mount(<ComponentTest {...defaultProps} />);
+
+        await new Promise((resolve) => process.nextTick(resolve));
+        component.update();
+
+        expect(component.find('StripeShipping')).toHaveLength(0);
+        expect(component.find(ShippingForm)).toHaveLength(1);
     });
 
     it('loads shipping data  when component is mounted', () => {
         mount(<ComponentTest {...defaultProps} />);
 
         expect(checkoutService.loadShippingAddressFields).toHaveBeenCalled();
+        expect(checkoutService.loadBillingAddressFields).toHaveBeenCalled();
 
         expect(checkoutService.loadShippingOptions).toHaveBeenCalled();
     });
@@ -133,9 +209,12 @@ describe('Shipping Component', () => {
             subdivisions: [{code: 'bar', name: 'foo' }],
             requiresState: true,
         }])
-        mount(<ComponentTest { ...defaultProps }/>);
+        jest.spyOn(checkoutState.data, 'getBillingCountries').mockReturnValue(getCountries());
+        mount(<ComponentTest {...defaultProps} />);
 
         expect(checkoutService.loadShippingAddressFields)
+            .toHaveBeenCalled();
+        expect(checkoutService.loadBillingAddressFields)
             .toHaveBeenCalled();
 
         expect(checkoutService.loadShippingOptions)
@@ -346,119 +425,152 @@ describe('Shipping Component', () => {
         expect(checkoutService.deleteConsignment).not.toHaveBeenCalled();
     });
 
-    describe('when multishipping mode is on', () => {
-        describe('when shopper is signed', () => {
-            beforeEach(async () => {
-                component = mount(<ComponentTest {...defaultProps} isMultiShippingMode={true} />);
-                await new Promise((resolve) => process.nextTick(resolve));
-                component.update();
-            });
-
-            it('calls updateCheckout and navigateNextStep', async () => {
-                component
-                    .find('input[name="orderComment"]')
-                    .simulate('change', { target: { value: 'foo', name: 'orderComment' } });
-
-                component.find('form').simulate('submit');
-
-                await new Promise((resolve) => process.nextTick(resolve));
-
-                expect(checkoutService.updateCheckout).toHaveBeenCalledWith({
-                    customerMessage: 'foo',
-                });
-                expect(defaultProps.navigateNextStep).toHaveBeenCalledWith(false);
-            });
-
-            it('calls onToggleMultiShipping when link is clicked', () => {
-                expect(component.find('[data-test="shipping-mode-toggle"]').text()).toBe(
-                    'Ship to a single address',
-                );
-
-                component.find('[data-test="shipping-mode-toggle"]').simulate('click');
-
-                expect(defaultProps.onToggleMultiShipping).toHaveBeenCalled();
-            });
-
-            it('renders multishipping header', () => {
-                expect(component.find('[data-test="shipping-address-heading"]').text()).toBe(
-                    'Choose where to ship each item',
-                );
-            });
-
-            it('renders shipping form', () => {
-                expect(component.find(ShippingForm)).toHaveLength(1);
-            });
-
-            it('updates shipping if shopper turns off multishipping mode with multiple consignments', async () => {
-                const consignments = [
-                    { ...getConsignment(), id: 'foo' },
-                    { ...getConsignment(), id: 'bar' },
-                    { ...getConsignment(), id: 'foobar' },
-                ];
-                const multipleConsignmentsProp = {
-                    ...defaultProps,
-                    consignments,
-                };
-
-                component = mount(
-                    <ComponentTest {...multipleConsignmentsProp} isMultiShippingMode={true} />,
-                );
-                await new Promise((resolve) => process.nextTick(resolve));
-                component.update();
-
-                component.find('[data-test="shipping-mode-toggle"]').simulate('click');
-
-                expect(checkoutService.updateShippingAddress).toHaveBeenCalledWith(
-                    consignments[0].shippingAddress,
-                );
-            });
+    describe('when hasMultiShippingEnabled is enabled', () => {
+        beforeEach(async () => {
+            jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
+                ...getStoreConfig(),
+                checkoutSettings: {
+                    ...getStoreConfig().checkoutSettings,
+                    hasMultiShippingEnabled: true,
+                },
+            })
         });
 
-        describe('when is guest user', () => {
-            beforeEach(async () => {
-                jest.spyOn(checkoutState.data, 'getCustomer').mockReturnValue({
-                    ...getCustomer(),
-                    isGuest: true,
-                });
+        it('shows multi address shipping link for more than 50 cart items', async () => {
+            jest.spyOn(checkoutState.data, 'getCart').mockReturnValue({
+                ...getCart(),
+                lineItems: {
+                    physicalItems: [
+                        {
+                            ...getPhysicalItem(),
+                            quantity: 51,
+                        },
+                    ],
+                },
+            } as Cart);
+            component = mount(<ComponentTest {...defaultProps} />);
+            await new Promise((resolve) => process.nextTick(resolve));
+            component.update();
 
-                component = mount(<ComponentTest {...defaultProps} isMultiShippingMode={true} />);
-                await new Promise((resolve) => process.nextTick(resolve));
-                component.update();
-            });
-
-            it('renders multishipping header', () => {
-                expect(component.find('[data-test="shipping-address-heading"]').text()).toBe(
-                    'Please sign in first',
-                );
-            });
-
-            it('doest render shipping form', () => {
-                expect(component.find(ShippingForm)).toHaveLength(1);
-            });
+            expect(component.find('[data-test="shipping-mode-toggle"]').text()).toBe(
+                'Ship to multiple addresses',
+            );
         });
 
-        describe('when there are multiple consignments', () => {
-            beforeEach(async () => {
-                jest.spyOn(checkoutState.data, 'getConsignments').mockReturnValue([
-                    getConsignment(),
-                    getConsignment(),
-                ]);
-
-                jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
-                    ...getStoreConfig(),
-                    checkoutSettings: {
-                        ...getStoreConfig().checkoutSettings,
-                        hasMultiShippingEnabled: false,
-                    },
+        describe('when multishipping mode is on', () => {
+            describe('when shopper is signed', () => {
+                beforeEach(async () => {
+                    component = mount(<ComponentTest {...defaultProps} isMultiShippingMode={true} />);
+                    await new Promise((resolve) => process.nextTick(resolve));
+                    component.update();
                 });
 
-                component = mount(<ComponentTest {...defaultProps} />);
-                await new Promise((resolve) => process.nextTick(resolve));
-                component.update();
+                it('calls updateCheckout and navigateNextStep', async () => {
+                    component
+                        .find('input[name="orderComment"]')
+                        .simulate('change', { target: { value: 'foo', name: 'orderComment' } });
+
+                    component.find('form').simulate('submit');
+
+                    await new Promise((resolve) => process.nextTick(resolve));
+
+                    expect(checkoutService.updateCheckout).toHaveBeenCalledWith({
+                        customerMessage: 'foo',
+                    });
+                    expect(defaultProps.navigateNextStep).toHaveBeenCalledWith(false);
+                });
+
+                it('calls onToggleMultiShipping when link is clicked', () => {
+                    expect(component.find('[data-test="shipping-mode-toggle"]').text()).toBe(
+                        'Ship to a single address',
+                    );
+
+                    component.find('[data-test="shipping-mode-toggle"]').simulate('click');
+
+                    expect(defaultProps.onToggleMultiShipping).toHaveBeenCalled();
+                });
+
+                it('renders multishipping header', () => {
+                    expect(component.find('[data-test="shipping-address-heading"]').text()).toBe(
+                        'Choose where to ship each item',
+                    );
+                });
+
+                it('renders shipping form', () => {
+                    expect(component.find(ShippingForm)).toHaveLength(1);
+                });
+
+                it('updates shipping if shopper turns off multishipping mode with multiple consignments', async () => {
+                    const consignments = [
+                        { ...getConsignment(), id: 'foo' },
+                        { ...getConsignment(), id: 'bar' },
+                        { ...getConsignment(), id: 'foobar' },
+                    ];
+                    const multipleConsignmentsProp = {
+                        ...defaultProps,
+                        consignments,
+                    };
+
+                    component = mount(
+                        <ComponentTest {...multipleConsignmentsProp} isMultiShippingMode={true} />,
+                    );
+                    await new Promise((resolve) => process.nextTick(resolve));
+                    component.update();
+
+                    component.find('[data-test="shipping-mode-toggle"]').simulate('click');
+
+                    expect(checkoutService.updateShippingAddress).toHaveBeenCalledWith(
+                        consignments[0].shippingAddress,
+                    );
+                });
             });
 
-            it('does not initialize any shipping address', () => {
-                expect(component.find(ShippingForm).prop('address')).toBeFalsy();
+            describe('when is guest user', () => {
+                beforeEach(async () => {
+                    jest.spyOn(checkoutState.data, 'getCustomer').mockReturnValue({
+                        ...getCustomer(),
+                        isGuest: true,
+                    });
+
+                    component = mount(<ComponentTest {...defaultProps} isMultiShippingMode={true} />);
+                    await new Promise((resolve) => process.nextTick(resolve));
+                    component.update();
+                });
+
+                it('renders multishipping header', () => {
+                    expect(component.find('[data-test="shipping-address-heading"]').text()).toBe(
+                        'Please sign in first',
+                    );
+                });
+
+                it('doest render shipping form', () => {
+                    expect(component.find(ShippingForm)).toHaveLength(1);
+                });
+            });
+
+            describe('when there are multiple consignments', () => {
+                beforeEach(async () => {
+                    jest.spyOn(checkoutState.data, 'getConsignments').mockReturnValue([
+                        getConsignment(),
+                        getConsignment(),
+                    ]);
+
+                    jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
+                        ...getStoreConfig(),
+                        checkoutSettings: {
+                            ...getStoreConfig().checkoutSettings,
+                            hasMultiShippingEnabled: false,
+                        },
+                    });
+
+                    component = mount(<ComponentTest {...defaultProps} />);
+                    await new Promise((resolve) => process.nextTick(resolve));
+                    component.update();
+                });
+
+                it('does not initialize any shipping address', () => {
+                    expect(component.find(ShippingForm).prop('address')).toBeFalsy();
+                });
             });
         });
     });

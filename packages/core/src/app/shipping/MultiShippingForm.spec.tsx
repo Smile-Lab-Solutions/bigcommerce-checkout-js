@@ -1,7 +1,10 @@
+import { createCheckoutService } from '@bigcommerce/checkout-sdk';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 
+import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 
 import { AddressFormModal } from '../address';
 import { getAddressFormFields } from '../address/formField.mock';
@@ -15,6 +18,8 @@ import ItemAddressSelect from './ItemAddressSelect';
 import MultiShippingForm, { MultiShippingFormProps } from './MultiShippingForm';
 
 describe('MultiShippingForm Component', () => {
+    const checkoutService = createCheckoutService();
+
     let component: ReactWrapper;
     let localeContext: LocaleContextType;
     let defaultProps: MultiShippingFormProps;
@@ -57,9 +62,13 @@ describe('MultiShippingForm Component', () => {
     describe('when user is guest', () => {
         beforeEach(() => {
             component = mount(
-                <LocaleContext.Provider value={localeContext}>
-                    <MultiShippingForm {...defaultProps} isGuest={true} />
-                </LocaleContext.Provider>,
+                <CheckoutProvider checkoutService={checkoutService}>
+                    <LocaleContext.Provider value={localeContext}>
+                        <ExtensionProvider checkoutService={checkoutService}>
+                            <MultiShippingForm {...defaultProps} isGuest={true} />
+                        </ExtensionProvider>
+                    </LocaleContext.Provider>
+                </CheckoutProvider>,
             );
         });
 
@@ -73,9 +82,13 @@ describe('MultiShippingForm Component', () => {
     describe('when user is signed in', () => {
         beforeEach(() => {
             component = mount(
-                <LocaleContext.Provider value={localeContext}>
-                    <MultiShippingForm {...defaultProps} />
-                </LocaleContext.Provider>,
+                <CheckoutProvider checkoutService={checkoutService}>
+                    <LocaleContext.Provider value={localeContext}>
+                        <ExtensionProvider checkoutService={checkoutService}>
+                            <MultiShippingForm {...defaultProps} />
+                        </ExtensionProvider>
+                    </LocaleContext.Provider>
+                </CheckoutProvider>,
             );
         });
 

@@ -17,6 +17,7 @@ import React, { PureComponent, ReactNode } from 'react';
 import { lazy, object } from 'yup';
 
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { FormContext } from '@bigcommerce/checkout/ui';
 
 import {
     AddressFormValues,
@@ -27,7 +28,8 @@ import {
     mapAddressToFormValues,
 } from '../address';
 import { getCustomFormFieldsValidationSchema } from '../formFields';
-import { Fieldset, Form, FormContext } from '../ui/form';
+import { PaymentMethodId } from '../payment/paymentMethod';
+import { Fieldset, Form } from '../ui/form';
 
 import BillingSameAsShippingField from './BillingSameAsShippingField';
 import hasSelectedShippingOptions from './hasSelectedShippingOptions';
@@ -49,6 +51,7 @@ export interface SingleShippingFormProps {
     isMultiShippingMode: boolean;
     methodId?: string;
     shippingAddress?: Address;
+    shippingAutosaveDelay?: number;
     shouldShowSaveAddress?: boolean;
     shouldShowOrderComments: boolean;
     isFloatingLabelEnabled?: boolean;
@@ -75,6 +78,15 @@ interface SingleShippingFormState {
     isResettingAddress: boolean;
     isUpdatingShippingData: boolean;
     hasRequestedShippingOptions: boolean;
+}
+
+function shouldHaveCustomValidation(methodId?: string): boolean {
+    const methodIdsWithoutCustomValidation: string[] = [
+        PaymentMethodId.BraintreeAcceleratedCheckout,
+        PaymentMethodId.PayPalCommerceAcceleratedCheckout
+    ];
+
+    return Boolean(methodId && !methodIdsWithoutCustomValidation.includes(methodId));
 }
 
 export const SHIPPING_AUTOSAVE_DELAY = 1700;
@@ -117,7 +129,7 @@ class SingleShippingForm extends PureComponent<
                     this.setState({ isUpdatingShippingData: false });
                 }
             },
-            SHIPPING_AUTOSAVE_DELAY,
+            props.shippingAutosaveDelay ?? SHIPPING_AUTOSAVE_DELAY,
         );
     }
 
@@ -333,7 +345,7 @@ export default withLanguage(
             getFields,
             methodId,
         }: SingleShippingFormProps & WithLanguageProps) =>
-            methodId
+            shouldHaveCustomValidation(methodId)
                 ? object({
                       shippingAddress: lazy<Partial<AddressFormValues>>((formValues) =>
                           getCustomFormFieldsValidationSchema({

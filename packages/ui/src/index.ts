@@ -14,6 +14,7 @@ export {
     Fieldset,
     FormField,
     FormContext,
+    FormProvider,
     FormFieldContainer,
     FormContextType,
     Label,
@@ -27,6 +28,7 @@ export {
     CreditCardIcon,
     IconNewAccount,
     IconPaypal,
+    IconPayPalFastlane,
     IconSize,
     IconHelp,
     IconLock,
@@ -57,10 +59,10 @@ export {
     IconLiteCoin,
     IconProps,
     IconShibaInu,
+    IconSepa,
     IconUsdCoin,
     IconAch,
 } from './icon';
-export { LoadingOverlay } from './loading';
+export { LoadingOverlay, LoadingSpinner } from './loading';
 export { Modal, ModalHeader, ModalTrigger, ModalTriggerModalProps } from './modal';
-export { getAppliedStyles, preventDefault } from './utils/dom';
 export { TooltipTrigger } from './tooltip';

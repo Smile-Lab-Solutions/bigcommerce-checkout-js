@@ -15,10 +15,11 @@ import {
     IconAch,
     IconNewAccount,
     IconPaypal,
+    IconSepa,
     IconSize,
 } from '@bigcommerce/checkout/ui';
 
-import { isAchInstrument, isBankAccountInstrument } from '../../guards';
+import { isAchInstrument, isBankAccountInstrument, isSepaInstrument } from '../../guards';
 
 interface AccountInstrumentUseNewButtonProps {
     className?: string;
@@ -85,17 +86,22 @@ const AchInstrumentMenuItem: FunctionComponent<AchInstrumentMenuItemProps> = ({
     testId,
     onClick,
 }) => {
-    const issuerName = `Routing Number: ${instrument.issuer}`;
-    const accountNumber = `Account number ending in: ${instrument.accountNumber}`;
-
     return (
         <button className={className} data-test={testId} onClick={onClick} type="button">
             <div className="instrumentSelect-details">
                 <IconAch size={IconSize.Medium} />
 
                 <div className="instrumentSelect-bank">
-                    <div>{accountNumber}</div>
-                    <div>{issuerName}</div>
+                    <div>
+                        <TranslatedString
+                            data={{ accountNumber: instrument.accountNumber }}
+                            id="payment.instrument_account_number_ending"
+                        />
+                    </div>
+                    <div>
+                        <TranslatedString id="payment.instrument_manage_table_header_routing_number_text" />
+                        : {instrument.issuer}
+                    </div>
                 </div>
             </div>
         </button>
@@ -109,15 +115,33 @@ interface BankInstrumentMenuItemProps {
     onClick?(): void;
 }
 
+const SepaInstrumentMenuItem: FunctionComponent<BankInstrumentMenuItemProps> = ({
+    className,
+    instrument,
+    testId,
+    onClick,
+}) => {
+    return (
+        <button className={className} data-test={testId} onClick={onClick} type="button">
+            <div className="instrumentSelect-details">
+                <IconSepa size={IconSize.Medium} />
+                <div className="instrumentSelect-bank">
+                    <div className="instrumentSelect-card">
+                        <TranslatedString id="payment.sepa_account_number" />:{' '}
+                        {instrument.accountNumber}
+                    </div>
+                </div>
+            </div>
+        </button>
+    );
+};
+
 const BankInstrumentMenuItem: FunctionComponent<BankInstrumentMenuItemProps> = ({
     className,
     instrument,
     testId,
     onClick,
 }) => {
-    const issuerName = `Issuer: ${instrument.issuer}`;
-    const accountNumber = `Account number ending in: ${instrument.accountNumber}`;
-
     return (
         <button className={className} data-test={testId} onClick={onClick} type="button">
             <div className="instrumentSelect-details">
@@ -125,8 +149,15 @@ const BankInstrumentMenuItem: FunctionComponent<BankInstrumentMenuItemProps> = (
                     // TODO: When we include new account instrument types we can
                     // abstract these icons in a similar way we did for credit cards.
                 }
-                <div className="instrumentSelect-card">{accountNumber}</div>
-                <div className="instrumentSelect-issuer">{issuerName}</div>
+                <div className="instrumentSelect-card">
+                    <TranslatedString
+                        data={{ accountNumber: instrument.accountNumber }}
+                        id="payment.instrument_account_number_ending"
+                    />
+                </div>
+                <div className="instrumentSelect-issuer">
+                    <TranslatedString id="payment.instrument_issuer" />: {instrument.issuer}
+                </div>
             </div>
         </button>
     );
@@ -149,6 +180,16 @@ const AccountInstrumentOption: FunctionComponent<AccountInstrumentOptionProps> =
     if (isAchInstrument(instrument)) {
         return (
             <AchInstrumentMenuItem
+                instrument={instrument}
+                onClick={handleClick}
+                testId="instrument-select-option"
+            />
+        );
+    }
+
+    if (isSepaInstrument(instrument)) {
+        return (
+            <SepaInstrumentMenuItem
                 instrument={instrument}
                 onClick={handleClick}
                 testId="instrument-select-option"
@@ -230,6 +271,17 @@ const AccountInstrumentSelectButton: FunctionComponent<AccountInstrumentSelectBu
         return (
             <AccountInstrumentUseNewButton
                 className="instrumentSelect-button optimizedCheckout-form-select dropdown-button form-input"
+                testId={testId}
+            />
+        );
+    }
+
+    if (isSepaInstrument(instrument)) {
+        return (
+            <SepaInstrumentMenuItem
+                className="instrumentSelect-button optimizedCheckout-form-select dropdown-button form-input"
+                instrument={instrument}
+                onClick={onClick}
                 testId={testId}
             />
         );

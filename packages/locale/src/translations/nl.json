@@ -84,6 +84,7 @@
             "cancel_action": "Annuleren",
             "close_action": "Sluiten",
             "continue_action": "Doorgaan",
+            "change_action": "Wijzigen",
             "edit_action": "Bewerken",
             "delete_action": "Verwijderen",
             "error_heading": "Er is iets misgegaan",
@@ -162,7 +163,7 @@
             "error_server": "We konden u geen inloglink sturen. Probeer het opnieuw.",
             "error_not_found": "Het ingevoerde e-mailadres is niet gekoppeld aan een account. Probeer het met een ander e-mailadres.",
             "sent_header": "Controleer uw inbox",
-            "sent_text": "Je inloglink wordt verstuurd naar <strong>{email}</strong>. Deze link verloopt binnen 15 minuten. Als je hem niet ziet, controleer dan je map met ongewenste e-mail.",
+            "sent_text": "Als het ingevoerde e-mailadres aan deze winkel is gekoppeld, ontvang je binnenkort een aanmeldingslink. Deze link verloopt binnen 15 minuten. Zie je de link niet, controleer dan je map met ongewenste e-mail.",
             "text": "Voer het e-mailadres in dat aan uw account is gekoppeld. We sturen u een inloglink.",
             "header": "Inloglink van account",
             "header_with_email": "Bevestig uw e-mailadres",
@@ -198,7 +199,13 @@
                 "label": "Accountnummer",
                 "is_required": "Rekeningnummer is vereist",
                 "only_numbers": "Rekeningnummer mag alleen cijfers bevatten",
-                "length": "Rekeningnummer moet minimaal 8 cijfers bevatten"
+                "length": "Rekeningnummer moet minimaal 4 cijfers bevatten",
+                "length_max": "Rekeningnummer moet minimaal 17 cijfers bevatten"
+            },
+            "bluesnap_direct_iban": {
+                "label": "Iban",
+                "is_required": "IBAN is vereist",
+                "length": "IBAN moet minimaal 8 cijfers bevatten"
             },
             "bluesnap_direct_routing_number": {
                 "label": "Routeringsnummer",
@@ -210,8 +217,14 @@
                 "label": "Accounttype",
                 "is_required": "Rekeningtype is verplicht"
             },
+            "ideal": {
+                "label": "Je bank"
+            },
             "bluesnap_direct_permission": "Ik autoriseer deze Elektronische Check (ACH/ECP) transactie en ga akkoord met deze debitering van mijn rekening.",
+            "bluesnap_direct_sepa_mandate_disclaimer": "Door dit machtigingsformulier te ondertekenen, geef je (A) {creditorName} toestemming om instructies naar je bank te sturen om het bedrag van je rekening af te schrijven en (B) machtig je je bank om het bedrag volgens de instructies van {creditorName} van je rekening af te schrijven. Als onderdeel van je rechten heb je recht op terugbetaling door je bank volgens de voorwaarden van je overeenkomst met je bank. Een stornering moet worden aangevraagd binnen 8 weken vanaf de datum waarop je rekening is gedebiteerd.",
             "bluesnap_direct_electronic_check_label": "Elektronische cheque (ACH/ECP)",
+            "bluesnap_direct_sepa_direct_debit": "SEPA-incasso",
+            "bluesnap_direct_local_bank_transfer_label": "Lokale bankoverschrijving",
             "bolt_benefit_1": "Shop honderden merken met wachtwoordloos inloggen",
             "bolt_benefit_2": "Betaal gemakkelijk met opgeslagen betaal- en verzendgegevens",
             "bolt_benefit_3": "Profiteer van PCI-compatibele accountbeveiliging",
@@ -257,6 +270,7 @@
             "credit_card_expiration_placeholder_text": "MM/JJ",
             "credit_card_name_label": "Naam op kaart",
             "credit_card_name_required_error": "Volledige naam is vereist",
+            "credit_card_name_invalid_error": "Creditcardnaam moet geldig zijn",
             "credit_card_number_invalid_error": "Creditcardnummer moet geldig zijn",
             "credit_card_number_label": "Creditcardnummer",
             "credit_card_number_last_four": "Voer het kaartnummer in voor {cardType} eindigend op {lastFour}",
@@ -307,10 +321,12 @@
             "ideal_bic_required": "U moet een uitgever selecteren om de bestelling te plaatsen",
             "instrument_text": "Opgeslagen creditcards",
             "instrument_add_card_action": "Een andere kaart gebruiken",
+            "instrument_account_number_ending": "Rekeningnummer eindigend op: {accountNumber}",
             "instrument_default_ending_in_text": "Kaart eindigend op {endingIn}",
             "instrument_ending_in_text": "{cardTitle} eindigend op {endingIn}",
             "instrument_expired_text": "Verlopen op {expiryDate}",
             "instrument_expires_text": "Verloopt op {expiryDate}",
+            "instrument_issuer": "Uitgevende instantie",
             "instrument_manage_button": "Beheren",
             "instrument_manage_modal_confirmation_action": "Ja, verwijderen",
             "instrument_manage_modal_confirmation_label": "Weet u zeker dat u deze opgeslagen betaalmethode wilt verwijderen?",
@@ -330,6 +346,8 @@
             "account_instrument_save_as_default_payment_method_label": "Gebruik dit account als de standaardbetaalmethode voor toekomstige transacties",
             "account_instrument_text": "Opgeslagen accounts",
             "account_instrument_new_shipping_address": "<strong>We hebben gemerkt dat dit een nieuw verzendadres is.</strong><p> Om veiligheidsredenen moet u uw PayPal-account opnieuw koppelen als u voor de eerste keer naar een adres verzendt of als het verzendadres onlangs gewijzigd is.</p>",
+            "bank_account_instrument_trusted_shipping_address_text": "Deze extra beveiligingsstap wordt op je account toegepast als je voor het eerst naar een adres verzendt of als het verzendadres onlangs is gewijzigd.",
+            "bank_account_instrument_trusted_shipping_address_title_text": "Voer je accountgegevens opnieuw in om deze transactie te autoriseren.",
             "instrument_trusted_shipping_address_text": "Deze extra beveiligingsstap wordt op uw kaart toegepast als u voor het eerst naar een adres verzendt of als het verzendadres onlangs gewijzigd is.",
             "instrument_trusted_shipping_address_title_text": "Voer uw kaartnummer opnieuw in om deze transactie te autoriseren.",
             "quadpay_continue_action": "Doorgaan met Zip",
@@ -381,6 +399,7 @@
                 "incorrect_zip": "Uw factuuradres kan niet worden geverifieerd. Controleer uw factuuradresgegevens en probeer het opnieuw.",
                 "insufficient_funds": "Betaling is geweigerd. Neem contact op met uw bank.",
                 "invalid_address": "Uw factuuradres kan niet worden geverifieerd. Controleer uw factuuradresgegevens en probeer het opnieuw.",
+                "instrument_declined": "We willen je erop wijzen dat het totaalbedrag voor je bestelling is aangepast ten opzichte van het oorspronkelijk bevestigde bedrag met PayPal. Deze wijziging is in overeenstemming met de voorschriften en waarborgen die zijn vastgelegd in de Tweede Payment Services Directive (PSD2). Om verder te gaan met het voltooien van je bestelling, moet je het nieuwe totaal bevestigen door op de knop 'PayPal Checkout' onderaan de pagina te klikken.",
                 "invalid_amount": "Er is een fout opgetreden bij het verwerken van uw betaling. Probeer het opnieuw of neem contact met ons op.",
                 "invalid_authorization_code": "Er is een fout opgetreden bij het verwerken van uw betaling. Probeer het opnieuw of neem contact met ons op.",
                 "invalid_create_instrument_request": "Kan de betaling niet verwerken omdat er ongeldige gegevens zijn opgegeven bij de transactie.",
@@ -428,6 +447,19 @@
                 "user_authorization_error": "Er is een fout opgetreden bij het verwerken van uw betaling. Neem contact met ons op.",
                 "vaulting_service_unavailable": "Service voor beveiligde opslag is momenteel niet beschikbaar.",
                 "voided_transaction": "Uw betaling kan niet worden verwerkt, omdat de transactie al is geannuleerd. Probeer het opnieuw of neem contact met ons op."
+            },
+            "ratepay": {
+                "payment_method_title": "Betalen op rekening",
+                "phone_country_code": "Landcode",
+                "phone_number": "Telefoonnummer",
+                "birth_date": "Geboortedatum",
+                "errors": {
+                    "isRequired": "{fieldName} is vereist",
+                    "isInvalid": "{fieldName} is ongeldig",
+                    "paymentSourceInfoCannotBeVerified": "De combinatie van je naam en adres kan niet worden gevalideerd. Corrigeer je gegevens en probeer het opnieuw. Meer informatie vind je in het <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Ratepay Data Privacy Statement</a> of je kunt contact opnemen met Ratepay via dit <a href='https://www.ratepay.com/en/contact/' target='blank'>contactformulier.</a>",
+                    "paymentSourceDeclinedByProcessor": "Het is niet mogelijk om de geselecteerde betaalmethode te gebruiken. Deze beslissing is gebaseerd op geautomatiseerde gegevensverwerking. Meer informatie vind je in het <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Ratepay Data Privacy Statement</a> of je kunt contact opnemen met Ratepay via dit <a href='https://www.ratepay.com/en/contact/' target='blank'>contactformulier.</a>",
+                    "itemCategoryNotSupportedByPaymentSource": "Digitale items worden niet ondersteund voor de opgegeven methode"
+                }
             }
         },
         "redeemable": {
@@ -461,7 +493,8 @@
             "sign_out_after_action": "om andere betaalmethoden te bekijken",
             "sign_in_required_error": "Extern aanmelden vereist voor betaling",
             "sign_out_before_action": "",
-            "start_with_text": "Sneller betalen met:"
+            "start_with_text": "Sneller betalen met:",
+            "powered_by": "Mogelijk gemaakt door"
         },
         "shipping": {
             "cart_change_error": "Er is een update van uw winkelmandje gedetecteerd en de voor u beschikbare verzendkosten zijn bijgewerkt. Selecteer opnieuw een verzendmethode om door te gaan.",
@@ -501,6 +534,9 @@
             "label": "Ja, ik ga akkoord met het <a href=\"{url}\" target=\"_blank\">privacybeleid</a>.",
             "heading": "Privacybeleid"
         },
+        "privacy_policy_auto_consent": {
+            "label": "*Door op Doorgaan te klikken, ga je akkoord met ons <a href=\"{url}\" target=\"_blank\">privacybeleid</a>."
+        },
         "tax": {
             "inclusive_label": "Belasting inbegrepen in totaal:"
         },
@@ -512,6 +548,12 @@
         },
         "order_confirmation": {
             "mandate": {
+                "adyenv3": {
+                    "boletobancario": "Boleto Bancário-ticket"
+                },
+                "bluesnapdirect": {
+                    "sepa_direct_debit": "Referentie SEPA-machtiging tot automatische incasso: {mandate}"
+                },
                 "checkoutcom": {
                     "boleto": "Boleto Bancário-ticket",
                     "oxxo": "OXXO-ticket",
@@ -527,7 +569,12 @@
                     "sepa_debit": "Machtiging voor SEPA-incasso"
                 },
                 "paypalcommercealternativemethods": {
-                    "oxxo": "OXXO-ticket"
+                    "oxxo": "OXXO-ticket",
+                    "ratepay": {
+                        "account_holder_name": "Rekeninghouder",
+                        "iban": "Iban",
+                        "payment_reference": "Betalingsreferentie"
+                    }
                 }
             },
             "order_number_text": "Je bestelnummer is <strong>{orderNumber}</strong>",

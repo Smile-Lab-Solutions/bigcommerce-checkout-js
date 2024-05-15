@@ -11,12 +11,13 @@ import DOMPurify from 'dompurify';
 import React, { Component, lazy, ReactNode } from 'react';
 
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withAnalytics } from '../analytics';
 import { withCheckout } from '../checkout';
-import { ErrorLogger, ErrorModal } from '../common/error';
+import { ErrorModal } from '../common/error';
 import { retry } from '../common/utility';
 import { getPasswordRequirementsFromConfig } from '../customer';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
@@ -142,6 +143,7 @@ class OrderConfirmation extends Component<
                         <ThankYouHeader name={order.billingAddress.firstName} />
 
                         <OrderStatus
+                            config={config}
                             order={order}
                             supportEmail={orderEmail}
                             supportPhoneNumber={storePhoneNumber}

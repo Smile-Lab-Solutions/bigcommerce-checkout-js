@@ -1,4 +1,3 @@
-import { CheckoutPageNodeObject } from '@bigcommerce/checkout/test-framework';
 import {
     CheckoutService,
     createCheckoutService,
@@ -15,8 +14,10 @@ import {
     AnalyticsEvents,
     AnalyticsProviderMock,
 } from '@bigcommerce/checkout/analytics';
+import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import { CHECKOUT_ROOT_NODE_ID, CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { CheckoutPageNodeObject } from '@bigcommerce/checkout/test-framework';
 
 import { createErrorLogger } from '../common/error';
 import {
@@ -76,7 +77,9 @@ describe('Checkout', () => {
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
-                        <Checkout {...props} />
+                        <ExtensionProvider checkoutService={checkoutService}>
+                            <Checkout {...props} />
+                        </ExtensionProvider>
                     </AnalyticsProviderMock>
                 </LocaleProvider>
             </CheckoutProvider>
@@ -109,6 +112,14 @@ describe('Checkout', () => {
             await checkout.waitForCustomerStep();
 
             expect(defaultProps.embeddedStylesheet.append).toHaveBeenCalledWith(styles);
+        });
+
+        it('render component with proper id', async () => {
+            render(<CheckoutTest {...defaultProps} />);
+            await checkout.waitForCustomerStep();
+            const wrapper = screen.getByTestId('checkout-page-container');
+
+            expect(wrapper).toBeInTheDocument();
         });
 
         it('renders list of promotion banners', async () => {
