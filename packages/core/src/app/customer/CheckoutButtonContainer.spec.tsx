@@ -16,12 +16,20 @@ describe('CheckoutButtonContainer', () => {
     let checkoutService: CheckoutService;
     let checkoutState: CheckoutSelectors;
 
+    const paymentProviders = [
+        'paypalcommerce',
+        'paypalcommercecredit',
+        'amazonpay',
+        'googlepayauthorizenet',
+    ];
+
     beforeEach(() => {
         checkoutService = createCheckoutService();
         checkoutState = checkoutService.getState();
         localeContext = createLocaleContext(getStoreConfig());
 
         jest.spyOn(checkoutState.data, 'getCustomer').mockReturnValue(getGuestCustomer());
+        jest.spyOn(checkoutState.data, 'isPaymentDataRequired').mockReturnValue(true);
         jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue(
             merge(getStoreConfig(), {
                 checkoutSettings: {
@@ -29,7 +37,7 @@ describe('CheckoutButtonContainer', () => {
                         walletButtonsOnTop: true,
                         floatingLabelEnabled: false,
                     },
-                    remoteCheckoutProviders: ['amazonpay','applepay', 'braintreepaypal'],
+                    remoteCheckoutProviders: paymentProviders,
                 },
             }),
         );
@@ -43,6 +51,26 @@ describe('CheckoutButtonContainer', () => {
                         checkEmbeddedSupport={jest.fn()}
                         isPaymentStepActive={false}
                         onUnhandledError={jest.fn()}
+                        onWalletButtonClick={jest.fn()}
+                    />
+                </LocaleContext.Provider>
+            </CheckoutProvider>
+        );
+
+        expect(component).toMatchSnapshot();
+    });
+
+    it('not displays wallet buttons for guest checkout if isPaymentDataRequired = false', () => {
+        jest.spyOn(checkoutState.data, 'isPaymentDataRequired').mockReturnValue(false);
+
+        const component = render(
+            <CheckoutProvider checkoutService={checkoutService}>
+                <LocaleContext.Provider value={localeContext}>
+                    <CheckoutButtonContainer
+                        checkEmbeddedSupport={jest.fn()}
+                        isPaymentStepActive={false}
+                        onUnhandledError={jest.fn()}
+                        onWalletButtonClick={jest.fn()}
                     />
                 </LocaleContext.Provider>
             </CheckoutProvider>
@@ -61,6 +89,7 @@ describe('CheckoutButtonContainer', () => {
                         checkEmbeddedSupport={jest.fn()}
                         isPaymentStepActive={false}
                         onUnhandledError={jest.fn()}
+                        onWalletButtonClick={jest.fn()}
                     />
                 </LocaleContext.Provider>
             </CheckoutProvider>
@@ -77,6 +106,7 @@ describe('CheckoutButtonContainer', () => {
                         checkEmbeddedSupport={jest.fn()}
                         isPaymentStepActive={true}
                         onUnhandledError={jest.fn()}
+                        onWalletButtonClick={jest.fn()}
                     />
                 </LocaleContext.Provider>
             </CheckoutProvider>
@@ -93,7 +123,7 @@ describe('CheckoutButtonContainer', () => {
                         walletButtonsOnTop: true,
                         floatingLabelEnabled: false,
                     },
-                    remoteCheckoutProviders: ['amazonpay','applepay', 'paypalcommerce'],
+                    remoteCheckoutProviders: paymentProviders,
                 },
             }),
         );
@@ -105,6 +135,7 @@ describe('CheckoutButtonContainer', () => {
                         checkEmbeddedSupport={jest.fn()}
                         isPaymentStepActive={true}
                         onUnhandledError={jest.fn()}
+                        onWalletButtonClick={jest.fn()}
                     />
                 </LocaleContext.Provider>
             </CheckoutProvider>

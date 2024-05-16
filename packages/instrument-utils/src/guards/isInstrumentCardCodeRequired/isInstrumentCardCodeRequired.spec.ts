@@ -7,9 +7,13 @@ import {
     getDigitalItem,
     getGiftCertificateItem,
     getPaymentMethod,
-} from '@bigcommerce/checkout/test-utils';
+} from '@bigcommerce/checkout/test-mocks';
 
-import { isInstrumentCardCodeRequired, IsInstrumentCardCodeRequiredState } from '.';
+import {
+    isInstrumentCardCodeRequired,
+    IsInstrumentCardCodeRequiredState,
+    PROVIDERS_WITHOUT_CARD_CODE,
+} from '.';
 
 describe('isInstrumentCardCodeRequired()', () => {
     let state: IsInstrumentCardCodeRequiredState;
@@ -31,6 +35,33 @@ describe('isInstrumentCardCodeRequired()', () => {
                 },
             }),
         };
+    });
+
+    it("returns false if payment provider doesn't require CVV", () => {
+        expect(
+            isInstrumentCardCodeRequired(
+                merge({}, state, {
+                    instrument: {
+                        ...state.instrument,
+                        provider: PROVIDERS_WITHOUT_CARD_CODE[0],
+                    },
+                }),
+            ),
+        ).toBe(false);
+    });
+
+    it('returns false if CVV validation unavailable for payment method', () => {
+        expect(
+            isInstrumentCardCodeRequired(
+                merge({}, state, {
+                    paymentMethod: merge({}, getPaymentMethod(), {
+                        initializationData: {
+                            isVaultingCardCodeValidationAvailable: false,
+                        },
+                    }),
+                }),
+            ),
+        ).toBe(false);
     });
 
     it('returns true if there is digital item in cart', () => {

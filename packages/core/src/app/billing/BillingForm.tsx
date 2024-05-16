@@ -6,16 +6,18 @@ import {
     FormField,
 } from '@bigcommerce/checkout-sdk';
 import { FormikProps, withFormik } from 'formik';
-import React, { createRef, PureComponent, ReactNode, RefObject } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import { lazy } from 'yup';
 
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { AddressFormSkeleton } from '@bigcommerce/checkout/ui';
 
 import {
     AddressForm,
     AddressFormValues,
     AddressSelect,
+    AddressType,
     getAddressFormFieldsValidationSchema,
     getTranslateAddressError,
     isValidCustomerAddress,
@@ -49,52 +51,60 @@ export interface BillingFormProps {
     storeCurrencyCode: string;
 }
 
-interface BillingFormState {
-    isResettingAddress: boolean;
-}
+const BillingForm = ({
+    googleMapsApiKey,
+    billingAddress,
+    countriesWithAutocomplete,
+    customer: { addresses, isGuest },
+    getFields,
+    countries,
+    isUpdating,
+    setFieldValue,
+    shouldShowOrderComments,
+    values,
+    methodId,
+            storeCurrencyCode,
+    isFloatingLabelEnabled,
+    updateAddress,
+    onUnhandledError,
+}: BillingFormProps & WithLanguageProps & FormikProps<BillingFormValues>) => {
+    const [isResettingAddress, setIsResettingAddress] = useState(false);
+    const addressFormRef: RefObject<HTMLFieldSetElement> = useRef(null);
+    const { isPayPalFastlaneEnabled, mergedBcAndPayPalFastlaneAddresses } = usePayPalFastlaneAddress();
 
-class BillingForm extends PureComponent<
-    BillingFormProps & WithLanguageProps & FormikProps<BillingFormValues>,
-    BillingFormState
-> {
-    state: BillingFormState = {
-        isResettingAddress: false,
+    const shouldRenderStaticAddress = methodId === 'amazonpay';
+    const allFormFields = getFields(values.countryCode);
+    const customFormFields = allFormFields.filter(({ custom }) => custom);
+    const hasCustomFormFields = customFormFields.length > 0;
+    const editableFormFields =
+        shouldRenderStaticAddress && hasCustomFormFields ? customFormFields : allFormFields;
+    const billingAddresses = isPayPalFastlaneEnabled ? mergedBcAndPayPalFastlaneAddresses : addresses;
+    const hasAddresses = billingAddresses?.length > 0;
+    const hasValidCustomerAddress =
+        billingAddress &&
+        isValidCustomerAddress(
+            billingAddress,
+            billingAddresses,
+            getFields(billingAddress.countryCode),
+        );
+
+    const handleSelectAddress = async (address: Partial<Address>) => {
+        setIsResettingAddress(true);
+
+        try {
+            await updateAddress(address);
+        } catch (error) {
+            if (error instanceof Error) {
+                onUnhandledError(error);
+            }
+        } finally {
+            setIsResettingAddress(false);
+        }
     };
 
-    private addressFormRef: RefObject<HTMLFieldSetElement> = createRef();
-
-    render(): ReactNode {
-        const {
-            googleMapsApiKey,
-            billingAddress,
-            countriesWithAutocomplete,
-            customer: { addresses, isGuest },
-            getFields,
-            countries,
-            isUpdating,
-            setFieldValue,
-            shouldShowOrderComments,
-            values,
-            methodId,
-            storeCurrencyCode,
-            isFloatingLabelEnabled,
-        } = this.props;
-
-        const shouldRenderStaticAddress = methodId === 'amazonpay';
-        const allFormFields = getFields(values.countryCode);
-        const customFormFields = allFormFields.filter(({ custom }) => custom);
-        const hasCustomFormFields = customFormFields.length > 0;
-        const editableFormFields =
-            shouldRenderStaticAddress && hasCustomFormFields ? customFormFields : allFormFields;
-        const { isResettingAddress } = this.state;
-        const hasAddresses = addresses && addresses.length > 0;
-        const hasValidCustomerAddress =
-            billingAddress &&
-            isValidCustomerAddress(
-                billingAddress,
-                addresses,
-                getFields(billingAddress.countryCode),
-            );
+    const handleUseNewAddress = () => {
+        handleSelectAddress({});
+    };
 
             if (editableFormFields.length > 0){
                 // Remove company field
@@ -112,84 +122,64 @@ class BillingForm extends PureComponent<
                 }
             }
 
-        return (
-            <Form autoComplete="on">
-                {shouldRenderStaticAddress && billingAddress && (
-                    <div className="form-fieldset">
-                        <StaticBillingAddress address={billingAddress} />
-                    </div>
+    return (
+        <Form autoComplete="on">
+            {shouldRenderStaticAddress && billingAddress && (
+                <div className="form-fieldset">
+                    <StaticBillingAddress address={billingAddress} />
+                </div>
+            )}
+
+            <Fieldset id="checkoutBillingAddress" ref={addressFormRef}>
+                {hasAddresses && !shouldRenderStaticAddress && (
+                    <Fieldset id="billingAddresses">
+                        <LoadingOverlay isLoading={isResettingAddress}>
+                            <AddressSelect
+                                addresses={billingAddresses}
+                                onSelectAddress={handleSelectAddress}
+                                onUseNewAddress={handleUseNewAddress}
+                                selectedAddress={
+                                    hasValidCustomerAddress ? billingAddress : undefined
+                                }
+                                type={AddressType.Billing}
+                            />
+                        </LoadingOverlay>
+                    </Fieldset>
                 )}
 
-                <Fieldset id="checkoutBillingAddress" ref={this.addressFormRef}>
-                    {hasAddresses && !shouldRenderStaticAddress && (
-                        <Fieldset id="billingAddresses">
-                            <LoadingOverlay isLoading={isResettingAddress}>
-                                <AddressSelect
-                                    addresses={addresses}
-                                    onSelectAddress={this.handleSelectAddress}
-                                    onUseNewAddress={this.handleUseNewAddress}
-                                    selectedAddress={
-                                        hasValidCustomerAddress ? billingAddress : undefined
-                                    }
-                                />
-                            </LoadingOverlay>
-                        </Fieldset>
-                    )}
-
-                    {!hasValidCustomerAddress && (
-                        <AddressFormSkeleton isLoading={isResettingAddress}>
-                            <AddressForm
-                                countries={countries}
-                                countriesWithAutocomplete={countriesWithAutocomplete}
-                                countryCode={values.countryCode}
-                                formFields={editableFormFields}
-                                googleMapsApiKey={googleMapsApiKey}
-                                isFloatingLabelEnabled={isFloatingLabelEnabled}
-                                setFieldValue={setFieldValue}
-                                shouldShowSaveAddress={!isGuest}
+                {!hasValidCustomerAddress && (
+                    <AddressFormSkeleton isLoading={isResettingAddress}>
+                        <AddressForm
+                            countries={countries}
+                            countriesWithAutocomplete={countriesWithAutocomplete}
+                            countryCode={values.countryCode}
+                            formFields={editableFormFields}
+                            googleMapsApiKey={googleMapsApiKey}
+                            isFloatingLabelEnabled={isFloatingLabelEnabled}
+                            setFieldValue={setFieldValue}
+                            shouldShowSaveAddress={!isGuest}
                                 storeCurrencyCode={storeCurrencyCode}
-                            />
-                        </AddressFormSkeleton>
-                    )}
-                </Fieldset>
+                        />
+                    </AddressFormSkeleton>
+                )}
+            </Fieldset>
 
-                {shouldShowOrderComments && <OrderComments />}
+            {shouldShowOrderComments && <OrderComments />}
 
-                <div className="form-actions">
-                    <Button
-                        disabled={isUpdating || isResettingAddress}
-                        id="checkout-billing-continue"
-                        isLoading={isUpdating || isResettingAddress}
-                        type="submit"
-                        variant={ButtonVariant.Primary}
-                    >
-                        <TranslatedString id="common.continue_action" />
-                    </Button>
-                </div>
-            </Form>
-        );
-    }
-
-    private handleSelectAddress: (address: Partial<Address>) => void = async (address) => {
-        const { updateAddress, onUnhandledError } = this.props;
-
-        this.setState({ isResettingAddress: true });
-
-        try {
-            await updateAddress(address);
-        } catch (error) {
-            if (error instanceof Error) {
-                onUnhandledError(error);
-            }
-        } finally {
-            this.setState({ isResettingAddress: false });
-        }
-    };
-
-    private handleUseNewAddress: () => void = () => {
-        this.handleSelectAddress({});
-    };
-}
+            <div className="form-actions">
+                <Button
+                    disabled={isUpdating || isResettingAddress}
+                    id="checkout-billing-continue"
+                    isLoading={isUpdating || isResettingAddress}
+                    type="submit"
+                    variant={ButtonVariant.Primary}
+                >
+                    <TranslatedString id="common.continue_action" />
+                </Button>
+            </div>
+        </Form>
+    );
+};
 
 export default withLanguage(
     withFormik<BillingFormProps & WithLanguageProps, BillingFormValues>({

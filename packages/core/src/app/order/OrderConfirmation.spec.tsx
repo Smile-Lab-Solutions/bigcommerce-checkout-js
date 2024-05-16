@@ -23,6 +23,7 @@ import { getOrder } from './orders.mock';
 import OrderStatus from './OrderStatus';
 import OrderSummary from './OrderSummary';
 import ThankYouHeader from './ThankYouHeader';
+import { LocaleProvider } from '@bigcommerce/checkout/locale';
 
 describe('OrderConfirmation', () => {
     let checkoutService: CheckoutService;
@@ -63,9 +64,11 @@ describe('OrderConfirmation', () => {
 
         ComponentTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
-                <AnalyticsProviderMock>
-                    <OrderConfirmation {...props} />
-                </AnalyticsProviderMock>
+                <LocaleProvider checkoutService={checkoutService}>
+                    <AnalyticsProviderMock>
+                        <OrderConfirmation {...props} />
+                    </AnalyticsProviderMock>
+                </LocaleProvider>
             </CheckoutProvider>
         );
     });

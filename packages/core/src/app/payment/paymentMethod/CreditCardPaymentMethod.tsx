@@ -13,12 +13,12 @@ import { find, noop } from 'lodash';
 import React, { Component, ReactNode } from 'react';
 import { ObjectSchema } from 'yup';
 
+import { MapToPropsFactory } from '@bigcommerce/checkout/legacy-hoc';
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../../checkout';
 import { connectFormik, ConnectFormikProps } from '../../common/form';
-import { MapToPropsFactory } from '../../common/hoc';
 import { withForm, WithFormProps } from '../../ui/form';
 import { LoadingOverlay } from '../../ui/loading';
 import {
@@ -317,6 +317,12 @@ class CreditCardPaymentMethod extends Component<
     }
 
     private handleUseNewCard: () => void = () => {
+        const {
+            formik: { setFieldValue },
+        } = this.props;
+
+        setFieldValue('hostedForm.cardType', '');
+
         this.setState({
             isAddingNewCard: true,
             selectedInstrumentId: undefined,
@@ -324,6 +330,12 @@ class CreditCardPaymentMethod extends Component<
     };
 
     private handleSelectInstrument: (id: string) => void = (id) => {
+        const {
+            formik: { setFieldValue },
+        } = this.props;
+
+        setFieldValue('hostedForm.cardType', '');
+
         this.setState({
             isAddingNewCard: false,
             selectedInstrumentId: id,

@@ -84,6 +84,7 @@
             "cancel_action": "Annuler",
             "close_action": "Fermer",
             "continue_action": "Continuer",
+            "change_action": "Modifier",
             "edit_action": "Modifier",
             "delete_action": "Supprimer",
             "error_heading": "Une erreur s'est produite",
@@ -162,7 +163,7 @@
             "error_server": "Envoi du lien de connexion impossible. Veuillez réessayer.",
             "error_not_found": "L'adresse e-mail saisie n'est associée à aucun compte. Veuillez saisir une autre adresse e-mail.",
             "sent_header": "Vérifiez votre boîte de réception",
-            "sent_text": "Nous avons envoyé un e-mail contenant un lien de connexion à l'adresse <strong>{email}</strong>. Ce lien expirera dans 15 minutes. Si vous ne le voyez pas apparaître dans votre boîte de réception, vérifiez vos courriers indésirables.",
+            "sent_text": "Si l'adresse e-mail saisie est associée à cette boutique, vous recevrez un lien de connexion sous peu. Ce lien expirera dans 15 minutes. Si vous ne le voyez pas apparaître dans votre boîte de réception, vérifiez vos courriers indésirables.",
             "text": "Veuillez saisir l'adresse e-mail associée à votre compte. Nous vous enverrons un lien de connexion.",
             "header": "Lien de connexion au compte",
             "header_with_email": "Confirmez votre adresse e-mail",
@@ -198,7 +199,13 @@
                 "label": "Numéro de compte",
                 "is_required": "Le numéro de compte est obligatoire",
                 "only_numbers": "Le numéro de compte ne doit contenir que des chiffres",
-                "length": "Le numéro de compte doit comporter au moins 8 chiffres"
+                "length": "Le numéro de compte doit comporter au moins 4 chiffres",
+                "length_max": "Le numéro de compte doit comporter au moins 17 chiffres"
+            },
+            "bluesnap_direct_iban": {
+                "label": "IBAN",
+                "is_required": "L'IBAN est obligatoire",
+                "length": "L'IBAN doit comporter au moins 8 chiffres"
             },
             "bluesnap_direct_routing_number": {
                 "label": "Numéro d'acheminement",
@@ -210,8 +217,14 @@
                 "label": "Type de compte",
                 "is_required": "Le type de compte est obligatoire"
             },
+            "ideal": {
+                "label": "Votre banque"
+            },
             "bluesnap_direct_permission": "J'autorise cette transaction par chèque électronique (ACH/ECP) et j'accepte que mon compte soit débité.",
+            "bluesnap_direct_sepa_mandate_disclaimer": "En signant ce mandat, vous autorisez (A) {creditorName} à indiquer à votre banque de débiter votre compte. Vous autorisez également votre banque à débiter votre compte conformément aux instructions de {creditorName}. Dans le cadre de vos droits, vous pouvez percevoir un remboursement de la part de votre banque selon les conditions générales liées à l'accord que vous avez passé avec cette dernière. Un tel remboursement doit être demandé dans un délai de 8 semaines à compter de la date à laquelle votre compte a été débité.",
             "bluesnap_direct_electronic_check_label": "Chèque électronique (ACH/ECP)",
+            "bluesnap_direct_sepa_direct_debit": "SEPA Direct Debit",
+            "bluesnap_direct_local_bank_transfer_label": "Virement bancaire local",
             "bolt_benefit_1": "Faites vos achats parmi des centaines de marques avec une connexion sans mot de passe",
             "bolt_benefit_2": "Passez au paiement avec les informations de paiement et de livraison enregistrées",
             "bolt_benefit_3": "Profitez d'une sécurité de compte conforme aux normes PCI",
@@ -257,6 +270,7 @@
             "credit_card_expiration_placeholder_text": "MM/AA",
             "credit_card_name_label": "Nom sur la carte",
             "credit_card_name_required_error": "Nom complet requis",
+            "credit_card_name_invalid_error": "Le nom sur la carte bancaire doit être valide.",
             "credit_card_number_invalid_error": "Le numéro de carte bancaire doit être valide.",
             "credit_card_number_label": "Numéro de carte bancaire",
             "credit_card_number_last_four": "Saisissez le numéro de la carte {cardType} se terminant par {lastFour}",
@@ -307,10 +321,12 @@
             "ideal_bic_required": "Pour pouvoir passer commande, vous devez sélectionner un émetteur",
             "instrument_text": "Cartes bancaires enregistrées",
             "instrument_add_card_action": "Utiliser une autre carte",
+            "instrument_account_number_ending": "Numéro de compte se terminant par : {accountNumber}",
             "instrument_default_ending_in_text": "Carte se terminant par {endingIn}",
             "instrument_ending_in_text": "{cardTitle} se terminant par {endingIn}",
             "instrument_expired_text": "A expiré en {expiryDate}",
             "instrument_expires_text": "Expire en {expiryDate}",
+            "instrument_issuer": "Émetteur",
             "instrument_manage_button": "Gérer",
             "instrument_manage_modal_confirmation_action": "Oui, supprimer",
             "instrument_manage_modal_confirmation_label": "Voulez-vous vraiment supprimer ce mode de paiement enregistré ?",
@@ -330,6 +346,8 @@
             "account_instrument_save_as_default_payment_method_label": "Utiliser ce compte comme mode de paiement par défaut pour d'autres transactions",
             "account_instrument_text": "Comptes enregistrés",
             "account_instrument_new_shipping_address": "<strong>Nous avons remarqué qu'il s'agit d'une nouvelle adresse de livraison.</strong><p> Par mesure de sécurité, vous devrez une nouvelle fois relier votre compte PayPal en cas de livraison vers une nouvelle adresse ou si l'adresse de livraison a été récemment modifiée.</p>",
+            "bank_account_instrument_trusted_shipping_address_text": "Cette mesure de sécurité supplémentaire est appliquée à votre compte en cas de livraison vers une nouvelle adresse ou si l'adresse de livraison a été récemment modifiée.",
+            "bank_account_instrument_trusted_shipping_address_title_text": "Veuillez saisir à nouveau les données de votre compte pour autoriser cette transaction.",
             "instrument_trusted_shipping_address_text": "Cette mesure de sécurité supplémentaire est appliquée à votre carte en cas de livraison vers une nouvelle adresse ou si l'adresse de livraison a été récemment modifiée.",
             "instrument_trusted_shipping_address_title_text": "Veuillez saisir à nouveau votre numéro de carte pour autoriser cette transaction.",
             "quadpay_continue_action": "Continuer avec Zip",
@@ -381,6 +399,7 @@
                 "incorrect_zip": "Impossible de confirmer votre adresse de facturation. Veuillez vérifier votre adresse de facturation et réessayer.",
                 "insufficient_funds": "Le paiement a été refusé. Veuillez contacter votre banque.",
                 "invalid_address": "Impossible de confirmer votre adresse de facturation. Veuillez vérifier votre adresse de facturation et réessayer.",
+                "instrument_declined": "Nous souhaitons vous informer que le montant total de votre commande a été ajusté à partir de la somme initialement confirmée avec PayPal. Cette modification est conforme aux réglementations et aux mesures de protection énoncées par la deuxième Directive sur les services de paiement (DSP 2). Pour finaliser votre commande, nous vous demandons de bien vouloir confirmer le nouveau total en cliquant sur le bouton « PayPal Checkout » situé en bas de la page.",
                 "invalid_amount": "Une erreur s'est produite lors du traitement de votre paiement. Veuillez réessayer, ou contactez-nous.",
                 "invalid_authorization_code": "Une erreur s'est produite lors du traitement de votre paiement. Veuillez réessayer, ou contactez-nous.",
                 "invalid_create_instrument_request": "Impossible de traiter le paiement car des données invalides ont été indiquées lors de la transaction.",
@@ -428,6 +447,19 @@
                 "user_authorization_error": "Une erreur s'est produite lors du traitement de votre paiement. Veuillez nous contacter.",
                 "vaulting_service_unavailable": "Le service de sauvegarde sécurisée est actuellement indisponible.",
                 "voided_transaction": "Impossible de traiter votre paiement car la transaction a déjà été annulée. Veuillez réessayer, ou contactez-nous."
+            },
+            "ratepay": {
+                "payment_method_title": "Paiement sur facture",
+                "phone_country_code": "Code pays",
+                "phone_number": "Numéro de téléphone",
+                "birth_date": "Date de naissance",
+                "errors": {
+                    "isRequired": "{fieldName} est obligatoire",
+                    "isInvalid": "{fieldName} n'est pas valide.",
+                    "paymentSourceInfoCannotBeVerified": "Impossible de valider votre nom et votre adresse. Veuillez corriger vos données et réessayer. Vous trouverez de plus amples informations dans la <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Déclaration de confidentialité des données Ratepay</a>. Vous pouvez également contacter Ratepay via ce <a href='https://www.ratepay.com/en/contact/' target='blank'>formulaire de contact</a>.",
+                    "paymentSourceDeclinedByProcessor": "Impossible d'utiliser le mode de paiement sélectionné. Cette décision est fondée sur le traitement automatisé des données. Vous trouverez de plus amples informations dans la <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Déclaration de confidentialité des données Ratepay</a>. Vous pouvez également contacter Ratepay via ce <a href='https://www.ratepay.com/en/contact/' target='blank'>formulaire de contact</a>.",
+                    "itemCategoryNotSupportedByPaymentSource": "Les articles numériques ne sont pas pris en charge pour la méthode donnée"
+                }
             }
         },
         "redeemable": {
@@ -461,7 +493,8 @@
             "sign_out_after_action": "pour afficher d'autres modes de paiement",
             "sign_in_required_error": "Connexion à distance requise avant de procéder au paiement",
             "sign_out_before_action": "",
-            "start_with_text": "Accélérer le processus de paiement avec :"
+            "start_with_text": "Accélérer le processus de paiement avec :",
+            "powered_by": "Optimisé par"
         },
         "shipping": {
             "cart_change_error": "Nous avons détecté une mise à jour de votre panier. Les frais de livraison disponibles ont également été mis à jour. Veuillez sélectionner à nouveau un mode de livraison pour continuer.",
@@ -501,6 +534,9 @@
             "label": "Oui, j'accepte la <a href=\"{url}\" target=\"_blank\">politique de confidentialité</a>.",
             "heading": "Politique de confidentialité"
         },
+        "privacy_policy_auto_consent": {
+            "label": "*En cliquant sur continuer, vous acceptez notre  <a href=\"{url}\" target=\"_blank\">politique de confidentialité</a>."
+        },
         "tax": {
             "inclusive_label": "Taxes incluses dans le total :"
         },
@@ -512,6 +548,12 @@
         },
         "order_confirmation": {
             "mandate": {
+                "adyenv3": {
+                    "boletobancario": "Ticket Boleto Bancário"
+                },
+                "bluesnapdirect": {
+                    "sepa_direct_debit": "Référence du mandat de prélèvement SEPA : {mandate}"
+                },
                 "checkoutcom": {
                     "boleto": "Ticket Boleto Bancário",
                     "oxxo": "Ticket OXXO",
@@ -527,7 +569,12 @@
                     "sepa_debit": "Mandat SEPA Direct Debit"
                 },
                 "paypalcommercealternativemethods": {
-                    "oxxo": "Ticket OXXO"
+                    "oxxo": "Ticket OXXO",
+                    "ratepay": {
+                        "account_holder_name": "Titulaire du compte",
+                        "iban": "IBAN",
+                        "payment_reference": "Référence du paiement"
+                    }
                 }
             },
             "order_number_text": "Votre numéro de commande est <strong>{orderNumber}</strong>.",

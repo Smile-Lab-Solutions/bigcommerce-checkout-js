@@ -84,7 +84,6 @@ describe('getCheckoutStepStatuses()', () => {
                 jest.spyOn(state.data, 'getBillingAddress').mockReturnValue(getBillingAddress());
                 jest.spyOn(state.data, 'getCustomer').mockReturnValue({
                     ...getGuestCustomer(),
-                    isStripeLinkAuthenticated: false
                 });
                 jest.spyOn(service.getState().data, 'getConfig').mockReturnValue({
                     ...getStoreConfig(),
@@ -92,6 +91,10 @@ describe('getCheckoutStepStatuses()', () => {
                         ...getStoreConfig().checkoutSettings, providerWithCustomCheckout: PaymentMethodId.StripeUPE,
                     },
                 });
+                jest.spyOn(
+                    service.getState().data,
+                    'getPaymentProviderCustomer',
+                ).mockReturnValue({ authenticationState: true });
 
                 const steps = getCheckoutStepStatuses(state);
 
@@ -108,6 +111,7 @@ describe('getCheckoutStepStatuses()', () => {
                         ...getStoreConfig().checkoutSettings, providerWithCustomCheckout: PaymentMethodId.StripeUPE,
                     },
                 });
+                jest.spyOn(service.getState().data, 'getCart').mockReturnValue(getCart());
 
                 const steps = getCheckoutStepStatuses(state);
 

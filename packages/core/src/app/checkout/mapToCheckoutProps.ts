@@ -18,7 +18,6 @@ export default function mapToCheckoutProps({
     const {
         checkoutSettings: {
             guestCheckoutEnabled: isGuestEnabled = false,
-            features = {},
             checkoutUserExperienceSettings = {
                 walletButtonsOnTop: false,
                 floatingLabelEnabled: false,
@@ -54,6 +53,7 @@ export default function mapToCheckoutProps({
         isPriceHiddenFromGuests,
         isShowingWalletButtonsOnTop: walletButtonsOnTopFlag,
         loadCheckout: checkoutService.loadCheckout,
+        loadPaymentMethodByIds: checkoutService.loadPaymentMethodByIds,
         loginUrl,
         cartUrl,
         createAccountUrl,

@@ -1,10 +1,11 @@
-import { Coupon, GiftCertificate, Tax } from '@bigcommerce/checkout-sdk';
+import { Coupon, Fee, GiftCertificate, OrderFee, Tax } from '@bigcommerce/checkout-sdk';
 import React, { FunctionComponent, memo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
 import OrderSummaryDiscount from './OrderSummaryDiscount';
 import OrderSummaryPrice from './OrderSummaryPrice';
+import isOrderFee from "./isOrderFee";
 
 export interface OrderSummarySubtotalsProps {
     coupons: Coupon[];
@@ -12,6 +13,7 @@ export interface OrderSummarySubtotalsProps {
     discountAmount?: number;
     isTaxIncluded?: boolean;
     taxes?: Tax[];
+    fees?: Fee[] | OrderFee[];
     giftWrappingAmount?: number;
     isUpdatedCartSummayModal?: boolean,
     shippingAmount?: number;
