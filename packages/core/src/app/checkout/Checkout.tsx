@@ -340,7 +340,6 @@ class Checkout extends Component<
                         </a>
                     </div>
 
-                    <LoadingNotification isLoading={isPending} />
                     <LoadingNotification isLoading={(!isShowingWalletButtonsOnTop && isPending) || extensionState.isShowingLoadingIndicator} />
 
                     <PromotionBannerList promotions={promotions} />

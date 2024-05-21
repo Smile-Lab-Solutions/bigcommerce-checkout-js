@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/checkout",
-  "version": "2.600.8",
+  "version": "2.500.6",
   "private": true,
   "description": "Browser-based application providing a seamless UI for BigCommerce shoppers to complete their checkout.",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "preinstall": "npx check-node-version --package",
-    "prebuild": "rm -rf dist && rm -rf packages/test-framework/report",
+    "prebuild": "del dist",
     "build": "nx run core:build",
     "build:server": "http-server dist",
     "dev": "nx run core:dev",

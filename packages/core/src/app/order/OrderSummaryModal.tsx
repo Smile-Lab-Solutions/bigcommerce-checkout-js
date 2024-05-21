@@ -86,7 +86,7 @@ const OrderSummaryModal: FunctionComponent<
             {additionalLineItems}
         </OrderSummarySection>
         <OrderSummarySection>
-            <OrderSummaryItems displayLineItemsCount={!isUpdatedCartSummayModal} items={lineItems} />
+            <OrderSummaryItems displayLineItemsCount={!isUpdatedCartSummayModal} items={nonBundledLineItems} />
         </OrderSummarySection>
         <OrderSummarySection>
             <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />

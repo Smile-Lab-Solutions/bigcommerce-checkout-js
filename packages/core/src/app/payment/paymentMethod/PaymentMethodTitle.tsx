@@ -10,8 +10,6 @@ import { withCheckout } from '../../checkout';
 import { connectFormik, ConnectFormikProps } from '../../common/form';
 import { CreditCardIconList, mapFromPaymentMethodCardType } from '../creditCard';
 
-import BraintreePaypalCreditDescription from './BraintreePaypalCreditDescription';
-import PaypalCommerceCreditDescription from './PaypalCommerceCreditDescription';
 import { hasCreditCardNumber } from './CreditCardFieldsetValues';
 import getPaymentMethodDisplayName from './getPaymentMethodDisplayName';
 import getPaymentMethodName from './getPaymentMethodName';
@@ -37,7 +35,8 @@ function getPaymentMethodTitle(
     storeCurrency: string,
 ): (method: PaymentMethod) => {
     logoUrl: string;
-    titleText: string; titleSubText: string,
+    titleText: string; 
+    titleSubText: string,
     subtitle?: ReactNode | ((subtitleProps?: { onUnhandledError?(error: Error): void }) => ReactNode)
 } {
     const cdnPath = (path: string) => `${basePath}${path}`;
@@ -50,7 +49,7 @@ function getPaymentMethodTitle(
         const methodDisplayName = getPaymentMethodDisplayName(language)(method);
         // TODO: API could provide the data below so UI can read simply read it.
         // However, I'm not sure how we deal with translation yet. TBC.
-        const customTitles: { [key: string]: { logoUrl: string; titleText: string, subtitle?: ReactNode; titleSubText: string } } = {
+        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode; } } = {
             [PaymentMethodType.CreditCard]: {
                 logoUrl: '',
                 titleText: methodName,
@@ -59,11 +58,12 @@ function getPaymentMethodTitle(
             [PaymentMethodId.BraintreeVenmo]: {
                 logoUrl: method.logoUrl || '',
                 titleText: method.logoUrl ? '' : methodDisplayName,
+                titleSubText: '',
             },
             [PaymentMethodId.BraintreePaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
-                subtitle: (props: { onUnhandledError?(error: Error): void }) => <BraintreePaypalCreditDescription {...props} />
+                titleSubText: '',
             },
             [PaymentMethodType.PaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
@@ -289,30 +289,30 @@ function getPaymentMethodTitle(
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
             if (method.id === 'credit_card') {
-                return { logoUrl: '', titleText: language.translate('payment.credit_card_text') };
+                return { logoUrl: '', titleText: language.translate('payment.credit_card_text'), titleSubText: '' };
             }
 
             if (method.id === 'ecp') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label') };
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label'), titleSubText: '' };
             }
 
             if (method.id === 'banktransfer') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label') };
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label'), titleSubText: '' };
             }
         }
 
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
             if (method.id === 'credit_card') {
-                return { logoUrl: '', titleText: language.translate('payment.credit_card_text') };
+                return { logoUrl: '', titleText: language.translate('payment.credit_card_text'), titleSubText: '' };
             }
 
             if (method.id === 'ecp') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label') };
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label'), titleSubText: '' };
             }
 
             if (method.id === 'banktransfer') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label') };
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label'), titleSubText: '' };
             }
         }
 
@@ -331,7 +331,7 @@ function getPaymentMethodTitle(
         }
 
         if (method.id === PaymentMethodId.Ratepay) {
-            return { logoUrl: method.logoUrl || '', titleText: language.translate('payment.ratepay.payment_method_title')};
+            return { logoUrl: method.logoUrl || '', titleText: language.translate('payment.ratepay.payment_method_title'), titleSubText: '' };
         }
 
         return (
@@ -361,7 +361,7 @@ const PaymentMethodTitle: FunctionComponent<
         ConnectFormikProps<PaymentFormValues>
 > = ({ cdnBasePath, onUnhandledError, formik: { values }, instruments, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
-    const { logoUrl, titleText, subtitle, titleSubText } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
+    const { logoUrl, titleText, titleSubText, subtitle } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
 
     const getSelectedCardType = () => {
         if (!isSelected) {

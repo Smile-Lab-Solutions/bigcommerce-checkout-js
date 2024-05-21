@@ -66,6 +66,8 @@ enum PaymentMethodId {
     WorldpayAccess = 'worldpayaccess',
     WorldpayAccessGooglePay = 'googlepayworldpayaccess',
     Zip = 'zip',
+    Partially = 'partially',
+    TerraceFinance = 'terracefinance',
 }
 
 export default PaymentMethodId;

@@ -9,7 +9,6 @@ import classNames from 'classnames';
 import React, { Component, lazy, ReactNode } from 'react';
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
-import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withAnalytics } from '../analytics';

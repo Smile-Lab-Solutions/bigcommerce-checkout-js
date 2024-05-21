@@ -57,13 +57,12 @@ export default function mapToCheckoutProps({
         loginUrl,
         cartUrl,
         createAccountUrl,
-        siteUrl,
-        canCreateAccountInCheckout: features['CHECKOUT-4941.account_creation_in_checkout'],
         promotions,
         subscribeToConsignments: subscribeToConsignmentsSelector({
             checkoutService,
             checkoutState,
         }),
         steps: data.getCheckout() ? getCheckoutStepStatuses(checkoutState) : EMPTY_ARRAY,
+        siteUrl,
     };
 }

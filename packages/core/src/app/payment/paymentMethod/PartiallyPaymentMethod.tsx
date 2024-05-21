@@ -4,7 +4,7 @@ import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-
 import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ConnectFormikProps, connectFormik } from '../../common/form';
-import { MapToPropsFactory } from '../../common/hoc';
+import { MapToPropsFactory } from '@bigcommerce/checkout/legacy-hoc';
 import { WithLanguageProps, withLanguage } from '@bigcommerce/checkout/locale';
 import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';

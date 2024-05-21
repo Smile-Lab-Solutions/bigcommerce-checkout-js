@@ -417,7 +417,14 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
 
             const customer = data.getCustomer();
 
-            if (customer && customer.shouldEncourageSignIn && customer.isGuest && !customer.isStripeLinkAuthenticated) {
+            const paymentProviderCustomer = data.getPaymentProviderCustomer();
+
+            // Handle arctic leaf call here
+            // Fires when customer enters email and continues
+            // No need to wait for customer to sign in
+            fireArctic(email, storeHash);
+
+            if (customer && customer.shouldEncourageSignIn && customer.isGuest && !paymentProviderCustomer?.stripeLinkAuthenticationState) {
                 return onChangeViewType(CustomerViewType.SuggestedLogin);
             }
 
