@@ -197,14 +197,14 @@ class TerraceFinancePaymentMethod extends Component<
 
   private getListText: () => ReactNode = () => {
     return <>
+      <li><div className="circleCheck"></div><b>90 Days same-as-cash option</b></li>
+      <li><div className="circleCheck"></div><b>Early pay-off discounts available</b></li>
       <li><div className="circleCheck"></div>Vantage Score 520+ needed</li>
       <li><div className="circleCheck"></div>Soft Credit pull on application</li>
       <li><div className="circleCheck"></div>ACH enabled bank account only</li>
       <li><div className="circleCheck"></div>$1 Down today</li>
       <li><div className="circleCheck"></div>Up to 24 month term length</li>
       <li><div className="circleCheck"></div>Instant decision</li>
-      <li><div className="circleCheck"></div><b>90 Days same-as-cash option</b></li>
-      <li><div className="circleCheck"></div>Pay-off anytime</li>
       <li><div className="circleCheck"></div>Skip-a-payment option</li>
 
       <p style={{ fontSize: 'smaller' }}><strong>Not available in the following states: VT (Vermont), MN (Minnesota), NJ (New Jersey), WI (Wisconsin)</strong></p>
