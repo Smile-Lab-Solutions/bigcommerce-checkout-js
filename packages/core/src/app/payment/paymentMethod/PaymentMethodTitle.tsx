@@ -1,7 +1,7 @@
-import { LanguageService, PaymentMethod } from '@bigcommerce/checkout-sdk';
+import { CardInstrument, LanguageService, PaymentMethod } from '@bigcommerce/checkout-sdk';
 import { number } from 'card-validator';
 import { compact } from 'lodash';
-import React, { FunctionComponent, memo } from 'react';
+import React, { FunctionComponent, memo, ReactNode } from 'react';
 
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps , PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
@@ -20,9 +20,11 @@ import PaymentMethodType from './PaymentMethodType';
 export interface PaymentMethodTitleProps {
     method: PaymentMethod;
     isSelected?: boolean;
+    onUnhandledError?(error: Error): void;
 }
 
-interface WithCdnPathProps {
+interface WithPaymentTitleProps {
+    instruments: CardInstrument[];
     cdnBasePath: string;
     storeCurrency: string;
 }
@@ -31,7 +33,12 @@ function getPaymentMethodTitle(
     language: LanguageService,
     basePath: string,
     storeCurrency: string,
-): (method: PaymentMethod) => { logoUrl: string; titleText: string; titleSubText: string } {
+): (method: PaymentMethod) => {
+    logoUrl: string;
+    titleText: string; 
+    titleSubText: string,
+    subtitle?: ReactNode | ((subtitleProps?: { onUnhandledError?(error: Error): void }) => ReactNode)
+} {
     const cdnPath = (path: string) => `${basePath}${path}`;
 
     return (method) => {
@@ -42,7 +49,7 @@ function getPaymentMethodTitle(
         const methodDisplayName = getPaymentMethodDisplayName(language)(method);
         // TODO: API could provide the data below so UI can read simply read it.
         // However, I'm not sure how we deal with translation yet. TBC.
-        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string } } = {
+        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode; } } = {
             [PaymentMethodType.CreditCard]: {
                 logoUrl: '',
                 titleText: methodName,
@@ -51,6 +58,11 @@ function getPaymentMethodTitle(
             [PaymentMethodId.BraintreeVenmo]: {
                 logoUrl: method.logoUrl || '',
                 titleText: method.logoUrl ? '' : methodDisplayName,
+                titleSubText: '',
+            },
+            [PaymentMethodId.BraintreePaypalCredit]: {
+                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
+                titleText: methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodType.PaypalCredit]: {
@@ -274,6 +286,36 @@ function getPaymentMethodTitle(
             },
         };
 
+
+        if (method.gateway === PaymentMethodId.BlueSnapDirect) {
+            if (method.id === 'credit_card') {
+                return { logoUrl: '', titleText: language.translate('payment.credit_card_text'), titleSubText: '' };
+            }
+
+            if (method.id === 'ecp') {
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label'), titleSubText: '' };
+            }
+
+            if (method.id === 'banktransfer') {
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label'), titleSubText: '' };
+            }
+        }
+
+
+        if (method.gateway === PaymentMethodId.BlueSnapDirect) {
+            if (method.id === 'credit_card') {
+                return { logoUrl: '', titleText: language.translate('payment.credit_card_text'), titleSubText: '' };
+            }
+
+            if (method.id === 'ecp') {
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label'), titleSubText: '' };
+            }
+
+            if (method.id === 'banktransfer') {
+                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label'), titleSubText: '' };
+            }
+        }
+
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {
             return customTitles[PaymentMethodId.PaypalCommerceAlternativeMethod];
         }
@@ -288,6 +330,10 @@ function getPaymentMethodTitle(
             return customTitles[PaymentMethodType.CreditCard];
         }
 
+        if (method.id === PaymentMethodId.Ratepay) {
+            return { logoUrl: method.logoUrl || '', titleText: language.translate('payment.ratepay.payment_method_title'), titleSubText: '' };
+        }
+
         return (
             customTitles[method.gateway || ''] ||
             customTitles[method.id] ||
@@ -297,19 +343,32 @@ function getPaymentMethodTitle(
     };
 }
 
+function getInstrumentForMethod(
+    instruments: CardInstrument[],
+    method: PaymentMethod,
+    values: PaymentFormValues
+): CardInstrument | undefined {
+    const instrumentsForMethod = instruments.filter(instrument => instrument.provider === method.id);
+    const selectedInstrument = instrumentsForMethod.find(instrument => instrument.bigpayToken === values.instrumentId);
+
+    return selectedInstrument;
+}
+
 const PaymentMethodTitle: FunctionComponent<
     PaymentMethodTitleProps &
         WithLanguageProps &
-        WithCdnPathProps &
+        WithPaymentTitleProps &
         ConnectFormikProps<PaymentFormValues>
-> = ({ cdnBasePath, formik: { values }, isSelected, language, method, storeCurrency }) => {
+> = ({ cdnBasePath, onUnhandledError, formik: { values }, instruments, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
-    const { logoUrl, titleText, titleSubText } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
+    const { logoUrl, titleText, titleSubText, subtitle } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
 
     const getSelectedCardType = () => {
         if (!isSelected) {
             return;
         }
+
+        const instrumentSelected = getInstrumentForMethod(instruments, method, values);
 
         if (isHostedCreditCardFieldsetValues(values) && values.hostedForm.cardType) {
             return values.hostedForm.cardType;
@@ -324,7 +383,19 @@ const PaymentMethodTitle: FunctionComponent<
 
             return card.type;
         }
+
+        if (instrumentSelected) {
+            return instrumentSelected.brand;
+        }
     };
+
+    const getSubtitle = () => {
+        const node = subtitle instanceof Function ? subtitle({ onUnhandledError }) : subtitle;
+
+        return node ? <div className="paymentProviderHeader-subtitleContainer">
+            {node}
+        </div> : null
+    }
 
     // Set card icons array to empty
     method.supportedCards = [];
@@ -445,6 +516,8 @@ const PaymentMethodTitle: FunctionComponent<
                         </div>
                     </>
                 )}
+
+                {getSubtitle()}
             </div>
             <div className="paymentProviderHeader-cc">
                 <CreditCardIconList
@@ -456,22 +529,25 @@ const PaymentMethodTitle: FunctionComponent<
     );
 };
 
-function mapToCdnPathProps({ checkoutState }: CheckoutContextProps): WithCdnPathProps | null {
+function mapToCheckoutProps({ checkoutState }: CheckoutContextProps): WithPaymentTitleProps | null {
     const {
-        data: { getConfig },
+        data: { getConfig, getInstruments },
     } = checkoutState;
     const config = getConfig();
+
+    const instruments = getInstruments() || [];
 
     if (!config) {
         return null;
     }
 
     return {
+        instruments,
         cdnBasePath: config.cdnPath,
         storeCurrency: config.currency.code
     };
 }
 
 export default connectFormik(
-    withLanguage(withCheckout(mapToCdnPathProps)(memo(PaymentMethodTitle))),
+    withLanguage(withCheckout(mapToCheckoutProps)(memo(PaymentMethodTitle))),
 );

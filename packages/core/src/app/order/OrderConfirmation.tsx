@@ -8,11 +8,12 @@ import {
 import classNames from 'classnames';
 import React, { Component, lazy, ReactNode } from 'react';
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withAnalytics } from '../analytics';
 import { withCheckout } from '../checkout';
-import { ErrorLogger, ErrorModal } from '../common/error';
+import { ErrorModal } from '../common/error';
 import { retry } from '../common/utility';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import {

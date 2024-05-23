@@ -1,9 +1,9 @@
 import { CheckoutService, createCheckoutService, LanguageService } from '@bigcommerce/checkout-sdk';
-import { render, screen } from '@testing-library/react';
 import React, { FunctionComponent } from 'react';
 
-import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { createLocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import { getStoreConfig } from '../config/config.mock';
 
@@ -23,12 +23,10 @@ describe('PaymentSubmitButton', () => {
 
         PaymentSubmitButtonTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
-                <LocaleContext.Provider value={localeContext}>
-                    <PaymentSubmitButton
-                        isPaymentDataRequired
-                        {...props}
-                    />
-                </LocaleContext.Provider>
+                <PaymentSubmitButton
+                    isPaymentDataRequired
+                    {...props}
+                />
             </CheckoutProvider>
         );
     });
@@ -93,6 +91,17 @@ describe('PaymentSubmitButton', () => {
         render(<PaymentSubmitButtonTest methodType="paypal" />);
 
         expect(screen.getByText(languageService.translate('payment.paypal_continue_action'))).toBeInTheDocument();
+    });
+
+    it('renders button with "place order" label for PayPal when the order placement starts on checkout page', () => {
+        render(
+            <PaymentSubmitButtonTest
+                methodId={PaymentMethodId.PaypalCommerce}
+                methodType="paypal"
+            />,
+        );
+
+        expect(screen.getByText(languageService.translate('payment.place_order_action'))).toBeInTheDocument();
     });
 
     it('renders button with special label for Braintree Venmo', () => {

@@ -94,6 +94,7 @@ exports[`OrderSummary when shopper has same currency as store renders order summ
         ]
       }
       discountAmount={10}
+      fees={Array []}
       giftCertificates={
         Array [
           Object {
@@ -225,6 +226,7 @@ exports[`OrderSummary when taxes are inclusive displays tax as summary section 1
         ]
       }
       discountAmount={10}
+      fees={Array []}
       giftCertificates={
         Array [
           Object {
@@ -264,11 +266,11 @@ exports[`OrderSummary when taxes are inclusive displays tax as summary section 1
       className="cart-taxItem cart-taxItem--subtotal optimizedCheckout-contentPrimary"
       data-test="tax-text"
     >
-      <WithLanguage(TranslatedString)
+      <TranslatedString
         id="tax.inclusive_label"
       />
     </h5>
-    <OrderSummaryPrice
+    <Component
       amount={3}
       key="0"
       label="Tax"

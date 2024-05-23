@@ -11,6 +11,15 @@ import { BasicFormField, Fieldset, Form, Legend } from '../ui/form';
 
 import EmailField from './EmailField';
 import SubscribeField from './SubscribeField';
+import { SubscribeSessionStorage } from './SubscribeSessionStorage';
+
+function getShouldSubscribeValue(requiresMarketingConsent: boolean, defaultShouldSubscribe: boolean) {
+    if (SubscribeSessionStorage.getSubscribeStatus()) {
+        return true;
+    }
+
+    return requiresMarketingConsent ? false : defaultShouldSubscribe
+}
 
 export interface GuestFormProps {
     canSubscribe: boolean;
@@ -21,6 +30,7 @@ export interface GuestFormProps {
     email?: string;
     isLoading: boolean;
     privacyPolicyUrl?: string;
+    isExpressPrivacyPolicy: boolean;
     isFloatingLabelEnabled?: boolean;
     onChangeEmail(email: string): void;
     onContinueAsGuest(data: GuestFormValues): void;
@@ -43,6 +53,7 @@ const GuestForm: FunctionComponent<
     onShowLogin,
     privacyPolicyUrl,
     requiresMarketingConsent,
+    isExpressPrivacyPolicy,
     isFloatingLabelEnabled,
 }) => {
     const renderField = useCallback(
@@ -72,8 +83,6 @@ const GuestForm: FunctionComponent<
                         {(canSubscribe || requiresMarketingConsent) && (
                             <BasicFormField name="shouldSubscribe" render={renderField} />
                         )}
-
-                        {privacyPolicyUrl && <PrivacyPolicyField url={privacyPolicyUrl} />}
                     </div>
 
                     <div
@@ -93,6 +102,10 @@ const GuestForm: FunctionComponent<
                         </Button>
                     </div>
                 </div>
+
+                {privacyPolicyUrl && (
+                    <PrivacyPolicyField isExpressPrivacyPolicy={isExpressPrivacyPolicy} url={privacyPolicyUrl} />
+                )}
 
                 {!isLoading && (
                     <p>
@@ -121,13 +134,13 @@ export default withLanguage(
             requiresMarketingConsent,
         }) => ({
             email,
-            shouldSubscribe: requiresMarketingConsent ? false : defaultShouldSubscribe,
+            shouldSubscribe: getShouldSubscribeValue(requiresMarketingConsent, defaultShouldSubscribe),
             privacyPolicy: false,
         }),
         handleSubmit: (values, { props: { onContinueAsGuest } }) => {
             onContinueAsGuest(values);
         },
-        validationSchema: ({ language, privacyPolicyUrl }: GuestFormProps & WithLanguageProps) => {
+        validationSchema: ({ language, privacyPolicyUrl, isExpressPrivacyPolicy }: GuestFormProps & WithLanguageProps) => {
             const email = string()
                 .email(language.translate('customer.email_invalid_error'))
                 .max(256)
@@ -135,7 +148,7 @@ export default withLanguage(
 
             const baseSchema = object({ email });
 
-            if (privacyPolicyUrl) {
+            if (privacyPolicyUrl && !isExpressPrivacyPolicy) {
                 return baseSchema.concat(
                     getPrivacyPolicyValidationSchema({
                         isRequired: !!privacyPolicyUrl,

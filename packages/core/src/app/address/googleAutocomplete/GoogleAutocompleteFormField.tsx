@@ -28,7 +28,7 @@ export interface GoogleAutocompleteFormFieldProps {
 }
 
 const GoogleAutocompleteFormField: FunctionComponent<GoogleAutocompleteFormFieldProps> = ({
-    field: { default: placeholder, name },
+    field: { default: placeholder, name, maxLength },
     countryCode,
     supportedCountries,
     parentFieldName,
@@ -55,8 +55,9 @@ const GoogleAutocompleteFormField: FunctionComponent<GoogleAutocompleteFormField
             'aria-labelledby': labelId,
             placeholder: isFloatingLabelEnabled ? ' ' : placeholder,
             labelText: isFloatingLabelEnabled ? labelContent : null,
+            maxLength: maxLength || undefined,
         }),
-        [name, labelId, placeholder, labelContent],
+        [name, labelId, placeholder, labelContent, maxLength],
     );
 
     const renderInput = useCallback(
@@ -94,10 +95,12 @@ const GoogleAutocompleteFormField: FunctionComponent<GoogleAutocompleteFormField
     );
 
     return (
-        <div className={classNames(
+        <div
+            className={classNames(
                 'dynamic-form-field dynamic-form-field--addressLineAutocomplete',
                 { 'floating-form-field': isFloatingLabelEnabled },
             )}
+            data-test="google-autocomplete-form-field"
         >
             <FormField
                 input={renderInput}

@@ -3,6 +3,7 @@ import React, { FunctionComponent, memo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { isPayPalFastlaneAddress, PoweredByPayPalFastlaneLabel, usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
 
 import { AddressType, StaticAddress } from '../address';
 import { withCheckout } from '../checkout';
@@ -20,6 +21,9 @@ interface WithCheckoutStaticBillingAddressProps {
 const StaticBillingAddress: FunctionComponent<
     StaticBillingAddressProps & WithCheckoutStaticBillingAddressProps
 > = ({ address, payments = EMPTY_ARRAY }) => {
+    const { paypalFastlaneAddresses } = usePayPalFastlaneAddress();
+    const showPayPalFastlaneLabel = isPayPalFastlaneAddress(address, paypalFastlaneAddresses);
+
     if (payments.find((payment) => payment.providerId === 'amazonpay')) {
         return (
             <p>
@@ -28,7 +32,13 @@ const StaticBillingAddress: FunctionComponent<
         );
     }
 
-    return <StaticAddress address={address} type={AddressType.Billing} />;
+    return (
+        <>
+            <StaticAddress address={address} type={AddressType.Billing} />
+
+            {showPayPalFastlaneLabel && <PoweredByPayPalFastlaneLabel />}
+        </>
+    );
 };
 
 export function mapToStaticBillingAddressProps(

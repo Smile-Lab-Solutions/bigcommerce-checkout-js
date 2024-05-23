@@ -12,23 +12,15 @@ import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-
 
 import { withCheckout } from '../../checkout';
 
-import AdyenV2PaymentMethod from './AdyenV2PaymentMethod';
-import AdyenV3PaymentMethod from './AdyenV3PaymentMethod';
-import AffirmPaymentMethod from './AffirmPaymentMethod';
 import AmazonPayV2PaymentMethod from './AmazonPayV2PaymentMethod';
-import BarclaycardPaymentMethod from './BarclaycardPaymentMethod';
-import BlueSnapV2PaymentMethod from './BlueSnapV2PaymentMethod';
 import BoltPaymentMethod from './BoltPaymentMethod';
 import BraintreeCreditCardPaymentMethod from './BraintreeCreditCardPaymentMethod';
 import CCAvenueMarsPaymentMethod from './CCAvenueMarsPaymentMethod';
 import ChasePayPaymentMethod from './ChasePayPaymentMethod';
-import CheckoutCustomPaymentMethod from './CheckoutcomCustomPaymentMethod';
 import DigitalRiverPaymentMethod from './DigitalRiverPaymentMethod';
 import GooglePayPaymentMethod from './GooglePayPaymentMethod';
 import HostedCreditCardPaymentMethod from './HostedCreditCardPaymentMethod';
 import HostedPaymentMethod from './HostedPaymentMethod';
-import KlarnaPaymentMethod from './KlarnaPaymentMethod';
-import KlarnaV2PaymentMethod from './KlarnaV2PaymentMethod';
 import MasterpassPaymentMethod from './MasterpassPaymentMethod';
 import MolliePaymentMethod from './MolliePaymentMethod';
 import MonerisPaymentMethod from './MonerisPaymentMethod';
@@ -83,13 +75,6 @@ const PaymentMethodComponent: FunctionComponent<
         return <PPSDKPaymentMethod {...props} />;
     }
 
-    if (method.gateway === PaymentMethodId.AdyenV2) {
-        return <AdyenV2PaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.AdyenV3) {
-        return <AdyenV3PaymentMethod {...props} />;
-    }
 
     if (method.id === PaymentMethodId.SquareV2) {
         return <SquarePaymentMethod {...props} />;
@@ -107,24 +92,8 @@ const PaymentMethodComponent: FunctionComponent<
         return <AmazonPayV2PaymentMethod {...props} />;
     }
 
-    if (method.id === PaymentMethodId.Affirm) {
-        return <AffirmPaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.BlueSnapV2) {
-        return <BlueSnapV2PaymentMethod {...props} />;
-    }
-
     if (method.id === PaymentMethodId.DigitalRiver) {
         return <DigitalRiverPaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.Klarna) {
-        return <KlarnaV2PaymentMethod {...props} />;
-    }
-
-    if (method.id === PaymentMethodId.Klarna) {
-        return <KlarnaPaymentMethod {...props} />;
     }
 
     if (method.id === PaymentMethodId.CCAvenueMars) {
@@ -140,16 +109,6 @@ const PaymentMethodComponent: FunctionComponent<
             return <HostedCreditCardPaymentMethod {...props} />;
         }
 
-        if (
-            method.id === PaymentMethodId.Boleto ||
-            method.id === PaymentMethodId.Ideal ||
-            method.id === PaymentMethodId.Fawry ||
-            method.id === PaymentMethodId.Oxxo ||
-            method.id === PaymentMethodId.Qpay ||
-            method.id === PaymentMethodId.Sepa
-        ) {
-            return <CheckoutCustomPaymentMethod checkoutCustomMethod={method.id} {...props} />;
-        }
 
         return <HostedPaymentMethod {...props} />;
     }
@@ -164,6 +123,7 @@ const PaymentMethodComponent: FunctionComponent<
         method.id === PaymentMethodId.AuthorizeNetGooglePay ||
         method.id === PaymentMethodId.BNZGooglePay ||
         method.id === PaymentMethodId.BraintreeGooglePay ||
+        method.id === PaymentMethodId.PayPalCommerceGooglePay ||
         method.id === PaymentMethodId.CheckoutcomGooglePay ||
         method.id === PaymentMethodId.CybersourceV2GooglePay ||
         method.id === PaymentMethodId.OrbitalGooglePay ||
@@ -195,10 +155,6 @@ const PaymentMethodComponent: FunctionComponent<
         method.id === PaymentMethodId.PaypalPaymentsPro
     ) {
         return <PaypalPaymentsProPaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.Barclaycard) {
-        return <BarclaycardPaymentMethod {...props} />;
     }
 
     if (method.id === PaymentMethodId.Bolt) {

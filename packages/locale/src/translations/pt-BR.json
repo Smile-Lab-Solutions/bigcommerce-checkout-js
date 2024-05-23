@@ -84,6 +84,7 @@
             "cancel_action": "Cancelar",
             "close_action": "Fechar",
             "continue_action": "Continuar",
+            "change_action": "Alterar",
             "edit_action": "Editar",
             "delete_action": "Excluir",
             "error_heading": "Ocorreu um erro",
@@ -162,7 +163,7 @@
             "error_server": "Não conseguimos enviar om link de acesso para você. Tente novamente.",
             "error_not_found": "O email inserido não está associado a nenhuma conta. Experimente outro email.",
             "sent_header": "Verifique sua caixa de entrada",
-            "sent_text": "Enviamos para <strong>{email}</strong> um link de login que expira em 15 minutos. Se não encontrá-lo, confira a pasta de lixo eletrônico.",
+            "sent_text": "Se o endereço de e-mail inserido estiver associado a esta loja, você receberá em breve um link de login que expira em 15 minutos. Se não encontrá-lo, confira a pasta de lixo eletrônico.",
             "text": "Insira o endereço de email associado à sua conta. Enviaremos um link de acesso para você.",
             "header": "Link de acesso à conta",
             "header_with_email": "Confirme seu endereço de email.",
@@ -198,7 +199,13 @@
                 "label": "Número da conta",
                 "is_required": "O número da conta é obrigatório",
                 "only_numbers": "O número da conta deve conter apenas números",
-                "length": "O número da conta deve ter pelo menos 8 dígitos"
+                "length": "O número da conta deve ter pelo menos 4 dígitos",
+                "length_max": "O número da conta deve ter pelo menos 17 dígitos"
+            },
+            "bluesnap_direct_iban": {
+                "label": "Iban",
+                "is_required": "O IBAN é obrigatório",
+                "length": "O IBAN deve ter pelo menos 8 dígitos"
             },
             "bluesnap_direct_routing_number": {
                 "label": "Número de roteamento",
@@ -210,8 +217,14 @@
                 "label": "Tipo de conta",
                 "is_required": "O tipo de conta é obrigatório"
             },
+            "ideal": {
+                "label": "Seu banco"
+            },
             "bluesnap_direct_permission": "Autorizo esta transação com cheque eletrônico (ACH/ECP) e concordo com este débito em minha conta.",
+            "bluesnap_direct_sepa_mandate_disclaimer": "Ao assinar este formulário de mandato, você autoriza (A) {creditorName} a enviar instruções ao seu banco para debitar sua conta e (B) o seu banco a debitar sua conta de acordo com as instruções de {creditorName}. Você tem direito ao reembolso do seu banco de acordo com os termos e condições do seu contrato com tal banco. O reembolso deve ser solicitado dentro de oito semanas a partir da data em que a sua conta foi debitada.",
             "bluesnap_direct_electronic_check_label": "Cheque eletrônico (ACH/ECP)",
+            "bluesnap_direct_sepa_direct_debit": "Débito direto SEPA",
+            "bluesnap_direct_local_bank_transfer_label": "Transferência bancária local",
             "bolt_benefit_1": "Visite lojas de centenas de marcas com login sem senha",
             "bolt_benefit_2": "Finalize a compra com informações de pagamento e de envio salvos",
             "bolt_benefit_3": "Aproveite os benefícios de contas com segurança nível PCI",
@@ -257,6 +270,7 @@
             "credit_card_expiration_placeholder_text": "MM/AA",
             "credit_card_name_label": "Nome no cartão",
             "credit_card_name_required_error": "O nome completo é obrigatório",
+            "credit_card_name_invalid_error": "O nome no cartão de crédito deve ser válido",
             "credit_card_number_invalid_error": "O número do cartão de crédito deve ser válido",
             "credit_card_number_label": "Número do cartão de crédito",
             "credit_card_number_last_four": "Digite o número do cartão {cardType} com final {lastFour}",
@@ -307,10 +321,12 @@
             "ideal_bic_required": "É necessário selecionar um emissor para fazer o pedido",
             "instrument_text": "Cartões de crédito armazenados",
             "instrument_add_card_action": "Use outro cartão",
+            "instrument_account_number_ending": "Número da conta terminado em: {accountNumber}",
             "instrument_default_ending_in_text": "Cartão com final {endingIn}",
             "instrument_ending_in_text": "{cardTitle} com final {endingIn}",
             "instrument_expired_text": "Vencimento {expiryDate}",
             "instrument_expires_text": "Vence em {expiryDate}",
+            "instrument_issuer": "Emissor",
             "instrument_manage_button": "gerenciar",
             "instrument_manage_modal_confirmation_action": "Sim, excluir",
             "instrument_manage_modal_confirmation_label": "Deseja mesmo excluir essa forma de pagamento armazenada?",
@@ -330,6 +346,8 @@
             "account_instrument_save_as_default_payment_method_label": "Usar esta conta como método de pagamento padrão para as próximas transações",
             "account_instrument_text": "Contas armazenadas",
             "account_instrument_new_shipping_address": "<strong>Percebemos que este é um novo endereço de entrega. </strong><p>Por segurança, será necessário vincular novamente a sua conta do PayPal quando enviar para um endereço pela primeira vez ou se o endereço de entrega tiver sido editado recentemente.</p>",
+            "bank_account_instrument_trusted_shipping_address_text": "Esta etapa de segurança adicional é aplicada à sua conta ao enviar para um endereço pela primeira vez ou se o endereço de entrega tiver sido editado recentemente.",
+            "bank_account_instrument_trusted_shipping_address_title_text": "Insira novamente os dados da conta para autorizar esta transação.",
             "instrument_trusted_shipping_address_text": "Esta etapa de segurança adicional é aplicada ao seu cartão quando você envia para um endereço pela primeira vez ou se o endereço de entrega tiver sido editado recentemente.",
             "instrument_trusted_shipping_address_title_text": "Insira novamente o número do seu cartão para autorizar esta transação.",
             "quadpay_continue_action": "Prosseguir com o Zip",
@@ -381,6 +399,7 @@
                 "incorrect_zip": "Não foi possível confirmar seu endereço de cobrança. Confira o seu endereço de cobrança e tente novamente.",
                 "insufficient_funds": "O pagamento foi recusado. Entre em contato com o seu banco.",
                 "invalid_address": "Não foi possível confirmar seu endereço de cobrança. Confira o seu endereço de cobrança e tente novamente.",
+                "instrument_declined": "Informamos que o valor total do seu pedido foi ajustado, diferente do preço inicialmente confirmado com o PayPal. Essa modificação está em conformidade com as normas e salvaguardas estabelecidas pela Segunda Diretiva de Serviços de Pagamento (PSD2). Para prosseguir com a conclusão do seu pedido, solicitamos que confirme o novo valor, clicando no botão \"PayPal Checkout\" na parte inferior da página.",
                 "invalid_amount": "Ocorreu um erro no processamento do seu pagamento. Tente novamente ou entre em contato conosco.",
                 "invalid_authorization_code": "Ocorreu um erro no processamento do seu pagamento. Tente novamente ou entre em contato conosco.",
                 "invalid_create_instrument_request": "Não foi possível processar o pagamento porque foram informados dados inválidos com a transação.",
@@ -428,6 +447,19 @@
                 "user_authorization_error": "Ocorreu um erro no processamento do seu pagamento. Entre em contato conosco.",
                 "vaulting_service_unavailable": "O serviço de armazenamento de dados de cartões não está disponível no momento.",
                 "voided_transaction": "Não foi possível processar seu pagamento porque a transação já tinha sido anulada. Tente novamente ou entre em contato conosco."
+            },
+            "ratepay": {
+                "payment_method_title": "Pagar mediante fatura",
+                "phone_country_code": "Código do país",
+                "phone_number": "Número de telefone",
+                "birth_date": "Data de nascimento",
+                "errors": {
+                    "isRequired": "É obrigatório informar {fieldName}",
+                    "isInvalid": "{fieldName} é inválido",
+                    "paymentSourceInfoCannotBeVerified": "Não foi possível validar a combinação do seu nome e endereço. Corrija os dados e tente novamente. Veja mais informações na <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Declaração de Privacidade de Dados da Ratepay</a> ou entre em contato com a Ratepay por meio deste <a href='https://www.ratepay.com/en/contact/' target='blank'>formulário de contato.</a>",
+                    "paymentSourceDeclinedByProcessor": "Não é possível usar a forma de pagamento selecionada. Essa decisão é baseada no processamento automatizado de dados. Veja mais informações na <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='blank'>Declaração de Privacidade de Dados da Ratepay</a> ou entre em contato com a Ratepay por meio deste <a href='https://www.ratepay.com/en/contact/' target='blank'>formulário de contato.</a>",
+                    "itemCategoryNotSupportedByPaymentSource": "Esse método não aceita itens digitais"
+                }
             }
         },
         "redeemable": {
@@ -461,7 +493,8 @@
             "sign_out_after_action": "para ver outras formas de pagamento",
             "sign_in_required_error": "Acesso remoto obrigatório antes do pagamento",
             "sign_out_before_action": "",
-            "start_with_text": "Finalize as compras mais rápido com:"
+            "start_with_text": "Finalize as compras mais rápido com:",
+            "powered_by": "Com tecnologia"
         },
         "shipping": {
             "cart_change_error": "Foi detectada uma atualização do seu carrinho de compras e seus custos de envio disponíveis foram atualizados. Selecione novamente uma forma de envio para prosseguir.",
@@ -501,6 +534,9 @@
             "label": "Sim, eu concordo com a <a href=\"{url}\" target=\"_blank\">política de privacidade</a>.",
             "heading": "Política de privacidade"
         },
+        "privacy_policy_auto_consent": {
+            "label": "*Ao clicar em continuar, você concorda com a nossa <a href=\"{url}\" target=\"_blank\">Política de Privacidade</a>."
+        },
         "tax": {
             "inclusive_label": "Imposto incluído no total:"
         },
@@ -512,6 +548,12 @@
         },
         "order_confirmation": {
             "mandate": {
+                "adyenv3": {
+                    "boletobancario": "Boleto bancário"
+                },
+                "bluesnapdirect": {
+                    "sepa_direct_debit": "Referência de mandato de débito direto SEPA: {mandate}"
+                },
                 "checkoutcom": {
                     "boleto": "Boleto bancário",
                     "oxxo": "Bilhete do OXXO",
@@ -527,7 +569,12 @@
                     "sepa_debit": "Ordem de débito direto do SEPA"
                 },
                 "paypalcommercealternativemethods": {
-                    "oxxo": "Bilhete do OXXO"
+                    "oxxo": "Bilhete do OXXO",
+                    "ratepay": {
+                        "account_holder_name": "Titular da conta",
+                        "iban": "Iban",
+                        "payment_reference": "Referência de pagamento"
+                    }
                 }
             },
             "order_number_text": "O número do seu pedido é <strong>{orderNumber}</strong>",

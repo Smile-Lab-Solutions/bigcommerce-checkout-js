@@ -15,6 +15,7 @@ import { withCheckout } from '../checkout';
 import AddressType from './AddressType';
 import isValidAddress from './isValidAddress';
 import localizeAddress from './localizeAddress';
+
 import './StaticAddress.scss';
 
 export interface StaticAddressProps {
@@ -43,7 +44,7 @@ const StaticAddress: FunctionComponent<
           );
 
     return !isValid ? null : (
-        <div className="vcard checkout-address--static">
+        <div className="vcard checkout-address--static" data-test="static-address">
             {(address.firstName || address.lastName) && (
                 <p className="fn address-entry">
                     <span className="first-name">{`${address.firstName} `}</span>
@@ -89,12 +90,14 @@ export function mapToStaticAddressProps(
 ): WithCheckoutStaticAddressProps | null {
     const {
         checkoutState: {
-            data: { getBillingCountries, getBillingAddressFields, getShippingAddressFields },
+            data: { getBillingCountries, getShippingCountries, getBillingAddressFields, getShippingAddressFields },
         },
     } = context;
 
     return {
-        countries: getBillingCountries(),
+        countries: type === AddressType.Billing
+            ? getBillingCountries()
+            : getShippingCountries(),
         fields:
             type === AddressType.Billing
                 ? getBillingAddressFields(address.countryCode)
