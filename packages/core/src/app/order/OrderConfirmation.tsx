@@ -20,7 +20,6 @@ import {
     CreatedCustomer,
     SignUpFormValues,
 } from '../guestSignup';
-import { Button, ButtonVariant } from '../ui/button';
 import { LazyContainer, LoadingSpinner } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
 import mapToOrderSummarySubtotalsProps from './mapToOrderSummarySubtotalsProps';
@@ -109,11 +108,6 @@ class OrderConfirmation extends Component<
             return <LoadingSpinner isLoading={true} />;
         }
 
-        const {
-            links: { siteLink },
-        } = config;
-        const accountLink = siteLink + '/account.php';
-
         const currencyCode = config.currency.code;
 
         return (
@@ -124,125 +118,39 @@ class OrderConfirmation extends Component<
             >
                 <div className="layout-main">
                     <div className="orderConfirmation">
-                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
-                            <h3>{order.billingAddress.firstName}, Thank you for your order {order.orderId}</h3>
-                            <div className='shippedKit' style={{backgroundColor: '#DCEFF5', borderRadius: '10px', padding: '15px 15px', margin: '15px 0px', display: 'flex'}}>
-                                {currencyCode === 'USD' && (
-                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using UPS. <br></br> Look out for an email with your tracking information.</p>
-                                )}
-                                {currencyCode === 'GBP' && (
-                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using DPD's next-day
-                                    service or Fedex if you're outside of the UK. <br></br> Look out for an email with your tracking information.</p>
-                                )}
-                                {currencyCode === 'AUD' && (
-                                    <p style={{width: '80%', marginBottom: '0px'}}>Our team will now prepare your revolutionary reusable self-impression kit, and will dispatch it using Australia Post. <br></br> Look out for an email with your tracking information.</p>
-                                )}
-                                <div className="iconShipping"></div>
-                            </div>
-                            <h3>Go to your account to track your order progress</h3>
-                            <img src='https://cdn.instasmile.com/new-website/images/checkout-confirm-track-order.png' style={{borderRadius: '10px', marginBottom: '15px'}} alt='Impression guide'></img>
-                            <div className="continueButtonContainer" style={{display: 'flex'}}>
-                                <form action={accountLink} method="get" target="_top" style={{width: '50%'}}>
-                                    <Button type="submit" variant={ButtonVariant.Secondary} style={{width: '95%'}}>
-                                        Go to your account
-                                    </Button>
-                                </form>
-                                <form action={siteLink} method="get" target="_top" style={{width: '50%'}}>
-                                    <Button type="submit" variant={ButtonVariant.Secondary} style={{width: '95%'}}>
-                                        Back to the website
-                                    </Button>
-                                </form>
-                            </div>
-                        </div>
-                        <div style={{backgroundColor: '#DCEFF5', borderRadius: '25px', padding: '15px 15px', margin: '15px 0px'}}>
-                                <p>Your personal smile consultant will call you within 24 business hours to
-                                    run through your order and answer any questions you may have, so please save us to your trusted contacts.
-                                </p>
-                                {currencyCode === "USD" && (
-                                    <>
-                                        <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri EDT 6 am - 4:30 pm)</p>
-                                        <p style={{marginBottom: '0px'}}>Tel: +1 (855) 955-5910</p>
-                                    </>
-                                )}
-                                {currencyCode === "GBP" && (
-                                    <>
-                                        <p style={{marginBottom: '0px'}}>Ways you can contact us (Mon - Fri 11 am - 9:30 pm)</p>
-                                        <p style={{marginBottom: '0px'}}>Tel: 0800 060 8077</p>
-                                    </>
-                                )}
-                                <p style={{marginBottom: '0px'}}>Live Chat</p>
-                                <p style={{marginBottom: '0px'}}>Email: <a href="mailto:info@instasmile.com" target="_top">info@instasmile.com</a></p>
-                        </div>
                         <div style={{ textAlign: 'center', borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
-                            <h2>Our Guide to Using Your Instasmile Impression Kit</h2>
-                            <p>We understand that this may be a new experience for you. Your impression kit and instructions leaflet will
-                                contain all the information you need to make a great impression for your new clip-on veneers.</p>
-                            <h4>Stressfree Impression Kit Video</h4>
-                            <iframe width="100%" height="650" src="https://www.youtube.com/embed/IL6qf6QZTRY" title="instasmile Stress-Free Impression Kit Instructions"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                ></iframe>
-                            <p>You’ve watched the video, read through the instructions, and prepared everything you need. Now it’s time to
-                                take your impressions.</p>
-                            <p>Keep your instructions to hand and follow them carefully. You can download a copy here if you need to: </p>
-                            <p><a href="https://cdn.instasmile.com/docs/NSI-InstructionsV6.pdf" target="_blank"><strong>Download
-                                Impression Instructions</strong></a></p>
-                        </div>
-                        <div style={{ borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
-                            <div style={{ textAlign: 'center' }}>
-                                <h2>Three simple steps to your perfect instasmile</h2>
-                            </div>
-                            <div className="show-desktop">
-                                <div style={{ display: 'flex' }}>
-                                    <div className="smile-step-clmn-1">
-                                        <div className="smile-step-text-over smile-step-text-over-1"></div>
-                                        <div className="smile-step-details">
-                                            <strong>Order Online</strong>
-                                            <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
-                                        </div>
-                                    </div>
-                                    <div className="smile-step-clmn-2">
-                                        <div className="smile-step-text-over smile-step-text-over-2"></div>
-                                        <div className="smile-step-details">
-                                            <strong>Make an Impression</strong>
-                                            <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
-                                        </div>
-                                    </div>
-                                    <div className="smile-step-clmn-3">
-                                        <div className="smile-step-text-over smile-step-text-over-3"></div>
-                                        <div className="smile-step-details">
-                                            <strong>Receive Your New Smile</strong>
-                                            <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="show-mobile">
-                                <div>
-                                    <div id="owl-demo" className="owl-carousel owl-theme">
-                                        <div className="item">
-                                            <div className="smile-step-text-over smile-step-text-over-1"></div>
-                                            <div className="smile-step-details">
-                                                <strong>Order Online</strong>
-                                                <p>Complete your online <a href="/pages/smile-assessment-1.html" title="smile-assessment-1">Smile Assessment</a> and find the instasmile that’s right for you. Order your instasmile securely through our online store.</p>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="smile-step-text-over smile-step-text-over-2"></div>
-                                            <div className="smile-step-details">
-                                                <strong>Make an Impression</strong>
-                                                <p>You’ll get your Impression Kit in the post. Read through all the instructions so you get the perfect impression, and send us a photo so we can check it’s all OK.</p>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="smile-step-text-over smile-step-text-over-3"></div>
-                                            <div className="smile-step-details">
-                                                <strong>Receive Your New Smile</strong>
-                                                <p>After we’ve checked and approved your photo, send us your completed impression. We’ll then get to work on creating your brand new smile.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <h2 style={{ color: '#ff2688', marginBottom: '2rem', fontSize: 'large', fontWeight: '700', paddingTop: '3rem' }}>Congratulations {order.billingAddress.firstName}, Your instasmile Journey is Underway!</h2>
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: 'inherit', fontSize: 'large' }}>Your order number is <b style={{ fontWeight: '800' }}>{order.orderId}</b>. You'll need this if you contact us!</h3>
+                            <h4 style={{ marginBottom: '2rem', fontSize: 'medium' }}><b style={{ fontWeight: '800' }}>What’s Next?</b></h4>
+                            <p style={{ fontSize: 'medium' }}><b style={{ color: '#000070' }}>Step 1</b><br/><b style={{ color: '#ff2688' }}>We’re Preparing Your Impression Kit</b></p>
+                            <h4 style={{ color: '#000070', fontSize: 'medium' }}>Typically, it will be shipped within 24 hrs (Mon-Fri)</h4>
+                            <img src='https://cdn.instasmile.com/new-website/images/impression-kit-image.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt='Impression guide'></img>                         
+                            <p style={{ fontSize: 'medium' }}><b style={{ color: '#000070' }}>Step 2</b><br/><b style={{ color: '#ff2688' }}>You’ll Receive Your Welcome Call</b></p>
+
+                            {currencyCode === 'USD' && (
+                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>(855)-955-5910</b> within 24 hrs (Mon-Fri)</h4>
+                            )}
+                            {currencyCode === 'GBP' && (
+                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>0800 060 8077</b> within 24 hrs (Mon-Fri)</h4>
+                            )}
+                            {currencyCode === 'AUD' && (
+                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>+44 800 060 8077</b> within 24 hrs (Mon-Fri)</h4>
+                            )}
+                            
+                            <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}><b style={{ fontWeight: '800' }}>{order.billingAddress.firstName}, it's very important we have this call to get your order underway as quickly and easily as possible.</b></h4>
+                            <h4 style={{ fontSize: 'medium' }}>📞 <b style={{ color: '#ff2688', fontWeight: '800' }}>Please look out for our call</b></h4>
+                            
+                            {currencyCode === 'USD' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/us-t-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
+                            {currencyCode === 'GBP' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
+                            {currencyCode === 'AUD' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
+
+                            <img src='https://cdn.instasmile.com/new-website/images/Satisfaction-guarantee-mobile.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt='Satisfaction guarantee'></img>
                         </div>
                     </div>
                 </div>
