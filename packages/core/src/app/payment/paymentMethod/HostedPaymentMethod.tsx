@@ -248,12 +248,12 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                     <div className="payment-descriptor">
-                            <p>Pay in 4 payments over 6 weeks. 1st payment due at checkout.
+                            <p>Pay in 8 payments split into 8 equal installments over 14 weeks. <br></br> 1st payment due at checkout.
                             </p>
                             <ul className="list-element">
                                 <li><div className="circleCheck"></div>Pay using Amex, Visa or Mastercard (as long as they are not pre-paid)</li>
                                 <li><div className="circleCheck"></div>Buy now, pay later</li>
-                                <li><div className="circleCheck"></div>Easy payments</li>
+                                <li><div className="circleCheck"></div>Installments are due every 2 weeks</li>
                             </ul>
                             <p style={{fontSize: 'smaller'}}>
                             Zip can only be used for US purchases. 
