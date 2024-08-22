@@ -8,13 +8,13 @@ import {
 import { isEmpty } from 'lodash';
 import React, { FunctionComponent, memo } from 'react';
 
+import { localizeAddress } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../checkout';
 
 import AddressType from './AddressType';
 import isValidAddress from './isValidAddress';
-import localizeAddress from './localizeAddress';
 
 import './StaticAddress.scss';
 

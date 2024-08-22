@@ -1,41 +1,42 @@
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 
-import isPayPalFastlaneAddress from './is-paypal-fastlane-address';
 import isPayPalFastlaneCustomer from './is-paypal-fastlane-customer';
 import isPayPalFastlaneMethod from './is-paypal-fastlane-method';
 
 const usePayPalFastlaneAddress = () => {
     const { checkoutState } = useCheckout();
-    const { getConfig, getCustomer, getPaymentProviderCustomer } = checkoutState.data;
+    const { getConfig, getPaymentProviderCustomer } = checkoutState.data;
+    const paymentWithCustomCheckout =
+        getConfig()?.checkoutSettings.providerWithCustomCheckout || '';
 
-    const isPayPalFastlaneEnabled = isPayPalFastlaneMethod(
-        getConfig()?.checkoutSettings.providerWithCustomCheckout || '',
-    );
+    const isPayPalFastlaneEnabled = isPayPalFastlaneMethod(paymentWithCustomCheckout);
 
     const paymentProviderCustomer = getPaymentProviderCustomer();
     const paypalFastlaneCustomer = isPayPalFastlaneCustomer(paymentProviderCustomer)
         ? paymentProviderCustomer
         : {};
 
+    const customerAuthenticationState =
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        paymentProviderCustomer?.authenticationState;
+
     const paypalFastlaneAddresses = paypalFastlaneCustomer.addresses || [];
-    const bcAddresses = getCustomer()?.addresses || [];
-    const mergedBcAndPayPalFastlaneAddresses = isPayPalFastlaneEnabled
-        ? [
-              ...paypalFastlaneAddresses,
-              ...bcAddresses.filter(
-                  (address) => !isPayPalFastlaneAddress(address, paypalFastlaneAddresses),
-              ),
-          ]
-        : bcAddresses;
 
     const shouldShowPayPalFastlaneLabel =
         paypalFastlaneAddresses.length > 0 && isPayPalFastlaneEnabled;
+
+    const shouldShowPayPalFastlaneShippingForm =
+        paypalFastlaneAddresses.length > 0 &&
+        customerAuthenticationState &&
+        customerAuthenticationState !== 'CANCELED' &&
+        customerAuthenticationState !== 'unrecognized' &&
+        getConfig()?.checkoutSettings.features['PAYPAL-3996.paypal_fastlane_shipping_update'];
 
     return {
         isPayPalFastlaneEnabled,
         paypalFastlaneAddresses,
         shouldShowPayPalFastlaneLabel,
-        mergedBcAndPayPalFastlaneAddresses,
+        shouldShowPayPalFastlaneShippingForm,
     };
 };
 

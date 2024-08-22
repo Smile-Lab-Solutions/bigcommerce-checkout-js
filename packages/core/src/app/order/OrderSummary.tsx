@@ -1,5 +1,12 @@
-import { LineItemMap, ShopperCurrency, StoreCurrency } from '@bigcommerce/checkout-sdk';
+import {
+    ExtensionRegion,
+    LineItemMap,
+    ShopperCurrency,
+    StoreCurrency,
+} from '@bigcommerce/checkout-sdk';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
+
+import { Extension } from '@bigcommerce/checkout/checkout-extension';
 
 import OrderSummaryHeader from './OrderSummaryHeader';
 import OrderSummaryItems from './OrderSummaryItems';
@@ -37,6 +44,8 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
             <OrderSummarySection>
                 <OrderSummaryItems displayLineItemsCount items={nonBundledLineItems} />
             </OrderSummarySection>
+
+            <Extension region={ExtensionRegion.SummaryLastItemAfter} />
 
             <OrderSummarySection>
                 <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
