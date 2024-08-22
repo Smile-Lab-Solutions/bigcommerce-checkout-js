@@ -1,4 +1,3 @@
-import { usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { CheckoutService, createCheckoutService, CustomerAddress } from '@bigcommerce/checkout-sdk';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -6,6 +5,7 @@ import React from 'react';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { getShippingAddress } from '@bigcommerce/checkout/test-mocks';
 
 import { getCart } from '../cart/carts.mock';
@@ -28,7 +28,7 @@ jest.mock('@bigcommerce/checkout/paypal-fastlane-integration', () => ({
     ...jest.requireActual('@bigcommerce/checkout/paypal-fastlane-integration'),
     usePayPalFastlaneAddress: jest.fn(() => ({
         isPayPalFastlaneEnabled: false,
-        mergedBcAndPayPalFastlaneAddresses: []
+        paypalFastlaneAddresses: []
     })),
 }));
 
@@ -400,11 +400,12 @@ describe('ShippingForm Component', () => {
             expect(initializeMock).not.toHaveBeenCalled();
         });
 
-        it('renders SingleShippingForm with merged addresses list if PayPal Fastlane enabled', () => {
+        it('renders SingleShippingForm with paypal addresses list for guests when PayPal Fastlane enabled', () => {
             const initializeMock = jest.fn();
             const shippingFormProps = {
                 ...defaultProps,
                 initialize: initializeMock,
+                isGuest: true,
             };
             const paypalFastlaneAddresses: CustomerAddress[] = [
                 {
@@ -414,11 +415,9 @@ describe('ShippingForm Component', () => {
                 }
             ];
 
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (usePayPalFastlaneAddress as jest.Mock).mockReturnValue({
                 isPayPalFastlaneEnabled: true,
                 paypalFastlaneAddresses,
-                mergedBcAndPayPalFastlaneAddresses: paypalFastlaneAddresses,
             });
 
             component = mount(
@@ -446,6 +445,7 @@ describe('ShippingForm Component', () => {
             const shippingFormProps = {
                 ...defaultProps,
                 initialize: initializeMock,
+                isGuest: true,
             };
             const paypalFastlaneAddresses: CustomerAddress[] = [
                 {
@@ -455,11 +455,10 @@ describe('ShippingForm Component', () => {
                 }
             ];
 
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (usePayPalFastlaneAddress as jest.Mock).mockReturnValue({
                 isPayPalFastlaneEnabled: true,
                 paypalFastlaneAddresses,
-                mergedBcAndPayPalFastlaneAddresses: paypalFastlaneAddresses,
+                shouldShowPayPalFastlaneShippingForm: true,
             });
 
             component = mount(

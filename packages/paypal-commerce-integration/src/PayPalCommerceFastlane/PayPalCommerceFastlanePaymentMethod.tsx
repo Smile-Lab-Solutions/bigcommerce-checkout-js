@@ -13,6 +13,8 @@ import { FormContext, LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import PayPalCommerceFastlaneForm from './components/PayPalCommerceFastlaneForm';
 
+import './PayPalCommerceFastlanePaymentMethod.scss';
+
 export interface PayPalFastlaneCardComponentRef {
     renderPayPalCardComponent?: (container: string) => void;
     showPayPalCardSelector?: () => Promise<CardInstrument | undefined>;
@@ -33,7 +35,7 @@ const PayPalCommerceFastlanePaymentMethod: FunctionComponent<PaymentMethodProps>
         try {
             await checkoutService.initializePayment({
                 methodId: method.id,
-                paypalcommerceacceleratedcheckout: {
+                paypalcommercefastlane: {
                     onInit: (renderPayPalCardComponent) => {
                         paypalCardComponentRef.current.renderPayPalCardComponent =
                             renderPayPalCardComponent;

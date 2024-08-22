@@ -7,6 +7,7 @@ import {
     Consignment,
     EmbeddedCheckoutMessenger,
     EmbeddedCheckoutMessengerOptions,
+    ExtensionRegion,
     FlashMessage,
     PaymentMethod,
     Promotion,
@@ -16,7 +17,7 @@ import { find, findIndex } from 'lodash';
 import React, { Component, lazy, ReactNode } from 'react';
 
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
-import { ExtensionContextProps, withExtension } from '@bigcommerce/checkout/checkout-extension';
+import { Extension, ExtensionContextProps, withExtension } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { AddressFormSkeleton, ChecklistSkeleton } from '@bigcommerce/checkout/ui';
@@ -121,7 +122,6 @@ export interface CheckoutState {
     isCartEmpty: boolean;
     isRedirecting: boolean;
     hasSelectedShippingOptions: boolean;
-    isHidingStepNumbers: boolean;
     isSubscribed: boolean;
     buttonConfigs: PaymentMethod[];
 }
@@ -163,7 +163,6 @@ class Checkout extends Component<
         isRedirecting: false,
         isMultiShippingMode: false,
         hasSelectedShippingOptions: false,
-        isHidingStepNumbers: true,
         isSubscribed: false,
         buttonConfigs: [],
     };
@@ -254,9 +253,6 @@ class Checkout extends Component<
                 data.getConfig()?.checkoutSettings.hasMultiShippingEnabled;
             const checkoutBillingSameAsShippingEnabled =
                 data.getConfig()?.checkoutSettings.checkoutBillingSameAsShippingEnabled ?? true;
-            const removeStepNumbersFlag =
-              data.getConfig()?.checkoutSettings.features['CHECKOUT-7255.remove_checkout_step_numbers'] ??
-              false;
             const defaultNewsletterSignupOption =
                 data.getConfig()?.shopperConfig.defaultNewsletterSignup ??
                 false;
@@ -268,7 +264,6 @@ class Checkout extends Component<
 
             this.setState({
                 isBillingSameAsShipping: checkoutBillingSameAsShippingEnabled,
-                isHidingStepNumbers: removeStepNumbersFlag,
                 isSubscribed: defaultNewsletterSignupOption,
             });
 
@@ -288,7 +283,7 @@ class Checkout extends Component<
     }
 
     render(): ReactNode {
-        const { error, isHidingStepNumbers } = this.state;
+        const { error } = this.state;
         let errorModal = null;
 
         if (error) {
@@ -306,7 +301,7 @@ class Checkout extends Component<
         }
 
         return (
-            <div className={classNames({ 'is-embedded': isEmbedded(), 'remove-checkout-step-numbers': isHidingStepNumbers })} data-test="checkout-page-container" id="checkout-page-container">
+            <div className={classNames('remove-checkout-step-numbers', { 'is-embedded': isEmbedded() })} data-test="checkout-page-container" id="checkout-page-container">
                 <div className="layout optimizedCheckout-contentPrimary">
                     {this.renderContent()}
                 </div>
@@ -534,6 +529,7 @@ class Checkout extends Component<
                     if (matched) {
                         return (
                             <LazyContainer>
+                                <Extension region={ExtensionRegion.SummaryAfter} />
                                 <CartSummaryDrawer />
                             </LazyContainer>
                         );
@@ -543,6 +539,7 @@ class Checkout extends Component<
                         <aside className="layout-cart">
                             <LazyContainer>
                                 <CartSummary />
+                                <Extension region={ExtensionRegion.SummaryAfter} />
                             </LazyContainer>
                         </aside>
                     );
