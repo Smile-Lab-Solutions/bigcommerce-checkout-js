@@ -26,6 +26,7 @@
       "@bigcommerce/checkout/bluesnap-direct-integration": [
         "packages/bluesnap-direct-integration/src/index.ts"
       ],
+      "@bigcommerce/checkout/bolt-integration": ["packages/bolt-integration/src/index.ts"],
       "@bigcommerce/checkout/braintree-integration": [
         "packages/braintree-integration/src/index.ts"
       ],
@@ -39,6 +40,9 @@
       "@bigcommerce/checkout/core": ["packages/core/src/app/index.ts"],
       "@bigcommerce/checkout/credit-card-integration": [
         "packages/credit-card-integration/src/index.ts"
+      ],
+      "@bigcommerce/checkout/digitalriver-integration": [
+        "packages/digitalriver-integration/src/index.ts"
       ],
       "@bigcommerce/checkout/dom-utils": ["packages/dom-utils/src/index.ts"],
       "@bigcommerce/checkout/error-handling-utils": ["packages/error-handling-utils/src/index.ts"],
@@ -62,8 +66,10 @@
       ],
       "@bigcommerce/checkout/instrument-utils": ["packages/instrument-utils/src/index.ts"],
       "@bigcommerce/checkout/klarna-integration": ["packages/klarna-integration/src/index.ts"],
+      "@bigcommerce/checkout/stripe-integration": ["packages/stripe-integration/src/index.ts"],
       "@bigcommerce/checkout/legacy-hoc": ["packages/legacy-hoc/src/index.ts"],
       "@bigcommerce/checkout/locale": ["packages/locale/src/index.ts"],
+      "@bigcommerce/checkout/mollie-integration": ["packages/mollie-integration/src/index.ts"],
       "@bigcommerce/checkout/offline-payment-integration": [
         "packages/offline-payment-integration/src/index.ts"
       ],
@@ -85,6 +91,9 @@
       "@bigcommerce/checkout/test-mocks": ["packages/test-mocks/src/index.ts"],
       "@bigcommerce/checkout/test-utils": ["packages/test-utils/src/index.ts"],
       "@bigcommerce/checkout/ui": ["packages/ui/src/index.ts"],
+      "@bigcommerce/checkout/wallet-button-integration": [
+        "packages/wallet-button-integration/src/index.ts"
+      ],
       "@bigcommerce/checkout/workspace-tools": ["packages/workspace-tools/src/index.ts"]
     },
     "resolveJsonModule": true,

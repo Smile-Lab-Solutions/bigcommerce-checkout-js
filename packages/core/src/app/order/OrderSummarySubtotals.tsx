@@ -14,7 +14,6 @@ export interface OrderSummarySubtotalsProps {
     taxes?: Tax[];
     fees?: Fee[] | OrderFee[];
     giftWrappingAmount?: number;
-    isUpdatedCartSummayModal?: boolean,
     shippingAmount?: number;
     handlingAmount?: number;
     storeCreditAmount?: number;

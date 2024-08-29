@@ -66,6 +66,7 @@ enum PaymentMethodId {
     WorldpayAccess = 'worldpayaccess',
     WorldpayAccessGooglePay = 'googlepayworldpayaccess',
     Zip = 'zip',
+    TdOnlineMartGooglePay = 'googlepaytdonlinemart',
     Partially = 'partially',
     TerraceFinance = 'terracefinance',
 }
