@@ -20,6 +20,7 @@ export interface OrderSummarySubtotalsProps {
     subtotalAmount: number;
     onRemovedGiftCertificate?(code: string): void;
     onRemovedCoupon?(code: string): void;
+    isReorder?: boolean;
 }
 
 const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
@@ -33,6 +34,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     coupons,
     onRemovedGiftCertificate,
     onRemovedCoupon,
+    isReorder
 }) => {
     return (
         <>
@@ -84,7 +86,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
 
             <OrderSummaryPrice
                 amount={shippingAmount}
-                label={<TranslatedString id="cart.shipping_text" />}
+                label={isReorder ? (<TranslatedString id="cart.shipping_text_reorder" />) : (<TranslatedString id="cart.shipping_text" />)}
                 testId="cart-shipping"
                 zeroLabel={<TranslatedString id="cart.free_text" />}
             />

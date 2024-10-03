@@ -73,6 +73,7 @@
             "see_all_action": "See All",
             "see_less_action": "See Less",
             "shipping_text": "Shipping Dispatched 1-2 days",
+            "shipping_text_reorder": "Shipping Dispatched 10-15 days",
             "gift_wrapping_text": "Gift Wrapping",
             "show_details_action": "Show Details",
             "store_credit_text": "Store Credit",
@@ -509,7 +510,7 @@
         "shipping": {
             "cart_change_error": "An update to your shopping cart has been detected and your available shipping costs have been updated. Please re-select a shipping method to continue.",
             "enter_shipping_address_text": "Please enter a shipping address in order to see shipping quotes",
-            "order_comment_label": "Order Comments",
+            "order_comment_label": "Previous Order Number",
             "assign_item_error": "An error occurred while assigning item to address. Please try again",
             "assign_item_invalid_address_error_heading": "Invalid Address",
             "assign_item_invalid_address_error": "The selected address is not valid. Please go to your account page and update it.",
