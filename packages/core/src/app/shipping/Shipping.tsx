@@ -230,6 +230,7 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             shippingAddress,
             billingAddress,
             methodId,
+            shouldShowOrderComments
         } = this.props;
 
         const updatedShippingAddress = addressValues && mapAddressFromFormValues(addressValues);
@@ -249,17 +250,23 @@ class Shipping extends Component<ShippingProps & WithCheckoutShippingProps, Ship
             promises.push(updateBillingAddress(updatedShippingAddress));
         }
 
-        if (customerMessage !== orderComment) {
-            promises.push(updateCheckout({ customerMessage: orderComment }));
-        }
-
-        try {
-            await Promise.all(promises);
-
-            navigateNextStep(billingSameAsShipping);
-        } catch (error) {
-            if (error instanceof Error) {
-                onUnhandledError(error);
+        if (shouldShowOrderComments && orderComment === ''){
+            onUnhandledError(new Error("Please enter your previous order number"));
+        } 
+        else 
+        {
+            if (customerMessage !== orderComment) {
+                promises.push(updateCheckout({ customerMessage: orderComment }));
+            }
+    
+            try {
+                await Promise.all(promises);
+    
+                navigateNextStep(billingSameAsShipping);
+            } catch (error) {
+                if (error instanceof Error) {
+                    onUnhandledError(error);
+                }
             }
         }
     };
@@ -370,11 +377,13 @@ export function mapToShippingProps({
 
     const {
         checkoutSettings: {
-            enableOrderComments,
             hasMultiShippingEnabled,
             googleMapsApiKey,
         },
     } = config;
+
+    const shouldShowOrderComments = 
+        cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
 
     const methodId = getShippingMethodId(checkout, config);
     const shippableItemsCount = getShippableItemsCount(cart);
@@ -423,7 +432,7 @@ export function mapToShippingProps({
         providerWithCustomCheckout,
         shippingAddress,
         shouldShowMultiShipping,
-        shouldShowOrderComments: enableOrderComments,
+        shouldShowOrderComments: shouldShowOrderComments,
         signOut: checkoutService.signOutCustomer,
         unassignItem: checkoutService.unassignItemsToAddress,
         updateBillingAddress: checkoutService.updateBillingAddress,

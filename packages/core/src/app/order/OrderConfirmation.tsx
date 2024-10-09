@@ -116,41 +116,38 @@ class OrderConfirmation extends Component<
                     'is-embedded': isEmbedded(),
                 })}
             >
-                <div className="layout-main">
+                <div className="layout-main" style={{ paddingRight: '1rem' }}>
                     <div className="orderConfirmation">
                         <div style={{ textAlign: 'center', borderRadius: '25px', background: 'white', padding: '20px', marginBottom: '20px' }}>
-                        <h2 style={{ color: '#ff2688', marginBottom: '2rem', fontSize: 'large', fontWeight: '700', paddingTop: '3rem' }}>Congratulations {order.billingAddress.firstName}, Your instasmile Journey is Underway!</h2>
-                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: 'inherit', fontSize: 'large' }}>Your order number is <b style={{ fontWeight: '800' }}>{order.orderId}</b>. You'll need this if you contact us!</h3>
-                            <h4 style={{ marginBottom: '2rem', fontSize: 'medium' }}><b style={{ fontWeight: '800' }}>What’s Next?</b></h4>
-                            <p style={{ fontSize: 'medium' }}><b style={{ color: '#000070' }}>Step 1</b><br/><b style={{ color: '#ff2688' }}>We’re Preparing Your Impression Kit</b></p>
-                            <h4 style={{ color: '#000070', fontSize: 'medium' }}>Typically, it will be shipped within 24 hrs (Mon-Fri)</h4>
-                            <img src='https://cdn.instasmile.com/new-website/images/impression-kit-image.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt='Impression guide'></img>                         
-                            <p style={{ fontSize: 'medium' }}><b style={{ color: '#000070' }}>Step 2</b><br/><b style={{ color: '#ff2688' }}>You’ll Receive Your Welcome Call</b></p>
+                            <h2 style={{ color: '#ff2688', marginBottom: '2rem', fontSize: 'large', fontWeight: '700', paddingTop: '3rem' }}>Congratulations {order.billingAddress.firstName}, Your instasmile Journey is Underway!</h2>
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Your order number is <b style={{ fontWeight: '800' }}>{order.orderId}</b>. You'll need this if you contact us!</h3>
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Whats Next?</h3>
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>New Orders</u><br /><b style={{ color: '#ff2688' }}>We’re Preparing Your Impression Kit</b><br />Typically, it will be shipped within 24 hrs (weekdays)</h3>
 
                             {currencyCode === 'USD' && (
-                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>(855)-955-5910</b> within 24 hrs (Mon-Fri)</h4>
+                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familarizing yourself with the instructions and watching the turorial video on the link below</h3>
                             )}
                             {currencyCode === 'GBP' && (
-                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>0800 060 8077</b> within 24 hrs (Mon-Fri)</h4>
+                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familiarising yourself with the instructions and watching the turorial video on the link below</h3>
                             )}
                             {currencyCode === 'AUD' && (
-                                <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}>Typically we will call you from <b style={{ fontWeight: '800' }}>+44 800 060 8077</b> within 24 hrs (Mon-Fri)</h4>
-                            )}
-                            
-                            <h4 style={{ color: '#000070', marginBottom: '2rem', fontSize: 'medium' }}><b style={{ fontWeight: '800' }}>{order.billingAddress.firstName}, it's very important we have this call to get your order underway as quickly and easily as possible.</b></h4>
-                            <h4 style={{ fontSize: 'medium' }}>📞 <b style={{ color: '#ff2688', fontWeight: '800' }}>Please look out for our call</b></h4>
-                            
-                            {currencyCode === 'USD' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/us-t-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
-                            )}
-                            {currencyCode === 'GBP' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
-                            )}
-                            {currencyCode === 'AUD' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familiarising yourself with the instructions and watching the turorial video on the link below</h3>
                             )}
 
-                            <img src='https://cdn.instasmile.com/new-website/images/Satisfaction-guarantee-mobile.png' style={{borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt='Satisfaction guarantee'></img>
+                            <p style={{ paddingTop: '15px', paddingBottom: '25px' }}>
+                                <a role='button' href='/pages/impression-kit-guide/' target='_blank' style={{ backgroundColor: '#000070', padding: '20px 24px', color: 'white', borderRadius: '20px', fontWeight: '600', fontSize: 'large' }}>Impression Kit Guide</a>
+                            </p>
+                            <hr style={{ paddingBottom: '15px' }} />
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>Reorders</u><br /><b style={{ color: '#ff2688' }}>We’re getting your order ready for production!</b><br />We'll check we have your digital impressions stored from your previous order.<br />Then, we'll assign your Reorder to production within 24 hrs (weekdays) and you'll receive an email with an estimated completion date.</h3>
+                            {currencyCode === 'USD' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/us-t-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
+                            {currencyCode === 'GBP' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
+                            {currencyCode === 'AUD' && (
+                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                            )}
                         </div>
                     </div>
                 </div>

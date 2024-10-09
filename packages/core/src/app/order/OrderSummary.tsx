@@ -37,6 +37,9 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
 }) => {
     const nonBundledLineItems = useMemo(() => removeBundledItems(lineItems), [lineItems]);
 
+    const isReorder = 
+        lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
     return (
         <article className="cart optimizedCheckout-orderSummary" data-test="cart">
             <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
@@ -48,7 +51,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
             <Extension region={ExtensionRegion.SummaryLastItemAfter} />
 
             <OrderSummarySection>
-                <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
+                <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} isReorder={isReorder} {...orderSummarySubtotalsProps} />
                 {additionalLineItems}
             </OrderSummarySection>
 
