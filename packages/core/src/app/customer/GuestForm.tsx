@@ -36,6 +36,7 @@ export interface GuestFormProps {
     onChangeEmail(email: string): void;
     onContinueAsGuest(data: GuestFormValues): void;
     onShowLogin(): void;
+    isReorder?: boolean;
 }
 
 export interface GuestFormValues {
@@ -56,6 +57,7 @@ const GuestForm: FunctionComponent<
     requiresMarketingConsent,
     isExpressPrivacyPolicy,
     isFloatingLabelEnabled,
+    isReorder
 }) => {
     const renderField = useCallback(
         (fieldProps: FieldProps<boolean>) => (
@@ -121,6 +123,10 @@ const GuestForm: FunctionComponent<
                             <TranslatedString id="customer.login_action" />
                         </a>
                     </p>
+                )}
+
+                {!isReorder && (
+                    <p>Previously ordered and want to Reorder? <a href='/reorder'>Click here to Reorder</a></p>
                 )}
 
                 {checkoutButtons}

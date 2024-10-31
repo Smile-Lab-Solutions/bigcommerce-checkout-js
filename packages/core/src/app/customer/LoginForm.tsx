@@ -43,6 +43,7 @@ export interface LoginFormProps {
     onSignIn(data: LoginFormValues): void;
     onSendLoginEmail?(): void;
     onContinueAsGuest?(): void;
+    isReorder?: boolean;
 }
 
 export interface LoginFormValues {
@@ -70,6 +71,7 @@ const LoginForm: FunctionComponent<
     shouldShowCreateAccountLink,
     isFloatingLabelEnabled,
     viewType = CustomerViewType.Login,
+    isReorder
 }) => {
     const changeEmailLink = useCallback(() => {
         if (!email) {
@@ -212,6 +214,9 @@ const LoginForm: FunctionComponent<
 
                 {viewType === CustomerViewType.SuggestedLogin && changeEmailLink()}
             </Fieldset>
+            {!isReorder && (
+                <p>Previously ordered and want to Reorder? <a href='/reorder'>Click here to Reorder</a></p>
+            )}
         </Form>
     );
 };

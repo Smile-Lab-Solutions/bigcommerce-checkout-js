@@ -100,6 +100,7 @@ export interface WithCheckoutCustomerProps {
     createAccount(values: CustomerAccountRequestBody): Promise<CheckoutSelectors>;
     shouldRenderStripeForm: boolean;
     storeHash: string;
+    isReorder?: boolean;
 }
 
 export interface CustomerState {
@@ -194,6 +195,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
             isExpressPrivacyPolicy,
             isPaymentDataRequired,
             shouldRenderStripeForm,
+            isReorder
         } = this.props;
 
         const checkoutButtons = isWalletButtonsOnTop || !isPaymentDataRequired
@@ -244,6 +246,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
                 onShowLogin={this.handleShowLogin}
                 privacyPolicyUrl={privacyPolicyUrl}
                 requiresMarketingConsent={requiresMarketingConsent}
+                isReorder={isReorder}
             />
         );
     }
@@ -319,6 +322,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
             signInError,
             isFloatingLabelEnabled,
             viewType,
+            isReorder
         } = this.props;
 
         return (
@@ -345,6 +349,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
                 shouldShowCreateAccountLink={isAccountCreationEnabled}
                 signInError={signInError}
                 viewType={viewType}
+                isReorder={isReorder}
             />
         );
     }
@@ -600,6 +605,9 @@ export function mapToWithCheckoutCustomerProps({
 
     const fixNewsletterCheckboxExperimentEnabled = features['CHECKOUT-8033.fix_newletter_checkbox'];
 
+    const isReorder = 
+        cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
     return {
         customerAccountFields: getCustomerAccountFields(),
         canSubscribe: config.shopperConfig.showNewsletterSignup,
@@ -638,7 +646,8 @@ export function mapToWithCheckoutCustomerProps({
         isExpressPrivacyPolicy,
         isPaymentDataRequired: isPaymentDataRequired(),
         shouldRenderStripeForm: providerWithCustomCheckout === PaymentMethodId.StripeUPE && shouldUseStripeLinkByMinimumAmount(cart),
-        storeHash: config.storeProfile.storeHash
+        storeHash: config.storeProfile.storeHash,
+        isReorder: isReorder
     };
 }
 
