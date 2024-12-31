@@ -37,6 +37,8 @@ import ShippingAddress from './ShippingAddress';
 import { SHIPPING_ADDRESS_FIELDS } from './ShippingAddressFields';
 import ShippingFormFooter from './ShippingFormFooter';
 
+import {updateConsentLabel} from '../../../../../scripts/custom/shipping';
+
 export interface SingleShippingFormProps {
     addresses: CustomerAddress[];
     isBillingSameAsShipping: boolean;
@@ -214,9 +216,13 @@ class SingleShippingForm extends PureComponent<
 
         const { isUpdatingShippingData } = this.state;
 
+        // Update the consent checkbox
+        updateConsentLabel();
+
         if (!isValid) {
             return false;
         }
+
 
         return isLoading || isUpdatingShippingData || !hasSelectedShippingOptions(consignments);
     };
