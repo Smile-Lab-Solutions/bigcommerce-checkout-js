@@ -10,12 +10,13 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { FunctionComponent, memo, useContext } from 'react';
 
-import { isPayPalFastlaneMethod, usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
+import { isPayPalFastlaneMethod } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { FormContext } from '@bigcommerce/checkout/ui';
 
 import { AmazonPayShippingAddress } from './AmazonPayShippingAddress';
 import { PayPalFastlaneShippingAddress } from './PayPalFastlaneShippingAddress';
 import ShippingAddressForm from './ShippingAddressForm';
+
 
 export interface ShippingAddressProps {
     addresses: CustomerAddress[];
@@ -31,6 +32,7 @@ export interface ShippingAddressProps {
     shouldShowSaveAddress?: boolean;
     hasRequestedShippingOptions: boolean;
     isFloatingLabelEnabled?: boolean;
+    validateAddressFields: boolean;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     initialize(options: ShippingInitializeOptions): Promise<CheckoutSelectors>;
     onAddressSelect(address: Address): void;
@@ -58,9 +60,9 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         shouldShowSaveAddress,
         storeCurrencyCode,
         isFloatingLabelEnabled,
+        validateAddressFields,
     } = props;
 
-    const { shouldShowPayPalFastlaneShippingForm } = usePayPalFastlaneAddress();
     const { setSubmitted } = useContext(FormContext);
 
     const handleFieldChange: (fieldName: string, value: string) => void = (fieldName, value) => {
@@ -71,6 +73,17 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         onFieldChange(fieldName, value);
     };
 
+    if (methodId && isPayPalFastlaneMethod(methodId) && shippingAddress) {
+        return (
+            <PayPalFastlaneShippingAddress
+                {...props}
+                handleFieldChange={handleFieldChange}
+                methodId={methodId}
+                shippingAddress={shippingAddress}
+            />
+        )
+    }
+
     if (methodId === 'amazonpay' && shippingAddress) {
         return (
             <AmazonPayShippingAddress
@@ -78,16 +91,6 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
                 shippingAddress={shippingAddress}
             />
         );
-    }
-
-    if (methodId && isPayPalFastlaneMethod(methodId) && shippingAddress && shouldShowPayPalFastlaneShippingForm) {
-        return (
-            <PayPalFastlaneShippingAddress
-                { ...props }
-                methodId={methodId}
-                shippingAddress={shippingAddress}
-            />
-        )
     }
 
     return (
@@ -105,6 +108,7 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
             onFieldChange={handleFieldChange}
             onUseNewAddress={onUseNewAddress}
             shouldShowSaveAddress={shouldShowSaveAddress}
+            validateAddressFields={validateAddressFields}
             storeCurrencyCode={storeCurrencyCode}
         />
     );

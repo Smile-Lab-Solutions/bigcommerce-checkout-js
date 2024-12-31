@@ -11,6 +11,8 @@ import {
 export interface AddressFormFieldsValidationSchemaOptions {
     formFields: FormField[];
     language?: LanguageService;
+    validateGoogleMapAutoCompleteMaxLength?: boolean;
+    validateAddressFields?: boolean;
     countryCode?: String;
 }
 
@@ -70,10 +72,14 @@ export function getTranslateAddressError(
 export default memoize(function getAddressFormFieldsValidationSchema({
     formFields,
     language,
+    validateGoogleMapAutoCompleteMaxLength,
+    validateAddressFields,
     countryCode,
 }: AddressFormFieldsValidationSchemaOptions): ObjectSchema<FormFieldValues> {
     return getFormFieldsValidationSchema({
         formFields,
         translate: getTranslateAddressError(language, countryCode),
+        validateGoogleMapAutoCompleteMaxLength,
+        validateAddressFields,
     });
 });

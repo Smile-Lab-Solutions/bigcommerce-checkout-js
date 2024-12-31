@@ -12,14 +12,11 @@ import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-
 
 import { withCheckout } from '../../checkout';
 
-import AmazonPayV2PaymentMethod from './AmazonPayV2PaymentMethod';
 import BraintreeCreditCardPaymentMethod from './BraintreeCreditCardPaymentMethod';
 import CCAvenueMarsPaymentMethod from './CCAvenueMarsPaymentMethod';
-import ChasePayPaymentMethod from './ChasePayPaymentMethod';
 import HostedCreditCardPaymentMethod from './HostedCreditCardPaymentMethod';
 import HostedPaymentMethod from './HostedPaymentMethod';
 import MasterpassPaymentMethod from './MasterpassPaymentMethod';
-import MonerisPaymentMethod from './MonerisPaymentMethod';
 import OpyPaymentMethod from './OpyPaymentMethod';
 import PaymentMethodId from './PaymentMethodId';
 import PaymentMethodProviderType from './PaymentMethodProviderType';
@@ -28,8 +25,6 @@ import PaypalCommerceCreditCardPaymentMethod from './PaypalCommerceCreditCardPay
 import PaypalExpressPaymentMethod from './PaypalExpressPaymentMethod';
 import PaypalPaymentsProPaymentMethod from './PaypalPaymentsProPaymentMethod';
 import PPSDKPaymentMethod from './PPSDKPaymentMethod';
-import SquarePaymentMethod from './SquarePaymentMethod';
-import StripePaymentMethod from './StripePaymentMethod';
 import WorldpayCreditCardPaymentMethod from './WorldpayCreditCardPaymentMethod';
 import PartiallyPaymentMethod from './PartiallyPaymentMethod';
 import TerraceFinancePaymentMethod from './TerraceFinancePaymentMethod';
@@ -70,24 +65,8 @@ const PaymentMethodComponent: FunctionComponent<
     }
 
 
-    if (method.id === PaymentMethodId.SquareV2) {
-        return <SquarePaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.StripeV3) {
-        return <StripePaymentMethod {...props} />;
-    }
-
-    if (method.id === PaymentMethodId.AmazonPay) {
-        return <AmazonPayV2PaymentMethod {...props} />;
-    }
-
     if (method.id === PaymentMethodId.CCAvenueMars) {
         return <CCAvenueMarsPaymentMethod {...props} />;
-    }
-
-    if (method.id === PaymentMethodId.ChasePay) {
-        return <ChasePayPaymentMethod {...props} />;
     }
 
     if (method.gateway === PaymentMethodId.Checkoutcom) {
@@ -120,10 +99,6 @@ const PaymentMethodComponent: FunctionComponent<
         method.id === PaymentMethodId.PaypalPaymentsPro
     ) {
         return <PaypalPaymentsProPaymentMethod {...props} />;
-    }
-    
-    if (method.id === PaymentMethodId.Moneris) {
-        return <MonerisPaymentMethod {...props} />;
     }
 
     if (method.id === PaymentMethodId.WorldpayAccess) {

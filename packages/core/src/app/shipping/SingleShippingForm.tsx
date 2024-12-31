@@ -11,7 +11,7 @@ import {
     ShippingInitializeOptions,
     ShippingRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import { FormikProps, withFormik } from 'formik';
+import { FormikProps } from 'formik';
 import { debounce, isEqual, noop } from 'lodash';
 import React, { PureComponent, ReactNode } from 'react';
 import { lazy, object } from 'yup';
@@ -27,6 +27,7 @@ import {
     mapAddressFromFormValues,
     mapAddressToFormValues,
 } from '../address';
+import { withFormikExtended } from '../common/form';
 import { getCustomFormFieldsValidationSchema } from '../formFields';
 import { PaymentMethodId } from '../payment/paymentMethod';
 import { Fieldset, Form } from '../ui/form';
@@ -55,6 +56,9 @@ export interface SingleShippingFormProps {
     shouldShowSaveAddress?: boolean;
     shouldShowOrderComments: boolean;
     isFloatingLabelEnabled?: boolean;
+    isInitialValueLoaded: boolean;
+    validateGoogleMapAutoCompleteMaxLength: boolean;
+    validateAddressFields: boolean;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     deleteConsignments(): Promise<Address | undefined>;
     getFields(countryCode?: string): FormField[];
@@ -138,6 +142,7 @@ class SingleShippingForm extends PureComponent<
         const {
             addresses,
             cartHasChanged,
+            isInitialValueLoaded,
             isLoading,
             onUnhandledError,
             methodId,
@@ -155,6 +160,7 @@ class SingleShippingForm extends PureComponent<
             isShippingStepPending,
             storeCurrencyCode,
             isFloatingLabelEnabled,
+            validateAddressFields,
         } = this.props;
 
         const { isResettingAddress, isUpdatingShippingData, hasRequestedShippingOptions } =
@@ -188,6 +194,7 @@ class SingleShippingForm extends PureComponent<
                         onUseNewAddress={this.onUseNewAddress}
                         shippingAddress={shippingAddress}
                         shouldShowSaveAddress={shouldShowSaveAddress}
+                        validateAddressFields={validateAddressFields}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                     {shouldShowBillingSameAsShipping && (
@@ -199,6 +206,7 @@ class SingleShippingForm extends PureComponent<
 
                 <ShippingFormFooter
                     cartHasChanged={cartHasChanged}
+                    isInitialValueLoaded={isInitialValueLoaded}
                     isLoading={isLoading || isUpdatingShippingData}
                     isMultiShippingMode={false}
                     shouldDisableSubmit={this.shouldDisableSubmit()}
@@ -320,7 +328,7 @@ class SingleShippingForm extends PureComponent<
 }
 
 export default withLanguage(
-    withFormik<SingleShippingFormProps & WithLanguageProps, SingleShippingFormValues>({
+    withFormikExtended<SingleShippingFormProps & WithLanguageProps, SingleShippingFormValues>({
         handleSubmit: (values, { props: { onSubmit } }) => {
             onSubmit(values);
         },
@@ -348,6 +356,8 @@ export default withLanguage(
             language,
             getFields,
             methodId,
+            validateGoogleMapAutoCompleteMaxLength,
+            validateAddressFields,
         }: SingleShippingFormProps & WithLanguageProps) =>
             shouldHaveCustomValidation(methodId)
                 ? object({
@@ -363,6 +373,8 @@ export default withLanguage(
                           getAddressFormFieldsValidationSchema({
                               language,
                               formFields: getFields(formValues && formValues.countryCode),
+                              validateGoogleMapAutoCompleteMaxLength,
+                              validateAddressFields
                               countryCode: formValues.countryCode,
                           }),
                       ),
