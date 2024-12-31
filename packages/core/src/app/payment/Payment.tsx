@@ -636,8 +636,12 @@ export function mapToPaymentProps({
         // Only for US payment methods
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
+
+            const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
             // Adding Terrace Finance
-            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS')) {
+            // Check TF is set for store and if not a reorder
+            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS') && !isReorder) {
                 methods = methods.concat(getTerraceFinanceMethod());
             }
 
@@ -802,7 +806,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
         method: 'external',
         supportedCards: [],
         config: {
-            displayName: '$1 Down today. Up to 24 month term',
+            displayName: '$99 Down today. Up to 9 month term',
             helpText: '',
             merchantId: 'terracefinance',
             testMode: false,
