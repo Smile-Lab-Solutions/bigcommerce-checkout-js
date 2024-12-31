@@ -40,7 +40,7 @@ import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { SubscribeSessionStorage } from '../customer/SubscribeSessionStorage';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import { PromotionBannerList } from '../promotion';
-import { hasSelectedShippingOptions, isUsingMultiShipping, StaticConsignment } from '../shipping';
+import { hasSelectedShippingOptions, isUsingMultiShipping, ShippingSummary } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
@@ -138,6 +138,7 @@ export interface WithCheckoutProps {
     isPending: boolean;
     isPriceHiddenFromGuests: boolean;
     isShowingWalletButtonsOnTop: boolean;
+    isNewMultiShippingUIEnabled: boolean;
     loginUrl: string;
     cartUrl: string;
     createAccountUrl: string;
@@ -423,7 +424,7 @@ class Checkout extends Component<
     }
 
     private renderShippingStep(step: CheckoutStepStatus): ReactNode {
-        const { hasCartChanged, cart, consignments = [] } = this.props;
+        const { hasCartChanged, cart, consignments = [], isNewMultiShippingUIEnabled } = this.props;
 
         const { isBillingSameAsShipping, isMultiShippingMode } = this.state;
 
@@ -438,15 +439,7 @@ class Checkout extends Component<
                 key={step.type}
                 onEdit={this.handleEditStep}
                 onExpanded={this.handleExpanded}
-                summary={consignments.map((consignment) => (
-                    <div className="staticConsignmentContainer" key={consignment.id}>
-                        <StaticConsignment
-                            cart={cart}
-                            compactView={consignments.length < 2}
-                            consignment={consignment}
-                        />
-                    </div>
-                ))}
+                summary={<ShippingSummary cart={cart} consignments={consignments} isMultiShippingMode={isMultiShippingMode} isNewMultiShippingUIEnabled={isNewMultiShippingUIEnabled} />}
             >
                 <LazyContainer loadingSkeleton={<AddressFormSkeleton />}>
                     <Shipping
@@ -523,6 +516,8 @@ class Checkout extends Component<
     }
 
     private renderCartSummary(): ReactNode {
+        const { isMultiShippingMode } = this.state;
+
         return (
             <MobileView>
                 {(matched) => {
@@ -530,7 +525,7 @@ class Checkout extends Component<
                         return (
                             <LazyContainer>
                                 <Extension region={ExtensionRegion.SummaryAfter} />
-                                <CartSummaryDrawer />
+                                <CartSummaryDrawer isMultiShippingMode={isMultiShippingMode} />
                             </LazyContainer>
                         );
                     }
@@ -538,7 +533,7 @@ class Checkout extends Component<
                     return (
                         <aside className="layout-cart">
                             <LazyContainer>
-                                <CartSummary />
+                                <CartSummary isMultiShippingMode={isMultiShippingMode} />
                                 <Extension region={ExtensionRegion.SummaryAfter} />
                             </LazyContainer>
                         </aside>

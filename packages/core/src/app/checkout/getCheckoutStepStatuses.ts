@@ -1,4 +1,4 @@
-import { CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import { CheckoutPayment, CheckoutSelectors } from '@bigcommerce/checkout-sdk';
 import { compact } from 'lodash';
 import { createSelector } from 'reselect';
 
@@ -45,7 +45,7 @@ const getCustomerStepStatus = createSelector(
         const isUsingWallet =
             checkout && checkout.payments
                 ? checkout.payments.some(
-                      (payment) => SUPPORTED_METHODS.indexOf(payment.providerId) >= 0,
+                    (payment: CheckoutPayment) => SUPPORTED_METHODS.indexOf(payment.providerId) >= 0,
                   )
                 : false;
         const isGuest = !!(customer && customer.isGuest);
@@ -89,7 +89,8 @@ const getBillingStepStatus = createSelector(
             ? data.getBillingAddressFields(billingAddress.countryCode)
             : EMPTY_ARRAY;
     },
-    (checkout, billingAddress, billingAddressFields) => {
+    ({ data }: CheckoutSelectors) => data.getConfig(),
+    (checkout, billingAddress, billingAddressFields, config) => {
         const hasAddress = billingAddress
             ? isValidAddress(billingAddress, billingAddressFields)
             : false;
@@ -120,6 +121,25 @@ const getBillingStepStatus = createSelector(
                 isActive: false,
                 isComplete: isAmazonPayBillingStepComplete,
                 isEditable: isAmazonPayBillingStepComplete && hasCustomFields,
+                isRequired: true,
+            };
+        }
+
+        const isGooglePayBillingAddressEditingEnabled = isExperimentEnabled(
+            config?.checkoutSettings,
+            'STRIPE-546.allow_billing_address_editing_for_all_Google_Pay_providers',
+        );
+        const isUsingGooglePay =
+            isGooglePayBillingAddressEditingEnabled && (checkout && checkout.payments
+                ? checkout.payments.some((payment) => (payment?.providerId || '').startsWith('googlepay'))
+                : false);
+
+        if (isUsingGooglePay) {
+            return {
+                type: CheckoutStepType.Billing,
+                isActive: false,
+                isComplete: hasAddress,
+                isEditable: hasAddress,
                 isRequired: true,
             };
         }
@@ -172,8 +192,13 @@ const getShippingStepStatus = createSelector(
     },
     ({ data }: CheckoutSelectors) => data.getConfig(),
     (shippingAddress, consignments, cart, shippingAddressFields, config) => {
+        const validateAddressFields =
+            isExperimentEnabled(
+                config?.checkoutSettings,
+                'CHECKOUT-7560.address_fields_max_length_validation'
+            );
         const hasAddress = shippingAddress
-            ? isValidAddress(shippingAddress, shippingAddressFields)
+            ? isValidAddress(shippingAddress, shippingAddressFields, validateAddressFields)
             : false;
         const hasOptions = consignments ? hasSelectedShippingOptions(consignments) : false;
         const hasUnassignedItems =
@@ -215,12 +240,20 @@ const getPaymentStepStatus = createSelector(
     },
 );
 
+const getOrderSubmitStatus = createSelector(
+    ({ statuses }: CheckoutSelectors) => statuses.isSubmittingOrder(),
+    (status) => status,
+);
+
 const getCheckoutStepStatuses = createSelector(
     getCustomerStepStatus,
     getShippingStepStatus,
     getBillingStepStatus,
     getPaymentStepStatus,
-    (customerStep, shippingStep, billingStep, paymentStep) => {
+    getOrderSubmitStatus,
+    (customerStep, shippingStep, billingStep, paymentStep, orderStatus) => {
+        const isSubmittingOrder = orderStatus;
+
         const steps = compact([customerStep, shippingStep, billingStep, paymentStep]);
 
         const defaultActiveStep =
@@ -236,7 +269,7 @@ const getCheckoutStepStatuses = createSelector(
                 isActive: defaultActiveStep.type === step.type,
                 isBusy: false,
                 // A step is only editable if its previous step is complete or not required
-                isEditable: isPrevStepComplete && step.isEditable,
+                isEditable: isPrevStepComplete && step.isEditable && !isSubmittingOrder,
             };
         });
     },
