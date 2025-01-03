@@ -22,6 +22,7 @@ interface NewConsignmentProps {
     setIsAddShippingDestination: React.Dispatch<React.SetStateAction<boolean>>;
     onUnhandledError(error: Error): void;
     resetErrorConsignmentNumber(): void;
+    storeCurrencyCode: string;
 }
 
 const NewConsignment = ({
@@ -32,6 +33,7 @@ const NewConsignment = ({
     onUnhandledError,
     resetErrorConsignmentNumber,
     setIsAddShippingDestination,
+    storeCurrencyCode
 }: NewConsignmentProps) => {
     const [consignmentRequest, setConsignmentRequest] = useState<ConsignmentCreateRequestBody | undefined>();
     const [isOpenAllocateItemsModal, setIsOpenAllocateItemsModal] = useState(false);
@@ -112,6 +114,7 @@ const NewConsignment = ({
                 onUnhandledError={onUnhandledError}
                 selectedAddress={selectedAddress}
                 setConsignmentRequest={setConsignmentRequest}
+                storeCurrencyCode={storeCurrencyCode}
             />
             {selectedAddress && (<>
                 <AllocateItemsModal

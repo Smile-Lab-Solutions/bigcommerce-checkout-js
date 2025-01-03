@@ -125,11 +125,6 @@ function getPaymentMethodTitle(
                 titleText: methodDisplayName,
                 titleSubText: '',
             },
-            [PaymentMethodId.ChasePay]: {
-                logoUrl: cdnPath('/img/payment-providers/chase-pay.png'),
-                titleText: '',
-                titleSubText: '',
-            },
             [PaymentMethodId.Clearpay]: {
                 logoUrl: cdnPath('/img/payment-providers/clearpay-header.png'),
                 titleText: 'Pay in 4 interest-free installments',

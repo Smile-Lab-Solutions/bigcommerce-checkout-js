@@ -374,7 +374,7 @@ export default withLanguage(
                               language,
                               formFields: getFields(formValues && formValues.countryCode),
                               validateGoogleMapAutoCompleteMaxLength,
-                              validateAddressFields
+                              validateAddressFields,
                               countryCode: formValues.countryCode,
                           }),
                       ),

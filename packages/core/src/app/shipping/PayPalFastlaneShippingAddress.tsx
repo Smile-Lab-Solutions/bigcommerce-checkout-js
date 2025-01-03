@@ -30,6 +30,7 @@ export interface PayPalFastlaneShippingAddressProps extends ShippingAddressProps
     googleMapsApiKey?: string;
     handleFieldChange(fieldName: string, value: string): void,
     onAddressSelect(address: Address): void;
+    storeCurrencyCode: string;
 }
 
 interface PayPalFastlaneAddressComponentRef {
@@ -49,7 +50,8 @@ export const PayPalFastlaneShippingAddress: FC<PayPalFastlaneShippingAddressProp
         shippingAddress,
         addresses,
         handleFieldChange,
-        isLoading
+        isLoading,
+        storeCurrencyCode
     } = props;
     const [isLoadingStrategy, setIsLoadingStrategyStrategy] = useState<boolean>(true);
 
@@ -139,6 +141,7 @@ export const PayPalFastlaneShippingAddress: FC<PayPalFastlaneShippingAddressProp
                     onUseNewAddress={props.onUseNewAddress}
                     shouldShowSaveAddress={props.shouldShowSaveAddress}
                     validateAddressFields={props.validateAddressFields}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             )}
         </LoadingOverlay>

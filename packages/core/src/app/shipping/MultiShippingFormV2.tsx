@@ -28,6 +28,7 @@ export interface MultiShippingFormV2Props {
     isLoading: boolean;
     onUnhandledError(error: Error): void;
     onSubmit(values: MultiShippingFormV2Values): void;
+    storeCurrencyCode: string;
 }
 
 const MultiShippingFormV2: FunctionComponent<MultiShippingFormV2Props> = ({
@@ -36,6 +37,7 @@ const MultiShippingFormV2: FunctionComponent<MultiShippingFormV2Props> = ({
     isLoading,
     onUnhandledError,
     cartHasChanged,
+    storeCurrencyCode
 }: MultiShippingFormV2Props) => {
     const [errorConsignmentNumber, setErrorConsignmentNumber] = useState<number | undefined>();
 
@@ -121,6 +123,7 @@ const MultiShippingFormV2: FunctionComponent<MultiShippingFormV2Props> = ({
                     onUnhandledError={onUnhandledError}
                     resetErrorConsignmentNumber={resetErrorConsignmentNumber}
                     shippingQuoteFailedMessage={shippingQuoteFailedMessage}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             ))}
             {isAddShippingDestination && (
@@ -132,6 +135,7 @@ const MultiShippingFormV2: FunctionComponent<MultiShippingFormV2Props> = ({
                     onUnhandledError={onUnhandledError}
                     resetErrorConsignmentNumber={resetErrorConsignmentNumber}
                     setIsAddShippingDestination={setIsAddShippingDestination}
+                    storeCurrencyCode={storeCurrencyCode}
                 />)
             }
             {hasUnassignedItems &&

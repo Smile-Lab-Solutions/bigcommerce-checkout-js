@@ -80,6 +80,7 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
                 handleFieldChange={handleFieldChange}
                 methodId={methodId}
                 shippingAddress={shippingAddress}
+                storeCurrencyCode={storeCurrencyCode}
             />
         )
     }

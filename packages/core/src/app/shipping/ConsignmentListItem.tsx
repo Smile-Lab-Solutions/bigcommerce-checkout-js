@@ -21,6 +21,7 @@ export interface ConsignmentListItemProps {
     shippingQuoteFailedMessage: string;
     onUnhandledError(error: Error): void;
     resetErrorConsignmentNumber(): void;
+    storeCurrencyCode: string;
 }
 
 const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
@@ -32,6 +33,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
     shippingQuoteFailedMessage,
     onUnhandledError,
     resetErrorConsignmentNumber,
+    storeCurrencyCode
 }: ConsignmentListItemProps) => {
 
     const { checkoutService: { deleteConsignment } } = useCheckout();
@@ -63,6 +65,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}
                 selectedAddress={consignment.shippingAddress}
+                storeCurrencyCode={storeCurrencyCode}
             />
             <ConsignmentLineItem
                 consignment={consignment}

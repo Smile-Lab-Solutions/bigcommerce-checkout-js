@@ -20,6 +20,7 @@ interface ConsignmentAddressSelectorProps {
     onUnhandledError(error: Error): void;
     setConsignmentRequest?(consignmentRequest: ConsignmentCreateRequestBody): void;
     selectedAddress?: Address;
+    storeCurrencyCode: string;
 }
 
 const ConsignmentAddressSelector = ({
@@ -30,6 +31,7 @@ const ConsignmentAddressSelector = ({
     onUnhandledError,
     selectedAddress,
     setConsignmentRequest,
+    storeCurrencyCode
 }: ConsignmentAddressSelectorProps) => {
     const [isOpenNewAddressModal, setIsOpenNewAddressModal] = useState(false);
     const [createCustomerAddressError, setCreateCustomerAddressError] = useState<Error>();
@@ -167,6 +169,7 @@ const ConsignmentAddressSelector = ({
                 isOpen={isOpenNewAddressModal}
                 onRequestClose={handleCloseAddAddressForm}
                 onSaveAddress={handleSaveAddress}
+                storeCurrencyCode={storeCurrencyCode}
             />
             <AddressSelect
                 addresses={addresses}

@@ -122,6 +122,7 @@ const ShippingForm = ({
                 isLoading={isLoading}
                 onSubmit={onMultiShippingSubmit}
                 onUnhandledError={onUnhandledError}
+                storeCurrencyCode={storeCurrencyCode}
             />;
         }
 
