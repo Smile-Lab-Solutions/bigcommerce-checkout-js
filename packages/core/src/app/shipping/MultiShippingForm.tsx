@@ -10,11 +10,10 @@ import {
     CustomerAddress,
     FormField,
 } from '@bigcommerce/checkout-sdk';
-import { FormikProps, withFormik } from 'formik';
+import { FormikProps } from 'formik';
 import React, { PureComponent, ReactNode } from 'react';
 
-import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedLink, TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 
 import {
     AddressFormModal,
@@ -23,6 +22,7 @@ import {
     mapAddressFromFormValues,
 } from '../address';
 import { ErrorModal } from '../common/error';
+import { withFormikExtended } from '../common/form';
 import { Form } from '../ui/form';
 
 import { AssignItemFailedError, AssignItemInvalidAddressError } from './errors';
@@ -41,7 +41,6 @@ export interface MultiShippingFormProps {
     cartHasChanged: boolean;
     consignments: Consignment[];
     customerMessage: string;
-    isGuest: boolean;
     isLoading: boolean;
     shouldShowOrderComments: boolean;
     defaultCountryCode?: string;
@@ -49,10 +48,10 @@ export interface MultiShippingFormProps {
     countriesWithAutocomplete: string[];
     googleMapsApiKey?: string;
     isFloatingLabelEnabled?: boolean;
+    isInitialValueLoaded: boolean;
+    validateAddressFields: boolean;
     assignItem(consignment: ConsignmentAssignmentRequestBody): Promise<CheckoutSelectors>;
-    onCreateAccount(): void;
     createCustomerAddress(address: AddressRequestBody): void;
-    onSignIn(): void;
     getFields(countryCode?: string): FormField[];
     onSubmit(values: MultiShippingFormValues): void;
     onUnhandledError(error: Error): void;
@@ -93,11 +92,9 @@ class MultiShippingForm extends PureComponent<
             addresses,
             consignments,
             cart,
-            isGuest,
-            onSignIn,
-            onCreateAccount,
             cartHasChanged,
             shouldShowOrderComments,
+            isInitialValueLoaded,
             isLoading,
             getFields,
             defaultCountryCode,
@@ -109,25 +106,6 @@ class MultiShippingForm extends PureComponent<
         } = this.props;
 
         const { items, itemAddingAddress, createCustomerAddressError } = this.state;
-
-        if (isGuest) {
-            return (
-                <div className="checkout-step-info">
-                    <TranslatedString id="shipping.multishipping_guest_intro" />{' '}
-                    <a
-                        data-test="shipping-sign-in-link"
-                        href="#"
-                        onClick={preventDefault(onSignIn)}
-                    >
-                        <TranslatedString id="shipping.multishipping_guest_sign_in" />
-                    </a>{' '}
-                    <TranslatedLink
-                        id="shipping.multishipping_guest_create"
-                        onClick={onCreateAccount}
-                    />
-                </div>
-            );
-        }
 
         return (
             <>
@@ -172,6 +150,7 @@ class MultiShippingForm extends PureComponent<
 
                     <ShippingFormFooter
                         cartHasChanged={cartHasChanged}
+                        isInitialValueLoaded={isInitialValueLoaded}
                         isLoading={isLoading}
                         isMultiShippingMode={true}
                         shouldDisableSubmit={this.shouldDisableSubmit()}
@@ -241,9 +220,9 @@ class MultiShippingForm extends PureComponent<
         itemId: string,
         itemKey: string,
     ) => Promise<void> = async (address, itemId, itemKey) => {
-        const { assignItem, onUnhandledError, getFields } = this.props;
+        const { assignItem, onUnhandledError, getFields, validateAddressFields } = this.props;
 
-        if (!isValidAddress(address, getFields(address.countryCode))) {
+        if (!isValidAddress(address, getFields(address.countryCode), validateAddressFields)) {
             return onUnhandledError(new AssignItemInvalidAddressError());
         }
 
@@ -301,7 +280,7 @@ export interface MultiShippingFormValues {
 }
 
 export default withLanguage(
-    withFormik<MultiShippingFormProps & WithLanguageProps, MultiShippingFormValues>({
+    withFormikExtended<MultiShippingFormProps & WithLanguageProps, MultiShippingFormValues>({
         handleSubmit: (values, { props: { onSubmit } }) => {
             onSubmit(values);
         },

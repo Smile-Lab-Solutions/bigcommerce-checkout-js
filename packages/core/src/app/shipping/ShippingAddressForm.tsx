@@ -25,6 +25,7 @@ export interface ShippingAddressFormProps {
     formFields: FormField[];
     shouldShowSaveAddress?: boolean;
     isFloatingLabelEnabled?: boolean;
+    validateAddressFields: boolean;
     onUseNewAddress(): void;
     onFieldChange(fieldName: string, value: string): void;
     onAddressSelect(address: Address): void;
@@ -53,6 +54,7 @@ class ShippingAddressForm extends Component<
             formik: {
                 values: { shippingAddress: formAddress },
             },
+            validateAddressFields,
         } = this.props;
 
         const hasAddresses = addresses && addresses.length > 0;
@@ -60,6 +62,7 @@ class ShippingAddressForm extends Component<
             shippingAddress,
             addresses,
             formFields,
+            validateAddressFields,
         );
 
         if (formFields.length > 0){

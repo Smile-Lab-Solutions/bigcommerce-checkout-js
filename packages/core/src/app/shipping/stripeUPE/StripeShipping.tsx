@@ -12,6 +12,7 @@ export interface StripeShippingProps {
     isBillingSameAsShipping: boolean;
     cartHasChanged: boolean;
     isMultiShippingMode: boolean;
+    isNewMultiShippingUIEnabled: boolean;
     step: CheckoutStepStatus;
     consignments: Consignment[];
     countries: Country[];
@@ -19,6 +20,7 @@ export interface StripeShippingProps {
     customerMessage: string;
     isGuest: boolean;
     isInitializing: boolean;
+    isInitialValueLoaded: boolean;
     isLoading: boolean;
     isShippingMethodLoading: boolean;
     isShippingStepPending: boolean;
@@ -63,6 +65,7 @@ class StripeShipping extends Component<StripeShippingProps, StripeShippingState>
             initialize,
             deinitialize,
             isMultiShippingMode,
+            isNewMultiShippingUIEnabled,
             step,
             onSubmit,
             onMultiShippingChange,
@@ -82,6 +85,7 @@ class StripeShipping extends Component<StripeShippingProps, StripeShippingState>
                 <ShippingHeader
                     isGuest={isGuest}
                     isMultiShippingMode={isMultiShippingMode}
+                    isNewMultiShippingUIEnabled={isNewMultiShippingUIEnabled}
                     onMultiShippingChange={onMultiShippingChange}
                     shouldShowMultiShipping={shouldShowMultiShipping}
                 />
