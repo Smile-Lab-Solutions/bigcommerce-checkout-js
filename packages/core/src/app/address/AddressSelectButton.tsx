@@ -5,21 +5,34 @@ import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/
 
 
 import { AddressSelectProps } from './AddressSelect';
+import SingleLineStaticAddress from './SingleLineStaticAddress';
 import StaticAddress from './StaticAddress';
 
-type AddressSelectButtonProps = Pick<AddressSelectProps, 'selectedAddress' | 'addresses' | 'type'>;
+type AddressSelectButtonProps = Pick<AddressSelectProps, 'selectedAddress' | 'addresses' | 'type' | 'showSingleLineAddress' | 'placeholderText'>;
 
 const AddressSelectButton: FunctionComponent<AddressSelectButtonProps & WithLanguageProps> = ({
     selectedAddress,
     language,
-    type
+    type,
+    showSingleLineAddress,
+    placeholderText,
 }) => {
     const [ariaExpanded, setAriaExpanded] = useState(false);
+
+    const SelectedAddress = () => {
+        if (!selectedAddress) {
+            return placeholderText ?? <TranslatedString id="address.enter_address_action" />;
+        }
+
+        return showSingleLineAddress
+            ? <SingleLineStaticAddress address={selectedAddress} type={type} />
+            : <StaticAddress address={selectedAddress} type={type} />;
+    }
 
     return (
         <a
             aria-controls="addressDropdown"
-            aria-description={language.translate('address.enter_or_select_address_action')}
+            aria-describedby={language.translate('address.enter_or_select_address_action')}
             aria-expanded={ariaExpanded}
             className="button dropdown-button dropdown-toggle--select"
             data-test="address-select-button"
@@ -28,11 +41,7 @@ const AddressSelectButton: FunctionComponent<AddressSelectButtonProps & WithLang
             onBlur={() => setAriaExpanded(false)}
             onClick={preventDefault(() => setAriaExpanded(!ariaExpanded))}
         >
-            {selectedAddress ? (
-                <StaticAddress address={selectedAddress} type={type} />
-            ) : (
-                <TranslatedString id="address.enter_address_action" />
-            )}
+            <SelectedAddress />
         </a>
     );
 };

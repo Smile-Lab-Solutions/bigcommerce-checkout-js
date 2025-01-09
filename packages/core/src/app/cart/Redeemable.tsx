@@ -170,7 +170,7 @@ const RedeemableForm: FunctionComponent<
         [storeCurrencyCode2],
     );
 
-    const renderErrorMessage = useCallback((errorCode: string) => {
+    const renderErrorMessage = useCallback((errorCode: string, errorMessage?: string) => {
         switch (errorCode) {
             case 'min_purchase':
                 if (storeCurrencyCode2 === 'USD'){
@@ -190,7 +190,7 @@ const RedeemableForm: FunctionComponent<
                 if (storeCurrencyCode2 === 'USD'){
                     return <TranslatedString id="redeemable.code_invalid_error_us" />;
                 } else {
-                    return <TranslatedString id="redeemable.code_invalid_error" />;
+                    return errorMessage || <TranslatedString id="redeemable.code_invalid_error" />;
                 }
         }
     }, [storeCurrencyCode2]);
@@ -204,7 +204,7 @@ const RedeemableForm: FunctionComponent<
                             appliedRedeemableError.errors &&
                             appliedRedeemableError.errors[0] && (
                                 <Alert type={AlertType.Error}>
-                                    {renderErrorMessage(appliedRedeemableError.errors[0].code)}
+                                    {renderErrorMessage(appliedRedeemableError.errors[0].code, appliedRedeemableError.errors[0].message)}
                                 </Alert>
                             )}
 

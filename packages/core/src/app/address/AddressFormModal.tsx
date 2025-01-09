@@ -3,7 +3,6 @@ import { FormikProps, withFormik } from 'formik';
 import React, { FunctionComponent } from 'react';
 import { lazy } from 'yup';
 
-import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 
 import { Button, ButtonVariant } from '../ui/button';
@@ -62,13 +61,12 @@ const SaveAddress: FunctionComponent<
                 storeCurrencyCode={storeCurrencyCode}
             />
             <div className="form-actions">
-                <a
-                    className="button optimizedCheckout-buttonSecondary"
-                    href="#"
-                    onClick={preventDefault(onRequestClose)}
-                >
+                <Button
+                    onClick={onRequestClose}
+                    variant={ButtonVariant.Secondary}>
                     <TranslatedString id="common.cancel_action" />
-                </a>
+                </Button>
+
 
                 <Button
                     disabled={isLoading}

@@ -3,6 +3,7 @@
   "projects": {
     "adyen-integration": "packages/adyen-integration",
     "affirm-integration": "packages/affirm-integration",
+    "amazon-pay-v2-integration": "packages/amazon-pay-v2-integration",
     "analytics": "packages/analytics",
     "apple-pay-integration": "packages/apple-pay-integration",
     "barclay-integration": "packages/barclay-integration",
@@ -29,6 +30,7 @@
     "legacy-hoc": "packages/legacy-hoc",
     "locale": "packages/locale",
     "mollie-integration": "packages/mollie-integration",
+    "moneris-integration": "packages/moneris-integration",
     "offline-payment-integration": "packages/offline-payment-integration",
     "payment-integration-api": "packages/payment-integration-api",
     "paypal-commerce-integration": "packages/paypal-commerce-integration",

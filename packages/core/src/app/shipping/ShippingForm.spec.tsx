@@ -19,6 +19,7 @@ import { PaymentMethodId } from '../payment/paymentMethod';
 import BillingSameAsShippingField from './BillingSameAsShippingField';
 import { getConsignment } from './consignment.mock';
 import MultiShippingForm from './MultiShippingForm';
+import MultiShippingGuestForm from './MultiShippingGuestForm';
 import ShippingAddress from './ShippingAddress';
 import ShippingForm, { ShippingFormProps } from './ShippingForm';
 import { ShippingOptions } from './shippingOption';
@@ -69,6 +70,7 @@ describe('ShippingForm Component', () => {
             shouldShowOrderComments: true,
             onMultiShippingSubmit: jest.fn(),
             onSingleShippingSubmit: jest.fn(),
+            isInitialValueLoaded: true,
             isLoading: false,
             isShippingStepPending: false,
             deleteConsignments: jest.fn(),
@@ -245,9 +247,14 @@ describe('ShippingForm Component', () => {
                 expect(component.find(OrderComments)).toHaveLength(0);
             });
 
-            it('renders MultiShippingForm', () => {
+            it('renders sign in message', () => {
                 expect(component.find(ShippingAddress)).toHaveLength(0);
-                expect(component.find(MultiShippingForm)).toHaveLength(1);
+                expect(component.find(MultiShippingForm)).toHaveLength(0);
+                expect(component.find(MultiShippingGuestForm)).toHaveLength(1);
+
+                component.find('[data-test="shipping-sign-in-link"]').simulate('click');
+
+                expect(defaultProps.onSignIn).toHaveBeenCalled();
             });
         });
 
@@ -386,7 +393,7 @@ describe('ShippingForm Component', () => {
                 <CheckoutProvider checkoutService={checkoutService}>
                     <LocaleContext.Provider value={localeContext}>
                         <ExtensionProvider checkoutService={checkoutService}>
-                            <ShippingForm {...ShippingFormProps} methodId={PaymentMethodId.BraintreeAcceleratedCheckout} />
+                            <ShippingForm {...ShippingFormProps} methodId="notPPFastlaneMethodID" />
                         </ExtensionProvider>
                     </LocaleContext.Provider>
                 </CheckoutProvider>,
@@ -395,85 +402,6 @@ describe('ShippingForm Component', () => {
             expect(component.find(SingleShippingForm).props()).toEqual(
                 expect.objectContaining({
                     addresses: defaultProps.addresses,
-                }),
-            );
-            expect(initializeMock).not.toHaveBeenCalled();
-        });
-
-        it('renders SingleShippingForm with paypal addresses list for guests when PayPal Fastlane enabled', () => {
-            const initializeMock = jest.fn();
-            const shippingFormProps = {
-                ...defaultProps,
-                initialize: initializeMock,
-                isGuest: true,
-            };
-            const paypalFastlaneAddresses: CustomerAddress[] = [
-                {
-                    ...getShippingAddress(),
-                    id: 123,
-                    type: 'paypal-address',
-                }
-            ];
-
-            (usePayPalFastlaneAddress as jest.Mock).mockReturnValue({
-                isPayPalFastlaneEnabled: true,
-                paypalFastlaneAddresses,
-            });
-
-            component = mount(
-                <CheckoutProvider checkoutService={checkoutService}>
-                    <LocaleContext.Provider value={localeContext}>
-                        <ExtensionProvider checkoutService={checkoutService}>
-                            <ShippingForm {...shippingFormProps} methodId={PaymentMethodId.BraintreeAcceleratedCheckout} />
-                        </ExtensionProvider>
-                    </LocaleContext.Provider>
-                </CheckoutProvider>,
-            );
-
-            expect(component.find(SingleShippingForm).props()).toEqual(
-                expect.objectContaining({
-                    addresses: paypalFastlaneAddresses,
-                }),
-            );
-            expect(initializeMock).toHaveBeenCalledWith({
-                methodId: PaymentMethodId.BraintreeAcceleratedCheckout,
-            });
-        });
-
-        it('renders shipping for with paypal fastlane addresses without strategy initialization if there is preselected shipping method id', () => {
-            const initializeMock = jest.fn();
-            const shippingFormProps = {
-                ...defaultProps,
-                initialize: initializeMock,
-                isGuest: true,
-            };
-            const paypalFastlaneAddresses: CustomerAddress[] = [
-                {
-                    ...getShippingAddress(),
-                    id: 123,
-                    type: 'paypal-address',
-                }
-            ];
-
-            (usePayPalFastlaneAddress as jest.Mock).mockReturnValue({
-                isPayPalFastlaneEnabled: true,
-                paypalFastlaneAddresses,
-                shouldShowPayPalFastlaneShippingForm: true,
-            });
-
-            component = mount(
-                <CheckoutProvider checkoutService={checkoutService}>
-                    <LocaleContext.Provider value={localeContext}>
-                        <ExtensionProvider checkoutService={checkoutService}>
-                            <ShippingForm {...shippingFormProps} methodId="notPPFastlaneMethodID" />
-                        </ExtensionProvider>
-                    </LocaleContext.Provider>
-                </CheckoutProvider>,
-            );
-
-            expect(component.find(SingleShippingForm).props()).toEqual(
-                expect.objectContaining({
-                    addresses: paypalFastlaneAddresses,
                 }),
             );
             expect(initializeMock).not.toHaveBeenCalled();
