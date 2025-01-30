@@ -229,11 +229,12 @@ class TerraceFinancePaymentMethod extends Component<
       <li><div className="circleCheck"></div><b>Early pay-off discounts available</b></li>
       <li><div className="circleCheck"></div>Soft Credit pull on application</li>
       <li><div className="circleCheck"></div>$99 Down today</li>
-      <li><div className="circleCheck"></div>Up to 9 month term length</li>
+      <li><div className="circleCheck"></div>Up to 12 months term length</li>
       <li><div className="circleCheck"></div>Instant decision</li>
       <li><div className="circleCheck"></div>Skip-a-payment option</li>
+      <li><div className="circleCheck"></div>Applicant must be in employment</li>
 
-      <p style={{ fontSize: 'smaller' }}><strong>Not available in the following states: VT (Vermont), MN (Minnesota), NJ (New Jersey), WI (Wisconsin)</strong></p>
+      <p style={{ fontSize: 'smaller' }}><strong>Not available in the following states: IL (Illinois), IN (Indiana), MS (Massachusetts), OK (Oklahoma), WN (Washington DC), VT (Vermont), MN (Minnesota), NJ (New Jersey), WI (Wisconsin), PR (Puerto Rico and islands)</strong></p>
       <p style={{ fontSize: 'smaller' }}>Terrace Finance is not a lender. We route your application through our network of lenders/lessors. Approval and approval amount are subject to credit eligibility and not guaranteed. Must be 18 or older to apply.</p>
     </>
   }
