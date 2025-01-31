@@ -124,19 +124,12 @@ class OrderConfirmation extends Component<
                             <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Whats Next?</h3>
                             <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>New Orders</u><br /><b style={{ color: '#ff2688' }}>We’re Preparing Your Impression Kit</b><br />Typically, it will be shipped within 24 hrs (weekdays)</h3>
 
-                            {currencyCode === 'USD' && (
-                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familarizing yourself with the instructions and watching the turorial video on the link below</h3>
-                            )}
-                            {currencyCode === 'GBP' && (
-                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familiarising yourself with the instructions and watching the turorial video on the link below</h3>
-                            )}
-                            {currencyCode === 'AUD' && (
-                                <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}>Speed up your smile by familiarising yourself with the instructions and watching the turorial video on the link below</h3>
-                            )}
-
+                            <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>What's Next?</u><br /><b style={{ color: '#ff2688' }}>We Need To Confirm Your Suitability</b><br />Please upload photos of your natural teeth to our uploader</h3>
+                            <img src='https://cdn.instasmile.com/new-website/images/show-us-your-teeth-300125.png' style={{ marginBottom: '15px' }} alt=''></img>
                             <p style={{ paddingTop: '15px', paddingBottom: '25px' }}>
-                                <a role='button' href='/pages/impression-kit-guide/' target='_blank' style={{ backgroundColor: '#000070', padding: '20px 24px', color: 'white', borderRadius: '20px', fontWeight: '600', fontSize: 'large' }}>Impression Kit Guide</a>
+                                <a role='button' href='https://uploader.instasmile.com/suitability' target='_blank' style={{ backgroundColor: '#ff2688', padding: '20px 24px', color: 'white', borderRadius: '20px', fontWeight: '600', fontSize: 'large' }}>Upload Photos</a>
                             </p>
+
                             <hr style={{ paddingBottom: '15px' }} />
                             <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>Reorders</u><br /><b style={{ color: '#ff2688' }}>We’re getting your order ready for production!</b><br />We'll check we have your digital impressions stored from your previous order.<br />Then, we'll assign your Reorder to production within 24 hrs (weekdays) and you'll receive an email with an estimated completion date.</h3>
                             {currencyCode === 'USD' && (
