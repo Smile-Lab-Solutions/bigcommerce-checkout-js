@@ -279,6 +279,11 @@ function getPaymentMethodTitle(
                 titleText: methodDisplayName,
                 titleSubText: 'Payment solutions tailored for you',
             },
+            [PaymentMethodId.Flex]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'Flex subtext',
+            },
         };
 
 
