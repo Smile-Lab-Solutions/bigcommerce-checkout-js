@@ -806,7 +806,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
         method: 'external',
         supportedCards: [],
         config: {
-            displayName: '$99 Down today. Up to 14 month term',
+            displayName: '$99 due today. Up to 12 month term',
             helpText: '',
             merchantId: 'terracefinance',
             testMode: false,

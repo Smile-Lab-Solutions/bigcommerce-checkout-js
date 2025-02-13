@@ -228,8 +228,8 @@ class TerraceFinancePaymentMethod extends Component<
       <li><div className="circleCheck"></div><b>90 Days same-as-cash option</b></li>
       <li><div className="circleCheck"></div><b>Early pay-off discounts available</b></li>
       <li><div className="circleCheck"></div>Soft Credit pull on application</li>
-      <li><div className="circleCheck"></div>$99 Down today</li>
-      <li><div className="circleCheck"></div>Up to 14 months term length</li>
+      <li><div className="circleCheck"></div>$99 due today</li>
+      <li><div className="circleCheck"></div>Up to 12 months term length</li>
       <li><div className="circleCheck"></div>Instant decision</li>
       <li><div className="circleCheck"></div>Skip-a-payment option</li>
       <li><div className="circleCheck"></div>Applicant must be in employment</li>
