@@ -637,8 +637,12 @@ export function mapToPaymentProps({
         // Only for US payment methods
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
+
+            const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
             // Adding Terrace Finance
-            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS')) {
+            // Check TF is set for store and if not a reorder
+            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS') && !isReorder) {
                 methods = methods.concat(getTerraceFinanceMethod());
             }
 
@@ -669,18 +673,18 @@ export function mapToPaymentProps({
     if (config.shopperCurrency.code === 'USD') {
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
-        // Debit/credit Card
-        // Flex
-        // Terrace Finance
-        // Paypal
-        // Venmo
-        // Bread Pay
-        // Klarna
-        // Afterpay
-        // Zip
-        // Paytomorrow
-        // Partially
-        let paymentOrder = [ 'nmi', 'flex', 'terracefinance', 'paypalcommerce', 'paypalcommercevenmo', 'cod', 'pay_over_time', 'pay_by_installment', 'quadpay', 'cheque', 'partially'];
+        // Debit/credit Card (nmi)
+        // Terrace Finance (terracefinance)
+        // Paypal (paypalcommerce)
+        // Zip (quadpay)
+        // Afterpay (pay_by_installment)
+        // Klarna (pay_over_time)
+        // Venmo (paypalcommercevenmo)
+        // Bread Pay (cod)
+        // Paytomorrow (cheque)
+        // Partially (partially)
+        // Flex (flex)
+        let paymentOrder = [ 'nmi', 'terracefinance', 'paypalcommerce', 'quadpay', 'pay_by_installment', 'pay_over_time', 'paypalcommercevenmo', 'cod', 'cheque', 'partially', 'flex'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
@@ -809,7 +813,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
         method: 'external',
         supportedCards: [],
         config: {
-            displayName: '$1 Down today. Up to 24 month term',
+            displayName: '$99 due today. Up to 12 month term',
             helpText: '',
             merchantId: 'terracefinance',
             testMode: false,

@@ -473,7 +473,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {/* US Terrace Finance promo code info */}
-                {/* {method.gateway === PaymentMethodId.TerraceFinance && (
+                {method.gateway === PaymentMethodId.TerraceFinance && (
                     <div className='checkout-notifications merchant' style={{ width: '100%' }}>
                         <div className="notification notification--info">
                             <div className="notification__content">
@@ -483,7 +483,7 @@ const PaymentMethodTitle: FunctionComponent<
                             </div>
                         </div>
                     </div>
-                )} */}
+                )}
 
                 {/* US PayTomorrow promo code info */}
                 {/* {method.id === 'cheque' && (
