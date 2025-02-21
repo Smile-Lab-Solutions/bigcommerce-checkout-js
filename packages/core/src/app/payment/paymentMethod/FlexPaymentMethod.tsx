@@ -72,30 +72,89 @@ class FlexPaymentMethod extends Component<
         // DO NOT PUSH TO REPO
         let flexBearerToken = '';
 
+        let flexProductIds = {
+          "ISCLASSICTOP-BL1": "fprod_01jma8095kj7sja08xcvycp243",
+          "ISCLASSICTOP-A1": "fprod_01jma80w5tzhdzsza201w74fd3",
+          "ISCLASSICTOP-A2": "fprod_01jma8157jac8vyyv74mvnvd2c",
+          "ISCLASSICTOP-A3": "fprod_01jma81e5hvtxqwsawkmc7zk2p",
+          "ISCLASSICBOT-BL1": "fprod_01jma81z974c7dcw9zbyhde1mc",
+          "ISCLASSICBOT-A1": "fprod_01jma829askzbdtd5qtbvxjz18",
+          "ISCLASSICBOT-A2": "fprod_01jma82jpmmcf2fe9qhk5shbcp",
+          "ISCLASSICBOT-A3": "fprod_01jma82v3hjgt665j3mwcapcvw",
+          "ISDYNAMICTOP-BL1": "fprod_01jma84c0nqf4yfp63hvrt47sy",
+          "ISDYNAMICTOP-A1": "fprod_01jma84m1zyvc7x38aagk7a7m5",
+          "ISDYNAMICTOP-A2": "fprod_01jma84t9hhbjwegjyqek1s2tc",
+          "ISDYNAMICTOP-A3": "fprod_01jma8518aj3npscxenea87fjz",
+          "ISDYNAMICBOT-BL1": "fprod_01jma858e5pbwxssasv6wf405t",
+          "ISDYNAMICBOT-A1": "fprod_01jma85fb5pmsp1b1drny1pp4j",
+          "ISDYNAMICBOT-A2": "fprod_01jma85nw8qf9vhsqszt4fpae0",
+          "ISDYNAMICBOT-A3": "fprod_01jma85wfq9emw6fys8nt7gj58",
+          "IMPKIT-SINGLE": "fprod_01jma8fwxbxafpnaqy26ej7f4y",
+          "IMPKIT-DUAL": "fprod_01jma8g7ke7avxhb4jwtvbrt8g",
+          "EXPPROD": "fprod_01jma86arbxrs3th5s79cyzg8f",
+          "ISBF3YRWNTY": "fprod_01jma86ncmktwa5jgcazb4s060"
+        };
+
+        // Merge physical/digital items in cart
+        var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
+
+        // Stores all line items
+        let flexCheckoutSessionLineItems: FlexCheckoutSessionLineItemData[] = [];
+
+        // Stores all discounts for discounted line items
+        let flexCheckoutSessionDiscountRootData: FlexCheckoutSessionDiscountRootData[] = [];
+
+        // Filters all line items to only store locally items that are mapped in flex portal
+        lineItems.forEach(x => {
+          const flexProductId = Object.entries(flexProductIds).find(([key]) => key === x.sku);
+          if (flexProductId) {
+            // Push to local flex line item array
+            flexCheckoutSessionLineItems.push(
+              {
+                price_data: {
+                  product: flexProductId[1],
+                  unit_amount: x.listPrice * 100
+                },
+                quantity: x.quantity
+              }
+            );
+
+            // Check if item has discount and push to flex discount array
+            x.discounts.forEach(d => {
+              if (d.discountedAmount > 0) {
+                flexCheckoutSessionDiscountRootData.push(
+                  {
+                    coupon_data: {
+                      amount_off: d.discountedAmount * 100,
+                      name: "Discount",
+                      applies_to: {
+                        products: [flexProductId[1]]
+                      }
+                    }
+                  }
+                )
+              }
+            });
+          }
+        });
+
         // Create checkout session data to send to flex API
         let checkoutSessionData: FlexCheckoutSessionRootData = {
           checkout_session: {
             allow_promotion_codes: false,
-            cancel_url: "https://instasmile.com",
+            cancel_url: "https://us.instasmile.com/checkout/",
             capture_method: "automatic",
-            client_reference_id: "test",
+            client_reference_id: checkout.id,
             defaults: {
-              email: "",
-              first_name: "",
-              last_name: "",
-              phone: "07123456789"
+              email: checkout.billingAddress?.email ?? "",
+              first_name: checkout.billingAddress?.firstName ?? "",
+              last_name: checkout.billingAddress?.lastName ?? "",
+              phone: checkout.billingAddress?.phone ?? ""
             },
-            line_items: [
-              {
-                price_data: {
-                  product: "",
-                  unit_amount: 1000
-                },
-                quantity: 1
-              }
-            ],
+            discounts: flexCheckoutSessionDiscountRootData,
+            line_items: flexCheckoutSessionLineItems,
             mode: "payment",
-            success_url: "https://instasmile.com"
+            success_url: "https://us.instasmile.com/pages/complete/"
           }
         };
 
@@ -194,6 +253,7 @@ interface FlexCheckoutSessionData {
   capture_method: string;
   client_reference_id: string;
   defaults: FlexCheckoutSessionCustomerData;
+  discounts: FlexCheckoutSessionDiscountRootData[];
   line_items: FlexCheckoutSessionLineItemData[];
   mode: string;
   success_url: string;
@@ -204,6 +264,20 @@ interface FlexCheckoutSessionCustomerData {
   first_name: string;
   last_name: string;
   phone: string;
+}
+
+interface FlexCheckoutSessionDiscountRootData {
+  coupon_data: FlexCheckoutSessionDiscountData
+}
+
+interface FlexCheckoutSessionDiscountData {
+  amount_off: number;
+  name: string;
+  applies_to: FlexCheckoutSessionDiscountAppliesToData;
+}
+
+interface FlexCheckoutSessionDiscountAppliesToData {
+  products: string[];
 }
 
 interface FlexCheckoutSessionLineItemData {
