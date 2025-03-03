@@ -282,7 +282,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.Flex]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Flex subtext',
+                titleSubText: 'Pay with HSA/FSA',
             },
         };
 
@@ -446,7 +446,12 @@ const PaymentMethodTitle: FunctionComponent<
                     <div 
                         data-test="payment-method-name" 
                         style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
-                        <p style={{marginBottom: '0px', fontSize: '1.15rem', marginTop: '0.5rem', fontWeight: '500'}}>{titleText}</p>
+                        {method.id === 'flex'
+                            ?
+                            (<CreditCardIconList cardTypes={['visa', 'mastercard']} />)
+                            :
+                            (<p style={{ marginBottom: '0px', fontSize: '1.15rem', marginTop: '0.5rem', fontWeight: '500' }}>{titleText}</p>)
+                        }
                     </div>
                 )}
 

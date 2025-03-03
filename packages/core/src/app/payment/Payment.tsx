@@ -675,16 +675,16 @@ export function mapToPaymentProps({
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card (nmi)
         // Terrace Finance (terracefinance)
+        // Flex (flex)
         // Paypal (paypalcommerce)
         // Zip (quadpay)
-        // Afterpay (pay_by_installment)
         // Klarna (pay_over_time)
+        // Afterpay (pay_by_installment)
         // Venmo (paypalcommercevenmo)
         // Bread Pay (cod)
         // Paytomorrow (cheque)
         // Partially (partially)
-        // Flex (flex)
-        let paymentOrder = [ 'nmi', 'terracefinance', 'paypalcommerce', 'quadpay', 'pay_by_installment', 'pay_over_time', 'paypalcommercevenmo', 'cod', 'cheque', 'partially', 'flex'];
+        let paymentOrder = [ 'nmi', 'terracefinance', 'flex', 'paypalcommerce', 'quadpay', 'pay_over_time', 'pay_by_installment', 'paypalcommercevenmo', 'cod', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
@@ -837,7 +837,7 @@ export function getFlexMethod(): PaymentMethod {
             merchantId: 'flex',
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
-            redirectUrl: `${window.location.origin}/pages/complete`
+            redirectUrl: `${window.location.origin}/pages/complete/`
         },
         type: 'PAYMENT_TYPE_API',
     };

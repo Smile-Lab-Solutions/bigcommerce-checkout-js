@@ -45,6 +45,8 @@ class FlexPaymentMethod extends Component<
       <LoadingOverlay hideContentWhenLoading isLoading={false}>
         <div className="paymentMethod paymentMethod--hosted">
           <div className="payment-descriptor">
+            <p>Pay with HSA/FSA to complete your purchase securely.</p>
+            <p>Your purchase requires verification of eligibility, follow the steps to complete a brief telehealth consultation in the checkout.</p>
             <ul className="list-element">
               {this.getListText()}
             </ul>
@@ -75,54 +77,54 @@ class FlexPaymentMethod extends Component<
         /////////////////////////
         // SANDBOX PRODUCT IDS //
         /////////////////////////
-        // let flexProductIds = {
-        //   "ISCLASSICTOP-BL1": "fprod_01jma8095kj7sja08xcvycp243",
-        //   "ISCLASSICTOP-A1": "fprod_01jma80w5tzhdzsza201w74fd3",
-        //   "ISCLASSICTOP-A2": "fprod_01jma8157jac8vyyv74mvnvd2c",
-        //   "ISCLASSICTOP-A3": "fprod_01jma81e5hvtxqwsawkmc7zk2p",
-        //   "ISCLASSICBOT-BL1": "fprod_01jma81z974c7dcw9zbyhde1mc",
-        //   "ISCLASSICBOT-A1": "fprod_01jma829askzbdtd5qtbvxjz18",
-        //   "ISCLASSICBOT-A2": "fprod_01jma82jpmmcf2fe9qhk5shbcp",
-        //   "ISCLASSICBOT-A3": "fprod_01jma82v3hjgt665j3mwcapcvw",
-        //   "ISDYNAMICTOP-BL1": "fprod_01jma84c0nqf4yfp63hvrt47sy",
-        //   "ISDYNAMICTOP-A1": "fprod_01jma84m1zyvc7x38aagk7a7m5",
-        //   "ISDYNAMICTOP-A2": "fprod_01jma84t9hhbjwegjyqek1s2tc",
-        //   "ISDYNAMICTOP-A3": "fprod_01jma8518aj3npscxenea87fjz",
-        //   "ISDYNAMICBOT-BL1": "fprod_01jma858e5pbwxssasv6wf405t",
-        //   "ISDYNAMICBOT-A1": "fprod_01jma85fb5pmsp1b1drny1pp4j",
-        //   "ISDYNAMICBOT-A2": "fprod_01jma85nw8qf9vhsqszt4fpae0",
-        //   "ISDYNAMICBOT-A3": "fprod_01jma85wfq9emw6fys8nt7gj58",
-        //   "IMPKIT-SINGLE": "fprod_01jma8fwxbxafpnaqy26ej7f4y",
-        //   "IMPKIT-DUAL": "fprod_01jma8g7ke7avxhb4jwtvbrt8g",
-        //   "EXPPROD": "fprod_01jma86arbxrs3th5s79cyzg8f",
-        //   "ISBF3YRWNTY": "fprod_01jma86ncmktwa5jgcazb4s060"
-        // };
+        let flexProductIds = {
+          "ISCLASSICTOP-BL1": "fprod_01jma8095kj7sja08xcvycp243",
+          "ISCLASSICTOP-A1": "fprod_01jma80w5tzhdzsza201w74fd3",
+          "ISCLASSICTOP-A2": "fprod_01jma8157jac8vyyv74mvnvd2c",
+          "ISCLASSICTOP-A3": "fprod_01jma81e5hvtxqwsawkmc7zk2p",
+          "ISCLASSICBOT-BL1": "fprod_01jma81z974c7dcw9zbyhde1mc",
+          "ISCLASSICBOT-A1": "fprod_01jma829askzbdtd5qtbvxjz18",
+          "ISCLASSICBOT-A2": "fprod_01jma82jpmmcf2fe9qhk5shbcp",
+          "ISCLASSICBOT-A3": "fprod_01jma82v3hjgt665j3mwcapcvw",
+          "ISDYNAMICTOP-BL1": "fprod_01jma84c0nqf4yfp63hvrt47sy",
+          "ISDYNAMICTOP-A1": "fprod_01jma84m1zyvc7x38aagk7a7m5",
+          "ISDYNAMICTOP-A2": "fprod_01jma84t9hhbjwegjyqek1s2tc",
+          "ISDYNAMICTOP-A3": "fprod_01jma8518aj3npscxenea87fjz",
+          "ISDYNAMICBOT-BL1": "fprod_01jma858e5pbwxssasv6wf405t",
+          "ISDYNAMICBOT-A1": "fprod_01jma85fb5pmsp1b1drny1pp4j",
+          "ISDYNAMICBOT-A2": "fprod_01jma85nw8qf9vhsqszt4fpae0",
+          "ISDYNAMICBOT-A3": "fprod_01jma85wfq9emw6fys8nt7gj58",
+          "IMPKIT-SINGLE": "fprod_01jma8fwxbxafpnaqy26ej7f4y",
+          "IMPKIT-DUAL": "fprod_01jma8g7ke7avxhb4jwtvbrt8g",
+          "EXPPROD": "fprod_01jma86arbxrs3th5s79cyzg8f",
+          "ISBF3YRWNTY": "fprod_01jma86ncmktwa5jgcazb4s060"
+        };
 
         //////////////////////
         // LIVE PRODUCT IDS //
         //////////////////////
-        let flexProductIds = {
-          "ISCLASSICTOP-BL1": "fprod_01jn1gmnxrv7pr360jxtjdqnfv",
-          "ISCLASSICTOP-A1": "fprod_01jn1gk77pea6w3vfa71d52kv8",
-          "ISCLASSICTOP-A2": "fprod_01jn1gjwzyse0r2m9b7egb7pqw",
-          "ISCLASSICTOP-A3": "fprod_01jn1gjjb9vy4536dm7pyg8c1g",
-          "ISCLASSICBOT-BL1": "fprod_01jn1gjat51rz6canq3twae2k5",
-          "ISCLASSICBOT-A1": "fprod_01jn1gj32xza8ppw9zccrwd35g",
-          "ISCLASSICBOT-A2": "fprod_01jn1ghv3sc0b68cj51z215v1z",
-          "ISCLASSICBOT-A3": "fprod_01jn1ghfhjsd340bge5afj160p",
-          "ISDYNAMICTOP-BL1": "fprod_01jn1gh6xk8rggyhpmwbxj2wda",
-          "ISDYNAMICTOP-A1": "fprod_01jn1ggzbgcjkp921g9pghw3a6",
-          "ISDYNAMICTOP-A2": "fprod_01jn1ggr2njm1k313rfe85zjvs",
-          "ISDYNAMICTOP-A3": "fprod_01jn1ggez8y2dh1v815ha7y4yf",
-          "ISDYNAMICBOT-BL1": "fprod_01jn1gg6yhvyxxzmssptfe19an",
-          "ISDYNAMICBOT-A1": "fprod_01jn1gfygestz92fs9xhpkrj53",
-          "ISDYNAMICBOT-A2": "fprod_01jn1gfq6sbvw9w6mtzw95nry2",
-          "ISDYNAMICBOT-A3": "fprod_01jn1gfh4kxwcqb47gr3vbxvzc",
-          "IMPKIT-SINGLE": "fprod_01jn1get94mdvx27jp98983z7e",
-          "IMPKIT-DUAL": "fprod_01jn1gefaafk15canb0rqs889r",
-          "EXPPROD": "fprod_01jn1gf9pknjwvgcxbrkjcwgaq",
-          "ISBF3YRWNTY": "fprod_01jn1gf2qcbx19008tca2f9bbd"
-        };
+        // let flexProductIds = {
+        //   "ISCLASSICTOP-BL1": "fprod_01jn1gmnxrv7pr360jxtjdqnfv",
+        //   "ISCLASSICTOP-A1": "fprod_01jn1gk77pea6w3vfa71d52kv8",
+        //   "ISCLASSICTOP-A2": "fprod_01jn1gjwzyse0r2m9b7egb7pqw",
+        //   "ISCLASSICTOP-A3": "fprod_01jn1gjjb9vy4536dm7pyg8c1g",
+        //   "ISCLASSICBOT-BL1": "fprod_01jn1gjat51rz6canq3twae2k5",
+        //   "ISCLASSICBOT-A1": "fprod_01jn1gj32xza8ppw9zccrwd35g",
+        //   "ISCLASSICBOT-A2": "fprod_01jn1ghv3sc0b68cj51z215v1z",
+        //   "ISCLASSICBOT-A3": "fprod_01jn1ghfhjsd340bge5afj160p",
+        //   "ISDYNAMICTOP-BL1": "fprod_01jn1gh6xk8rggyhpmwbxj2wda",
+        //   "ISDYNAMICTOP-A1": "fprod_01jn1ggzbgcjkp921g9pghw3a6",
+        //   "ISDYNAMICTOP-A2": "fprod_01jn1ggr2njm1k313rfe85zjvs",
+        //   "ISDYNAMICTOP-A3": "fprod_01jn1ggez8y2dh1v815ha7y4yf",
+        //   "ISDYNAMICBOT-BL1": "fprod_01jn1gg6yhvyxxzmssptfe19an",
+        //   "ISDYNAMICBOT-A1": "fprod_01jn1gfygestz92fs9xhpkrj53",
+        //   "ISDYNAMICBOT-A2": "fprod_01jn1gfq6sbvw9w6mtzw95nry2",
+        //   "ISDYNAMICBOT-A3": "fprod_01jn1gfh4kxwcqb47gr3vbxvzc",
+        //   "IMPKIT-SINGLE": "fprod_01jn1get94mdvx27jp98983z7e",
+        //   "IMPKIT-DUAL": "fprod_01jn1gefaafk15canb0rqs889r",
+        //   "EXPPROD": "fprod_01jn1gf9pknjwvgcxbrkjcwgaq",
+        //   "ISBF3YRWNTY": "fprod_01jn1gf2qcbx19008tca2f9bbd"
+        // };
 
         // Merge physical/digital items in cart
         var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
@@ -171,7 +173,7 @@ class FlexPaymentMethod extends Component<
         let checkoutSessionData: FlexCheckoutSessionRootData = {
           checkout_session: {
             allow_promotion_codes: false,
-            cancel_url: "https://us.instasmile.com/checkout/",
+            cancel_url: "https://us.instasmile.com/checkout",
             capture_method: "automatic",
             client_reference_id: checkout.id,
             defaults: {
@@ -224,7 +226,6 @@ class FlexPaymentMethod extends Component<
 
   private getListText: () => ReactNode = () => {
     return <>
-      <li><div className="circleCheck"></div><b>Flex Flex Flex Flex Flex</b></li>
     </>
   }
 
