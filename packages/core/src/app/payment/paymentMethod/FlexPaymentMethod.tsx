@@ -97,7 +97,15 @@ class FlexPaymentMethod extends Component<
           "IMPKIT-SINGLE": "fprod_01jma8fwxbxafpnaqy26ej7f4y",
           "IMPKIT-DUAL": "fprod_01jma8g7ke7avxhb4jwtvbrt8g",
           "EXPPROD": "fprod_01jma86arbxrs3th5s79cyzg8f",
-          "ISBF3YRWNTY": "fprod_01jma86ncmktwa5jgcazb4s060"
+          "ISBF3YRWNTY": "fprod_01jma86ncmktwa5jgcazb4s060",
+          "SPAREINSTATOP-BL1": "fprod_01jnr5rdfafw0fczx0qrsyjvhm",
+          "SPAREINSTATOP-A1": "fprod_01jnr5rng0pwkg2nm4s7q311v1",
+          "SPAREINSTATOP-A2": "fprod_01jnr5rzshm8he0ya58dyczng3",
+          "SPAREINSTATOP-A3": "fprod_01jnr5s7v0kz89d3qbfp5kqx7b",
+          "SPAREINSTABOT-BL1": "fprod_01jnr5sg16nbtgv1gtp6gxk9xe",
+          "SPAREINSTABOT-A1": "fprod_01jnr5st9zb9msxjk9cm98e35p",
+          "SPAREINSTABOT-A2": "fprod_01jnr5t36jtrfz8834grmq6apf",
+          "SPAREINSTABOT-A3": "fprod_01jnr5tbh78s7mx96h66z1tn4r"
         };
 
         //////////////////////
@@ -123,7 +131,15 @@ class FlexPaymentMethod extends Component<
         //   "IMPKIT-SINGLE": "fprod_01jn1get94mdvx27jp98983z7e",
         //   "IMPKIT-DUAL": "fprod_01jn1gefaafk15canb0rqs889r",
         //   "EXPPROD": "fprod_01jn1gf9pknjwvgcxbrkjcwgaq",
-        //   "ISBF3YRWNTY": "fprod_01jn1gf2qcbx19008tca2f9bbd"
+        //   "ISBF3YRWNTY": "fprod_01jn1gf2qcbx19008tca2f9bbd",
+        //   "SPAREINSTATOP-BL1": "fprod_01jnrhz3a8cvpqf26sxrkferse",
+        //   "SPAREINSTATOP-A1": "fprod_01jnrhzbf0rmz6tbp7rm3g1rrq",
+        //   "SPAREINSTATOP-A2": "fprod_01jnrhzm9fn80ca1pbeyzmw2v1",
+        //   "SPAREINSTATOP-A3": "fprod_01jnrhzwpn1m8ky007am6hpbt0",
+        //   "SPAREINSTABOT-BL1": "fprod_01jnrj0752fctz8k2z06nfapw5",
+        //   "SPAREINSTABOT-A1": "fprod_01jnrj0gvkhv9175xa5v10dbx6",
+        //   "SPAREINSTABOT-A2": "fprod_01jnrj0tc7tgr57t1bp24db5w2",
+        //   "SPAREINSTABOT-A3": "fprod_01jnrj13861ape8w5wcej92va0"
         // };
 
         // Merge physical/digital items in cart
