@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
-import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError } from '@bigcommerce/checkout-sdk';
+import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, CustomError, Address } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ConnectFormikProps, connectFormik } from '../../common/form';
 import { MapToPropsFactory } from '@bigcommerce/checkout/legacy-hoc';
@@ -9,7 +9,6 @@ import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';
 import { LoadingOverlay } from '../../ui/loading';
 import { withCheckout } from '../../checkout';
-import { toggleCouponBlock } from '../../../../../../scripts/custom/terraceFinance';
 
 export interface HostedPaymentMethodProps {
   method: PaymentMethod;
@@ -19,7 +18,7 @@ export interface HostedPaymentMethodProps {
 interface WithCheckoutHostedPaymentMethodProps {
   checkout: Checkout | undefined;
   config: StoreConfig | undefined;
-  removeCoupon(code: string): void;
+  shippingAddress: Address | undefined;
 }
 
 class FlexPaymentMethod extends Component<
@@ -61,6 +60,7 @@ class FlexPaymentMethod extends Component<
       method,
       checkout,
       config,
+      shippingAddress,
       onUnhandledError = noop,
       disableSubmit
     } = this.props;
@@ -68,7 +68,7 @@ class FlexPaymentMethod extends Component<
     disableSubmit(method, true);
 
     try {
-      if (checkout && method && config && checkout.billingAddress) {
+      if (checkout && method && config && checkout.billingAddress && shippingAddress) {
 
         // ONLY ENTER TOKEN WHEN DEPLOYING
         // DO NOT PUSH TO REPO
@@ -185,47 +185,93 @@ class FlexPaymentMethod extends Component<
           }
         });
 
-        // Create checkout session data to send to flex API
-        let checkoutSessionData: FlexCheckoutSessionRootData = {
-          checkout_session: {
-            allow_promotion_codes: false,
-            cancel_url: "https://us.instasmile.com/checkout",
-            capture_method: "automatic",
-            client_reference_id: checkout.id,
-            defaults: {
-              email: checkout.billingAddress?.email ?? "",
-              first_name: checkout.billingAddress?.firstName ?? "",
-              last_name: checkout.billingAddress?.lastName ?? "",
-              phone: checkout.billingAddress?.phone ?? ""
-            },
-            discounts: flexCheckoutSessionDiscountRootData,
-            line_items: flexCheckoutSessionLineItems,
-            mode: "payment",
-            success_url: "https://us.instasmile.com/pages/complete/"
+        // Create customer session data to send to flex API
+        let customerData: FlexCustomerRootData = {
+          customer: {
+            first_name: checkout.billingAddress?.firstName ?? "",
+            last_name: checkout.billingAddress?.lastName ?? "",
+            email: checkout.billingAddress?.email ?? "",
+            phone: checkout.billingAddress?.phone != null ? "+1" + checkout.billingAddress?.phone : "",
+            shipping: {
+              line1: shippingAddress.address1,
+              line2: shippingAddress.address2,
+              city: shippingAddress.city,
+              state: shippingAddress.stateOrProvince,
+              postal_code: shippingAddress.postalCode,
+              country: shippingAddress.country
+            }
           }
-        };
+        }
 
-        // Flex checkout session API call
-        var checkoutXhr = new XMLHttpRequest();
-        checkoutXhr.withCredentials = false;
-        checkoutXhr.open("POST", "https://api.withflex.com/v1/checkout/sessions");
-        checkoutXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
-        checkoutXhr.setRequestHeader('Content-Type', 'application/json');
-        checkoutXhr.send(JSON.stringify(checkoutSessionData));
+        // Flex create customer API call
+        var customerXhr = new XMLHttpRequest();
+        customerXhr.withCredentials = false;
+        customerXhr.open("POST", "https://api.withflex.com/v1/customers");
+        customerXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
+        customerXhr.setRequestHeader('Content-Type', 'application/json');
+        customerXhr.send(JSON.stringify(customerData));
 
-        checkoutXhr.onreadystatechange = function () {
-          if (checkoutXhr.readyState == 4) {
-
-            // Error during checkout call
-            if (checkoutXhr.status !== 200) {
+        customerXhr.onreadystatechange = function () {
+          if (customerXhr.readyState == 4) {
+            // Error during customer call
+            if (customerXhr.status !== 200) {
               var errorMessage = "Failed to load Flex, please try again later.";
               onUnhandledError(new Error(errorMessage) as CustomError);
-            } else {
+            } else { 
               // Parse response
-              let checkoutResponse: FlexCheckoutSessionRootDataResponse = JSON.parse(this.responseText);
+              let customerResponse: FlexCustomerRootDataResponse = JSON.parse(customerXhr.responseText);
 
-              // Redirect customer from flex checkout response
-              window.location.replace(checkoutResponse.checkout_session.redirect_url);
+              if (!customerResponse.customer.customer_id){
+                var errorMessage = "Failed to load Flex, please try again later.";
+                onUnhandledError(new Error(errorMessage) as CustomError);
+              }
+
+              // Continue with checkout
+              // Create checkout session data to send to flex API
+              let checkoutSessionData: FlexCheckoutSessionRootData = {
+                checkout_session: {
+                  allow_promotion_codes: false,
+                  cancel_url: "https://us.instasmile.com/checkout",
+                  capture_method: "automatic",
+                  client_reference_id: checkout.id,
+                  defaults: {
+                    customer_id: customerResponse.customer.customer_id,
+                    email: checkout.billingAddress?.email ?? "",
+                    first_name: checkout.billingAddress?.firstName ?? "",
+                    last_name: checkout.billingAddress?.lastName ?? "",
+                    phone: checkout.billingAddress?.phone ?? ""
+                  },
+                  discounts: flexCheckoutSessionDiscountRootData,
+                  line_items: flexCheckoutSessionLineItems,
+                  mode: "payment",
+                  success_url: "https://us.instasmile.com/pages/complete/"
+                }
+              };
+
+              // Flex checkout session API call
+              var checkoutXhr = new XMLHttpRequest();
+              checkoutXhr.withCredentials = false;
+              checkoutXhr.open("POST", "https://api.withflex.com/v1/checkout/sessions");
+              checkoutXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
+              checkoutXhr.setRequestHeader('Content-Type', 'application/json');
+              checkoutXhr.send(JSON.stringify(checkoutSessionData));
+      
+              checkoutXhr.onreadystatechange = function () {
+                if (checkoutXhr.readyState == 4) {
+      
+                  // Error during checkout call
+                  if (checkoutXhr.status !== 200) {
+                    var errorMessage = "Failed to load Flex, please try again later.";
+                    onUnhandledError(new Error(errorMessage) as CustomError);
+                  } else {
+                    // Parse response
+                    let checkoutResponse: FlexCheckoutSessionRootDataResponse = JSON.parse(this.responseText);
+      
+                    // Redirect customer from flex checkout response
+                    window.location.replace(checkoutResponse.checkout_session.redirect_url);
+                  }
+                }
+              };
             }
           }
         };
@@ -246,9 +292,6 @@ class FlexPaymentMethod extends Component<
   }
 
   componentWillUnmount(): void {
-    {
-      toggleCouponBlock(false);
-    }
   }
 }
 
@@ -262,22 +305,23 @@ const mapFromCheckoutProps: MapToPropsFactory<
         method,
       } = props;
 
-      const { checkoutState, checkoutService } = context;
+      const { checkoutState } = context;
 
       const {
           data: {
-              getCheckout, getConfig
+              getCheckout, getConfig, getShippingAddress
           }
       } = checkoutState;
 
       const checkout = getCheckout();
       const config = getConfig();
+      const shippingAddress = getShippingAddress();
       
       return {
           checkout: checkout,
           method: method,
-          config,
-          removeCoupon: checkoutService.removeCoupon
+          config: config,
+          shippingAddress: shippingAddress
       };
   };
 };
@@ -303,6 +347,7 @@ interface FlexCheckoutSessionData {
 }
 
 interface FlexCheckoutSessionCustomerData {
+  customer_id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -387,4 +432,37 @@ interface FlexCheckoutSessionTotalDetailsResponse {
   amount_discount: number
   amount_tax: any
   amount_shipping: number
+}
+
+// Flex Customer API Interfaces
+
+interface FlexCustomerRootData {
+  customer: FlexCustomerData;
+}
+
+interface FlexCustomerData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  shipping: FlexCustomerShippingData;
+}
+
+interface FlexCustomerShippingData {
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+}
+
+// Flex Customer Responses Interfaces
+
+interface FlexCustomerRootDataResponse {
+  customer: FlexCustomerDataResponse
+}
+
+interface FlexCustomerDataResponse {
+  customer_id: string
 }
