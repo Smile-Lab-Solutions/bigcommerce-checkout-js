@@ -127,6 +127,11 @@ const PaymentSubmitButtonText: FunctionComponent<PaymentSubmitButtonTextProps> =
             return <TranslatedString id="payment.terracefinance_continue_action" />;
         }
 
+        if (methodGateway === PaymentMethodId.Flex) {
+            return <TranslatedString id="payment.flex_continue_action" />;
+        }
+
+
         return <TranslatedString id="payment.place_order_action" />;
     },
 );

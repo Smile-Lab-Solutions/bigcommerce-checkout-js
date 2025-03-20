@@ -68,6 +68,7 @@ enum PaymentMethodId {
     TdOnlineMartGooglePay = 'googlepaytdonlinemart',
     Partially = 'partially',
     TerraceFinance = 'terracefinance',
+    Flex = 'flex'
 }
 
 export default PaymentMethodId;

@@ -357,7 +357,8 @@ class Payment extends Component<
             selectedMethod.gateway === PaymentMethodId.Mollie ||
             selectedMethod.gateway === PaymentMethodId.StripeV3 ||
             selectedMethod.gateway === PaymentMethodId.Partially ||
-            selectedMethod.gateway === PaymentMethodId.TerraceFinance
+            selectedMethod.gateway === PaymentMethodId.TerraceFinance ||
+            selectedMethod.gateway === PaymentMethodId.Flex
         ) {
             return;
         }
@@ -650,6 +651,11 @@ export function mapToPaymentProps({
                 methods = methods.concat(getPartiallyMethod());
                 loadPartiallyJs();
             }
+
+            // Adding Flex
+            if (inStoreMethod[0].config.displayName?.includes('Flex PIS')) {
+                methods = methods.concat(getFlexMethod());
+            }
         }
 
         // Only for UK payment methods
@@ -669,15 +675,16 @@ export function mapToPaymentProps({
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card (nmi)
         // Terrace Finance (terracefinance)
+        // Flex (flex)
         // Paypal (paypalcommerce)
         // Zip (quadpay)
-        // Afterpay (pay_by_installment)
         // Klarna (pay_over_time)
+        // Afterpay (pay_by_installment)
         // Venmo (paypalcommercevenmo)
         // Bread Pay (cod)
         // Paytomorrow (cheque)
         // Partially (partially)
-        let paymentOrder = [ 'nmi', 'terracefinance', 'paypalcommerce', 'quadpay', 'pay_by_installment', 'pay_over_time', 'paypalcommercevenmo', 'cod', 'cheque', 'partially'];
+        let paymentOrder = [ 'nmi', 'terracefinance', 'flex', 'paypalcommerce', 'quadpay', 'pay_over_time', 'pay_by_installment', 'paypalcommercevenmo', 'cod', 'cheque', 'partially'];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
@@ -812,6 +819,25 @@ export function getTerraceFinanceMethod(): PaymentMethod {
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
             redirectUrl: `${window.location.origin}/pages/complete`
+        },
+        type: 'PAYMENT_TYPE_API',
+    };
+}
+
+export function getFlexMethod(): PaymentMethod {
+    return {
+        id: 'flex',
+        gateway: 'flex',
+        logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-flex-navy.png',
+        method: 'external',
+        supportedCards: [],
+        config: {
+            displayName: 'Display right: Flex',
+            helpText: '',
+            merchantId: 'flex',
+            testMode: false,
+            returnUrl: `${window.location.origin}/checkout`,
+            redirectUrl: `${window.location.origin}/pages/complete/`
         },
         type: 'PAYMENT_TYPE_API',
     };
