@@ -514,10 +514,10 @@ const PaymentMethodTitle: FunctionComponent<
                 {method.id === 'authorizenet' && (
                     <>
                         <div style={{ width: '100%', fontSize: '1rem', fontWeight: '500' }}>
-                            <p style={{ marginBottom: '0px' }}>We accept all major credit and debit cards as well as HSA and FSA.</p>
+                            <p style={{ marginBottom: '0px' }}>All major debit and credit cards accepted. Extra 10% off use code THRIVE10</p>
                         </div>
                         <div style={{ width: '100%' }}>
-                            <img id='authorizenetIconImg' src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-160424.png?t=1713255511'></img>
+                            <img id='authorizenetIconImg' src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/us-footer-240325.png?t=1742808999'></img>
                         </div>
                     </>
                 )}
