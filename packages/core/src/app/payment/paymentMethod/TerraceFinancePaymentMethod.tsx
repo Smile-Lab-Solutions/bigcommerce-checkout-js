@@ -93,6 +93,7 @@ class TerraceFinancePaymentMethod extends Component<
 
         // ONLY ENTER PASSWORD WHEN DEPLOYING
         // DO NOT PUSH TO REPO
+        let terraceAPIBaseUrl = 'https://mlp-uat-merchant-api.azurewebsites.net';
         let terraceUsername = 'apiinstasmile@instasmile.com';
         let terracePwd = '';
         
@@ -102,7 +103,7 @@ class TerraceFinancePaymentMethod extends Component<
         authData.append("Password", terracePwd);
         var authXhr = new XMLHttpRequest();
         authXhr.withCredentials = false;
-        authXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Authenticate");
+        authXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Authenticate");
         authXhr.send(authData);
 
         authXhr.onreadystatechange = function () {
@@ -129,7 +130,7 @@ class TerraceFinancePaymentMethod extends Component<
               leadData.append("ProductInformation", "Medical Equipment");
               var leadXhr = new XMLHttpRequest();
               leadXhr.withCredentials = false;
-              leadXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Lead");
+              leadXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Lead");
               leadXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
               leadXhr.setRequestHeader("name", terraceUsername);
               leadXhr.send(leadData);
@@ -154,6 +155,7 @@ class TerraceFinancePaymentMethod extends Component<
                           ItemDescription: x.name,
                           Brand: x.brand,
                           SKU: x.sku,
+                          Condition: "New",
                           Price: x.listPrice,
                           Quantity: x.quantity,
                           Discount: x.discountAmount,
@@ -179,7 +181,7 @@ class TerraceFinancePaymentMethod extends Component<
                     // Terrace Finance Invoice API call
                     var invXhr = new XMLHttpRequest();
                     invXhr.withCredentials = false;
-                    invXhr.open("POST", "https://mlp-uat-merchant-api.azurewebsites.net/api/v1.0/Invoice/AddInvoice");
+                    invXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Invoice/AddInvoice");
                     invXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
                     invXhr.setRequestHeader('Content-Type', 'application/json');
                     invXhr.setRequestHeader("name", terraceUsername);
@@ -319,6 +321,7 @@ interface TerraceFinanceInvoiceDataItems {
   ItemDescription: string;
   Brand: string;
   SKU: string;
+  Condition: string;
   Price: number;
   Quantity: number;
   Discount: number;
