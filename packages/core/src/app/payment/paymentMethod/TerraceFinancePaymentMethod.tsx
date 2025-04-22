@@ -227,7 +227,11 @@ class TerraceFinancePaymentMethod extends Component<
 
   private getListText: () => ReactNode = () => {
     return <>
-      <li><div className="circleCheck"></div><b>90 Days same-as-cash option</b></li>
+      <li>
+        <div className="circleCheck"></div>
+        <b>90 Days SAC (Same As Cash)</b>
+        <p style={{ margin: 0, fontStyle: 'italic' }}>Interest free finance. <br className="show-mobile"></br>No additional charges.</p>
+        </li>
       <li><div className="circleCheck"></div><b>Early pay-off discounts available</b></li>
       <li><div className="circleCheck"></div>Soft Credit pull on application</li>
       <li><div className="circleCheck"></div>$99 due today</li>
