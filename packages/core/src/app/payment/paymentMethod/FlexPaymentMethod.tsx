@@ -216,6 +216,7 @@ class FlexPaymentMethod extends Component<
         var loggingXhr = new XMLHttpRequest();
         loggingXhr.withCredentials = false;
         loggingXhr.open("POST", "https://merchantapiproduction.azurewebsites.net/api/logging/checkout");
+        loggingXhr.setRequestHeader('Content-Type', 'application/json');
         loggingXhr.send(JSON.stringify(checkoutLog));
 
         loggingXhr.onreadystatechange = function () {
