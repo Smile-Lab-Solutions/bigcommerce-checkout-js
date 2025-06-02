@@ -248,7 +248,7 @@ class HostedPaymentMethod extends Component<
                 <LoadingOverlay hideContentWhenLoading isLoading={isLoading}>
                     <div className="paymentMethod paymentMethod--hosted">
                     <div className="payment-descriptor">
-                            <p>Pay in up to 8 payments split into equal installments over up to 14 weeks. <br></br> 1st payment due at checkout. 
+                            <p>Pay in 4 payments split into equal installments over 6 weeks. <br></br> 1st payment due at checkout. 
                             </p>
                             <ul className="list-element">
                                 <li><div className="circleCheck"></div>Pay using Amex, Visa or Mastercard (as long as they are not pre-paid)</li>

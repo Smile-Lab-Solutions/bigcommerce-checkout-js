@@ -183,7 +183,7 @@ function getPaymentMethodTitle(
             },
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
-                titleText: 'Pay in up to 8 installments',
+                titleText: 'Pay in 4 installments',
                 titleSubText: '',
             },
             [PaymentMethodId.Sezzle]: {
