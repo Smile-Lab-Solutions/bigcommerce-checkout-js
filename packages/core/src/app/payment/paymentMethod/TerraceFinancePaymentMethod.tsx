@@ -100,132 +100,124 @@ class TerraceFinancePaymentMethod extends Component<
           payload: JSON.stringify(checkout)
         };
 
+        // Create logging request
+        var loggingXhr = new XMLHttpRequest();
+        loggingXhr.withCredentials = false;
+        loggingXhr.open("POST", "https://merchantapiproduction.azurewebsites.net/api/logging/checkout");
+        loggingXhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Once the logging request is sent we can leave that to run in the background
+        loggingXhr.send(JSON.stringify(checkoutLog));
+
         // ONLY ENTER PASSWORD WHEN DEPLOYING
         // DO NOT PUSH TO REPO
         let terraceAPIBaseUrl = 'https://mlp-uat-merchant-api.azurewebsites.net';
         let terraceUsername = 'apiinstasmile@instasmile.com';
         let terracePwd = '';
 
-        // Create logging request
-        var loggingXhr = new XMLHttpRequest();
-        loggingXhr.withCredentials = false;
-        loggingXhr.open("POST", "https://merchantapiproduction.azurewebsites.net/api/logging/checkout");
-        loggingXhr.setRequestHeader('Content-Type', 'application/json');
-        loggingXhr.send(JSON.stringify(checkoutLog));
+        // Terrace Finance Token API call
+        var authData = new FormData();
+        authData.append("UserName", terraceUsername);
+        authData.append("Password", terracePwd);
+        var authXhr = new XMLHttpRequest();
+        authXhr.withCredentials = false;
+        authXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Authenticate");
+        authXhr.send(authData);
 
-        loggingXhr.onreadystatechange = function () {
-          if (loggingXhr.readyState == 4) {
-            if (loggingXhr.status !== 200) {
-              // Error during logging call
+        authXhr.onreadystatechange = function () {
+          if (authXhr.readyState == 4) {
+
+            // Error during auth call
+            if (authXhr.status !== 200) {
               var errorMessage = "Failed to load Terrace Finance, please try again later.";
               onUnhandledError(new Error(errorMessage) as CustomError);
             } else {
-              // Terrace Finance Token API call
-              var authData = new FormData();
-              authData.append("UserName", terraceUsername);
-              authData.append("Password", terracePwd);
-              var authXhr = new XMLHttpRequest();
-              authXhr.withCredentials = false;
-              authXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Authenticate");
-              authXhr.send(authData);
+              // Parse response
+              let tokenResponse: TerraceFinanceTokenResponse = JSON.parse(authXhr.responseText);
 
-              authXhr.onreadystatechange = function () {
-                if (authXhr.readyState == 4) {
+              // Terrace Finance Lead API call
+              var leadData = new FormData();
+              leadData.append("FirstName", checkout.billingAddress?.firstName ?? "");
+              leadData.append("LastName", checkout.billingAddress?.lastName ?? "");
+              leadData.append("PhoneNumber", checkout.billingAddress?.phone ?? "");
+              leadData.append("Address", checkout.billingAddress?.address1 ?? "");
+              leadData.append("City", checkout.billingAddress?.city ?? "");
+              leadData.append("State", checkout.billingAddress?.stateOrProvinceCode ?? "");
+              leadData.append("Zip", checkout.billingAddress?.postalCode ?? "");
+              leadData.append("Email", checkout.billingAddress?.email ?? "");
+              leadData.append("ProductInformation", "Medical Equipment");
+              var leadXhr = new XMLHttpRequest();
+              leadXhr.withCredentials = false;
+              leadXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Lead");
+              leadXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
+              leadXhr.setRequestHeader("name", terraceUsername);
+              leadXhr.send(leadData);
 
-                  // Error during auth call
-                  if (authXhr.status !== 200) {
-                    var errorMessage = "Failed to load Terrace Finance, please try again later.";
+              leadXhr.onreadystatechange = function () {
+                if (leadXhr.readyState == 4) {
+
+                  // Error during lead call
+                  if (leadXhr.status !== 200) {
+                    var errorMessage = JSON.parse(this.responseText).Errors;
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
-                    let tokenResponse: TerraceFinanceTokenResponse = JSON.parse(authXhr.responseText);
+                    let leadResponse: TerraceFinanceLeadResponse = JSON.parse(leadXhr.responseText);
 
-                    // Terrace Finance Lead API call
-                    var leadData = new FormData();
-                    leadData.append("FirstName", checkout.billingAddress?.firstName ?? "");
-                    leadData.append("LastName", checkout.billingAddress?.lastName ?? "");
-                    leadData.append("PhoneNumber", checkout.billingAddress?.phone ?? "");
-                    leadData.append("Address", checkout.billingAddress?.address1 ?? "");
-                    leadData.append("City", checkout.billingAddress?.city ?? "");
-                    leadData.append("State", checkout.billingAddress?.stateOrProvinceCode ?? "");
-                    leadData.append("Zip", checkout.billingAddress?.postalCode ?? "");
-                    leadData.append("Email", checkout.billingAddress?.email ?? "");
-                    leadData.append("ProductInformation", "Medical Equipment");
-                    var leadXhr = new XMLHttpRequest();
-                    leadXhr.withCredentials = false;
-                    leadXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Lead");
-                    leadXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
-                    leadXhr.setRequestHeader("name", terraceUsername);
-                    leadXhr.send(leadData);
+                    // Merge physical/digital items in cart
+                    var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
+                    let invoiceItems: TerraceFinanceInvoiceDataItems[] =
+                      lineItems.map(x =>
+                      (
+                        {
+                          ItemDescription: x.name,
+                          Brand: x.brand,
+                          SKU: x.sku,
+                          Condition: "New",
+                          Price: x.listPrice,
+                          Quantity: x.quantity,
+                          Discount: x.discountAmount,
+                          Total: x.salePrice
+                        }
+                      ));
 
-                    leadXhr.onreadystatechange = function () {
-                      if (leadXhr.readyState == 4) {
+                    // Terrace Finance Invoice data
+                    let invoiceData: TerraceFinanceInvoiceData = {
+                      InvoiceNumber: checkout.id,
+                      InvoiceDate: checkout.createdTime,
+                      LeadID: leadResponse.Result,
+                      DeliveryDate: checkout.createdTime,
+                      Discount: lineItems.reduce((acc, lineItem) => acc + lineItem.couponAmount, 0),
+                      DownPayment: 0,
+                      Shipping: checkout.shippingCostTotal,
+                      Tax: 0,
+                      NetTotal: checkout.grandTotal,
+                      GrossTotal: checkout.grandTotal,
+                      Items: invoiceItems
+                    };
 
-                        // Error during lead call
-                        if (leadXhr.status !== 200) {
-                          var errorMessage = JSON.parse(this.responseText).Errors;
+                    // Terrace Finance Invoice API call
+                    var invXhr = new XMLHttpRequest();
+                    invXhr.withCredentials = false;
+                    invXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Invoice/AddInvoice");
+                    invXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
+                    invXhr.setRequestHeader('Content-Type', 'application/json');
+                    invXhr.setRequestHeader("name", terraceUsername);
+                    invXhr.send(JSON.stringify(invoiceData));
+
+                    invXhr.onreadystatechange = function () {
+                      if (invXhr.readyState == 4) {
+
+                        // Error during invoice call
+                        if (invXhr.status !== 200) {
+                          var errorMessage = "Failed to load Terrace Finance, please try again later.";
                           onUnhandledError(new Error(errorMessage) as CustomError);
                         } else {
-                          // Parse response
-                          let leadResponse: TerraceFinanceLeadResponse = JSON.parse(leadXhr.responseText);
+                          // Parse response - Commented as not needed at the moment
+                          //let invoiceResponse: TerraceFinanceInvoiceResponse = JSON.parse(this.responseText);
 
-                          // Merge physical/digital items in cart
-                          var lineItems = [...checkout.cart.lineItems.physicalItems, ...checkout.cart.lineItems.digitalItems];
-                          let invoiceItems: TerraceFinanceInvoiceDataItems[] =
-                            lineItems.map(x =>
-                            (
-                              {
-                                ItemDescription: x.name,
-                                Brand: x.brand,
-                                SKU: x.sku,
-                                Condition: "New",
-                                Price: x.listPrice,
-                                Quantity: x.quantity,
-                                Discount: x.discountAmount,
-                                Total: x.salePrice
-                              }
-                            ));
-
-                          // Terrace Finance Invoice data
-                          let invoiceData: TerraceFinanceInvoiceData = {
-                            InvoiceNumber: checkout.id,
-                            InvoiceDate: checkout.createdTime,
-                            LeadID: leadResponse.Result,
-                            DeliveryDate: checkout.createdTime,
-                            Discount: lineItems.reduce((acc, lineItem) => acc + lineItem.couponAmount, 0),
-                            DownPayment: 0,
-                            Shipping: checkout.shippingCostTotal,
-                            Tax: 0,
-                            NetTotal: checkout.grandTotal,
-                            GrossTotal: checkout.grandTotal,
-                            Items: invoiceItems
-                          };
-
-                          // Terrace Finance Invoice API call
-                          var invXhr = new XMLHttpRequest();
-                          invXhr.withCredentials = false;
-                          invXhr.open("POST", terraceAPIBaseUrl + "/api/v1.0/Invoice/AddInvoice");
-                          invXhr.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.Token);
-                          invXhr.setRequestHeader('Content-Type', 'application/json');
-                          invXhr.setRequestHeader("name", terraceUsername);
-                          invXhr.send(JSON.stringify(invoiceData));
-
-                          invXhr.onreadystatechange = function () {
-                            if (invXhr.readyState == 4) {
-
-                              // Error during invoice call
-                              if (invXhr.status !== 200) {
-                                var errorMessage = "Failed to load Terrace Finance, please try again later.";
-                                onUnhandledError(new Error(errorMessage) as CustomError);
-                              } else {
-                                // Parse response - Commented as not needed at the moment
-                                //let invoiceResponse: TerraceFinanceInvoiceResponse = JSON.parse(this.responseText);
-
-                                // Redirect customer from lead response
-                                window.location.replace(leadResponse.Url);
-                              }
-                            }
-                          };
+                          // Redirect customer from lead response
+                          window.location.replace(leadResponse.Url);
                         }
                       }
                     };

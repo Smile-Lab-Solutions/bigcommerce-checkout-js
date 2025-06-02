@@ -78,6 +78,15 @@ class FlexPaymentMethod extends Component<
           store: config.storeProfile.storeName,
           payload: JSON.stringify(checkout)
         };
+        
+        // Create logging request
+        var loggingXhr = new XMLHttpRequest();
+        loggingXhr.withCredentials = false;
+        loggingXhr.open("POST", "https://merchantapiproduction.azurewebsites.net/api/logging/checkout");
+        loggingXhr.setRequestHeader('Content-Type', 'application/json');
+        
+        // Once the logging request is sent we can leave that to run in the background
+        loggingXhr.send(JSON.stringify(checkoutLog));
 
         // ONLY ENTER TOKEN WHEN DEPLOYING
         // DO NOT PUSH TO REPO
@@ -211,90 +220,73 @@ class FlexPaymentMethod extends Component<
             }
           }
         }
+          
+        // Flex create customer API call
+        var customerXhr = new XMLHttpRequest();
+        customerXhr.withCredentials = false;
+        customerXhr.open("POST", "https://api.withflex.com/v1/customers");
+        customerXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
+        customerXhr.setRequestHeader('Content-Type', 'application/json');
+        customerXhr.send(JSON.stringify(customerData));
 
-        // Create logging request
-        var loggingXhr = new XMLHttpRequest();
-        loggingXhr.withCredentials = false;
-        loggingXhr.open("POST", "https://merchantapiproduction.azurewebsites.net/api/logging/checkout");
-        loggingXhr.setRequestHeader('Content-Type', 'application/json');
-        loggingXhr.send(JSON.stringify(checkoutLog));
-
-        loggingXhr.onreadystatechange = function () {
-          if (loggingXhr.readyState == 4) {
-            if (loggingXhr.status !== 200){
-              // Error during logging call
+        customerXhr.onreadystatechange = function () {
+          if (customerXhr.readyState == 4) {
+            // Error during customer call
+            if (customerXhr.status !== 200) {
               var errorMessage = "Failed to load Flex, please try again later.";
               onUnhandledError(new Error(errorMessage) as CustomError);
             } else {
-              // Flex create customer API call
-              var customerXhr = new XMLHttpRequest();
-              customerXhr.withCredentials = false;
-              customerXhr.open("POST", "https://api.withflex.com/v1/customers");
-              customerXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
-              customerXhr.setRequestHeader('Content-Type', 'application/json');
-              customerXhr.send(JSON.stringify(customerData));
+              // Parse response
+              let customerResponse: FlexCustomerRootDataResponse = JSON.parse(customerXhr.responseText);
 
-              customerXhr.onreadystatechange = function () {
-                if (customerXhr.readyState == 4) {
-                  // Error during customer call
-                  if (customerXhr.status !== 200) {
+              if (!customerResponse.customer.customer_id) {
+                var errorMessage = "Failed to load Flex, please try again later.";
+                onUnhandledError(new Error(errorMessage) as CustomError);
+              }
+
+              // Continue with checkout
+              // Create checkout session data to send to flex API
+              let checkoutSessionData: FlexCheckoutSessionRootData = {
+                checkout_session: {
+                  allow_promotion_codes: false,
+                  cancel_url: "https://us.instasmile.com/checkout",
+                  capture_method: "automatic",
+                  client_reference_id: checkout.id,
+                  defaults: {
+                    customer_id: customerResponse.customer.customer_id,
+                    email: checkout.billingAddress?.email ?? "",
+                    first_name: checkout.billingAddress?.firstName ?? "",
+                    last_name: checkout.billingAddress?.lastName ?? "",
+                    phone: checkout.billingAddress?.phone ?? ""
+                  },
+                  discounts: flexCheckoutSessionDiscountRootData,
+                  line_items: flexCheckoutSessionLineItems,
+                  mode: "payment",
+                  success_url: "https://us.instasmile.com/pages/complete/"
+                }
+              };
+
+              // Flex checkout session API call
+              var checkoutXhr = new XMLHttpRequest();
+              checkoutXhr.withCredentials = false;
+              checkoutXhr.open("POST", "https://api.withflex.com/v1/checkout/sessions");
+              checkoutXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
+              checkoutXhr.setRequestHeader('Content-Type', 'application/json');
+              checkoutXhr.send(JSON.stringify(checkoutSessionData));
+
+              checkoutXhr.onreadystatechange = function () {
+                if (checkoutXhr.readyState == 4) {
+
+                  // Error during checkout call
+                  if (checkoutXhr.status !== 200) {
                     var errorMessage = "Failed to load Flex, please try again later.";
                     onUnhandledError(new Error(errorMessage) as CustomError);
                   } else {
                     // Parse response
-                    let customerResponse: FlexCustomerRootDataResponse = JSON.parse(customerXhr.responseText);
+                    let checkoutResponse: FlexCheckoutSessionRootDataResponse = JSON.parse(this.responseText);
 
-                    if (!customerResponse.customer.customer_id) {
-                      var errorMessage = "Failed to load Flex, please try again later.";
-                      onUnhandledError(new Error(errorMessage) as CustomError);
-                    }
-
-                    // Continue with checkout
-                    // Create checkout session data to send to flex API
-                    let checkoutSessionData: FlexCheckoutSessionRootData = {
-                      checkout_session: {
-                        allow_promotion_codes: false,
-                        cancel_url: "https://us.instasmile.com/checkout",
-                        capture_method: "automatic",
-                        client_reference_id: checkout.id,
-                        defaults: {
-                          customer_id: customerResponse.customer.customer_id,
-                          email: checkout.billingAddress?.email ?? "",
-                          first_name: checkout.billingAddress?.firstName ?? "",
-                          last_name: checkout.billingAddress?.lastName ?? "",
-                          phone: checkout.billingAddress?.phone ?? ""
-                        },
-                        discounts: flexCheckoutSessionDiscountRootData,
-                        line_items: flexCheckoutSessionLineItems,
-                        mode: "payment",
-                        success_url: "https://us.instasmile.com/pages/complete/"
-                      }
-                    };
-
-                    // Flex checkout session API call
-                    var checkoutXhr = new XMLHttpRequest();
-                    checkoutXhr.withCredentials = false;
-                    checkoutXhr.open("POST", "https://api.withflex.com/v1/checkout/sessions");
-                    checkoutXhr.setRequestHeader('Authorization', 'Bearer ' + flexBearerToken);
-                    checkoutXhr.setRequestHeader('Content-Type', 'application/json');
-                    checkoutXhr.send(JSON.stringify(checkoutSessionData));
-
-                    checkoutXhr.onreadystatechange = function () {
-                      if (checkoutXhr.readyState == 4) {
-
-                        // Error during checkout call
-                        if (checkoutXhr.status !== 200) {
-                          var errorMessage = "Failed to load Flex, please try again later.";
-                          onUnhandledError(new Error(errorMessage) as CustomError);
-                        } else {
-                          // Parse response
-                          let checkoutResponse: FlexCheckoutSessionRootDataResponse = JSON.parse(this.responseText);
-
-                          // Redirect customer from flex checkout response
-                          window.location.replace(checkoutResponse.checkout_session.redirect_url);
-                        }
-                      }
-                    };
+                    // Redirect customer from flex checkout response
+                    window.location.replace(checkoutResponse.checkout_session.redirect_url);
                   }
                 }
               };
