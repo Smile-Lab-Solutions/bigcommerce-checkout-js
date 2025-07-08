@@ -75,7 +75,7 @@ const Redeemable: FunctionComponent<
                                 <div className="notification__content">
                                     <p>
                                         {storeCurrencyCode === 'USD' && (
-                                            <i>Sorry, promo codes cannot be used with Terrace Finance</i>
+                                            <i>Sorry, promo codes cannot be used with Partial.ly</i>
                                         )}
                                         {storeCurrencyCode !== 'USD' && (
                                             <i>Sorry, discount codes cannot be used with Partial.ly</i>
@@ -101,7 +101,7 @@ const Redeemable: FunctionComponent<
                         <div className="notification__content">
                             <p>
                                 {storeCurrencyCode === 'USD' && (
-                                    <i>Sorry, promo codes cannot be used with Terrace Finance</i>
+                                    <i>Sorry, promo codes cannot be used with Partial.ly</i>
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
                                     <i>Sorry, discount codes cannot be used with Partial.ly</i>

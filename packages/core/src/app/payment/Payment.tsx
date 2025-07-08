@@ -647,7 +647,7 @@ export function mapToPaymentProps({
             }
 
             // Adding Partially
-            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS') && !isReorder) {
                 methods = methods.concat(getPartiallyMethod());
                 loadPartiallyJs();
             }
