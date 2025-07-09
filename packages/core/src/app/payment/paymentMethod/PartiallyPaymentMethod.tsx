@@ -207,11 +207,11 @@ class PartiallyPaymentMethod extends Component<
       </>
     } else if (currency === "USD") {
       return <>
-        <li><div className="circleCheck"></div>Just <b>$129</b> down today!</li>
+        <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
         <li><div className="circleCheck"></div>Low payments every 2 weeks</li>
         <li><div className="circleCheck"></div>Spread the cost over <b>20 weeks</b></li>
         <li><div className="circleCheck"></div>No Credit Check</li>
-        <li><div className="circleCheck"></div><b>$99</b> Plan Fee (Non Refundable)</li>
+        <li><div className="circleCheck"></div><b>$50</b> Plan fee (Non refundable) included in down payment</li>
       </>
     } else if (currency === "AUD") {
       return <>
