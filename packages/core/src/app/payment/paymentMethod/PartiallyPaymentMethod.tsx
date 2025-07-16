@@ -97,9 +97,9 @@ class PartiallyPaymentMethod extends Component<
           AUD0: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
           AUD1: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
           AUD2: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
-          USD0: "98160829-d003-4598-8d23-49bca7012012",
-          USD1: "98160829-d003-4598-8d23-49bca7012012",
-          USD2: "98160829-d003-4598-8d23-49bca7012012",
+          USD0: "3d6ef83b-79e0-46b9-8a62-dfd208a9c00f",
+          USD1: "3d6ef83b-79e0-46b9-8a62-dfd208a9c00f",
+          USD2: "3d6ef83b-79e0-46b9-8a62-dfd208a9c00f",
         };
 
         // Filter line items to Iconic count
@@ -209,9 +209,9 @@ class PartiallyPaymentMethod extends Component<
       return <>
         <li><div className="circleCheck"></div>Just <b>$149</b> down today!</li>
         <li><div className="circleCheck"></div>Low payments every 2 weeks</li>
-        <li><div className="circleCheck"></div>Spread the cost over <b>16 weeks</b></li>
+        <li><div className="circleCheck"></div>Spread the cost over <b>20 weeks</b></li>
         <li><div className="circleCheck"></div>No Credit Check</li>
-        <li><div className="circleCheck"></div><b>$25</b> Payment Plan Admin Fee (Non Refundable)</li>
+        <li><div className="circleCheck"></div><b>$50</b> Plan fee (Non refundable) included in down payment</li>
       </>
     } else if (currency === "AUD") {
       return <>
