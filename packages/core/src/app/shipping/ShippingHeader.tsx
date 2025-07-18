@@ -104,6 +104,9 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                     </a>
                 )}
             </div>
+            <div>
+                <strong style={{ fontSize: '16px' }}>Note: We do not ship to P.O. boxes</strong>
+            </div>
         </>
     );
 }
