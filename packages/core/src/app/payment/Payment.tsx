@@ -674,17 +674,31 @@ export function mapToPaymentProps({
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card (nmi)
-        // Terrace Finance (terracefinance)
-        // Flex (flex)
         // Paypal (paypalcommerce)
-        // Zip (quadpay)
+        // Venmo (paypalcommercevenmo)
+        // Affirm (affirm)
         // Klarna (pay_over_time)
         // Afterpay (pay_by_installment)
-        // Venmo (paypalcommercevenmo)
+        // Zip (quadpay)
+        // Flex (flex)
+        // Partially (partially)
+        // Terrace Finance (terracefinance)
         // Bread Pay (cod)
         // Paytomorrow (cheque)
-        // Partially (partially)
-        let paymentOrder = [ 'nmi', 'terracefinance', 'flex', 'paypalcommerce', 'quadpay', 'pay_over_time', 'pay_by_installment', 'paypalcommercevenmo', 'cod', 'cheque', 'partially'];
+        let paymentOrder = [ 
+            'nmi',
+            'paypalcommerce',
+            'paypalcommercevenmo',
+            'affirm',
+            'pay_over_time',
+            'pay_by_installment',
+            'quadpay',
+            'flex',
+            'partially',
+            'terracefinance',
+            'cod',
+            'cheque'
+        ];
     
         methods = _.sortBy(methods, function(pm){
             return paymentOrder.indexOf(pm.id);
