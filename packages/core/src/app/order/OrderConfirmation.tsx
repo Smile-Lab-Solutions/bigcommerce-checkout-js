@@ -135,11 +135,7 @@ class OrderConfirmation extends Component<
                             {currencyCode === 'USD' && (
                                 <div style={{ display: 'flex', gap: '15px', maxHeight: '120px', marginBottom: '15px' }}>
                                     <div style={{ width: '33%', margin: 'auto' }}>
-                                        {/* TrustBox widget - Horizontal */}
-                                        <div className='trustpilot-widget' data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f32" data-businessunit-id="58206a010000ff0005972a24" data-style-height="80px" data-style-width="100px" data-theme="light">
-                                            <a href="https://uk.trustpilot.com/review/instasmile.com" target="_blank" rel="noopener">Trustpilot</a>
-                                        </div>
-                                        {/* End TrustBox widget */}
+                                        <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
                                     </div>
                                     <div style={{ width: '33%', margin: 'auto' }}>
                                         <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/usa.png?t=1725508250' style={{ borderRadius: '10px' }} alt=''></img>
@@ -150,22 +146,10 @@ class OrderConfirmation extends Component<
                                 </div>
                             )}
                             {currencyCode === 'GBP' && (
-                                <>
-                                    {/* TrustBox widget - Horizontal */}
-                                    <div className='trustpilot-widget' data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f32" data-businessunit-id="58206a010000ff0005972a24" data-style-height="80px" data-style-width="100px" data-theme="light">
-                                        <a href="https://uk.trustpilot.com/review/instasmile.com" target="_blank" rel="noopener">Trustpilot</a>
-                                    </div>
-                                    {/* End TrustBox widget */}
-                                </>
+                                <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
                             )}
                             {currencyCode === 'AUD' && (
-                                <>
-                                    {/* TrustBox widget - Horizontal */}
-                                    <div className='trustpilot-widget' data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f32" data-businessunit-id="58206a010000ff0005972a24" data-style-height="80px" data-style-width="100px" data-theme="light">
-                                        <a href="https://uk.trustpilot.com/review/instasmile.com" target="_blank" rel="noopener">Trustpilot</a>
-                                    </div>
-                                    {/* End TrustBox widget */}
-                                </>
+                                <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
                             )}
                         </div>
                     </div>
