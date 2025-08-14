@@ -133,13 +133,23 @@ class OrderConfirmation extends Component<
                             <hr style={{ paddingBottom: '15px' }} />
                             <h3 style={{ color: '#000070', marginBottom: '2rem', fontWeight: '600', fontSize: 'large' }}><u style={{ fontWeight: '800' }}>Reorders</u><br /><b style={{ color: '#ff2688' }}>We’re getting your order ready for production!</b><br />We'll check we have your digital impressions stored from your previous order.<br />Then, we'll assign your Reorder to production within 24 hrs (weekdays) and you'll receive an email with an estimated completion date.</h3>
                             {currencyCode === 'USD' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/us-t-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                                <div style={{ display: 'flex', gap: '15px', maxHeight: '120px', marginBottom: '15px' }}>
+                                    <div style={{ width: '33%', margin: 'auto' }}>
+                                        <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
+                                    </div>
+                                    <div style={{ width: '33%', margin: 'auto' }}>
+                                        <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/usa.png?t=1725508250' style={{ borderRadius: '10px' }} alt=''></img>
+                                    </div>
+                                    <div style={{ width: '33%', margin: 'auto' }}>
+                                        <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/bbb.png?t=1725507539' style={{ borderRadius: '10px' }} alt=''></img>
+                                    </div>
+                                </div>
                             )}
                             {currencyCode === 'GBP' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                                <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
                             )}
                             {currencyCode === 'AUD' && (
-                                <img src='https://cdn.instasmile.com/new-website/images/tp-banner.png' style={{ borderRadius: '10px', marginBottom: '15px', paddingRight: '4rem', paddingLeft: '4rem' }} alt=''></img>
+                                <img src='https://cdn11.bigcommerce.com/s-k4sm7fwqbp/images/stencil/original/image-manager/trustpilot-12-08-25.png?t=1755012545' style={{ borderRadius: '10px' }} alt=''></img>
                             )}
                         </div>
                     </div>
