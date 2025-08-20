@@ -1,12 +1,13 @@
 import { CheckoutSelectors, CheckoutService } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo } from 'react';
+import classNames from 'classnames';
+import React, { FunctionComponent, memo, Suspense } from 'react';
 
 import { TranslatedString, useLocale } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
-import { WalletButtonsContainerSkeleton } from '@bigcommerce/checkout/ui';
-
+import { useThemeContext, WalletButtonsContainerSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
+import { isExperimentEnabled } from '../common/utility';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
 import resolveCheckoutButton from './resolveCheckoutButton';
@@ -46,6 +47,7 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
         onWalletButtonClick,
     }) => {
     const { language } = useLocale();
+    const { themeV2 } = useThemeContext();
 
     try {
         checkEmbeddedSupport(availableMethodIds);
@@ -53,12 +55,17 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
         return null;
     }
 
+    const { getConfig } = checkoutState.data;
+
     const renderButtons = () => availableMethodIds.map((methodId) => {
         if (isPaymentStepActive && isPayPalCommerce(methodId)) {
             return null;
         }
 
-        const ResolvedCheckoutButton = resolveCheckoutButton({ id: methodId });
+        const ResolvedCheckoutButton = resolveCheckoutButton(
+            { id: methodId },
+            isExperimentEnabled(getConfig()?.checkoutSettings, 'CHECKOUT-9432.lazy_load_payment_components', false)
+        );
 
         if (!ResolvedCheckoutButton) {
             return <CheckoutButtonV1Resolver
@@ -72,23 +79,26 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
             />
         }
 
-        return <ResolvedCheckoutButton
-                    checkoutService={checkoutService}
-                    checkoutState={checkoutState}
-                    containerId={`${methodId}CheckoutButton`}
-                    key={methodId}
-                    language={language}
-                    methodId={methodId}
-                    onUnhandledError={onUnhandledError}
-                    onWalletButtonClick={onWalletButtonClick}
-                />;
+        return <Suspense key={methodId}> 
+            <ResolvedCheckoutButton
+                checkoutService={checkoutService}
+                checkoutState={checkoutState}
+                containerId={`${methodId}CheckoutButton`}
+                language={language}
+                methodId={methodId}
+                onUnhandledError={onUnhandledError}
+                onWalletButtonClick={onWalletButtonClick}
+            />
+        </Suspense>;
     });
 
     return (
         <div className='checkout-button-container'
              style={ isPaymentStepActive ? { position: 'absolute', left: '0', top: '-100%' } : undefined }
         >
-            <p>
+            <p className={classNames({
+                'sub-header': themeV2,
+            })}>
                 <TranslatedString id="remote.start_with_text" />
             </p>
             <div className='checkout-buttons-auto-layout'>
@@ -98,7 +108,11 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
                     </div>
                 </WalletButtonsContainerSkeleton>
             </div>
-            <div className='checkout-separator'><span><TranslatedString id='remote.or_text' /></span></div>
+            <div className='checkout-separator'>
+                <span className={classNames({'sub-header': themeV2})}>
+                    <TranslatedString id='remote.or_text' />
+                </span>
+            </div>
         </div>
     );
 };
@@ -121,7 +135,9 @@ function mapToCheckoutButtonContainerProps({
         }
      } = checkoutState;
     const config = getConfig();
-    const availableMethodIds = getSupportedMethodIds(config?.checkoutSettings.remoteCheckoutProviders ?? []);
+    const providers = config?.checkoutSettings.remoteCheckoutProviders ?? [];
+
+    const availableMethodIds = getSupportedMethodIds(providers);
     const customer = getCustomer();
 
     if (!isPaymentDataRequired()) {

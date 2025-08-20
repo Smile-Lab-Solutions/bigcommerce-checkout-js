@@ -94,6 +94,8 @@
             "error_heading": "Noe gikk galt",
             "leave_warning": "Er du sikker på at du vil dra? Det kan hende at data du har lagt inn ikke lagres.",
             "loading_text": "Laster inn",
+            "missing_shipping_method_heading": "Forsendelsesmetode er ikke tilgjengelig",
+            "invalid_shipping_address": "Ugyldig leveringsadresse",
             "ok_action": "Ok",
             "error_code": "Feilkode:",
             "request_id": "Forespørsels-ID:",
@@ -217,6 +219,9 @@
                 "only_numbers": "Routing-nummeret må inneholde kun tall",
                 "length": "Routing-nummeret må være 9 sifre langt"
             },
+            "bluesnap_direct_company_name": {
+                "length_max": "Firmanavnet er for langt"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Kontotype",
                 "is_required": "Kontotype er påkrevd"
@@ -239,7 +244,6 @@
             "braintreeach_vaulting_mandate_text": "Ved å klikke på Legg inn bestilling autoriserer jeg Braintree, en tjeneste fra PayPal, på vegne av {storeName} til å verifisere bankkontoinformasjonen min ved hjelp av bankinformasjon og forbrukerrapporter, og jeg autoriserer {storeName} til å starte en ACH/elektronisk debitering til min {accountType}-konto, Depositars navn: {depositoryName}, Routingnummer: {routingNumber} og Kontonummer: {accountNumber}, som vil lagres i våre arkiver og debitert på eller etter forfalldatoen. Jeg sier meg enig i at ACH-transaksjonene jeg godkjenner, overholder alle gjeldende lover.",
             "complete_with_brand": "Fullfør bestilling",
             "continue_with_brand": "Fortsett med {brandName}",
-            "ccavenuemars_description_text": "Betaling med CCAvenue",
             "checkoutcom_document_label_boleto": "CPF eller CNPJ",
             "checkoutcom_document_label_oxxo": "CURP",
             "checkoutcom_document_label_qpay": "Nasjonal ID",
@@ -276,11 +280,10 @@
             "credit_card_number_required_error": "Kredittkortnummer er påkrevd",
             "credit_card_number_mismatch_error": "Kortnummeret som er angitt, samsvarer ikke med kortet som er lagret på kontoen din",
             "credit_debit_card_text": "Kreditt-/debetkort",
+            "payment_methods_text": "Betalingsmåter",
+            "redeemable_payments_text": "Innløsbare betalinger",
+            "instrument_storage_options_text": "Alternativer for betalingslagring",
             "stripev3_auth_3ds_fail": "Brukeren ble ikke godkjent",
-            "digitalriver_dropin_error": "Det oppsto en feil under behandling av betalingen. Vennligst prøv igjen eller kontakt oss.",
-            "digitalriver_checkout_error": "Det oppsto et problem i kassen. Sjekk detaljene dine og prøv igjen, eller kontakt kundeservice",
-            "digitalriver_checkout_error_title": "Feil under behandling av forespørsel.",
-            "digitalriver_display_name_text": "Velg betalingsmåten din",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm kan ikke behandle betalingen din for denne bestillingen. Velg en annen betalingsmetode.",
             "klarna_continue_action": "Fortsett med Klarna",
@@ -557,7 +560,9 @@
             "choose_shipping_address": "Velg en leveringsadresse",
             "multishipping_unavailable_action": "Frakt til flere adresser er ikke tilgjengelig",
             "multishipping_unavailable_message": "Frakt til flere adresser er ikke tilgjengelig når en kampanje legger til en gratis vare i handlekurven din.",
-            "checkout_switched_to_single_shipping": "Kassen din har automatisk blitt oppdatert til å bruke én leveringsadresse. Frakt til flere adresser er ikke tilgjengelig når en gratis kampanjevare er i handlekurven din."
+            "checkout_switched_to_single_shipping": "Kassen din har automatisk blitt oppdatert til å bruke én leveringsadresse. Frakt til flere adresser er ikke tilgjengelig når en gratis kampanjevare er i handlekurven din.",
+            "guest_multishipping_no_shipping_address_message": "Ingen leveringsadresse er angitt",
+            "guest_multishipping_enter_shipping_address_action": "Skriv inn leveringsadressen"
         },
         "social": {
             "share_action": "Del",

@@ -1,5 +1,5 @@
 import { createCheckoutService, createEmbeddedCheckoutMessenger } from '@bigcommerce/checkout-sdk';
-import { BrowserOptions } from '@sentry/browser';
+import type { BrowserOptions } from '@sentry/browser';
 import React, { Component, ReactNode } from 'react';
 import ReactModal from 'react-modal';
 
@@ -8,6 +8,7 @@ import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorBoundary, ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
 import '../../scss/App.scss';
 
@@ -60,13 +61,15 @@ class OrderConfirmationApp extends Component<OrderConfirmationAppProps> {
                     <CheckoutProvider checkoutService={this.checkoutService}>
                         <AnalyticsProvider checkoutService={this.checkoutService}>
                             <ExtensionProvider checkoutService={this.checkoutService} errorLogger={createErrorLogger()}>
-                                <OrderConfirmation
-                                    {...this.props}
-                                    createAccount={this.createAccount}
-                                    createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
-                                    embeddedStylesheet={this.embeddedStylesheet}
-                                    errorLogger={this.errorLogger}
-                                />
+                                <ThemeProvider>
+                                    <OrderConfirmation
+                                        {...this.props}
+                                        createAccount={this.createAccount}
+                                        createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
+                                        embeddedStylesheet={this.embeddedStylesheet}
+                                        errorLogger={this.errorLogger}
+                                    />
+                                </ThemeProvider>
                             </ExtensionProvider>
                         </AnalyticsProvider>
                     </CheckoutProvider>

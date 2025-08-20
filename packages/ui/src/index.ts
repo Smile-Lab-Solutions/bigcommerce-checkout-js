@@ -14,12 +14,14 @@ export { DropdownTrigger } from './dropdown';
 export {
     AddressFormSkeleton,
     BasicFormField,
+    CartSummarySkeleton,
+    CheckoutPageSkeleton,
     DynamicFormField,
     DynamicFormFieldType,
     DynamicInput,
     CheckboxFormField,
     ChecklistSkeleton,
-    CustomerSkeleton,
+    OrderConfirmationPageSkeleton,
     Fieldset,
     FormField,
     FormContext,
@@ -36,6 +38,10 @@ export {
 } from './form';
 export {
     CreditCardIcon,
+    CreditCardIconList,
+    mapFromPaymentMethodCardType,
+    getPaymentMethodIconComponent,
+    filterInstrumentTypes,
     IconNewAccount,
     IconPaypal,
     IconPayPalFastlane,
@@ -51,6 +57,7 @@ export {
     IconCardDankort,
     IconCardDinersClub,
     IconCardDiscover,
+    IconEdit,
     IconCardElectron,
     IconCardElo,
     IconCardHipercard,
@@ -73,7 +80,7 @@ export {
     IconUsdCoin,
     IconAch,
 } from './icon';
-export { LoadingOverlay, LoadingSpinner } from './loading';
+export { LazyContainer, LoadingNotification, LoadingOverlay, LoadingSpinner } from './loading';
 export {
     ConfirmationModal,
     Modal,
@@ -82,3 +89,4 @@ export {
     ModalTriggerModalProps,
 } from './modal';
 export { TooltipTrigger } from './tooltip';
+export { useThemeContext, ThemeContext, ThemeProvider } from './context';

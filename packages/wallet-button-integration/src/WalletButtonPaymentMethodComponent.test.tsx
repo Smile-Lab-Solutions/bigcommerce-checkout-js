@@ -286,6 +286,7 @@ describe('WalletButtonPaymentMethod', () => {
             const method = {
                 ...defaultProps.method,
                 initializationData: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     card_information: {
                         number: '1111',
                         type: 'Visa',

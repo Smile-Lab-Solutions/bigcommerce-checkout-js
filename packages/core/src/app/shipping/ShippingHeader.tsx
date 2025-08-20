@@ -5,9 +5,10 @@ import React, { FunctionComponent, memo, useState } from 'react';
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { ConfirmationModal } from '@bigcommerce/checkout/ui';
+import { ConfirmationModal , useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { Legend } from '../ui/form';
+
 import './ShippingHeader.scss';
 
 interface ShippingHeaderProps {
@@ -15,7 +16,6 @@ interface ShippingHeaderProps {
     isGuest: boolean;
     shouldShowMultiShipping: boolean;
     onMultiShippingChange(): void;
-    isNewMultiShippingUIEnabled: boolean;
     cartHasPromotionalItems?: boolean;
 }
 
@@ -24,25 +24,26 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
     isGuest,
     onMultiShippingChange,
     shouldShowMultiShipping,
-    isNewMultiShippingUIEnabled,
     cartHasPromotionalItems,
 }) => {
     const [isSingleShippingConfirmationModalOpen, setIsSingleShippingConfirmationModalOpen] = useState(false);
     const [isMultiShippingUnavailableModalOpen, setIsMultiShippingUnavailableModalOpen] = useState(false);
+
+    const { themeV2 } = useThemeContext();
 
     const handleShipToSingleConfirmation = () => {
         setIsSingleShippingConfirmationModalOpen(false);
         onMultiShippingChange();
     }
 
-    const showConfirmationModal = shouldShowMultiShipping && isNewMultiShippingUIEnabled && isMultiShippingMode;
-    const showMultiShippingUnavailableModal = shouldShowMultiShipping && isNewMultiShippingUIEnabled && !isMultiShippingMode && cartHasPromotionalItems;
+    const showConfirmationModal = shouldShowMultiShipping && isMultiShippingMode;
+    const showMultiShippingUnavailableModal = shouldShowMultiShipping && !isMultiShippingMode && cartHasPromotionalItems;
 
     return (
         <>
             <Extension region={ExtensionRegion.ShippingShippingAddressFormBefore} />
-            <div className={classNames('form-legend-container', { 'shipping-header': isNewMultiShippingUIEnabled })}>
-                <Legend testId="shipping-address-heading">
+            <div className={classNames(['form-legend-container', 'shipping-header'])}>
+                <Legend testId="shipping-address-heading" themeV2={themeV2}>
                     <TranslatedString
                         id={
                             isMultiShippingMode
@@ -65,6 +66,7 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                             onRequestClose={() => setIsSingleShippingConfirmationModalOpen(false)}
                         />
                         <a
+                            className={themeV2 ? 'body-cta' : ''}
                             data-test="shipping-mode-toggle"
                             href="#"
                             onClick={preventDefault(() => setIsSingleShippingConfirmationModalOpen(true))}
@@ -84,6 +86,7 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                             onRequestClose={() => setIsMultiShippingUnavailableModalOpen(false)}
                         />
                         <a
+                            className={themeV2 ? 'body-cta' : ''}
                             data-test="shipping-mode-toggle"
                             href="#"
                             onClick={preventDefault(() => setIsMultiShippingUnavailableModalOpen(true))}
@@ -94,6 +97,7 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                 )}
                 {!showConfirmationModal && !showMultiShippingUnavailableModal && shouldShowMultiShipping && (
                     <a
+                        className={themeV2 ? 'body-cta' : ''}
                         data-test="shipping-mode-toggle"
                         href="#"
                         onClick={preventDefault(onMultiShippingChange)}

@@ -12,42 +12,46 @@ import './PayPalFastlaneWatermark.scss';
 const PayPalFastlaneWatermark: FunctionComponent = () => {
     const { checkoutState } = useCheckout();
     const { getPaymentMethod, getConfig } = checkoutState.data;
-    const providerWithCustomCheckout = getConfig()?.checkoutSettings?.providerWithCustomCheckout;
+    const providerWithCustomCheckout =
+        getConfig()?.checkoutSettings.providerWithCustomCheckout || '';
 
     const paymentMethod =
-        providerWithCustomCheckout &&
+        !!providerWithCustomCheckout &&
         isPayPalFastlaneMethod(providerWithCustomCheckout) &&
         getPaymentMethod(providerWithCustomCheckout);
 
     const shouldRenderFastlaneWatermark =
-        !!paymentMethod &&
         isFastlaneHostWindow(window) &&
-        paymentMethod?.initializationData?.isFastlanePrivacySettingEnabled;
+        !!paymentMethod &&
+        !!paymentMethod.initializationData?.isFastlanePrivacySettingEnabled;
 
     useEffect(() => {
-        if(shouldRenderFastlaneWatermark && isFastlaneHostWindow(window)) {
+        if (shouldRenderFastlaneWatermark && isFastlaneHostWindow(window)) {
             const fastlane = isBraintreeFastlaneMethod(providerWithCustomCheckout)
                 ? window.braintreeFastlane
                 : window.paypalFastlane;
 
-            fastlane.FastlaneWatermarkComponent({
-                includeAdditionalInfo: true,
-            })
+            void fastlane
+                .FastlaneWatermarkComponent({
+                    includeAdditionalInfo: true,
+                })
                 .then((result: FastlanePrivacySettings) => {
                     result.render('#paypalFastlaneWatermark');
                 });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (shouldRenderFastlaneWatermark) {
         return (
-            <div className='paypalFastlaneWatermark-container'>
-                <div id='paypalFastlaneWatermark' data-test='paypalFastlaneWatermark' />
+            <div className="paypalFastlaneWatermark-container">
+                <div data-test="paypalFastlaneWatermark" id="paypalFastlaneWatermark" />
             </div>
         );
     }
 
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
-}
+};
 
 export default PayPalFastlaneWatermark;

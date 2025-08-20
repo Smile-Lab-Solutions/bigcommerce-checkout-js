@@ -17,7 +17,6 @@ import { AmazonPayShippingAddress } from './AmazonPayShippingAddress';
 import { PayPalFastlaneShippingAddress } from './PayPalFastlaneShippingAddress';
 import ShippingAddressForm from './ShippingAddressForm';
 
-
 export interface ShippingAddressProps {
     addresses: CustomerAddress[];
     consignments: Consignment[];
@@ -32,7 +31,6 @@ export interface ShippingAddressProps {
     shouldShowSaveAddress?: boolean;
     hasRequestedShippingOptions: boolean;
     isFloatingLabelEnabled?: boolean;
-    validateAddressFields: boolean;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     initialize(options: ShippingInitializeOptions): Promise<CheckoutSelectors>;
     onAddressSelect(address: Address): void;
@@ -58,7 +56,6 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         addresses,
         shouldShowSaveAddress,
         isFloatingLabelEnabled,
-        validateAddressFields,
     } = props;
 
     const { setSubmitted } = useContext(FormContext);
@@ -106,7 +103,6 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
             onFieldChange={handleFieldChange}
             onUseNewAddress={onUseNewAddress}
             shouldShowSaveAddress={shouldShowSaveAddress}
-            validateAddressFields={validateAddressFields}
         />
     );
 };

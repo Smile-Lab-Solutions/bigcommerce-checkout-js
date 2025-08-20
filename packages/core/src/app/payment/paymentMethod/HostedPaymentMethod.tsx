@@ -13,10 +13,10 @@ import React, { Component, ReactNode } from 'react';
 import { MapToPropsFactory } from '@bigcommerce/checkout/legacy-hoc';
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../../checkout';
 import { connectFormik, ConnectFormikProps } from '../../common/form';
-import { LoadingOverlay } from '../../ui/loading';
 import {
     AccountInstrumentFieldset,
     isAccountInstrument,
@@ -183,7 +183,7 @@ const mapFromCheckoutProps: MapToPropsFactory<
     );
 
     return (context, props) => {
-        const { isUsingMultiShipping = false, method } = props;
+        const { method } = props;
 
         const { checkoutService, checkoutState } = context;
 
@@ -218,7 +218,6 @@ const mapFromCheckoutProps: MapToPropsFactory<
                 isInstrumentFeatureAvailable({
                     config,
                     customer,
-                    isUsingMultiShipping,
                     paymentMethod: method,
                 }),
             isLoadingInstruments: isLoadingInstruments(),

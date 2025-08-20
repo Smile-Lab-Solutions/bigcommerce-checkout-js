@@ -6,8 +6,8 @@ Checkout JS is a browser-based application providing a seamless UI for BigCommer
 
 In order to build from the source code, you must have the following set up in your development environment.
 
-* Node >= v20.
-* NPM >= v9.
+* Node >= v22.
+* NPM >= v10.
 * Unix-based operating system. (WSL on Windows)
 
 One of the simplest ways to install Node is using [NVM](https://github.com/nvm-sh/nvm#installation-and-update). You can follow their instructions to set up your environment if it is not already set up.
@@ -73,8 +73,6 @@ Everytime a PR is merged to the master branch, CircleCI will trigger a build aut
 
 
 ## Contribution
-
-We currently do not accept Pull Requests from external parties. However, if you are an external party and want to report a bug or provide your feedback, you are more than welcome to raise a GitHub Issue. We will attend to these issues as quickly as we can.
 
 More information can be found in the [contribution guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md) for this project.
 

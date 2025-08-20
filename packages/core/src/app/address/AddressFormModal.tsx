@@ -1,18 +1,18 @@
-import { Country, FormField } from '@bigcommerce/checkout-sdk';
+import { Address, Country, FormField } from '@bigcommerce/checkout-sdk';
 import { FormikProps, withFormik } from 'formik';
 import React, { FunctionComponent } from 'react';
 import { lazy } from 'yup';
 
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { Button, ButtonVariant } from '../ui/button';
 import { Form } from '../ui/form';
-import { LoadingOverlay } from '../ui/loading';
 import { Modal, ModalHeader } from '../ui/modal';
 
 import AddressForm from './AddressForm';
 import getAddressFormFieldsValidationSchema from './getAddressFormFieldsValidationSchema';
-import { AddressFormValues } from './mapAddressToFormValues';
+import mapAddressToFormValues, { AddressFormValues } from './mapAddressToFormValues';
 
 export interface AddressFormModalProps extends AddressFormProps {
     isOpen: boolean;
@@ -30,6 +30,7 @@ export interface AddressFormProps {
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
+    selectedAddress?: Address;
 }
 
 const SaveAddress: FunctionComponent<
@@ -64,7 +65,6 @@ const SaveAddress: FunctionComponent<
                     <TranslatedString id="common.cancel_action" />
                 </Button>
 
-
                 <Button
                     disabled={isLoading}
                     id="checkout-save-address"
@@ -83,22 +83,12 @@ const SaveAddressForm = withLanguage(
         handleSubmit: (values, { props: { onSaveAddress } }) => {
             onSaveAddress(values);
         },
-        mapPropsToValues: ({ defaultCountryCode = '' }) => ({
-            firstName: '',
-            lastName: '',
-            address1: '',
-            address2: '',
-            customFields: {},
-            country: '',
-            countryCode: defaultCountryCode,
-            stateOrProvince: '',
-            stateOrProvinceCode: '',
-            postalCode: '',
-            phone: '',
-            city: '',
-            company: '',
-            shouldSaveAddress: false,
-        }),
+        mapPropsToValues: ({ getFields, selectedAddress }) => {
+            return mapAddressToFormValues(
+                getFields(selectedAddress && selectedAddress.countryCode),
+                selectedAddress,
+            )
+        },
         validationSchema: ({ language, getFields }: AddressFormProps & WithLanguageProps) =>
             lazy<Partial<AddressFormValues>>((values) =>
                 getAddressFormFieldsValidationSchema({

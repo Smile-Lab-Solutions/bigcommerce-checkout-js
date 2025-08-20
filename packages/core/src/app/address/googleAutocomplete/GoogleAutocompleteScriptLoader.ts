@@ -29,7 +29,7 @@ export default class GoogleAutocompleteScriptLoader {
                     resolve(window.google.maps);
                 }
 
-                reject();
+                reject(new Error('Failed to initialize Google Maps Autocomplete SDK.'));
             };
 
             this._scriptLoader

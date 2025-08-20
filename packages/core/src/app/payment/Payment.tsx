@@ -122,7 +122,6 @@ class Payment extends Component<
             checkoutServiceSubscribe,
         } = this.props;
 
-
         if (usableStoreCredit) {
             this.handleStoreCreditChange(true);
         }
@@ -316,44 +315,16 @@ class Payment extends Component<
         });
     };
 
-    // tslint:disable:cyclomatic-complexity
     private handleBeforeUnload: (event: BeforeUnloadEvent) => string | undefined = (event) => {
         const { defaultMethod, isSubmittingOrder, language } = this.props;
         const { selectedMethod = defaultMethod } = this.state;
 
-        // TODO: Perhaps there is a better way to handle `adyen`, `afterpay`, `amazonpay`,
-        // `checkout.com`, `converge`, `sagepay`, `stripev3` and `sezzle`. They require
-        //  a redirection to another website during the payment flow but are not
-        //  categorised as hosted payment methods.
         if (
             !isSubmittingOrder ||
             !selectedMethod ||
             selectedMethod.type === PaymentMethodProviderType.Hosted ||
             selectedMethod.type === PaymentMethodProviderType.PPSDK ||
-            selectedMethod.gateway === PaymentMethodId.BlueSnapDirect ||
-            selectedMethod.gateway === PaymentMethodId.BlueSnapV2 ||
-            selectedMethod.id === PaymentMethodId.AmazonPay ||
-            selectedMethod.id === PaymentMethodId.CBAMPGS ||
-            selectedMethod.id === PaymentMethodId.Checkoutcom ||
-            selectedMethod.id === PaymentMethodId.CheckoutcomGooglePay ||
-            selectedMethod.id === PaymentMethodId.Converge ||
-            selectedMethod.id === PaymentMethodId.Humm ||
-            selectedMethod.id === PaymentMethodId.Laybuy ||
-            selectedMethod.id === PaymentMethodId.Opy ||
-            selectedMethod.id === PaymentMethodId.Quadpay ||
-            selectedMethod.id === PaymentMethodId.SagePay ||
-            selectedMethod.id === PaymentMethodId.Sezzle ||
-            selectedMethod.id === PaymentMethodId.WorldpayAccess ||
-            selectedMethod.id === PaymentMethodId.Zip ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV2 ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV2GooglePay ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV3 ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV3GooglePay ||
-            selectedMethod.gateway === PaymentMethodId.Afterpay ||
-            selectedMethod.gateway === PaymentMethodId.Clearpay ||
-            selectedMethod.gateway === PaymentMethodId.Checkoutcom ||
-            selectedMethod.gateway === PaymentMethodId.Mollie ||
-            selectedMethod.gateway === PaymentMethodId.StripeV3
+            selectedMethod.skipRedirectConfirmationAlert
         ) {
             return;
         }
@@ -645,6 +616,10 @@ export function mapToPaymentProps({
             return !!method.initializationData.showInCheckout;
         }
 
+        if (method.id === PaymentMethodId.BraintreeLocalPaymentMethod) {
+            return false;
+        }
+
         return true;
     });
 
@@ -654,7 +629,7 @@ export function mapToPaymentProps({
         ];
 
         filteredMethods = methods.filter((method: PaymentMethod) => {
-            return multiShippingIncompatibleMethodIds.indexOf(method.id) === -1;
+            return !multiShippingIncompatibleMethodIds.includes(method.id);
         });
     }
 

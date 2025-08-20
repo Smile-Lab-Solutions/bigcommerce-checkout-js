@@ -10,6 +10,7 @@ import { sensitiveHeaders } from './senstiveDataConfig';
  * PollyJS (PollyObject) utilises this to process HAR data before writing it to a file.
  */
 export class CustomFSPersister extends FSPersister {
+    // eslint-disable-next-line @typescript-eslint/class-literal-property-style
     static get id(): string {
         return 'CustomFSPersister';
     }

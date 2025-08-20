@@ -94,6 +94,7 @@ const BraintreeCreditCardPaymentMethod: FunctionComponent<
                 cardValidationSchema={hostedValidationSchema}
                 getStoredCardValidationFieldset={getHostedStoredCardValidationFieldset}
                 initializePayment={initializeBraintreePayment}
+                onUnhandledError={onUnhandledError}
                 storedCardValidationSchema={hostedStoredCardValidationSchema}
             />
 

@@ -14,11 +14,12 @@ import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { CartSummarySkeleton, LazyContainer, OrderConfirmationPageSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
 import { withCheckout } from '../checkout';
 import { ErrorModal } from '../common/error';
-import { retry } from '../common/utility';
+import { isExperimentEnabled, retry } from '../common/utility';
 import { getPasswordRequirementsFromConfig } from '../customer';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import {
@@ -33,7 +34,6 @@ import {
     AccountCreationRequirementsError,
 } from '../guestSignup/errors';
 import { Button, ButtonVariant } from '../ui/button';
-import { LazyContainer, LoadingSpinner } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
 
 import getPaymentInstructions from './getPaymentInstructions';
@@ -122,7 +122,7 @@ class OrderConfirmation extends Component<
         const { order, config, isLoadingOrder } = this.props;
 
         if (!order || !config || isLoadingOrder()) {
-            return <LoadingSpinner isLoading={true} />;
+            return <OrderConfirmationPageSkeleton />;
         }
 
         const paymentInstructions = getPaymentInstructions(order);
@@ -219,16 +219,21 @@ class OrderConfirmation extends Component<
             return null;
         }
 
-        const { currency, shopperCurrency } = config;
+        const { currency, shopperCurrency, checkoutSettings } = config;
+
+        const isShippingDiscountDisplayEnabled = isExperimentEnabled(
+            checkoutSettings,
+            'PROJECT-6643.enable_shipping_discounts_in_orders',
+        );
 
         return (
             <MobileView>
                 {(matched) => {
                     if (matched) {
                         return (
-                            <LazyContainer>
+                            <LazyContainer loadingSkeleton={<></>}>
                                 <OrderSummaryDrawer
-                                    {...mapToOrderSummarySubtotalsProps(order)}
+                                    {...mapToOrderSummarySubtotalsProps(order, isShippingDiscountDisplayEnabled)}
                                     headerLink={
                                         <PrintLink className="modal-header-link cart-modal-link" />
                                     }
@@ -242,18 +247,18 @@ class OrderConfirmation extends Component<
                     }
 
                     return (
-                        <aside className="layout-cart">
-                            <LazyContainer>
+                        <LazyContainer loadingSkeleton={<CartSummarySkeleton />}>
+                            <aside className="layout-cart">
                                 <OrderSummary
                                     headerLink={<PrintLink />}
-                                    {...mapToOrderSummarySubtotalsProps(order)}
+                                    {...mapToOrderSummarySubtotalsProps(order, isShippingDiscountDisplayEnabled)}
                                     lineItems={order.lineItems}
                                     shopperCurrency={shopperCurrency}
                                     storeCurrency={currency}
                                     total={order.orderAmount}
                                 />
-                            </LazyContainer>
-                        </aside>
+                            </aside>
+                        </LazyContainer>
                     );
                 }}
             </MobileView>

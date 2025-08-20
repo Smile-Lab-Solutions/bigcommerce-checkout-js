@@ -11,8 +11,6 @@ import {
 export interface AddressFormFieldsValidationSchemaOptions {
     formFields: FormField[];
     language?: LanguageService;
-    validateGoogleMapAutoCompleteMaxLength?: boolean;
-    validateAddressFields?: boolean;
 }
 
 export function getTranslateAddressError(
@@ -52,7 +50,7 @@ export function getTranslateAddressError(
         }
 
         if (type === 'min' && min) {
-            return language.translate(`address.custom_max_error`, { label, min });
+            return language.translate(`address.custom_min_error`, { label, min });
         }
 
         if (type === 'invalid') {
@@ -64,13 +62,9 @@ export function getTranslateAddressError(
 export default memoize(function getAddressFormFieldsValidationSchema({
     formFields,
     language,
-    validateGoogleMapAutoCompleteMaxLength,
-    validateAddressFields,
 }: AddressFormFieldsValidationSchemaOptions): ObjectSchema<FormFieldValues> {
     return getFormFieldsValidationSchema({
         formFields,
         translate: getTranslateAddressError(language),
-        validateGoogleMapAutoCompleteMaxLength,
-        validateAddressFields,
     });
 });
