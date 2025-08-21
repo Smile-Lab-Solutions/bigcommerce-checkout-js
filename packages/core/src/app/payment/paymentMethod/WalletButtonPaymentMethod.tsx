@@ -12,10 +12,9 @@ import React, { Component, ReactNode } from 'react';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
-
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../../checkout';
-import { LoadingOverlay } from '../../ui/loading';
 import withPayment, { WithPaymentProps } from '../withPayment';
 
 import getPaymentMethodName from './getPaymentMethodName';
@@ -257,7 +256,7 @@ function normalizeWalletPaymentData(data: any): WalletPaymentData | undefined {
 }
 
 function formatAccountMask(accountMask = '', padding = '****'): string {
-    return accountMask.indexOf('*') > -1 ? accountMask : `${padding} ${accountMask}`;
+    return accountMask.includes('*') ? accountMask : `${padding} ${accountMask}`;
 }
 
 function mapFromCheckoutProps(

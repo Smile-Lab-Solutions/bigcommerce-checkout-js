@@ -33,7 +33,7 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
     const { onToggle, selectedItemId } = useContext(AccordionContext);
     const isSelected = selectedItemId === itemId;
 
-    const transitionEndListener = useCallback((node: Node, done) => {
+    const transitionEndListener = useCallback((node: Node, done: () => void) => {
         node.addEventListener('transitionend', ({ target }: Event) => {
             if (target === node) {
                 done();
@@ -56,7 +56,9 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
                     timeout={{}}
                     unmountOnExit
                 >
-                    <div className={bodyClassName}>{children}</div>
+                    <div aria-live="polite" className={bodyClassName}>
+                        {children}
+                    </div>
                 </CSSTransition>
             ) : null}
         </li>

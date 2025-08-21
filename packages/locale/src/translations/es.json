@@ -94,6 +94,8 @@
             "error_heading": "Algo ha salido mal",
             "leave_warning": "¿Está seguro de que desea salir? Es posible que no se guarden los datos introducidos.",
             "loading_text": "Cargando",
+            "missing_shipping_method_heading": "Método de envío no disponible",
+            "invalid_shipping_address": "Dirección de envío no válida",
             "ok_action": "Ok",
             "error_code": "Código de error:",
             "request_id": "ID de solicitud:",
@@ -217,6 +219,9 @@
                 "only_numbers": "El número de ruta debe contener solo números",
                 "length": "El número de ruta debe tener 9 dígitos"
             },
+            "bluesnap_direct_company_name": {
+                "length_max": "El nombre de empresa es demasiado largo"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Tipo de cuenta",
                 "is_required": "El tipo de cuenta es obligatorio"
@@ -239,7 +244,6 @@
             "braintreeach_vaulting_mandate_text": "Al hacer clic en Realizar pedido, autorizo a que Braintree, un servicio de PayPal, en nombre de {storeName}, verifique los datos de mi cuenta bancaria utilizando información bancaria e informes de consumidores, y autorizo a que {storeName} inicie un cargo de débito ACH/electrónico en mi cuenta {accountType}, nombre del depositario: {depositoryName}, número de ruta: {routingNumber} y número de cuenta: {accountNumber}, que se almacenará en el archivo, y se cargará en cuenta en la fecha de vencimiento o después. Declaro que las transacciones ACH que autorizo cumplen con todas las leyes aplicables.",
             "complete_with_brand": "Completar pedido",
             "continue_with_brand": "Continuar con {brandName}",
-            "ccavenuemars_description_text": "Continuar con CCAvenue",
             "checkoutcom_document_label_boleto": "CPF o CNPJ",
             "checkoutcom_document_label_oxxo": "CURP",
             "checkoutcom_document_label_qpay": "DNI",
@@ -276,11 +280,10 @@
             "credit_card_number_required_error": "Se requiere el número de tarjeta de crédito",
             "credit_card_number_mismatch_error": "El número de tarjeta introducido no coincide con la tarjeta guardada en su cuenta",
             "credit_debit_card_text": "Tarjeta de crédito/débito",
+            "payment_methods_text": "Métodos de pago",
+            "redeemable_payments_text": "Pagos reembolsables",
+            "instrument_storage_options_text": "Opciones de almacenamiento de pagos",
             "stripev3_auth_3ds_fail": "El usuario no se ha autentificado",
-            "digitalriver_dropin_error": "Hubo un error al procesar su pago. Inténtelo de nuevo o póngase en contacto con nosotros.",
-            "digitalriver_checkout_error": "Ha habido un problema con su compra; compruebe sus datos e inténtelo de nuevo o póngase en contacto con el servicio de Atención al Cliente",
-            "digitalriver_checkout_error_title": "Error al procesar la solicitud.",
-            "digitalriver_display_name_text": "Seleccione su método de pago",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm no puede procesar su pago para este pedido; seleccione otro método de pago.",
             "klarna_continue_action": "Continuar con Klarna",
@@ -557,7 +560,9 @@
             "choose_shipping_address": "Elige una dirección de envío",
             "multishipping_unavailable_action": "Envío a varias direcciones no disponible",
             "multishipping_unavailable_message": "El envío a varias direcciones no está disponible cuando una promoción añade un artículo gratuito al carrito.",
-            "checkout_switched_to_single_shipping": "Tu proceso de pago se ha actualizado automáticamente para usar una sola dirección de envío. El envío a varias direcciones no está disponible cuando tienes un artículo promocional gratuito en el carrito."
+            "checkout_switched_to_single_shipping": "Tu proceso de pago se ha actualizado automáticamente para usar una sola dirección de envío. El envío a varias direcciones no está disponible cuando tienes un artículo promocional gratuito en el carrito.",
+            "guest_multishipping_no_shipping_address_message": "No se ha introducido ninguna dirección de envío",
+            "guest_multishipping_enter_shipping_address_action": "Introduce la dirección de envío"
         },
         "social": {
             "share_action": "Compartir",

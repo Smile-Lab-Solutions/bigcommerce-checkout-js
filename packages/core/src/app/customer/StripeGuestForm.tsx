@@ -1,10 +1,10 @@
 import { CustomerInitializeOptions, CustomerRequestOptions } from '@bigcommerce/checkout-sdk';
 import { FieldProps, FormikProps, withFormik } from 'formik';
 import React, { FunctionComponent, memo, ReactNode, useCallback, useEffect, useState } from 'react';
+import { object } from 'yup';
 
 import { getAppliedStyles } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { CustomerSkeleton } from '@bigcommerce/checkout/ui';
 
 import CheckoutStepStatus from '../checkout/CheckoutStepStatus';
 import { getPrivacyPolicyValidationSchema, PrivacyPolicyField } from '../privacyPolicy';
@@ -43,10 +43,12 @@ const StripeGuestForm: FunctionComponent<StripeGuestFormProps & FormikProps<Gues
     onContinueAsGuest,
     canSubscribe,
     checkoutButtons,
+    defaultShouldSubscribe,
     requiresMarketingConsent,
     privacyPolicyUrl,
     step,
-    status
+    status,
+    setFieldValue,
 }) => {
 
     const [continueAsAGuestButton, setContinueAsAGuestButton] = useState(true);
@@ -61,6 +63,7 @@ const StripeGuestForm: FunctionComponent<StripeGuestFormProps & FormikProps<Gues
         });
     };
     const setEmailCallback = useCallback((authenticated: boolean, email: string) => {
+        setFieldValue('email', email);
         onChangeEmail(email);
         setEmailValue(email);
         setContinueAsAGuestButton(!email);
@@ -112,6 +115,13 @@ const StripeGuestForm: FunctionComponent<StripeGuestFormProps & FormikProps<Gues
         return () => stripeDeinitialize();
     }, []);
 
+    useEffect(() => {
+        void setFieldValue(
+            'shouldSubscribe',
+            requiresMarketingConsent ? false : defaultShouldSubscribe,
+        );
+    }, [requiresMarketingConsent, defaultShouldSubscribe]);
+
     const getStylesFromElement = (
         id: string,
         properties: string[]) => {
@@ -148,7 +158,6 @@ const StripeGuestForm: FunctionComponent<StripeGuestFormProps & FormikProps<Gues
             <div
                 className="optimizedCheckout-form-input"
                 id={ `${containerId}--input` }
-                placeholder="1111"
             >
                 <div
                     className="form-field--error"
@@ -179,7 +188,6 @@ const StripeGuestForm: FunctionComponent<StripeGuestFormProps & FormikProps<Gues
 
     return (
         <>
-            <CustomerSkeleton isLoading={isStripeLoading}/>
             <Form
                 className="checkout-form"
                 id="checkout-customer-guest"
@@ -270,6 +278,8 @@ export default withLanguage(
                             language,
                         })
                 }
+
+                return object({});
             },
         })(memo(StripeGuestForm))
 )

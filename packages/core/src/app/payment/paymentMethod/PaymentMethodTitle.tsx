@@ -1,14 +1,18 @@
-import { CardInstrument, LanguageService, PaymentMethod } from '@bigcommerce/checkout-sdk';
+import { CardInstrument, CheckoutSettings, LanguageService, PaymentMethod } from '@bigcommerce/checkout-sdk';
 import { number } from 'card-validator';
+import classNames from 'classnames';
 import { compact } from 'lodash';
 import React, { FunctionComponent, memo, ReactNode } from 'react';
 
+import { BigCommercePaymentsPayLaterBanner } from '@bigcommerce/checkout/bigcommerce-payments-utils'
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps , PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { BraintreePaypalCreditBanner, PaypalCommerceCreditBanner } from '@bigcommerce/checkout/paypal-utils';
+import { CreditCardIconList, mapFromPaymentMethodCardType, useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../../checkout';
 import { connectFormik, ConnectFormikProps } from '../../common/form';
-import { CreditCardIconList, mapFromPaymentMethodCardType } from '../creditCard';
+import { isExperimentEnabled } from '../../common/utility';
 
 import { hasCreditCardNumber } from './CreditCardFieldsetValues';
 import getPaymentMethodDisplayName from './getPaymentMethodDisplayName';
@@ -25,19 +29,30 @@ export interface PaymentMethodTitleProps {
 
 interface WithPaymentTitleProps {
     instruments: CardInstrument[];
+    checkoutSettings: CheckoutSettings;
+    storeCountryCode: string;
     cdnBasePath: string;
     storeCurrency: string;
 }
 
-function getPaymentMethodTitle(
+interface PaymentMethodSubtitleProps {
+    onUnhandledError?(error: Error): void;
+    methodId: string;
+}
+
+type SubtitleType = ReactNode | ((subtitleProps?: PaymentMethodSubtitleProps) => ReactNode);
+
+export function getPaymentMethodTitle(
     language: LanguageService,
     basePath: string,
+    checkoutSettings: CheckoutSettings,
+    storeCountryCode: string,
     storeCurrency: string,
 ): (method: PaymentMethod) => {
     logoUrl: string;
     titleText: string; 
     titleSubText: string,
-    subtitle?: ReactNode | ((subtitleProps?: { onUnhandledError?(error: Error): void }) => ReactNode)
+    subtitle?: SubtitleType
 } {
     const cdnPath = (path: string) => `${basePath}${path}`;
 
@@ -49,7 +64,7 @@ function getPaymentMethodTitle(
         const methodDisplayName = getPaymentMethodDisplayName(language)(method);
         // TODO: API could provide the data below so UI can read simply read it.
         // However, I'm not sure how we deal with translation yet. TBC.
-        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode; } } = {
+        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode; | ((props: any) => ReactNode) } } = {
             [PaymentMethodType.CreditCard]: {
                 logoUrl: '',
                 titleText: methodName,
@@ -63,6 +78,7 @@ function getPaymentMethodTitle(
             [PaymentMethodId.BraintreePaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
+                subtitle: (props: { onUnhandledError?(error: Error): void }): ReactNode => <BraintreePaypalCreditBanner {...props} />
                 titleSubText: '',
             },
             [PaymentMethodType.PaypalCredit]: {
@@ -80,14 +96,44 @@ function getPaymentMethodTitle(
                 titleText: methodDisplayName,
                 titleSubText: '',
             },
+            [PaymentMethodId.BigCommercePaymentsPayPal]: {
+                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
+                titleText: '',
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+            },
+            [PaymentMethodId.BigCommercePaymentsPayLater]: {
+                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
+                titleText: methodDisplayName,
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+            },
+            [PaymentMethodId.BigCommercePaymentsAlternativeMethod]: {
+                logoUrl: method.logoUrl || '',
+                titleText: method.logoUrl ? '' : methodDisplayName,
+            },
+            [PaymentMethodId.BigCommercePaymentsPayPal]: {
+                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
+                titleText: '',
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+            },
+            [PaymentMethodId.BigCommercePaymentsPayLater]: {
+                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
+                titleText: methodDisplayName,
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+            },
+            [PaymentMethodId.BigCommercePaymentsAlternativeMethod]: {
+                logoUrl: method.logoUrl || '',
+                titleText: method.logoUrl ? '' : methodDisplayName,
+            },
             [PaymentMethodId.PaypalCommerce]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
                 titleText: '',
+                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-banner-container' {...props} />
                 titleSubText: '',
             },
             [PaymentMethodId.PaypalCommerceCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
+                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-credit-banner-container' {...props} />
                 titleSubText: '',
             },
             [PaymentMethodId.PaypalCommerceAlternativeMethod]: {
@@ -106,7 +152,7 @@ function getPaymentMethodTitle(
                 titleSubText: '',
             },
             [PaymentMethodId.Afterpay]: {
-                logoUrl: cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
+                logoUrl: isExperimentEnabled(checkoutSettings, 'PROJECT-6993.change_afterpay_logo_for_us_stores') && storeCountryCode === 'US' ? cdnPath('/img/payment-providers/afterpay-new-us.svg') : cdnPath('/img/payment-providers/afterpay-badge-blackonmint.png'),
                 titleText: 'Pay in 4 interest free installments',
                 titleSubText: '',
             },
@@ -151,7 +197,9 @@ function getPaymentMethodTitle(
                 titleSubText: '',
             },
             [PaymentMethodId.Klarna]: {
-                logoUrl: cdnPath('/img/payment-providers/klarna-header.png'),
+                logoUrl: method.initializationData?.enableBillie
+                        ? cdnPath('/img/payment-providers/klarna-billie-header.png')
+                        : cdnPath('/img/payment-providers/klarna-header.png'),
                 titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
                 titleSubText: '',
             },
@@ -255,52 +303,8 @@ function getPaymentMethodTitle(
             [PaymentMethodId.WorldpayAccess]: {
                 logoUrl: '',
                 titleText: language.translate('payment.credit_debit_card_text'),
-                titleSubText: '',
-            },
-            [PaymentMethodId.Partially]: {
-                logoUrl: method.logoUrl ? method.logoUrl : '',
-                titleText: methodDisplayName,
-                titleSubText: 'For people with a bad or zero credit',
-            },
-            // Cash on Delivery is used for Bread
-            ['cod']: {
-                logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
-                titleText: '',
-                titleSubText: 'Up to 18 months credit from 0% APR',
-            },
-            // Cheque is used for PayTomorrow
-            // ['cheque']: {
-            //     logoUrl: '',
-            //     titleText: 'Pay over 6 months 0% APR',
-            //     titleSubText: 'For people with a 600+ FICO credit score',
-            // },
-            [PaymentMethodId.TerraceFinance]: {
-                logoUrl: method.logoUrl ? method.logoUrl : '',
-                titleText: methodDisplayName,
-                titleSubText: 'Payment solutions tailored for you',
-            },
-            [PaymentMethodId.Flex]: {
-                logoUrl: method.logoUrl ? method.logoUrl : '',
-                titleText: methodDisplayName,
-                titleSubText: 'Pay with HSA/FSA',
             },
         };
-
-
-        if (method.gateway === PaymentMethodId.BlueSnapDirect) {
-            if (method.id === 'credit_card') {
-                return { logoUrl: '', titleText: language.translate('payment.credit_card_text'), titleSubText: '' };
-            }
-
-            if (method.id === 'ecp') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_electronic_check_label'), titleSubText: '' };
-            }
-
-            if (method.id === 'banktransfer') {
-                return { logoUrl: '', titleText: language.translate('payment.bluesnap_direct_local_bank_transfer_label'), titleSubText: '' };
-            }
-        }
-
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
             if (method.id === 'credit_card') {
@@ -318,6 +322,10 @@ function getPaymentMethodTitle(
 
         if (method.id === PaymentMethodId.PaypalCommerceVenmo) {
             return customTitles[PaymentMethodId.PaypalCommerceAlternativeMethod];
+        }
+
+        if (method.id === PaymentMethodId.BigCommercePaymentsVenmo) {
+            return customTitles[PaymentMethodId.BigCommercePaymentsAlternativeMethod];
         }
 
         // KLUDGE: 'paypal' is actually a credit card method. It is the only
@@ -359,9 +367,10 @@ const PaymentMethodTitle: FunctionComponent<
         WithLanguageProps &
         WithPaymentTitleProps &
         ConnectFormikProps<PaymentFormValues>
-> = ({ cdnBasePath, onUnhandledError, formik: { values }, instruments, isSelected, language, method, storeCurrency }) => {
+> = ({ cdnBasePath, checkoutSettings, storeCountryCode, onUnhandledError, formik: { values }, instruments, isSelected, language, method, storeCurrency }) => {
     const methodName = getPaymentMethodName(language)(method);
-    const { logoUrl, titleText, titleSubText, subtitle } = getPaymentMethodTitle(language, cdnBasePath, storeCurrency)(method);
+    const { logoUrl, titleText, titleSubText, subtitle } = getPaymentMethodTitle(language, cdnBasePath, checkoutSettings, storeCountryCode, storeCurrency)(method);
+    const { themeV2 } = useThemeContext();
 
     const getSelectedCardType = () => {
         if (!isSelected) {
@@ -390,7 +399,7 @@ const PaymentMethodTitle: FunctionComponent<
     };
 
     const getSubtitle = () => {
-        const node = subtitle instanceof Function ? subtitle({ onUnhandledError }) : subtitle;
+        const node = subtitle instanceof Function ? subtitle({ onUnhandledError, methodId: method.id }) : subtitle;
 
         return node ? <div className="paymentProviderHeader-subtitleContainer">
             {node}
@@ -401,7 +410,12 @@ const PaymentMethodTitle: FunctionComponent<
     method.supportedCards = [];
 
     return (
-        <div className="paymentProviderHeader-container">
+        <div className={
+            classNames(
+                'paymentProviderHeader-container',
+                {'paymentProviderHeader-container-googlePay': method.id.includes('googlepay')},
+            )
+        }>
             <div
                 className="paymentProviderHeader-nameContainer"
                 data-test={`payment-method-${method.id}`}
@@ -409,8 +423,12 @@ const PaymentMethodTitle: FunctionComponent<
             >
                 {logoUrl && (
                     <img
-                        alt={methodName}
-                        className="paymentProviderHeader-img"
+                        alt={`${methodName} icon`}
+                        className={classNames(
+                            'paymentProviderHeader-img',
+                            {'paymentProviderHeader-img-applePay': method.id === 'applepay'},
+                            {'paymentProviderHeader-img-googlePay': method.id.includes('googlepay')},
+                        )}
                         data-test="payment-method-logo"
                         src={logoUrl}
                         id={method.id}
@@ -420,8 +438,12 @@ const PaymentMethodTitle: FunctionComponent<
                 {/* US PayTomorrow payment icon */}
                 {/* {method.id === 'cheque' && (
                     <img
-                        alt={methodName}
-                        className="paymentProviderHeader-img"
+                        alt={`${methodName} icon`}
+                        className={classNames(
+                            'paymentProviderHeader-img',
+                            {'paymentProviderHeader-img-applePay': method.id === 'applepay'},
+                            {'paymentProviderHeader-img-googlePay': method.id.includes('googlepay')},
+                        )}
                         data-test="payment-method-logo"
                         src='https://cdn.paytomorrow.com/image/PayTomorrow_Logo_light_24px.png'
                         id='pt-img'
@@ -443,7 +465,8 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {titleText && (
-                    <div 
+                    <div className={classNames('paymentProviderHeader-name',
+                        { 'sub-header': themeV2 })}
                         data-test="payment-method-name" 
                         style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
                         {method.id === 'flex'
@@ -521,7 +544,6 @@ const PaymentMethodTitle: FunctionComponent<
                         </div>
                     </>
                 )}
-
                 {getSubtitle()}
             </div>
             <div className="paymentProviderHeader-cc">
@@ -546,8 +568,12 @@ function mapToCheckoutProps({ checkoutState }: CheckoutContextProps): WithPaymen
         return null;
     }
 
+    const storeCountryCode = config.storeProfile.storeCountryCode
+
     return {
         instruments,
+        checkoutSettings: config.checkoutSettings,
+        storeCountryCode,
         cdnBasePath: config.cdnPath,
         storeCurrency: config.currency.code
     };

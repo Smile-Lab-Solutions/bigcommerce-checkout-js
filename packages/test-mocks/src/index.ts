@@ -1,11 +1,6 @@
 export { getAddress } from './address.mock';
 export { getCart } from './cart.mock';
-export {
-    getCheckout,
-    getCheckoutPayment,
-    getCheckoutWithPayments,
-    getCheckoutWithPromotions,
-} from './checkout.mock';
+export { getCheckout, getCheckoutPayment, getCheckoutWithPayments } from './checkout.mock';
 export { getStoreConfig } from './config.mock';
 export { getConsignment } from './consignment.mock';
 export { getCoupon, getShippingCoupon } from './coupon.mock';
@@ -35,3 +30,4 @@ export {
 export { getPromotion } from './promotion.mock';
 export { getShippingAddress } from './shipping-address.mock';
 export { getShippingOption, getShippingOptionPickUpStore } from './shippingMethod.mock';
+export { getYear } from './getYear';

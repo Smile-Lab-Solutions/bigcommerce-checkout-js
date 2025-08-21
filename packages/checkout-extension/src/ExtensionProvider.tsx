@@ -9,20 +9,22 @@ import { ExtensionService } from './ExtensionService';
 
 export interface ExtensionState {
     isShowingLoadingIndicator: boolean;
+    shippingFormRenderTimestamp: undefined | number;
 }
 
 export interface ExtensionAction {
     type: ExtensionActionType;
-    payload: boolean;
+    payload: boolean | number;
 }
 
 export enum ExtensionActionType {
     SHOW_LOADING_INDICATOR,
+    RE_RENDER_SHIPPING_FORM,
 }
 
 export interface ExtensionProviderProps {
     checkoutService: CheckoutService;
-    children: ReactNode;
+    children?: ReactNode;
     errorLogger: ErrorLogger;
 }
 
@@ -33,6 +35,7 @@ export const ExtensionProvider = ({
 }: ExtensionProviderProps) => {
     const [extensionState, dispatch] = useReducer(extensionReducer, {
         isShowingLoadingIndicator: false,
+        shippingFormRenderTimestamp: undefined,
     });
     const extensionService = new ExtensionService(checkoutService, dispatch, errorLogger);
 

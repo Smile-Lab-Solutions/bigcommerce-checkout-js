@@ -6,10 +6,11 @@ import { useCheckout } from "@bigcommerce/checkout/payment-integration-api";
 
 import { AddressFormModal, AddressFormValues, AddressSelect, AddressType, isValidAddress, mapAddressFromFormValues } from "../address";
 import { ErrorModal } from "../common/error";
-import { EMPTY_ARRAY, isExperimentEnabled, isFloatingLabelEnabled } from "../common/utility";
+import { EMPTY_ARRAY, isFloatingLabelEnabled } from "../common/utility";
 
 import { AssignItemFailedError, AssignItemInvalidAddressError } from "./errors";
-import { MultiShippingConsignmentData } from "./MultishippingV2Type";
+import GuestCustomerAddressSelector from "./GuestCustomerAddressSelector";
+import { MultiShippingConsignmentData } from "./MultishippingType";
 import { setRecommendedOrMissingShippingOption } from './utils';
 
 interface ConsignmentAddressSelectorProps {
@@ -70,14 +71,10 @@ const ConsignmentAddressSelector = ({
         },
     } = config;
 
-    const validateAddressFields =
-        isExperimentEnabled(
-            config.checkoutSettings,
-            'CHECKOUT-7560.address_fields_max_length_validation',
-        );
+    const isGuest = customer.isGuest;
 
     const handleSelectAddress = async (address: Address) => {
-        if (!isValidAddress(address, getFields(address.countryCode), validateAddressFields)) {
+        if (!isValidAddress(address, getFields(address.countryCode))) {
             return onUnhandledError(new AssignItemInvalidAddressError());
         }
 
@@ -130,11 +127,13 @@ const ConsignmentAddressSelector = ({
 
         await handleSelectAddress(address);
 
-        try {
-            await createCustomerAddress(address);
-        } catch (error) {
-            if (error instanceof Error) {
-                setCreateCustomerAddressError(error);
+        if (!isGuest) {
+            try {
+                await createCustomerAddress(address);
+            } catch (error) {
+                if (error instanceof Error) {
+                    setCreateCustomerAddressError(error);
+                }
             }
         }
 
@@ -169,17 +168,24 @@ const ConsignmentAddressSelector = ({
                 isOpen={isOpenNewAddressModal}
                 onRequestClose={handleCloseAddAddressForm}
                 onSaveAddress={handleSaveAddress}
+                selectedAddress={isGuest ? selectedAddress : undefined}
                 storeCurrencyCode={storeCurrencyCode}
             />
-            <AddressSelect
-                addresses={addresses}
-                onSelectAddress={handleSelectAddress}
-                onUseNewAddress={handleUseNewAddress}
-                placeholderText={<TranslatedString id="shipping.choose_shipping_address" />}
-                selectedAddress={selectedAddress}
-                showSingleLineAddress
-                type={AddressType.Shipping}
-            />
+            {isGuest
+                ? <GuestCustomerAddressSelector
+                    onUseNewAddress={handleUseNewAddress}
+                    selectedAddress={selectedAddress}
+                />
+                : <AddressSelect
+                    addresses={addresses}
+                    onSelectAddress={handleSelectAddress}
+                    onUseNewAddress={handleUseNewAddress}
+                    placeholderText={<TranslatedString id="shipping.choose_shipping_address" />}
+                    selectedAddress={selectedAddress}
+                    showSingleLineAddress
+                    type={AddressType.Shipping}
+                />
+            }
         </>
     )
 }

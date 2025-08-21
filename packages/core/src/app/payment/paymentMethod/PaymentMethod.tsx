@@ -6,26 +6,22 @@ import {
     PaymentMethod,
     PaymentRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo } from 'react';
+import React, { FunctionComponent, lazy, memo, Suspense } from 'react';
 
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../../checkout';
 
-import BraintreeCreditCardPaymentMethod from './BraintreeCreditCardPaymentMethod';
-import CCAvenueMarsPaymentMethod from './CCAvenueMarsPaymentMethod';
-import HostedCreditCardPaymentMethod from './HostedCreditCardPaymentMethod';
-import HostedPaymentMethod from './HostedPaymentMethod';
-import MasterpassPaymentMethod from './MasterpassPaymentMethod';
-import OpyPaymentMethod from './OpyPaymentMethod';
+const BraintreeCreditCardPaymentMethod = lazy(() => import(/* webpackChunkName: "braintree-credit-card-payment-method" */'./BraintreeCreditCardPaymentMethod'));
+const HostedCreditCardPaymentMethod = lazy(() => import(/* webpackChunkName: "hosted-credit-card-payment-method" */'./HostedCreditCardPaymentMethod'));
+const HostedPaymentMethod = lazy(() => import(/* webpackChunkName: "hosted-payment-method" */'./HostedPaymentMethod'));
+const MasterpassPaymentMethod = lazy(() => import(/* webpackChunkName: "masterpass-payment-method" */'./MasterpassPaymentMethod'));
+const PaypalPaymentsProPaymentMethod = lazy(() => import(/* webpackChunkName: "paypal-payments-pro-payment-method" */'./PaypalPaymentsProPaymentMethod'));
+const PPSDKPaymentMethod = lazy(() => import(/* webpackChunkName: "ppsdk-payment-method" */'./PPSDKPaymentMethod'));
+
 import PaymentMethodId from './PaymentMethodId';
 import PaymentMethodProviderType from './PaymentMethodProviderType';
 import PaymentMethodType from './PaymentMethodType';
-import PaypalCommerceCreditCardPaymentMethod from './PaypalCommerceCreditCardPaymentMethod';
-import PaypalExpressPaymentMethod from './PaypalExpressPaymentMethod';
-import PaypalPaymentsProPaymentMethod from './PaypalPaymentsProPaymentMethod';
-import PPSDKPaymentMethod from './PPSDKPaymentMethod';
-import WorldpayCreditCardPaymentMethod from './WorldpayCreditCardPaymentMethod';
 import PartiallyPaymentMethod from './PartiallyPaymentMethod';
 import TerraceFinancePaymentMethod from './TerraceFinancePaymentMethod';
 import FlexPaymentMethod from './FlexPaymentMethod';
@@ -55,77 +51,43 @@ export interface WithCheckoutPaymentMethodProps {
  * the purpose of configuring a general-purpose component in order to fulfill
  * its specific product or technical requirements.
  */
-// tslint:disable:cyclomatic-complexity
 const PaymentMethodComponent: FunctionComponent<
     PaymentMethodProps & WithCheckoutPaymentMethodProps
 > = (props) => {
     const { method } = props;
 
     if (method.type === PaymentMethodProviderType.PPSDK) {
-        return <PPSDKPaymentMethod {...props} />;
-    }
-
-
-    if (method.id === PaymentMethodId.CCAvenueMars) {
-        return <CCAvenueMarsPaymentMethod {...props} />;
-    }
-
-    if (method.gateway === PaymentMethodId.Checkoutcom) {
-        if (method.id === 'credit_card' || method.id === 'card') {
-            return <HostedCreditCardPaymentMethod {...props} />;
-        }
-
-
-        return <HostedPaymentMethod {...props} />;
+        return <Suspense><PPSDKPaymentMethod {...props} /></Suspense>;
     }
 
     if (method.id === PaymentMethodId.Masterpass) {
-        return <MasterpassPaymentMethod {...props} />;
+        return <Suspense><MasterpassPaymentMethod {...props} /></Suspense>;
     }
 
     if (method.id === PaymentMethodId.Braintree) {
-        return <BraintreeCreditCardPaymentMethod {...props} />;
-    }
-
-    if (method.id === PaymentMethodId.PaypalCommerceCreditCards) {
-        return <PaypalCommerceCreditCardPaymentMethod {...props} />;
-    }
-
-    if (method.id === PaymentMethodId.PaypalExpress) {
-        return <PaypalExpressPaymentMethod {...props} />;
+        return <Suspense><BraintreeCreditCardPaymentMethod {...props} /></Suspense>;
     }
 
     if (
         method.type !== PaymentMethodProviderType.Hosted &&
         method.id === PaymentMethodId.PaypalPaymentsPro
     ) {
-        return <PaypalPaymentsProPaymentMethod {...props} />;
+        return <Suspense><PaypalPaymentsProPaymentMethod {...props} /></Suspense>;
     }
 
-    if (method.id === PaymentMethodId.WorldpayAccess) {
-        return <WorldpayCreditCardPaymentMethod {...props} />;
-    }
 
     if (
-        method.gateway === PaymentMethodId.Afterpay ||
-        method.gateway === PaymentMethodId.Clearpay ||
         method.id === PaymentMethodId.BraintreeVenmo ||
         method.id === PaymentMethodId.Humm ||
         method.id === PaymentMethodId.Laybuy ||
-        method.id === PaymentMethodId.Quadpay ||
         method.id === PaymentMethodId.Sezzle ||
         method.id === PaymentMethodId.Zip ||
         method.method === PaymentMethodType.Paypal ||
         method.method === PaymentMethodType.PaypalCredit ||
         method.type === PaymentMethodProviderType.Hosted
     ) {
-        return <HostedPaymentMethod {...props} />;
+        return <Suspense><HostedPaymentMethod {...props} /></Suspense>;
     }
-
-    if (method.id === PaymentMethodId.Opy) {
-        return <OpyPaymentMethod {...props} />;
-    }
-
 
     if (method.gateway === PaymentMethodId.Partially) {
         return <PartiallyPaymentMethod { ...props } />;
@@ -147,7 +109,7 @@ const PaymentMethodComponent: FunctionComponent<
         method.method === PaymentMethodType.CreditCard ||
         method.type === PaymentMethodProviderType.Api
     ) {
-        return <HostedCreditCardPaymentMethod {...props} />;
+        return <Suspense><HostedCreditCardPaymentMethod {...props} /></Suspense>;
     }
 
     return null;

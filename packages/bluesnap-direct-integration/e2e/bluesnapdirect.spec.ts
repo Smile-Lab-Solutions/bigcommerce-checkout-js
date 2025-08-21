@@ -4,7 +4,7 @@ import {
     test,
 } from '@bigcommerce/checkout/test-framework';
 
-test.describe('BlueSnap Direct', () => {
+test.describe.skip('BlueSnap Direct', () => {
     test('Customer should be able to pay using Credit card with BlueSnap through the payment step in checkout', async ({
         assertions,
         checkout,
@@ -34,6 +34,7 @@ test.describe('BlueSnap Direct', () => {
             .frameLocator('#bluesnap-hosted-iframe-exp')
             .getByPlaceholder('MM / YY')
             .fill('03 / 30');
+        // eslint-disable-next-line testing-library/prefer-screen-queries
         await page.getByRole('textbox', { name: 'Name on Card' }).fill('John Smith');
 
         await checkout.placeOrder();

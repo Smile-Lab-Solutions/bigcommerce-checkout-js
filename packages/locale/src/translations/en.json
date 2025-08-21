@@ -97,6 +97,8 @@
             "error_heading": "Something's gone wrong",
             "leave_warning": "Are you sure you want to leave? Data you have entered may not be saved.",
             "loading_text": "Loading",
+            "missing_shipping_method_heading": "Shipping method unavailable",
+            "invalid_shipping_address": "Invalid shipping address",
             "ok_action": "Ok",
             "error_code": "Error code:",
             "request_id": "Request ID:",
@@ -220,6 +222,9 @@
                 "only_numbers": "Routing Number must contain only numbers",
                 "length": "Routing Number must be 9 digits long"
             },
+            "bluesnap_direct_company_name": {
+               "length_max": "Company Name is too long"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Account Type",
                 "is_required": "Account Type is required"
@@ -242,7 +247,6 @@
             "braintreeach_vaulting_mandate_text": "By clicking Place Order, I authorize Braintree, a service of PayPal, on behalf of {storeName} to verify my bank account information using bank information and consumer reports and I authorize {storeName} to initiate an ACH/electronic debit to my {accountType} account, Depository Name: {depositoryName}, Routing Number: {routingNumber} and Account Number: {accountNumber}, that will be stored on file, and debited on or after the due date. I agree the ACH transactions I authorize comply with all applicable laws.",
             "complete_with_brand": "Complete order",
             "continue_with_brand": "Continue with {brandName}",
-            "ccavenuemars_description_text": "Checkout with CCAvenue",
             "checkoutcom_document_label_boleto": "CPF or CNPJ",
             "checkoutcom_document_label_oxxo": "CURP",
             "checkoutcom_document_label_qpay": "National ID",
@@ -279,11 +283,10 @@
             "credit_card_number_required_error": "Credit Card Number is required",
             "credit_card_number_mismatch_error": "The card number entered does not match the card stored in your account",
             "credit_debit_card_text": "Credit/Debit Card",
+            "payment_methods_text": "Payment Methods",
+            "redeemable_payments_text": "Redeemable Payments",
+            "instrument_storage_options_text": "Payment Storage Options",
             "stripev3_auth_3ds_fail": "User did not authenticate",
-            "digitalriver_dropin_error": "There was an error while processing your payment. Please try again or contact us.",
-            "digitalriver_checkout_error": "There was a problem with your checkout, please check your details and try again or contact customer service",
-            "digitalriver_checkout_error_title": "Error while processing request.",
-            "digitalriver_display_name_text": "Please select your payment method",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm cannot process your payment for this order, please select another payment method.",
             "klarna_continue_action": "Continue with Klarna",
@@ -569,7 +572,9 @@
             "choose_shipping_address": "Choose a shipping address",
             "multishipping_unavailable_action": "Multi-Address Shipping Unavailable",
             "multishipping_unavailable_message": "Multi-address shipping is unavailable when a promotion adds a free item to your cart.",
-            "checkout_switched_to_single_shipping": "Your checkout has been automatically updated to use a single shipping address. Shipping to multiple addresses is unavailable when a promotional free item is in your cart."
+            "checkout_switched_to_single_shipping": "Your checkout has been automatically updated to use a single shipping address. Shipping to multiple addresses is unavailable when a promotional free item is in your cart.",
+            "guest_multishipping_no_shipping_address_message": "No shipping address entered",
+            "guest_multishipping_enter_shipping_address_action": "Enter shipping address"
         },
         "social": {
             "share_action": "Share",

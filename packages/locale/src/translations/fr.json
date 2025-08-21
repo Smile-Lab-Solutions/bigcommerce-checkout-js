@@ -94,6 +94,8 @@
             "error_heading": "Une erreur s'est produite",
             "leave_warning": "Voulez-vous vraiment quitter ? Les données saisies ne seront peut-être pas enregistrées.",
             "loading_text": "Chargement",
+            "missing_shipping_method_heading": "Mode de livraison indisponible",
+            "invalid_shipping_address": "Adresse de livraison non valide",
             "ok_action": "Ok",
             "error_code": "Code d'erreur :",
             "request_id": "ID de la demande :",
@@ -217,6 +219,9 @@
                 "only_numbers": "Le numéro d'acheminement ne doit contenir que des chiffres",
                 "length": "Le numéro d'acheminement doit être composé de 9 chiffres"
             },
+            "bluesnap_direct_company_name": {
+                "length_max": "Le nom de la société est trop long"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Type de compte",
                 "is_required": "Le type de compte est obligatoire"
@@ -239,7 +244,6 @@
             "braintreeach_vaulting_mandate_text": "En cliquant sur Passer commande, j'autorise Braintree, un service de PayPal, à vérifier au nom de {storeName} les informations relatives à mon compte bancaire à l'aide de mes coordonnées bancaires et de mes données de consommation. J'autorise également {storeName} à initier un prélèvement ACH sur mon compte {accountType} (nom de la banque : {depositoryName}, numéro d'acheminement : {routingNumber}, numéro de compte : {accountNumber}). Ce compte sera enregistré dans mon dossier et débité à la date d'échéance indiquée ou après celle-ci. Je comprends que les transactions ACH que j'autorise sont conformes à toutes les lois applicables.",
             "complete_with_brand": "Terminer la commande",
             "continue_with_brand": "Continuer avec {brandName}",
-            "ccavenuemars_description_text": "Continuer avec CCAvenue",
             "checkoutcom_document_label_boleto": "Numéro CPF ou CNPJ",
             "checkoutcom_document_label_oxxo": "Numéro CURP",
             "checkoutcom_document_label_qpay": "Numéro d'identification national",
@@ -276,11 +280,10 @@
             "credit_card_number_required_error": "Numéro de carte bancaire requis",
             "credit_card_number_mismatch_error": "Le numéro de carte saisi ne correspond pas à celui de la carte enregistrée dans votre compte",
             "credit_debit_card_text": "Carte de crédit/débit",
+            "payment_methods_text": "Modes de paiement",
+            "redeemable_payments_text": "Paiements remboursables",
+            "instrument_storage_options_text": "Options de stockage des paiements",
             "stripev3_auth_3ds_fail": "L'utilisateur ne s'est pas authentifié",
-            "digitalriver_dropin_error": "Une erreur s'est produite lors du traitement de votre paiement. Veuillez réessayer, ou contactez-nous.",
-            "digitalriver_checkout_error": "Un problème est survenu lors de votre paiement, veuillez vérifier vos informations et réessayer, ou contacter le service client",
-            "digitalriver_checkout_error_title": "Erreur lors du traitement de la demande.",
-            "digitalriver_display_name_text": "Veuillez sélectionner votre mode de paiement",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm ne peut pas traiter votre paiement pour cette commande, veuillez sélectionner un autre mode de paiement.",
             "klarna_continue_action": "Poursuivre avec Klarna",
@@ -557,7 +560,9 @@
             "choose_shipping_address": "Choisissez une adresse de livraison",
             "multishipping_unavailable_action": "Livraison multi-adresses indisponible",
             "multishipping_unavailable_message": "La livraison à des adresses multiples n'est pas disponible lorsqu'une promotion permet d'ajouter un article gratuit à votre panier.",
-            "checkout_switched_to_single_shipping": "Votre paiement a été automatiquement mis à jour pour utiliser une seule adresse de livraison. La livraison à des adresses multiples n'est pas disponible lorsqu'un article promotionnel gratuit se trouve dans votre panier."
+            "checkout_switched_to_single_shipping": "Votre paiement a été automatiquement mis à jour pour utiliser une seule adresse de livraison. La livraison à des adresses multiples n'est pas disponible lorsqu'un article promotionnel gratuit se trouve dans votre panier.",
+            "guest_multishipping_no_shipping_address_message": "Aucune adresse de livraison n'a été saisie",
+            "guest_multishipping_enter_shipping_address_action": "Saisir l'adresse de livraison"
         },
         "social": {
             "share_action": "Partager",

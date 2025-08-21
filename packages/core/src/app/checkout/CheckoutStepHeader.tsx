@@ -4,6 +4,7 @@ import React, { FunctionComponent, memo, ReactNode } from 'react';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { Button, ButtonSize, ButtonVariant } from '../ui/button';
 import { IconCheck } from '../ui/icon';
@@ -29,6 +30,8 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
     summary,
     type,
 }) => {
+    const { themeV2 } = useThemeContext();
+
     return (
         <div
             className={classNames('stepHeader', {
@@ -49,12 +52,17 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                         <div className='iconLock'></div>
                 )}
 
-                <h2 className="stepHeader-title optimizedCheckout-headingPrimary">{heading}</h2>
+                <h2
+                    className={classNames('stepHeader-title optimizedCheckout-headingPrimary',
+                        { 'header': themeV2 && (isActive || isComplete) },
+                        { 'header-secondary': themeV2 && !isActive && !isComplete })}
+                >{heading}</h2>
             </div>
 
             {type !== CheckoutStepType.Payment && (
                 <div
-                    className="stepHeader-body stepHeader-column optimizedCheckout-contentPrimary"
+                    className={classNames('stepHeader-body stepHeader-column optimizedCheckout-contentPrimary',
+                    { 'body-regular': themeV2 })}
                     data-test="step-info"
                 >
                     {!isActive && isComplete && summary}
@@ -66,6 +74,7 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                 <div className="stepHeader-actions stepHeader-column">
                     <Button
                         aria-expanded={isActive}
+                        className={classNames({ 'body-regular': themeV2 })}
                         size={ButtonSize.Tiny}
                         testId="step-edit-button"
                         variant={ButtonVariant.Secondary}

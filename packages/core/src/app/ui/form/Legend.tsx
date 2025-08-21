@@ -4,6 +4,7 @@ import React, { FunctionComponent } from 'react';
 export interface LegendProps extends React.HTMLAttributes<HTMLLegendElement> {
     hidden?: boolean;
     testId?: string;
+    themeV2?: boolean;
 }
 
 const Legend: FunctionComponent<LegendProps> = ({
@@ -11,6 +12,7 @@ const Legend: FunctionComponent<LegendProps> = ({
     className,
     hidden,
     testId,
+    themeV2 = false,
     ...rest
 }) => (
     <legend
@@ -19,6 +21,7 @@ const Legend: FunctionComponent<LegendProps> = ({
             className || 'form-legend',
             { 'is-srOnly': hidden },
             { 'optimizedCheckout-headingSecondary': !hidden },
+            { 'sub-header': themeV2 && !hidden },
         )}
         data-test={testId}
     >

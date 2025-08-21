@@ -40,21 +40,21 @@ export default function mapToCheckoutProps({
     );
 
     const walletButtonsOnTopFlag = Boolean(checkoutUserExperienceSettings.walletButtonsOnTop);
-    const isNewMultiShippingUIEnabled =
-    isExperimentEnabled(
+    const isShippingDiscountDisplayEnabled = isExperimentEnabled(
         data.getConfig()?.checkoutSettings,
-        'PROJECT-4159.improve_multi_address_shipping_ui',
-    ) 
+        'PROJECT-6643.enable_shipping_discounts_in_orders',
+    );
 
     return {
         billingAddress: data.getBillingAddress(),
         cart: data.getCart(),
         clearError: checkoutService.clearError,
+        data,
         consignments: data.getConsignments(),
         hasCartChanged: submitOrderError && submitOrderError.type === 'cart_changed', // TODO: Need to clear the error once it's displayed
         isGuestEnabled,
         isLoadingCheckout: statuses.isLoadingCheckout(),
-        isNewMultiShippingUIEnabled,
+        isShippingDiscountDisplayEnabled,
         isPending: statuses.isPending(),
         isPriceHiddenFromGuests,
         isShowingWalletButtonsOnTop: walletButtonsOnTopFlag,
@@ -68,7 +68,7 @@ export default function mapToCheckoutProps({
             checkoutService,
             checkoutState,
         }),
-        steps: data.getCheckout() ? getCheckoutStepStatuses(checkoutState) : EMPTY_ARRAY,
+        steps: getCheckoutStepStatuses(checkoutState),
         siteUrl,
     };
 }

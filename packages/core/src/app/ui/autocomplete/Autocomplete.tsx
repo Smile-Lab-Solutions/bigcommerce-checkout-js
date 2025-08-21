@@ -2,6 +2,8 @@ import Downshift, { DownshiftState, StateChangeOptions } from 'downshift';
 import { includes, isNumber, noop } from 'lodash';
 import React, { Fragment, PureComponent, ReactChild, ReactNode } from 'react';
 
+import { ThemeContext } from '@bigcommerce/checkout/ui';
+
 import { Label } from '../form';
 import { Popover, PopoverList, PopoverListItem } from '../popover';
 
@@ -21,6 +23,9 @@ export interface AutocompleteProps {
 }
 
 class Autocomplete extends PureComponent<AutocompleteProps> {
+    static contextType = ThemeContext;
+    declare context: React.ContextType<typeof ThemeContext>;
+
     render(): ReactNode {
         const {
             inputProps,
@@ -32,6 +37,12 @@ class Autocomplete extends PureComponent<AutocompleteProps> {
             onSelect,
             listTestId,
         } = this.props;
+
+        if (!this.context) {
+            throw Error('Need to wrap in style context');
+        }
+
+        const { themeV2 } = this.context;
 
         return (
             <Downshift
@@ -49,7 +60,7 @@ class Autocomplete extends PureComponent<AutocompleteProps> {
                 stateReducer={this.stateReducer}
             >
                 {({ isOpen, getInputProps, getMenuProps, getItemProps, highlightedIndex }) => {
-                    const validInputProps = { ...getInputProps(), ...inputProps };
+                    const validInputProps = { ...getInputProps({ value: initialValue }), ...inputProps };
 
                     delete validInputProps.labelText;
 
@@ -58,6 +69,7 @@ class Autocomplete extends PureComponent<AutocompleteProps> {
                             <input {...validInputProps} />
                             {inputProps && includes(inputProps.className, 'floating') && (
                                 <Label
+                                    additionalClassName={themeV2 ? 'floating-form-field-label' : ''}
                                     htmlFor={inputProps.id}
                                     id={inputProps['aria-labelledby']}
                                     isFloatingLabelEnabled={true}
@@ -124,6 +136,7 @@ class Autocomplete extends PureComponent<AutocompleteProps> {
             }
 
             return node;
+            // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
         }, [] as ReactChild[]);
     }
 

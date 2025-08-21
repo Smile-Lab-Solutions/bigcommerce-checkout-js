@@ -1,4 +1,5 @@
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { isBuyNowCart } from '@bigcommerce/checkout/utility';
 
 import { isExperimentEnabled } from '../common/utility';
 
@@ -25,13 +26,15 @@ export default function mapToCartSummaryProps(
 
     const { isStoreCreditApplied, grandTotal } = checkout;
     const { storeCredit } = customer;
-    const isNewMultiShippingUIEnabled = isExperimentEnabled(
+
+    const isShippingDiscountDisplayEnabled = isExperimentEnabled(
         config.checkoutSettings,
-        'PROJECT-4159.improve_multi_address_shipping_ui',
+        'PROJECT-6643.enable_shipping_discounts_in_orders',
     );
 
     return {
-        isNewMultiShippingUIEnabled,
+        isBuyNowCart: isBuyNowCart(checkout.cart),
+        isShippingDiscountDisplayEnabled,
         checkout,
         shopperCurrency: config.shopperCurrency,
         cartUrl: config.links.cartLink,

@@ -1,4 +1,5 @@
 import { LineItemMap } from '@bigcommerce/checkout-sdk';
+import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
@@ -19,6 +20,7 @@ const COLLAPSED_ITEMS_LIMIT_SMALL_SCREEN = 3;
 export interface OrderSummaryItemsProps {
     displayLineItemsCount: boolean;
     items: LineItemMap;
+    themeV2?: boolean;
 }
 
 interface OrderSummaryItemsState {
@@ -37,13 +39,14 @@ class OrderSummaryItems extends React.Component<OrderSummaryItemsProps, OrderSum
     }
 
     render(): ReactNode {
-        const { displayLineItemsCount = true, items } = this.props;
+        const { displayLineItemsCount = true, items, themeV2 = false } = this.props;
         const { collapsedLimit, isExpanded } = this.state;
 
         return (
             <>
                 {displayLineItemsCount && <h3
-                    className="cart-section-heading optimizedCheckout-contentPrimary"
+                    className={classNames('cart-section-heading optimizedCheckout-contentPrimary',
+                        { 'body-medium': themeV2 })}
                     data-test="cart-count-total"
                 >
                     <TranslatedString
@@ -92,7 +95,8 @@ class OrderSummaryItems extends React.Component<OrderSummaryItemsProps, OrderSum
         return (
             <div className="cart-actions">
                 <button
-                    className="button button--tertiary button--tiny optimizedCheckout-buttonSecondary"
+                    className={classNames('button button--tertiary button--tiny optimizedCheckout-buttonSecondary',
+                        { 'sub-text-medium': this.props.themeV2 })}
                     onClick={this.handleToggle}
                     type="button"
                 >

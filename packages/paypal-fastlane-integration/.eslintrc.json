@@ -2,10 +2,7 @@
   "extends": ["../../.eslintrc.json"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "@typescript-eslint/no-unsafe-assignment": "off"
-      }
+      "files": ["*.ts", "*.tsx"]
     }
   ]
 }

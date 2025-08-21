@@ -130,6 +130,9 @@
 //Checkout Ratepay
 @import "checkout/ratepayForm/component";
 
+// Checkout Skeleton
+@import "checkout/loadingSkeleton/component";
+
 .button:not(#addressToggle),
 .partiallyButton {
     background-color: #FF2788;

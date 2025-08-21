@@ -7,10 +7,11 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { Component, ReactNode } from 'react';
 
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
+
 import { AddressForm, AddressSelect, AddressType, isValidCustomerAddress } from '../address';
 import { connectFormik, ConnectFormikProps } from '../common/form';
 import { Fieldset } from '../ui/form';
-import { LoadingOverlay } from '../ui/loading';
 
 import { SingleShippingFormValues } from './SingleShippingForm';
 
@@ -25,7 +26,6 @@ export interface ShippingAddressFormProps {
     formFields: FormField[];
     shouldShowSaveAddress?: boolean;
     isFloatingLabelEnabled?: boolean;
-    validateAddressFields: boolean;
     onUseNewAddress(): void;
     onFieldChange(fieldName: string, value: string): void;
     onAddressSelect(address: Address): void;
@@ -54,7 +54,6 @@ class ShippingAddressForm extends Component<
             formik: {
                 values: { shippingAddress: formAddress },
             },
-            validateAddressFields,
         } = this.props;
 
         const hasAddresses = addresses && addresses.length > 0;
@@ -62,7 +61,6 @@ class ShippingAddressForm extends Component<
             shippingAddress,
             addresses,
             formFields,
-            validateAddressFields,
         );
 
         if (formFields.length > 0){
