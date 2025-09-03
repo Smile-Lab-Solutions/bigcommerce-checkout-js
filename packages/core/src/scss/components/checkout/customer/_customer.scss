@@ -11,6 +11,7 @@
     @include breakpoint("small") {
         margin-bottom: spacing("half");
     }
+
     margin-bottom: 1rem;
 
     .customerEmail-floating--enabled {

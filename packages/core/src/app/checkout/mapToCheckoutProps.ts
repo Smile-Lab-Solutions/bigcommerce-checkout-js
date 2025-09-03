@@ -26,8 +26,7 @@ export default function mapToCheckoutProps({
         links: {
             loginLink: loginUrl = '',
             createAccountLink: createAccountUrl = '',
-            cartLink: cartUrl = '',
-            siteLink: siteUrl = '',
+            cartLink: cartUrl = ''
         } = {},
         displaySettings: { hidePriceFromGuests: isPriceHiddenFromGuests = false } = {},
     } = data.getConfig() || {};
@@ -68,7 +67,6 @@ export default function mapToCheckoutProps({
             checkoutService,
             checkoutState,
         }),
-        steps: getCheckoutStepStatuses(checkoutState),
-        siteUrl,
+        steps: getCheckoutStepStatuses(checkoutState)
     };
 }

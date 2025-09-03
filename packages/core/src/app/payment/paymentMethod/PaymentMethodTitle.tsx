@@ -64,7 +64,7 @@ export function getPaymentMethodTitle(
         const methodDisplayName = getPaymentMethodDisplayName(language)(method);
         // TODO: API could provide the data below so UI can read simply read it.
         // However, I'm not sure how we deal with translation yet. TBC.
-        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode; | ((props: any) => ReactNode) } } = {
+        const customTitles: { [key: string]: { logoUrl: string; titleText: string; titleSubText: string; subtitle?: ReactNode | ((props: any) => ReactNode) } } = {
             [PaymentMethodType.CreditCard]: {
                 logoUrl: '',
                 titleText: methodName,
@@ -78,8 +78,8 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.BraintreePaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
-                subtitle: (props: { onUnhandledError?(error: Error): void }): ReactNode => <BraintreePaypalCreditBanner {...props} />
                 titleSubText: '',
+                subtitle: (props: { onUnhandledError?(error: Error): void }): ReactNode => <BraintreePaypalCreditBanner {...props} />
             },
             [PaymentMethodType.PaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
@@ -99,42 +99,31 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.BigCommercePaymentsPayPal]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
                 titleText: '',
+                titleSubText: '',
                 subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
             },
             [PaymentMethodId.BigCommercePaymentsPayLater]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
+                titleSubText: '',
                 subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
             },
             [PaymentMethodId.BigCommercePaymentsAlternativeMethod]: {
                 logoUrl: method.logoUrl || '',
                 titleText: method.logoUrl ? '' : methodDisplayName,
-            },
-            [PaymentMethodId.BigCommercePaymentsPayPal]: {
-                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
-                titleText: '',
-                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
-            },
-            [PaymentMethodId.BigCommercePaymentsPayLater]: {
-                logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
-                titleText: methodDisplayName,
-                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
-            },
-            [PaymentMethodId.BigCommercePaymentsAlternativeMethod]: {
-                logoUrl: method.logoUrl || '',
-                titleText: method.logoUrl ? '' : methodDisplayName,
+                titleSubText: ''
             },
             [PaymentMethodId.PaypalCommerce]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
                 titleText: '',
-                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-banner-container' {...props} />
                 titleSubText: '',
+                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-banner-container' {...props} />
             },
             [PaymentMethodId.PaypalCommerceCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
-                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-credit-banner-container' {...props} />
                 titleSubText: '',
+                subtitle: (props: PaymentMethodSubtitleProps) => <PaypalCommerceCreditBanner containerId='paypal-commerce-credit-banner-container' {...props} />
             },
             [PaymentMethodId.PaypalCommerceAlternativeMethod]: {
                 logoUrl: method.logoUrl || '',
@@ -186,11 +175,6 @@ export function getPaymentMethodTitle(
                 titleText: '',
                 titleSubText: '',
             },
-            [PaymentMethodId.DigitalRiver]: {
-                logoUrl: '',
-                titleText: language.translate('payment.digitalriver_display_name_text'),
-                titleSubText: '',
-            },
             [PaymentMethodId.Humm]: {
                 logoUrl: cdnPath('/img/payment-providers/humm-checkout-header.png'),
                 titleText: '',
@@ -210,13 +194,6 @@ export function getPaymentMethodTitle(
             },
             [PaymentMethodId.Masterpass]: {
                 logoUrl: 'https://masterpass.com/dyn/img/acc/global/mp_mark_hor_blk.svg',
-                titleText: '',
-                titleSubText: '',
-            },
-            [PaymentMethodId.Opy]: {
-                logoUrl: cdnPath(
-                    `/img/payment-providers/${method.config.logo ?? 'opy_default.svg'}`,
-                ),
                 titleText: '',
                 titleSubText: '',
             },
@@ -303,6 +280,7 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.WorldpayAccess]: {
                 logoUrl: '',
                 titleText: language.translate('payment.credit_debit_card_text'),
+                titleSubText: ''
             },
         };
 

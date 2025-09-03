@@ -59,9 +59,10 @@ const PaymentMethodList: FunctionComponent<
             const checkoutSettings = config.checkoutSettings;
             const cdnBasePath = config.cdnPath;
             const storeCountryCode = config.storeProfile.storeCountryCode;
+            const storeCurrency = config.currency.code;
             const paymentMethod = getPaymentMethodFromListValue(methods, values.paymentProviderRadio);
             const methodName = getPaymentMethodName(language)(paymentMethod);
-            const { titleText } = getPaymentMethodTitle(language, cdnBasePath, checkoutSettings, storeCountryCode)(paymentMethod);
+            const { titleText } = getPaymentMethodTitle(language, cdnBasePath, checkoutSettings, storeCountryCode, storeCurrency)(paymentMethod);
 
             return titleText || methodName;
         }

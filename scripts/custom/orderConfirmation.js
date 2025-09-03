@@ -1,4 +1,4 @@
-export const loadOwlCarousel = ()=> {
+export const loadOwlCarousel = () => {
     $(document).ready(function () {
         $("#owl-demo").owlCarousel({
             navigation: true, // Show next and prev buttons
@@ -13,4 +13,5 @@ export const loadOwlCarousel = ()=> {
             items: 1
         });
     });
+    return true;
 }

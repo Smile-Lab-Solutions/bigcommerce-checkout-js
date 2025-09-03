@@ -39,6 +39,7 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
     isLoading,
     onUnhandledError,
     cartHasChanged,
+    storeCurrencyCode
 }: MultiShippingFormProps) => {
     const [errorConsignmentNumber, setErrorConsignmentNumber] = useState<number | undefined>();
 
@@ -125,6 +126,7 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
                     onUnhandledError={onUnhandledError}
                     resetErrorConsignmentNumber={resetErrorConsignmentNumber}
                     shippingQuoteFailedMessage={shippingQuoteFailedMessage}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             ))}
             {isAddShippingDestination && (
@@ -136,6 +138,7 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
                     onUnhandledError={onUnhandledError}
                     resetErrorConsignmentNumber={resetErrorConsignmentNumber}
                     setIsAddShippingDestination={setIsAddShippingDestination}
+                    storeCurrencyCode={storeCurrencyCode}
                 />)
             }
             {hasUnassignedItems &&

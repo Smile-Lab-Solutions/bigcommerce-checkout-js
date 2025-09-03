@@ -133,8 +133,7 @@ const ShippingForm = ({
             isLoading={isLoading}
             onSubmit={onMultiShippingSubmit}
             onUnhandledError={onUnhandledError}
-            shouldShowOrderComments={shouldShowOrderComments}
-                storeCurrencyCode={storeCurrencyCode}
+            storeCurrencyCode={storeCurrencyCode}
         />;
     };
 

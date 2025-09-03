@@ -4,7 +4,6 @@ import {
     ShopperCurrency,
     StoreCurrency,
 } from '@bigcommerce/checkout-sdk';
-import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
@@ -69,26 +68,6 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                     <p>Pay in Full or Spread the cost with our payment options</p>
                 )}
             </OrderSummarySection>
-
-            {displayInclusiveTax && <OrderSummarySection>
-                <h5
-                    className={classNames('cart-taxItem cart-taxItem--subtotal optimizedCheckout-contentPrimary',
-                        { 'body-regular': themeV2 })}
-                    data-test="tax-text"
-                >
-                    <TranslatedString
-                        id="tax.inclusive_label"
-                    />
-                </h5>
-                {(taxes || []).map((tax, index) => (
-                    <OrderSummaryPrice
-                        amount={tax.amount}
-                        key={index}
-                        label={tax.name}
-                        testId="cart-taxes"
-                    />
-                ))}
-            </OrderSummarySection>}
         </article>
     );
 };

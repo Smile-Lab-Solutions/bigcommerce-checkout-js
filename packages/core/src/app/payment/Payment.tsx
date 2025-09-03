@@ -336,7 +336,6 @@ class Payment extends Component<
             selectedMethod.id === PaymentMethodId.Converge ||
             selectedMethod.id === PaymentMethodId.Humm ||
             selectedMethod.id === PaymentMethodId.Laybuy ||
-            selectedMethod.id === PaymentMethodId.Opy ||
             selectedMethod.id === PaymentMethodId.Quadpay ||
             selectedMethod.id === PaymentMethodId.SagePay ||
             selectedMethod.id === PaymentMethodId.Sezzle ||
@@ -815,6 +814,7 @@ export function getPartiallyMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }
 
@@ -834,6 +834,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }
 
@@ -853,5 +854,6 @@ export function getFlexMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete/`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }
