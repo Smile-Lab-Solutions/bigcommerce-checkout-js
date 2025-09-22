@@ -1,13 +1,12 @@
-import { CheckoutSelectors, CheckoutService } from '@bigcommerce/checkout-sdk';
+import { type CheckoutSelectors, type CheckoutService } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
-import React, { FunctionComponent, memo, Suspense } from 'react';
+import React, { type FunctionComponent, memo, Suspense } from 'react';
 
 import { TranslatedString, useLocale } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 import { useThemeContext, WalletButtonsContainerSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
-import { isExperimentEnabled } from '../common/utility';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
 import resolveCheckoutButton from './resolveCheckoutButton';
@@ -55,8 +54,6 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
         return null;
     }
 
-    const { getConfig } = checkoutState.data;
-
     const renderButtons = () => availableMethodIds.map((methodId) => {
         if (isPaymentStepActive && isPayPalCommerce(methodId)) {
             return null;
@@ -64,7 +61,6 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
 
         const ResolvedCheckoutButton = resolveCheckoutButton(
             { id: methodId },
-            isExperimentEnabled(getConfig()?.checkoutSettings, 'CHECKOUT-9432.lazy_load_payment_components', false)
         );
 
         if (!ResolvedCheckoutButton) {
@@ -109,7 +105,7 @@ const CheckoutButtonContainer: FunctionComponent<CheckoutButtonContainerProps & 
                 </WalletButtonsContainerSkeleton>
             </div>
             <div className='checkout-separator'>
-                <span className={classNames({'sub-header': themeV2})}>
+                <span className={classNames({ 'sub-header': themeV2 })}>
                     <TranslatedString id='remote.or_text' />
                 </span>
             </div>

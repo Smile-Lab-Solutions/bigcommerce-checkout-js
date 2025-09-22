@@ -1,10 +1,10 @@
 import { createCheckoutService } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider, PaymentMethodId } from '@bigcommerce/checkout/payment-integration-api';
 import { getStoreConfig } from '@bigcommerce/checkout/test-mocks';
@@ -18,7 +18,10 @@ describe('BraintreePaypalCreditBanner', () => {
 
     const checkoutService = createCheckoutService();
     const checkoutState = checkoutService.getState();
+    const bannerContainerId = 'braintree-credit-banner-container';
     const defaultProps = {
+        containerId: bannerContainerId,
+        methodId: PaymentMethodId.BraintreePaypalCredit,
         onUnhandledError: jest.fn(),
     };
 
@@ -49,7 +52,7 @@ describe('BraintreePaypalCreditBanner', () => {
         expect(checkoutService.initializePayment).toHaveBeenCalledWith({
             methodId: PaymentMethodId.BraintreePaypalCredit,
             braintree: {
-                bannerContainerId: 'braintree-banner-container',
+                bannerContainerId,
             },
         });
 
@@ -68,7 +71,7 @@ describe('BraintreePaypalCreditBanner', () => {
         expect(checkoutService.initializePayment).toHaveBeenCalledWith({
             methodId: PaymentMethodId.BraintreePaypalCredit,
             braintree: {
-                bannerContainerId: 'braintree-banner-container',
+                bannerContainerId,
             },
         });
 

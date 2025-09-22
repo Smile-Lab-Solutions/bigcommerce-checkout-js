@@ -1,23 +1,23 @@
 import '@testing-library/jest-dom';
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
 import { Formik } from 'formik';
 import { merge, noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import {
     CheckoutProvider,
     getPaymentMethodName,
     PaymentFormContext,
-    PaymentFormService,
+    type PaymentFormService,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     getAddress,
@@ -30,7 +30,7 @@ import {
 import { fireEvent, render, screen } from '@bigcommerce/checkout/test-utils';
 
 import WalletButtonPaymentMethodComponent, {
-    WalletButtonPaymentMethodProps,
+    type WalletButtonPaymentMethodProps,
 } from './WalletButtonPaymentMethodComponent';
 
 describe('WalletButtonPaymentMethod', () => {
@@ -53,8 +53,6 @@ describe('WalletButtonPaymentMethod', () => {
         };
         defaultProps = {
             signOutCustomer: checkoutService.signOutCustomer,
-            checkoutState,
-            language: localeContext.language,
             paymentForm,
             buttonId: 'button-container',
             deinitializePayment: jest.fn(),
@@ -143,8 +141,8 @@ describe('WalletButtonPaymentMethod', () => {
         render(<WalletButtonPaymentMethodTest {...defaultProps} />);
         expect(
             screen.getByText(
-                defaultProps.language.translate('remote.sign_in_action', {
-                    providerName: getPaymentMethodName(defaultProps.language)(defaultProps.method),
+                localeContext.language.translate('remote.sign_in_action', {
+                    providerName: getPaymentMethodName(localeContext.language)(defaultProps.method),
                 }),
             ),
         ).toBeInTheDocument();
@@ -230,8 +228,8 @@ describe('WalletButtonPaymentMethod', () => {
         it('renders sign out link', () => {
             render(<WalletButtonPaymentMethodTest {...defaultProps} />);
 
-            const linkText = defaultProps.language.translate('remote.sign_out_action', {
-                providerName: getPaymentMethodName(defaultProps.language)(defaultProps.method),
+            const linkText = localeContext.language.translate('remote.sign_out_action', {
+                providerName: getPaymentMethodName(localeContext.language)(defaultProps.method),
             });
 
             expect(screen.getByText(linkText)).toBeInTheDocument();
@@ -313,7 +311,7 @@ describe('WalletButtonPaymentMethod', () => {
             );
             expect(
                 screen.queryByText(
-                    defaultProps.language.translate('remote.select_different_card_action'),
+                    localeContext.language.translate('remote.select_different_card_action'),
                 ),
             ).not.toBeInTheDocument();
             expect(screen.getByText(editButtonLabel)).toBeInTheDocument();
@@ -324,7 +322,7 @@ describe('WalletButtonPaymentMethod', () => {
 
             expect(
                 screen.queryByText(
-                    defaultProps.language.translate('remote.select_different_card_action'),
+                    localeContext.language.translate('remote.select_different_card_action'),
                 ),
             ).not.toBeInTheDocument();
         });
@@ -342,8 +340,8 @@ describe('WalletButtonPaymentMethod', () => {
             );
 
             const actionButton = screen.getByText(
-                defaultProps.language.translate('remote.sign_out_action', {
-                    providerName: getPaymentMethodName(defaultProps.language)(defaultProps.method),
+                localeContext.language.translate('remote.sign_out_action', {
+                    providerName: getPaymentMethodName(localeContext.language)(defaultProps.method),
                 }),
             );
 
@@ -373,8 +371,8 @@ describe('WalletButtonPaymentMethod', () => {
             );
 
             const actionButton = screen.getByText(
-                defaultProps.language.translate('remote.sign_out_action', {
-                    providerName: getPaymentMethodName(defaultProps.language)(defaultProps.method),
+                localeContext.language.translate('remote.sign_out_action', {
+                    providerName: getPaymentMethodName(localeContext.language)(defaultProps.method),
                 }),
             );
 

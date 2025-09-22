@@ -1,116 +1,109 @@
-import { Address, CheckoutSelectors, Consignment, Country, Customer, FormField, ShippingInitializeOptions, ShippingRequestOptions } from '@bigcommerce/checkout-sdk';
-import React, { Component, ReactNode } from 'react';
+import {
+  type Address,
+  type CheckoutSelectors,
+} from '@bigcommerce/checkout-sdk';
+import React, { type ReactNode, useState } from 'react';
 
+import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { AddressFormSkeleton } from '@bigcommerce/checkout/ui';
 
-import CheckoutStepStatus from '../../checkout/CheckoutStepStatus';
+import type CheckoutStepStatus from '../../checkout/CheckoutStepStatus';
 import ShippingHeader from '../ShippingHeader';
 
-import StripeShippingForm, { SingleShippingFormValues } from './StripeShippingForm';
+import StripeShippingForm, { type SingleShippingFormValues } from './StripeShippingForm';
 
 export interface StripeShippingProps {
-    isBillingSameAsShipping: boolean;
-    cartHasChanged: boolean;
-    isMultiShippingMode: boolean;
-    step: CheckoutStepStatus;
-    consignments: Consignment[];
-    countries: Country[];
-    customer: Customer;
-    customerMessage: string;
-    isGuest: boolean;
-    isInitializing: boolean;
-    isInitialValueLoaded: boolean;
-    isLoading: boolean;
-    isShippingMethodLoading: boolean;
-    isShippingStepPending: boolean;
-    methodId?: string;
-    shippingAddress?: Address;
-    shouldShowMultiShipping: boolean;
-    shouldShowOrderComments: boolean;
-    onReady?(): void;
-    onUnhandledError(error: Error): void;
-    onSubmit(values: SingleShippingFormValues): void;
-    onMultiShippingChange(): void;
-    deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
-    initialize(options: ShippingInitializeOptions): Promise<CheckoutSelectors>;
-    loadShippingAddressFields(): Promise<CheckoutSelectors>;
-    loadShippingOptions(): Promise<CheckoutSelectors>;
-    updateAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
-    getFields(countryCode?: string): FormField[];
+  isBillingSameAsShipping: boolean;
+  cartHasChanged: boolean;
+  isMultiShippingMode: boolean;
+  step: CheckoutStepStatus;
+  isInitializing: boolean;
+  isInitialValueLoaded: boolean;
+  isLoading: boolean;
+  isShippingMethodLoading: boolean;
+  isShippingStepPending: boolean;
+  methodId?: string;
+  shippingAddress?: Address;
+  shouldShowMultiShipping: boolean;
+  shouldShowOrderComments: boolean;
+  onReady?(): void;
+  onUnhandledError(error: Error): void;
+  onSubmit(values: SingleShippingFormValues): void;
+  onMultiShippingChange(): void;
+  loadShippingAddressFields(): Promise<CheckoutSelectors>;
+  loadShippingOptions(): Promise<CheckoutSelectors>;
+  updateAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
 }
 
-interface StripeShippingState {
-    isStripeLoading: boolean;
-    isStripeAutoStep: boolean;
-}
+const StripeShipping = ({
+  isBillingSameAsShipping,
+  shouldShowMultiShipping,
+  updateAddress,
+  isMultiShippingMode,
+  step,
+  onSubmit,
+  onMultiShippingChange,
+  isLoading,
+  isShippingMethodLoading,
+  ...shippingFormProps
+}: StripeShippingProps): ReactNode => {
+  const { checkoutState } = useCheckout();
 
-class StripeShipping extends Component<StripeShippingProps, StripeShippingState> {
-    constructor(props: StripeShippingProps) {
-        super(props);
+  const {
+    data: {
+      getCheckout,
+      getShippingAddressFields,
+    },
+  } = checkoutState;
+  const checkout = getCheckout();
+  const getFields = getShippingAddressFields;
 
-        this.state = {
-            isStripeLoading: true,
-            isStripeAutoStep: false,
-        };
-    }
+  const [isStripeLoading, setIsStripeLoading] = useState(true);
+  const [isStripeAutoStep, setIsStripeAutoStep] = useState(false);
 
-    render(): ReactNode {
-        const {
-            isBillingSameAsShipping,
-            isGuest,
-            shouldShowMultiShipping,
-            customer,
-            updateAddress,
-            initialize,
-            deinitialize,
-            isMultiShippingMode,
-            step,
-            onSubmit,
-            onMultiShippingChange,
-            isLoading,
-            isShippingMethodLoading,
-            ...shippingFormProps
-        } = this.props;
+  const stripeLoadedCallback = () => {
+    setIsStripeLoading(false);
+  };
 
-        const {
-            isStripeLoading,
-            isStripeAutoStep,
-        } = this.state;
+  const handleIsAutoStep = () => {
+    setIsStripeAutoStep(true);
+  };
 
-        return <>
-            <AddressFormSkeleton isLoading={isStripeAutoStep || isStripeLoading}/>
-            <div className="checkout-form" style={{display: isStripeAutoStep || isStripeLoading ? 'none' : undefined}}>
-                <ShippingHeader
-                    isGuest={isGuest}
-                    isMultiShippingMode={isMultiShippingMode}
-                    onMultiShippingChange={onMultiShippingChange}
-                    shouldShowMultiShipping={shouldShowMultiShipping}
-                />
-                <StripeShippingForm
-                    {...shippingFormProps}
-                    deinitialize={deinitialize}
-                    initialize={initialize}
-                    isBillingSameAsShipping={isBillingSameAsShipping}
-                    isLoading={isLoading}
-                    isMultiShippingMode={isMultiShippingMode}
-                    isShippingMethodLoading={isShippingMethodLoading}
-                    isStripeAutoStep={this.handleIsAutoStep}
-                    isStripeLoading={this.stripeLoadedCallback}
-                    onSubmit={onSubmit}
-                    step={step}
-                    updateAddress={updateAddress}
-                />
-            </div>
-        </>;
-    }
+  if (!checkout) {
+    return null;
+  }
 
-    private stripeLoadedCallback: () => void = () => {
-        this.setState({ isStripeLoading: false });
-    }
+  const customerMessage = checkout.customerMessage;
 
-    private handleIsAutoStep: () => void = () => {
-        this.setState({ isStripeAutoStep: true });
-    }
-}
+  return (
+    <>
+      <AddressFormSkeleton isLoading={isStripeAutoStep || isStripeLoading} />
+      <div
+        className="checkout-form"
+        style={{ display: isStripeAutoStep || isStripeLoading ? 'none' : undefined }}
+      >
+        <ShippingHeader
+          isMultiShippingMode={isMultiShippingMode}
+          onMultiShippingChange={onMultiShippingChange}
+          shouldShowMultiShipping={shouldShowMultiShipping}
+        />
+        <StripeShippingForm
+          customerMessage={customerMessage}
+          getFields={getFields}
+          {...shippingFormProps}
+          isBillingSameAsShipping={isBillingSameAsShipping}
+          isLoading={isLoading}
+          isMultiShippingMode={isMultiShippingMode}
+          isShippingMethodLoading={isShippingMethodLoading}
+          isStripeAutoStep={handleIsAutoStep}
+          isStripeLoading={stripeLoadedCallback}
+          onSubmit={onSubmit}
+          step={step}
+          updateAddress={updateAddress}
+        />
+      </div>
+    </>
+  );
+};
 
 export default StripeShipping;

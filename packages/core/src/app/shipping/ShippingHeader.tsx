@@ -1,6 +1,6 @@
 import { ExtensionRegion } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
-import React, { FunctionComponent, memo, useState } from 'react';
+import React, { type FunctionComponent, memo, useState } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
@@ -13,7 +13,6 @@ import './ShippingHeader.scss';
 
 interface ShippingHeaderProps {
     isMultiShippingMode: boolean;
-    isGuest: boolean;
     shouldShowMultiShipping: boolean;
     onMultiShippingChange(): void;
     cartHasPromotionalItems?: boolean;
@@ -21,7 +20,6 @@ interface ShippingHeaderProps {
 
 const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
     isMultiShippingMode,
-    isGuest,
     onMultiShippingChange,
     shouldShowMultiShipping,
     cartHasPromotionalItems,
@@ -47,9 +45,7 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                     <TranslatedString
                         id={
                             isMultiShippingMode
-                                ? isGuest
-                                    ? 'shipping.multishipping_address_heading_guest'
-                                    : 'shipping.multishipping_address_heading'
+                                ? 'shipping.multishipping_address_heading'
                                 : 'shipping.shipping_address_heading'
                         }
                     />

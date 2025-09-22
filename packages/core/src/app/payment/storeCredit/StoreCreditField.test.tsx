@@ -1,16 +1,16 @@
-import { CheckoutSelectors, CheckoutService, createCheckoutService, CurrencyService } from '@bigcommerce/checkout-sdk';
+import { type CheckoutSelectors, type CheckoutService, createCheckoutService, type CurrencyService } from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
 import { noop } from 'lodash';
 import React from 'react';
 
-import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutContext } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import { getStoreConfig } from '../../config/config.mock';
 
-import StoreCreditField, { StoreCreditFieldProps } from './StoreCreditField';
+import StoreCreditField, { type StoreCreditFieldProps } from './StoreCreditField';
 
 interface StoreCreditFieldTestProps extends StoreCreditFieldProps {
     isSubmittingOrder?: boolean;
@@ -22,7 +22,7 @@ describe('StoreCreditField', () => {
     let checkoutService: CheckoutService;
     let checkoutState: CheckoutSelectors;
 
-    const StoreCreditFieldTest = ({isSubmittingOrder = false, ...props}: StoreCreditFieldTestProps) => {
+    const StoreCreditFieldTest = ({ isSubmittingOrder = false, ...props }: StoreCreditFieldTestProps) => {
         localeContext = createLocaleContext(getStoreConfig());
         currencyService = localeContext.currency;
         checkoutService = createCheckoutService();
@@ -66,7 +66,7 @@ describe('StoreCreditField', () => {
             />,
         );
 
-        expect(screen.getByRole('checkbox', { name: 'Apply $112.00 store credit to order'})).toBeInTheDocument();
+        expect(screen.getByRole('checkbox', { name: 'Apply $112.00 store credit to order' })).toBeInTheDocument();
     });
 
     it('notifies parent when value changes', async () => {
@@ -82,7 +82,7 @@ describe('StoreCreditField', () => {
             />,
         );
 
-        await userEvent.click(screen.getByRole('checkbox', {name: 'Apply $112.00 store credit to order'}));
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Apply $112.00 store credit to order' }));
 
         expect(handleChange).toHaveBeenCalled();
     });
@@ -101,6 +101,6 @@ describe('StoreCreditField', () => {
             />,
         );
 
-        expect(screen.getByRole('checkbox', {name: 'Apply $112.00 store credit to order'})).toBeDisabled();
+        expect(screen.getByRole('checkbox', { name: 'Apply $112.00 store credit to order' })).toBeDisabled();
     });
 });

@@ -1,4 +1,8 @@
-import { createCheckoutService, StripeShippingEvent } from '@bigcommerce/checkout-sdk';
+import {
+  type CheckoutSelectors,
+  createCheckoutService,
+  type StripeShippingEvent,
+} from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
 import React, { act } from 'react';
 
@@ -8,9 +12,11 @@ import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api'
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import { getAddressFormFields } from '../../address/formField.mock';
+import { getCheckout } from '../../checkout/checkouts.mock';
 import CheckoutStepType from '../../checkout/CheckoutStepType';
 import ConsoleErrorLogger from '../../common/error/ConsoleErrorLogger';
 import { getStoreConfig } from '../../config/config.mock';
+import { getCustomer } from '../../customer/customers.mock';
 import { getShippingAddress } from '../shipping-addresses.mock';
 
 import StripeShippingForm from './StripeShippingForm';
@@ -28,6 +34,11 @@ describe('StripeShippingForm', () => {
     const errorLogger = new ConsoleErrorLogger();
     const { customFields, ...rest } = getShippingAddress();
     const localeContext = createLocaleContext(getStoreConfig());
+    let checkoutState: CheckoutSelectors;
+
+    const initialize = jest.fn();
+
+    checkoutService.initializeShipping = initialize;
 
     const defaultProps = {
         isShippingMethodLoading: false,
@@ -42,7 +53,6 @@ describe('StripeShippingForm', () => {
         isBillingSameAsShipping: false,
         isInitialValueLoaded: false,
         isMultiShippingMode: false,
-        countries: [],
         countriesWithAutocomplete: [],
         shippingAddress: rest,
         customerMessage: '',
@@ -55,9 +65,7 @@ describe('StripeShippingForm', () => {
         onSubmit: jest.fn(),
         getFields: jest.fn(() => addressFormFields),
         onUnhandledError: jest.fn(),
-        deinitialize: jest.fn(),
         signOut: jest.fn(),
-        initialize: jest.fn(),
         updateAddress: jest.fn(),
         deleteConsignments: jest.fn(),
     };
@@ -72,6 +80,12 @@ describe('StripeShippingForm', () => {
      </CheckoutProvider>
      );
 
+   beforeEach(() => {
+     checkoutState = checkoutService.getState();
+     jest.spyOn(checkoutState.data, 'getCustomer').mockReturnValue(getCustomer());
+     jest.spyOn(checkoutState.data, 'getCheckout').mockReturnValue(getCheckout());
+   })
+
    afterEach(() => {
        jest.clearAllMocks();
    })
@@ -79,7 +93,7 @@ describe('StripeShippingForm', () => {
     it('renders form with a correct parameters', async () => {
         const { container } = renderContainer({ isLoading: false });
 
-        expect(defaultProps.initialize).toHaveBeenCalled();
+        expect(initialize).toHaveBeenCalled();
         expect(defaultProps.getFields).toHaveBeenCalledTimes(2);
         expect(defaultProps.getFields).toHaveBeenCalledWith("US");
         // eslint-disable-next-line testing-library/no-node-access,testing-library/no-container
@@ -159,7 +173,7 @@ describe('StripeShippingForm', () => {
         renderContainer({ isLoading: false });
 
         await act(async () => {
-            const { stripeupe } = defaultProps.initialize.mock.calls[0][0];
+            const { stripeupe } = initialize.mock.calls[0][0];
 
             await stripeupe.onChangeShipping(shippingChangeEvent);
         });
@@ -210,7 +224,7 @@ describe('StripeShippingForm', () => {
         renderContainer({ isLoading: false });
 
         await act(async () => {
-            const { stripeupe } = defaultProps.initialize.mock.calls[0][0];
+            const { stripeupe } = initialize.mock.calls[0][0];
 
             await stripeupe.onChangeShipping(shippingChangeEvent);
         });

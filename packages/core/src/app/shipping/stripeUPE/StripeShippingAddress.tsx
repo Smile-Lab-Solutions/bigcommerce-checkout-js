@@ -1,21 +1,21 @@
 import {
-    Address,
-    CheckoutSelectors,
-    Consignment,
-    Country,
-    ShippingInitializeOptions,
-    ShippingRequestOptions,
-    StripeShippingEvent
+    type Address,
+    type CheckoutSelectors,
+    type Consignment,
+    type Country,
+    type ShippingInitializeOptions,
+    type ShippingRequestOptions,
+    type StripeShippingEvent
 } from '@bigcommerce/checkout-sdk';
 import { memoizeOne } from '@bigcommerce/memoize';
-import React, { FunctionComponent, memo, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, memo, useCallback, useEffect, useState } from 'react';
 
 import { getAppliedStyles } from '@bigcommerce/checkout/dom-utils';
 
-import CheckoutStepStatus from '../../checkout/CheckoutStepStatus';
+import type CheckoutStepStatus from '../../checkout/CheckoutStepStatus';
 import getRecommendedShippingOption from '../getRecommendedShippingOption';
 import hasSelectedShippingOptions from '../hasSelectedShippingOptions';
-import { SingleShippingFormValues } from '../SingleShippingForm';
+import { type SingleShippingFormValues } from '../SingleShippingForm';
 
 import StripeShippingAddressDisplay from './StripeShippingAddressDisplay';
 import StripeStateMapper from './StripeStateMapper';
@@ -78,7 +78,7 @@ const StripeShippingAddress: FunctionComponent<StripeShippingAddressProps> = (pr
 
     useEffect(() => {
         if (consignments[0]) {
-            const {availableShippingOptions} = consignments[0];
+            const { availableShippingOptions } = consignments[0];
 
             if (availableShippingOptions && !getRecommendedShippingOption(availableShippingOptions)) {
                 handleLoading();
@@ -94,11 +94,11 @@ const StripeShippingAddress: FunctionComponent<StripeShippingAddressProps> = (pr
         if (hasStripeAddressAndHasShippingOptions && afterReload && isLoadingBeforeAutoStep) {
             isStripeLoading();
             isStripeAutoStep();
-            onSubmit({billingSameAsShipping: true, shippingAddress: stripeShippingAddress, orderComment: ''});
+            onSubmit({ billingSameAsShipping: true, shippingAddress: stripeShippingAddress, orderComment: '' });
         }
     }, [isFirstShippingRender, onSubmit, stripeShippingAddress, shouldDisableSubmit, isShippingMethodLoading, isNewAddress ,consignments]);
 
-    const availableShippingList = countries?.map(country => ({code: country.code, name: country.name}));
+    const availableShippingList = countries?.map(country => ({ code: country.code, name: country.name }));
     const allowedCountries = availableShippingList ? availableShippingList.map(country => country.code).join(', ') : '';
     const shouldShowContent = (isNewAddress = true, phoneFieldRequired: boolean, phone: string) => {
         const stepCompleted = step.isComplete;
@@ -109,7 +109,7 @@ const StripeShippingAddress: FunctionComponent<StripeShippingAddressProps> = (pr
     };
 
     const handleStripeShippingAddress = useCallback(async (shipping: StripeShippingEvent) => {
-        const {complete, phoneFieldRequired, value: { address = { country: '', state: '', line1: '', line2: '', city: '', postal_code: '' }
+        const { complete, phoneFieldRequired, value: { address = { country: '', state: '', line1: '', line2: '', city: '', postal_code: '' }
             , name = '', firstName = '', lastName = '', phone = '' } } = shipping;
 
         if (complete) {

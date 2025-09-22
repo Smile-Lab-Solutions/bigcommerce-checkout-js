@@ -1,7 +1,7 @@
-import { PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
+import { type PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
 import { noop, some } from 'lodash';
 import React, {
-    FunctionComponent,
+    type FunctionComponent,
     useCallback,
     useContext,
     useEffect,
@@ -15,8 +15,8 @@ import {
     isInstrumentCardNumberRequiredSelector,
 } from '@bigcommerce/checkout/instrument-utils';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 import { AccordionContext, ChecklistSkeleton } from '@bigcommerce/checkout/ui';
@@ -32,19 +32,52 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
     ...rest
 }) => {
     const collapseStripeElement = useRef<() => void>();
+    const toggleUpdateTimeout = useRef<ReturnType<typeof setTimeout>>();
     const { onToggle, selectedItemId } = useContext(AccordionContext);
+    const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<string | undefined>(
+        selectedItemId,
+    );
     const [isOCSLoading, setIsOCSLoading] = useState(false);
     const methodSelector = `${method.gateway}-${method.id}`;
     const containerId = `${methodSelector}-component-field`;
     const paymentContext = paymentForm;
 
     useEffect(() => {
-        if (selectedItemId?.includes(`${method.gateway}-`)) {
+        /* INFO:
+         * switching and loading BC accordion item takes more time than preloaded Stripe accordion items, and BC accordion toggle is blocked during loading
+         * switching BC accordion items and loading payment methods triggers state update for BC accordion context
+         * thats why we need to double call onToggle for BC accordion with actual context state, for cases when the first toggle call has no effect because of loading state
+         */
+        if (toggleUpdateTimeout.current) {
+            clearTimeout(toggleUpdateTimeout.current);
+            toggleUpdateTimeout.current = undefined;
+        }
+
+        if (!!selectedPaymentMethodId && selectedItemId !== selectedPaymentMethodId) {
+            toggleUpdateTimeout.current = setTimeout(() => {
+                onToggle(selectedPaymentMethodId);
+            }, 100);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [onToggle]);
+
+    useEffect(() => {
+        if (selectedItemId === methodSelector) {
             return;
         }
 
+        setSelectedPaymentMethodId(selectedItemId);
         collapseStripeElement.current?.();
-    }, [selectedItemId, method.gateway]);
+    }, [selectedItemId, methodSelector]);
+
+    useEffect(() => {
+        if (selectedPaymentMethodId !== methodSelector) {
+            return;
+        }
+
+        onToggle(selectedPaymentMethodId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedPaymentMethodId, methodSelector]);
 
     const renderSubmitButton = useCallback(() => {
         paymentContext.hidePaymentSubmitButton(method, false);
@@ -85,7 +118,7 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
                     fonts: getFonts(),
                     onError: onUnhandledError,
                     render: renderSubmitButton,
-                    paymentMethodSelect: onToggle,
+                    paymentMethodSelect: setSelectedPaymentMethodId,
                     handleClosePaymentMethod: (collapseElement: () => void) => {
                         collapseStripeElement.current = collapseElement;
                     },
@@ -100,7 +133,7 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
             checkoutService,
             onUnhandledError,
             renderSubmitButton,
-            onToggle,
+            setSelectedPaymentMethodId,
             setIsOCSLoading,
         ],
     );

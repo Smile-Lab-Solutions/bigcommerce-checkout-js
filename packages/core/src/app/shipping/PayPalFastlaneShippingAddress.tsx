@@ -1,11 +1,11 @@
 import {
-    Address,
-    Consignment,
-    Country,
-    CustomerAddress,
-    FormField
+    type Address,
+    type Consignment,
+    type Country,
+    type CustomerAddress,
+    type FormField
 } from '@bigcommerce/checkout-sdk';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { type FC, useEffect, useRef, useState } from 'react';
 
 import {
     isBigCommercePaymentsFastlaneMethod,
@@ -17,7 +17,7 @@ import {
 } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
-import { ShippingAddressProps } from './ShippingAddress';
+import { type ShippingAddressProps } from './ShippingAddress';
 import ShippingAddressForm from './ShippingAddressForm';
 
 export interface PayPalFastlaneShippingAddressProps extends ShippingAddressProps {
@@ -25,9 +25,7 @@ export interface PayPalFastlaneShippingAddressProps extends ShippingAddressProps
     shippingAddress?:  Address,
     consignments: Consignment[];
     countries?: Country[];
-    countriesWithAutocomplete: string[];
     formFields: FormField[],
-    googleMapsApiKey?: string;
     handleFieldChange(fieldName: string, value: string): void,
     onAddressSelect(address: Address): void;
     storeCurrencyCode: string;
@@ -48,7 +46,6 @@ export const PayPalFastlaneShippingAddress: FC<PayPalFastlaneShippingAddressProp
         initialize,
         deinitialize,
         shippingAddress,
-        addresses,
         handleFieldChange,
         isLoading,
         storeCurrencyCode
@@ -125,18 +122,12 @@ export const PayPalFastlaneShippingAddress: FC<PayPalFastlaneShippingAddressProp
             ) : (
                 <ShippingAddressForm
                     address={shippingAddress}
-                    addresses={addresses}
                     consignments={props.consignments}
-                    countries={countries}
-                    countriesWithAutocomplete={props.countriesWithAutocomplete}
                     formFields={formFields}
-                    googleMapsApiKey={props.googleMapsApiKey}
-                    isFloatingLabelEnabled={props.isFloatingLabelEnabled}
                     isLoading={isLoadingStrategy}
                     onAddressSelect={onAddressSelect}
                     onFieldChange={handleFieldChange}
                     onUseNewAddress={props.onUseNewAddress}
-                    shouldShowSaveAddress={props.shouldShowSaveAddress}
                     storeCurrencyCode={storeCurrencyCode}
                 />
             )}

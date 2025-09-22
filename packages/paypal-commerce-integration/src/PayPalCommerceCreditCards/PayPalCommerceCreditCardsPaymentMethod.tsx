@@ -1,10 +1,10 @@
-import { CardInstrument, LegacyHostedFormOptions } from '@bigcommerce/checkout-sdk';
+import { type CardInstrument, type LegacyHostedFormOptions } from '@bigcommerce/checkout-sdk';
 import { compact, forIn } from 'lodash';
-import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useCallback, useState } from 'react';
 
 import {
     CreditCardPaymentMethodComponent,
-    CreditCardPaymentMethodProps,
+    type CreditCardPaymentMethodProps,
 } from '@bigcommerce/checkout/credit-card-integration';
 import {
     getHostedCreditCardValidationSchema,
@@ -20,12 +20,12 @@ import {
     isInstrumentCardNumberRequiredSelector,
 } from '@bigcommerce/checkout/instrument-utils';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 
-const PayPalCommerceCreditCardPaymentMethod: FunctionComponent<PaymentMethodProps> = (props) => {
+const PayPalCommerceCreditCardsPaymentMethod: FunctionComponent<PaymentMethodProps> = (props) => {
     const { checkoutService, checkoutState, paymentForm, language, method } = props;
 
     const { cardCode, showCardHolderName, isHostedFormEnabled, requireCustomerCode } =
@@ -295,6 +295,6 @@ const PayPalCommerceCreditCardPaymentMethod: FunctionComponent<PaymentMethodProp
 };
 
 export default toResolvableComponent<PaymentMethodProps, PaymentMethodResolveId>(
-    PayPalCommerceCreditCardPaymentMethod,
+    PayPalCommerceCreditCardsPaymentMethod,
     [{ id: 'paypalcommercecreditcards' }],
 );

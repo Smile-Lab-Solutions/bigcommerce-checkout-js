@@ -19,7 +19,6 @@
       "@bigcommerce/checkout/ui/icon/*": ["packages/ui/src/icon/*"],
       "@bigcommerce/checkout/adyen-integration": ["packages/adyen-integration/src/index.ts"],
       "@bigcommerce/checkout/affirm-integration": ["packages/affirm-integration/src/index.ts"],
-      "@bigcommerce/checkout/afterpay-integration": ["packages/afterpay-integration/src/index.ts"],
       "@bigcommerce/checkout/amazon-pay-v2-integration": [
         "packages/amazon-pay-v2-integration/src/index.ts"
       ],
@@ -61,12 +60,6 @@
       "@bigcommerce/checkout/hosted-credit-card-integration": [
         "packages/hosted-credit-card-integration/src/index.ts"
       ],
-      "@bigcommerce/checkout/hosted-dropin-integration": [
-        "packages/hosted-dropin-integration/src/index.ts"
-      ],
-      "@bigcommerce/checkout/hosted-field-integration": [
-        "packages/hosted-field-integration/src/index.ts"
-      ],
       "@bigcommerce/checkout/hosted-payment-integration": [
         "packages/hosted-payment-integration/src/index.ts"
       ],
@@ -94,7 +87,11 @@
       "@bigcommerce/checkout/paypal-fastlane-integration": [
         "packages/paypal-fastlane-integration/src/index.ts"
       ],
+      "@bigcommerce/checkout/paypal-payments-pro-integration": [
+        "packages/paypal-payments-pro-integration/src/index.ts"
+      ],
       "@bigcommerce/checkout/paypal-utils": ["packages/paypal-utils/src/index.ts"],
+      "@bigcommerce/checkout/ppsdk-integration": ["packages/ppsdk-integration/src/index.ts"],
       "@bigcommerce/checkout/squarev2-integration": ["packages/squarev2-integration/src/index.ts"],
       "@bigcommerce/checkout/stripe-integration": ["packages/stripe-integration/src/index.ts"],
       "@bigcommerce/checkout/td-bank-integration": ["packages/td-bank-integration/src/index.ts"],
