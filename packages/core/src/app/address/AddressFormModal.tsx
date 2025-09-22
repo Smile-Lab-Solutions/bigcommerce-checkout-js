@@ -1,9 +1,9 @@
-import { Address, Country, FormField } from '@bigcommerce/checkout-sdk';
-import { FormikProps, withFormik } from 'formik';
-import React, { FunctionComponent } from 'react';
+import { type Address, type FormField } from '@bigcommerce/checkout-sdk';
+import { type FormikProps, withFormik } from 'formik';
+import React, { type FunctionComponent } from 'react';
 import { lazy } from 'yup';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { Button, ButtonVariant } from '../ui/button';
@@ -11,8 +11,9 @@ import { Form } from '../ui/form';
 import { Modal, ModalHeader } from '../ui/modal';
 
 import AddressForm from './AddressForm';
+import AddressType from './AddressType';
 import getAddressFormFieldsValidationSchema from './getAddressFormFieldsValidationSchema';
-import mapAddressToFormValues, { AddressFormValues } from './mapAddressToFormValues';
+import mapAddressToFormValues, { type AddressFormValues } from './mapAddressToFormValues';
 
 export interface AddressFormModalProps extends AddressFormProps {
     isOpen: boolean;
@@ -20,13 +21,9 @@ export interface AddressFormModalProps extends AddressFormProps {
 }
 
 export interface AddressFormProps {
-    countries?: Country[];
-    countriesWithAutocomplete: string[];
-    googleMapsApiKey?: string;
     isLoading: boolean;
     shouldShowSaveAddress?: boolean;
     defaultCountryCode?: string;
-    isFloatingLabelEnabled?: boolean;
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
@@ -36,27 +33,20 @@ export interface AddressFormProps {
 const SaveAddress: FunctionComponent<
     AddressFormProps & WithLanguageProps & FormikProps<AddressFormValues>
 > = ({
-    googleMapsApiKey,
     getFields,
-    countriesWithAutocomplete,
-    countries,
     values,
     setFieldValue,
     isLoading,
     onRequestClose,
-    isFloatingLabelEnabled,
 }) => (
     <Form autoComplete="on">
         <LoadingOverlay isLoading={isLoading}>
             <AddressForm
-                countries={countries}
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 countryCode={values.countryCode}
                 formFields={getFields(values.countryCode)}
-                googleMapsApiKey={googleMapsApiKey}
-                isFloatingLabelEnabled={isFloatingLabelEnabled}
                 setFieldValue={setFieldValue}
                 shouldShowSaveAddress={false}
+                type={AddressType.Shipping}
             />
             <div className="form-actions">
                 <Button

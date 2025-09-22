@@ -1,4 +1,4 @@
-import { Consignment, ConsignmentCreateRequestBody, ConsignmentLineItem } from "@bigcommerce/checkout-sdk";
+import { type Consignment, type ConsignmentCreateRequestBody, type ConsignmentLineItem } from "@bigcommerce/checkout-sdk";
 import classNames from "classnames";
 import { find } from "lodash";
 import React, { useMemo, useState } from "react";
@@ -19,7 +19,6 @@ import { setRecommendedOrMissingShippingOption } from './utils';
 interface NewConsignmentProps {
     consignmentNumber: number;
     defaultCountryCode?: string;
-    countriesWithAutocomplete: string[];
     isLoading: boolean;
     setIsAddShippingDestination: React.Dispatch<React.SetStateAction<boolean>>;
     onUnhandledError(error: Error): void;
@@ -28,7 +27,6 @@ interface NewConsignmentProps {
 
 const NewConsignment = ({
     consignmentNumber,
-    countriesWithAutocomplete,
     defaultCountryCode,
     isLoading,
     onUnhandledError,
@@ -107,7 +105,6 @@ const NewConsignment = ({
                 </h3>
             </div>
             <ConsignmentAddressSelector
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 defaultCountryCode={defaultCountryCode}
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}

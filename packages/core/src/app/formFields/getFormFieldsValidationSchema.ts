@@ -1,8 +1,8 @@
 import { memoize } from '@bigcommerce/memoize';
-import { object, ObjectSchema, string, StringSchema } from 'yup';
+import { object, type ObjectSchema, string, type StringSchema } from 'yup';
 
 import getCustomFormFieldsValidationSchema, {
-    FormFieldsValidationSchemaOptions,
+    type FormFieldsValidationSchemaOptions,
 } from './getCustomFormFieldsValidationSchema';
 
 export const WHITELIST_REGEXP = /^[^<>]*$/;
@@ -24,7 +24,7 @@ export default memoize(function getFormFieldsValidationSchema({
                 if (required) {
                     schema[name] = schema[name]
                         .trim()
-                        .required(translate('required', { label, name}));
+                        .required(translate('required', { label, name }));
                 }
 
                 if ((name === 'address1' || name === 'address2') && maxLength) {

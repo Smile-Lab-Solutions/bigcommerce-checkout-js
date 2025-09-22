@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
 import React from 'react';
@@ -10,7 +10,7 @@ import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
@@ -65,7 +65,7 @@ describe('Edit Cart Component', () => {
         );
 
         screen.getByText('Edit Cart').click();
-        expect(screen.getByRole('link', { name: 'Close'})).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Close' })).toBeInTheDocument();
         expect(screen.getAllByRole('alert')).toHaveLength(2);
         screen.getByText('Confirm').click();
 
@@ -87,7 +87,7 @@ describe('Edit Cart Component', () => {
 
         screen.getByText('Show Details').click();
         screen.getByText('Edit Cart').click();
-        expect(screen.getAllByRole('link', { name: 'Close'})).toHaveLength(2);
+        expect(screen.getAllByRole('link', { name: 'Close' })).toHaveLength(2);
         expect(screen.getAllByRole('alert')).toHaveLength(2);
         screen.getByText('Confirm').click();
 

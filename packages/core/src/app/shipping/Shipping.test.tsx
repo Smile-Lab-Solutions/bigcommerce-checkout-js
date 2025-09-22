@@ -1,18 +1,18 @@
 import {
-    CheckoutService,
+    type CheckoutService,
     createCheckoutService,
     createEmbeddedCheckoutMessenger,
-    EmbeddedCheckoutMessenger,
+    type EmbeddedCheckoutMessenger,
 } from '@bigcommerce/checkout-sdk';
 import faker from '@faker-js/faker';
 import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
 import { rest } from 'msw';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
-    AnalyticsContextProps,
-    AnalyticsEvents,
+    type AnalyticsContextProps,
+    type AnalyticsEvents,
     AnalyticsProviderMock,
 } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
@@ -38,7 +38,7 @@ import {
 import { renderWithoutWrapper as render, screen, within } from '@bigcommerce/checkout/test-utils';
 import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
-import Checkout, { CheckoutProps } from '../checkout/Checkout';
+import Checkout, { type CheckoutProps } from '../checkout/Checkout';
 import { createErrorLogger } from '../common/error';
 import {
     createEmbeddedCheckoutStylesheet,
@@ -542,7 +542,7 @@ describe('Shipping step', () => {
 
             await checkout.waitForPaymentStep();
 
-            await userEvent.click(screen.getAllByRole('button', {name: 'Edit'})[1]);
+            await userEvent.click(screen.getAllByRole('button', { name: 'Edit' })[1]);
 
             const randomAddress1 = JSON.parse(JSON.stringify({
                 firstName: faker.name.firstName(),
@@ -563,7 +563,7 @@ describe('Shipping step', () => {
             expect((checkoutService.updateShippingAddress as any).mock.calls.slice(-1)[0][0]).toEqual(
                 expect.objectContaining({
                     ...randomAddress1,
-                    customFields: [{fieldId: 'field_60', fieldValue: '2'}],
+                    customFields: [{ fieldId: 'field_60', fieldValue: '2' }],
                 }),
             );
 
@@ -586,7 +586,7 @@ describe('Shipping step', () => {
             expect((checkoutService.updateShippingAddress as any).mock.calls.slice(-1)[0][0]).toEqual(
                 expect.objectContaining({
                         ...randomAddress2,
-                        customFields: [{fieldId: 'field_60', fieldValue: '1'}],
+                        customFields: [{ fieldId: 'field_60', fieldValue: '1' }],
                 }),
             );
         });
@@ -761,7 +761,7 @@ describe('Shipping step', () => {
             // eslint-disable-next-line testing-library/no-container,testing-library/no-node-access
             expect(container.getElementsByClassName('form-checklist-item--selected')[0]).toHaveTextContent('Pickup In Store$3.00');
 
-            await userEvent.click(screen.getByRole('radio', {name: 'Flat Rate $10.00'}));
+            await userEvent.click(screen.getByRole('radio', { name: 'Flat Rate $10.00' }));
 
             expect(checkoutService.selectConsignmentShippingOption).toHaveBeenCalled();
             // eslint-disable-next-line testing-library/no-container,testing-library/no-node-access

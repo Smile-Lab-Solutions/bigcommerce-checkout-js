@@ -1,10 +1,10 @@
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { LocaleProvider } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
@@ -14,7 +14,7 @@ import { getBillingAddress } from '../billing/billingAddresses.mock';
 import { getCheckout } from '../checkout/checkouts.mock';
 import { getStoreConfig } from '../config/config.mock';
 
-import CustomerInfo, { CustomerInfoProps } from './CustomerInfo';
+import CustomerInfo, { type CustomerInfoProps } from './CustomerInfo';
 import { getCustomer, getGuestCustomer } from './customers.mock';
 
 describe('CustomerInfo', () => {
@@ -157,39 +157,6 @@ describe('CustomerInfo', () => {
             await userEvent.click(screen.getByTestId('sign-out-link'));
 
             expect(window.location.assign).toHaveBeenCalledWith(`${expectedLogoutLink}?redirectTo=${expectedCheckoutLink}`);
-        });
-
-        it('signs out customer on checkout page when experiment off and shouldRedirectToStorefrontForAuth is true', async () => {
-            Object.defineProperty(window, 'location', {
-                writable: true,
-                value: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-spread
-                    ...window.location,
-                    assign: jest.fn(),
-                },
-            });
-
-            jest.spyOn(checkoutState.data, 'getConfig').mockReturnValue({
-                ...getStoreConfig(),
-                checkoutSettings: {
-                    ...getStoreConfig().checkoutSettings,
-                    shouldRedirectToStorefrontForAuth: true,
-                    features: {
-                        'CHECKOUT-9138.redirect_to_storefront_for_auth': false,
-                    }
-                }
-            });
-
-            jest.spyOn(checkoutService, 'signOutCustomer').mockReturnValue(
-                Promise.resolve(checkoutService.getState()),
-            );
-
-            render(<CustomerInfoTest />);
-
-            await userEvent.click(screen.getByTestId('sign-out-link'));
-
-            expect(checkoutService.signOutCustomer).toHaveBeenCalled();
-            expect(window.location.assign).not.toHaveBeenCalled();
         });
     });
 });

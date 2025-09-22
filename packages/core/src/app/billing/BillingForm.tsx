@@ -1,30 +1,29 @@
 import {
-    Address,
-    CheckoutSelectors,
-    Country,
-    Customer,
-    FormField,
+    type Address,
+    type FormField,
 } from '@bigcommerce/checkout-sdk';
-import { FormikProps, withFormik } from 'formik';
-import React, { RefObject, useRef, useState } from 'react';
+import { type FormikProps, withFormik } from 'formik';
+import React, { type RefObject, useRef, useState } from 'react';
 import { lazy } from 'yup';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { AddressFormSkeleton, LoadingOverlay, useThemeContext } from '@bigcommerce/checkout/ui';
 
 import {
-    AddressForm,
-    AddressFormValues,
-    AddressSelect,
-    AddressType,
-    getAddressFormFieldsValidationSchema,
-    getTranslateAddressError,
-    isValidCustomerAddress,
-    mapAddressToFormValues,
+  AddressForm,
+  type AddressFormValues,
+  AddressSelect,
+  AddressType,
+  getAddressFormFieldsValidationSchema,
+  getTranslateAddressError,
+  isValidCustomerAddress,
+  mapAddressToFormValues,
 } from '../address';
 import { getCustomFormFieldsValidationSchema } from '../formFields';
 import { OrderComments } from '../orderComments';
+import { getShippableItemsCount } from '../shipping';
 import { Button, ButtonVariant } from '../ui/button';
 import { Fieldset, Form } from '../ui/form';
 
@@ -33,36 +32,21 @@ import StaticBillingAddress from './StaticBillingAddress';
 export type BillingFormValues = AddressFormValues & { orderComment: string };
 
 export interface BillingFormProps {
-    billingAddress?: Address;
-    countries: Country[];
-    countriesWithAutocomplete: string[];
-    customer: Customer;
-    customerMessage: string;
-    googleMapsApiKey: string;
-    isUpdating: boolean;
     methodId?: string;
-    shouldShowOrderComments: boolean;
-    isFloatingLabelEnabled?: boolean;
-    getFields(countryCode?: string): FormField[];
+    billingAddress?: Address;
+    customerMessage: string;
+    navigateNextStep(): void;
     onSubmit(values: BillingFormValues): void;
     onUnhandledError(error: Error): void;
-    updateAddress(address: Partial<Address>): Promise<CheckoutSelectors>;
+    getFields(countryCode?: string): FormField[];
 }
 
 const BillingForm = ({
-    googleMapsApiKey,
-    billingAddress,
-    countriesWithAutocomplete,
-    customer: { addresses, isGuest },
-    getFields,
-    countries,
-    isUpdating,
-    setFieldValue,
-    shouldShowOrderComments,
-    values,
     methodId,
-    isFloatingLabelEnabled,
-    updateAddress,
+    getFields,
+    billingAddress,
+    setFieldValue,
+    values,
     onUnhandledError,
 }: BillingFormProps & WithLanguageProps & FormikProps<BillingFormValues>) => {
     const [isResettingAddress, setIsResettingAddress] = useState(false);
@@ -70,6 +54,22 @@ const BillingForm = ({
     const { isPayPalFastlaneEnabled, paypalFastlaneAddresses } = usePayPalFastlaneAddress();
 
     const { themeV2 } = useThemeContext();
+    const { checkoutService, checkoutState } = useCheckout();
+
+    const {
+        data: { getCustomer, getConfig, getCart },
+        statuses: { isUpdatingBillingAddress, isUpdatingCheckout },
+    } = checkoutState;
+    const customer = getCustomer();
+    const config = getConfig();
+    const cart = getCart();
+
+    if (!config || !customer || !cart) {
+        throw new Error('checkout data is not available');
+    }
+
+    const isGuest = customer.isGuest;
+    const addresses = customer.addresses;
     const shouldRenderStaticAddress = methodId === 'amazonpay';
     const allFormFields = getFields(values.countryCode);
     const customFormFields = allFormFields.filter(({ custom }) => custom);
@@ -85,12 +85,15 @@ const BillingForm = ({
             billingAddresses,
             getFields(billingAddress.countryCode),
         );
+    const isUpdating  = isUpdatingBillingAddress() || isUpdatingCheckout();
+    const { enableOrderComments } = config.checkoutSettings;
+    const shouldShowOrderComments  = enableOrderComments && getShippableItemsCount(cart) < 1;
 
     const handleSelectAddress = async (address: Partial<Address>) => {
         setIsResettingAddress(true);
 
         try {
-            await updateAddress(address);
+            await checkoutService.updateBillingAddress(address);
         } catch (error) {
             if (error instanceof Error) {
                 onUnhandledError(error);
@@ -101,7 +104,7 @@ const BillingForm = ({
     };
 
     const handleUseNewAddress = () => {
-        handleSelectAddress({});
+        void handleSelectAddress({});
     };
 
     return (
@@ -132,14 +135,11 @@ const BillingForm = ({
                 {!hasValidCustomerAddress && (
                     <AddressFormSkeleton isLoading={isResettingAddress}>
                         <AddressForm
-                            countries={countries}
-                            countriesWithAutocomplete={countriesWithAutocomplete}
                             countryCode={values.countryCode}
                             formFields={editableFormFields}
-                            googleMapsApiKey={googleMapsApiKey}
-                            isFloatingLabelEnabled={isFloatingLabelEnabled}
                             setFieldValue={setFieldValue}
                             shouldShowSaveAddress={!isGuest}
+                            type={AddressType.Billing}
                         />
                     </AddressFormSkeleton>
                 )}

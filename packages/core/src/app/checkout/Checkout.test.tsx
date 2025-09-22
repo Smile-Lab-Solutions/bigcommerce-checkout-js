@@ -1,16 +1,16 @@
 import {
-    CheckoutService,
+    type CheckoutService,
     createCheckoutService,
     createEmbeddedCheckoutMessenger,
-    EmbeddedCheckoutMessenger,
+    type EmbeddedCheckoutMessenger,
 } from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
-import React, { act, FunctionComponent } from 'react';
+import React, { act, type FunctionComponent } from 'react';
 
 import {
-    AnalyticsContextProps,
-    AnalyticsEvents,
+    type AnalyticsContextProps,
+    type AnalyticsEvents,
     AnalyticsProviderMock,
 } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
@@ -35,7 +35,7 @@ import {
     createEmbeddedCheckoutSupport,
 } from '../embeddedCheckout';
 
-import Checkout, { CheckoutProps } from './Checkout';
+import Checkout, { type CheckoutProps } from './Checkout';
 
 describe('Checkout', () => {
     let checkout: CheckoutPageNodeObject;
@@ -309,7 +309,7 @@ describe('Checkout', () => {
         });
 
         it('navigates to next step when shopper continues as guest', async () => {
-            render(<CheckoutTest {...defaultProps} />, {legacyRoot: true});
+            render(<CheckoutTest {...defaultProps} />, { legacyRoot: true });
 
             await checkout.waitForCustomerStep();
 
@@ -464,7 +464,7 @@ describe('Checkout', () => {
                     consignments: [{
                         ...checkoutWithShippingDiscount.consignments[0],
                         discounts: [
-                            {...consignmentAutomaticDiscount, amount: 3}
+                            { ...consignmentAutomaticDiscount, amount: 3 }
                         ]
                     }],
                     coupons: [],
@@ -501,8 +501,8 @@ describe('Checkout', () => {
                             ...checkoutWithShippingDiscount.consignments[0],
                             id: 'consignment-2',
                             discounts: [
-                                {...consignmentAutomaticDiscount, amount: 3},
-                                {...consignmentCouponDiscount, amount: 1},
+                                { ...consignmentAutomaticDiscount, amount: 3 },
+                                { ...consignmentCouponDiscount, amount: 1 },
                             ]
                         }
                     ],
@@ -579,7 +579,7 @@ describe('Checkout', () => {
                 throw error;
             });
 
-            render(<CheckoutTest {...defaultProps} />, {legacyRoot: true});
+            render(<CheckoutTest {...defaultProps} />, { legacyRoot: true });
 
             await waitFor(() => {
                 expect(defaultProps.errorLogger.log).toHaveBeenCalledWith(error);

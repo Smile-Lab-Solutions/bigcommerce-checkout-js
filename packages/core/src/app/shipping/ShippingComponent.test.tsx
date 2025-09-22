@@ -1,17 +1,19 @@
 import '@testing-library/jest-dom';
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type Cart,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+import { type ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider, PaymentMethodId } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen, within } from '@bigcommerce/checkout/test-utils';
@@ -21,11 +23,12 @@ import { getCart } from '../cart/carts.mock';
 import { getPhysicalItem } from '../cart/lineItem.mock';
 import { getCheckout } from '../checkout/checkouts.mock';
 import CheckoutStepType from '../checkout/CheckoutStepType';
+import { createErrorLogger } from '../common/error';
 import { getStoreConfig } from '../config/config.mock';
 import { getCustomer } from '../customer/customers.mock';
 import { getConsignment } from '../shipping/consignment.mock';
 
-import Shipping, { ShippingProps, WithCheckoutShippingProps } from './Shipping';
+import Shipping, { type ShippingProps, type WithCheckoutShippingProps } from './Shipping';
 import { getShippingAddress } from './shipping-addresses.mock';
 
 describe('Shipping component', () => {
@@ -34,11 +37,12 @@ describe('Shipping component', () => {
     let checkoutState: CheckoutSelectors;
     let defaultProps: ShippingProps;
     let ComponentTest: FunctionComponent<ShippingProps> & Partial<WithCheckoutShippingProps>;
+    let errorLogger: ErrorLogger;
 
     beforeEach(() => {
         localeContext = createLocaleContext(getStoreConfig());
         checkoutService = createCheckoutService();
-
+        errorLogger = createErrorLogger();
         checkoutState = checkoutService.getState();
 
         defaultProps = {
@@ -117,7 +121,7 @@ describe('Shipping component', () => {
         ComponentTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleContext.Provider value={localeContext}>
-                    <ExtensionProvider checkoutService={checkoutService}>
+                    <ExtensionProvider checkoutService={checkoutService} errorLogger={errorLogger} >
                         <Shipping {...props} />
                     </ExtensionProvider>
                 </LocaleContext.Provider>

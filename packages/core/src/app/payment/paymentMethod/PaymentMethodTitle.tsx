@@ -1,17 +1,17 @@
-import { CardInstrument, CheckoutSettings, LanguageService, PaymentMethod } from '@bigcommerce/checkout-sdk';
+import { type CardInstrument, type CheckoutSettings, type LanguageService, type PaymentMethod } from '@bigcommerce/checkout-sdk';
 import { number } from 'card-validator';
 import classNames from 'classnames';
 import { compact } from 'lodash';
-import React, { FunctionComponent, memo, ReactNode } from 'react';
+import React, { type FunctionComponent, memo, type ReactNode } from 'react';
 
 import { BigCommercePaymentsPayLaterBanner } from '@bigcommerce/checkout/bigcommerce-payments-utils'
-import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps , PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { type CheckoutContextProps , type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { BraintreePaypalCreditBanner, PaypalCommerceCreditBanner } from '@bigcommerce/checkout/paypal-utils';
 import { CreditCardIconList, mapFromPaymentMethodCardType, useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../../checkout';
-import { connectFormik, ConnectFormikProps } from '../../common/form';
+import { connectFormik, type ConnectFormikProps } from '../../common/form';
 import { isExperimentEnabled } from '../../common/utility';
 
 import { hasCreditCardNumber } from './CreditCardFieldsetValues';
@@ -73,7 +73,9 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.BraintreePaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
-                subtitle: (props: { onUnhandledError?(error: Error): void }): ReactNode => <BraintreePaypalCreditBanner {...props} />
+                subtitle: (props: PaymentMethodSubtitleProps): ReactNode => (
+                    <BraintreePaypalCreditBanner containerId='braintree-credit-banner-container' {...props} />
+                ),
             },
             [PaymentMethodType.PaypalCredit]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
@@ -176,6 +178,9 @@ export function getPaymentMethodTitle(
                         ? method.logoUrl
                         : cdnPath('/img/payment-providers/paypalpaymentsprouk.png'),
                 titleText: '',
+                subtitle: (props: PaymentMethodSubtitleProps): ReactNode => (
+                    <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />
+                ),
             },
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
@@ -277,7 +282,7 @@ export function getPaymentMethodTitle(
         }
 
         if (method.id === PaymentMethodId.Ratepay) {
-            return { logoUrl: method.logoUrl || '', titleText: language.translate('payment.ratepay.payment_method_title')};
+            return { logoUrl: method.logoUrl || '', titleText: language.translate('payment.ratepay.payment_method_title') };
         }
 
         return (
@@ -348,7 +353,7 @@ const PaymentMethodTitle: FunctionComponent<
         <div className={
             classNames(
                 'paymentProviderHeader-container',
-                {'paymentProviderHeader-container-googlePay': method.id.includes('googlepay')},
+                { 'paymentProviderHeader-container-googlePay': method.id.includes('googlepay') },
             )
         }>
             <div
@@ -360,8 +365,8 @@ const PaymentMethodTitle: FunctionComponent<
                         alt={`${methodName} icon`}
                         className={classNames(
                             'paymentProviderHeader-img',
-                            {'paymentProviderHeader-img-applePay': method.id === 'applepay'},
-                            {'paymentProviderHeader-img-googlePay': method.id.includes('googlepay')},
+                            { 'paymentProviderHeader-img-applePay': method.id === 'applepay' },
+                            { 'paymentProviderHeader-img-googlePay': method.id.includes('googlepay') },
                         )}
                         data-test="payment-method-logo"
                         src={logoUrl}

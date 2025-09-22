@@ -2,11 +2,11 @@ import React from 'react';
 
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
-import OrderConfirmationApp, { OrderConfirmationAppProps } from './OrderConfirmationApp';
+import OrderConfirmationApp, { type OrderConfirmationAppProps } from './OrderConfirmationApp';
 
-jest.mock('./OrderConfirmation', () => (props: any) => (
-    <div className="orderConfirmationApp">Order Confirmation</div>
-));
+jest.mock('./OrderConfirmation', () => ({
+    OrderConfirmation: () => <div className="orderConfirmationApp">Order Confirmation</div>,
+}));
 
 describe('OrderConfirmationApp', () => {
     let defaultProps: OrderConfirmationAppProps;

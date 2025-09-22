@@ -1,4 +1,4 @@
-import { Checkout, createCheckoutService } from '@bigcommerce/checkout-sdk';
+import { type Checkout, createCheckoutService } from '@bigcommerce/checkout-sdk';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -41,13 +41,13 @@ describe('withCheckout()', () => {
     });
 
     it('provides checkout service to child component', async () => {
-        const withMockCheckout = withCheckout(({checkoutService}) => ({
+        const withMockCheckout = withCheckout(({ checkoutService }) => ({
             loadCheckout: () => {
                 checkoutService.loadCheckout();
             },
         }));
 
-        const Child = withMockCheckout(({loadCheckout}: { loadCheckout(): void }) => (
+        const Child = withMockCheckout(({ loadCheckout }: { loadCheckout(): void }) => (
             <button onClick={loadCheckout}>Load</button>
         ));
 

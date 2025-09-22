@@ -1,27 +1,27 @@
 import {
-    CheckoutPaymentMethodExecutedOptions,
-    CheckoutSelectors,
-    CustomerAccountRequestBody,
-    CustomerCredentials,
-    CustomerInitializeOptions,
-    CustomerRequestOptions,
-    ExecutePaymentMethodCheckoutOptions,
-    FormField,
-    GuestCredentials,
-    SignInEmail,
-    StoreConfig,
+    type CheckoutPaymentMethodExecutedOptions,
+    type CheckoutSelectors,
+    type CustomerAccountRequestBody,
+    type CustomerCredentials,
+    type CustomerInitializeOptions,
+    type CustomerRequestOptions,
+    type ExecutePaymentMethodCheckoutOptions,
+    type FormField,
+    type GuestCredentials,
+    type SignInEmail,
+    type StoreConfig,
 } from '@bigcommerce/checkout-sdk';
 import { noop } from 'lodash';
-import React, { Component, ReactNode } from 'react';
+import React, { Component, type ReactNode } from 'react';
 
-import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { type AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { shouldUseStripeLinkByMinimumAmount } from '@bigcommerce/checkout/instrument-utils';
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 import { isPayPalFastlaneMethod } from '@bigcommerce/checkout/paypal-fastlane-integration';
 
 import { withAnalytics } from '../analytics';
 import { withCheckout } from '../checkout';
-import CheckoutStepStatus from '../checkout/CheckoutStepStatus';
+import type CheckoutStepStatus from '../checkout/CheckoutStepStatus';
 import { isErrorWithType } from '../common/error';
 import { isFloatingLabelEnabled } from '../common/utility';
 import getProviderWithCustomCheckout from '../payment/getProviderWithCustomCheckout';
@@ -30,9 +30,9 @@ import { PaymentMethodId } from '../payment/paymentMethod';
 import CheckoutButtonList from './CheckoutButtonList';
 import CreateAccountForm from './CreateAccountForm';
 import CustomerViewType from './CustomerViewType';
-import EmailLoginForm, { EmailLoginFormValues } from './EmailLoginForm';
-import { CreateAccountFormValues } from './getCreateCustomerValidationSchema';
-import GuestForm, { GuestFormValues } from './GuestForm';
+import EmailLoginForm, { type EmailLoginFormValues } from './EmailLoginForm';
+import { type CreateAccountFormValues } from './getCreateCustomerValidationSchema';
+import GuestForm, { type GuestFormValues } from './GuestForm';
 import LoginForm from './LoginForm';
 import mapCreateAccountFromFormValues from './mapCreateAccountFromFormValues';
 import StripeGuestForm from './StripeGuestForm';
@@ -64,7 +64,6 @@ export interface WithCheckoutCustomerProps {
     defaultShouldSubscribe: boolean;
     email?: string;
     firstName?: string;
-    fixNewsletterCheckboxExperimentEnabled: boolean;
     forgotPasswordUrl: string;
     isContinuingAsGuest: boolean;
     isCreatingAccount: boolean;
@@ -129,7 +128,7 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
 
         try {
             if (providerWithCustomCheckout && providerWithCustomCheckout !== PaymentMethodId.StripeUPE) {
-                await initializeCustomer({methodId: providerWithCustomCheckout});
+                await initializeCustomer({ methodId: providerWithCustomCheckout });
             }
         } catch (error) {
             onUnhandledError(error);
@@ -290,14 +289,12 @@ class Customer extends Component<CustomerProps & WithCheckoutCustomerProps & Ana
             requiresMarketingConsent,
             isFloatingLabelEnabled,
             defaultShouldSubscribe,
-            fixNewsletterCheckboxExperimentEnabled,
         } = this.props;
 
         return (
             <CreateAccountForm
                 createAccountError={createAccountError}
                 defaultShouldSubscribe={defaultShouldSubscribe}
-                fixNewsletterCheckboxExperimentEnabled={fixNewsletterCheckboxExperimentEnabled}
                 formFields={customerAccountFields}
                 isCreatingAccount={isCreatingAccount}
                 isExecutingPaymentMethodCheckout={isExecutingPaymentMethodCheckout}
@@ -590,7 +587,6 @@ export function mapToWithCheckoutCustomerProps({
             isSignInEmailEnabled,
             isAccountCreationEnabled,
             isExpressPrivacyPolicy,
-            features,
             shouldRedirectToStorefrontForAuth
         },
     } = config as StoreConfig & { checkoutSettings: { isAccountCreationEnabled: boolean } };
@@ -598,8 +594,6 @@ export function mapToWithCheckoutCustomerProps({
     const providerWithCustomCheckout = getProviderWithCustomCheckout(
         config.checkoutSettings.providerWithCustomCheckout,
     );
-
-    const fixNewsletterCheckboxExperimentEnabled = features['CHECKOUT-8033.fix_newletter_checkbox'];
 
     return {
         customerAccountFields: getCustomerAccountFields(),
@@ -614,7 +608,6 @@ export function mapToWithCheckoutCustomerProps({
         executePaymentMethodCheckout: checkoutService.executePaymentMethodCheckout,
         email: billingAddress?.email || customer?.email,
         firstName: customer?.firstName,
-        fixNewsletterCheckboxExperimentEnabled,
         forgotPasswordUrl: config.links.forgotPasswordLink,
         initializeCustomer: checkoutService.initializeCustomer,
         isCreatingAccount: isCreatingCustomerAccount(),

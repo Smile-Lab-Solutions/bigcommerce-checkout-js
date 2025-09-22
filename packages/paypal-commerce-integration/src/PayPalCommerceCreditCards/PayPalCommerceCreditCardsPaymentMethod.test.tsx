@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
     createLanguageService,
-    PaymentMethod,
+    type PaymentMethod,
 } from '@bigcommerce/checkout-sdk';
 import { Formik } from 'formik';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
-import { CreditCardPaymentMethodValues } from '@bigcommerce/checkout/credit-card-integration';
+import { type CreditCardPaymentMethodValues } from '@bigcommerce/checkout/credit-card-integration';
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import {
     CheckoutProvider,
     PaymentFormContext,
-    PaymentFormService,
-    PaymentMethodProps,
+    type PaymentFormService,
+    type PaymentMethodProps,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     getCart,
@@ -33,7 +33,7 @@ import {
 } from '@bigcommerce/checkout/test-mocks';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
-import PayPalCommerceCreditCardPaymentMethod from './PayPalCommerceCreditCardsPaymentMethod';
+import PayPalCommerceCreditCardsPaymentMethod from './PayPalCommerceCreditCardsPaymentMethod';
 
 describe('PayPalCommerceCreditCardPaymentMethod', () => {
     let initialValues: CreditCardPaymentMethodValues;
@@ -86,7 +86,7 @@ describe('PayPalCommerceCreditCardPaymentMethod', () => {
                 <PaymentFormContext.Provider value={{ paymentForm }}>
                     <LocaleContext.Provider value={localeContext}>
                         <Formik initialValues={initialValues} onSubmit={noop}>
-                            <PayPalCommerceCreditCardPaymentMethod {...props} />
+                            <PayPalCommerceCreditCardsPaymentMethod {...props} />
                         </Formik>
                     </LocaleContext.Provider>
                 </PaymentFormContext.Provider>

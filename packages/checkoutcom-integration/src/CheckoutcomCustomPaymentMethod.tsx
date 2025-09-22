@@ -1,17 +1,20 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     CreditCardPaymentMethodComponent,
-    CreditCardPaymentMethodProps,
+    type CreditCardPaymentMethodProps,
 } from '@bigcommerce/checkout/credit-card-integration';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 
 import checkoutcomCustomFormFields, { ccDocumentField } from './CheckoutcomCustomFormFields';
-import { checkoutcomPaymentMethods, getCheckoutcomValidationSchemas } from './checkoutcomFieldsets';
+import {
+    type checkoutcomPaymentMethods,
+    getCheckoutcomValidationSchemas,
+} from './checkoutcomFieldsets';
 import { checkoutcomPaymentMethodsArray } from './checkoutcomFieldsets/getCheckoutcomFieldsetValidationSchemas';
 
 export interface CheckoutcomCustomPaymentMethodProps
@@ -68,13 +71,5 @@ const CheckoutcomCustomPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
 
 export default toResolvableComponent<PaymentMethodProps, PaymentMethodResolveId>(
     CheckoutcomCustomPaymentMethod,
-    [
-        { gateway: 'checkoutcom', id: 'ideal' },
-        { gateway: 'checkoutcom', id: 'fawry' },
-        { gateway: 'checkoutcom', id: 'oxxo' },
-        { gateway: 'checkoutcom', id: 'boleto' },
-        { gateway: 'checkoutcom', id: 'sepa' },
-        { gateway: 'checkoutcom', id: 'qpay' },
-        { gateway: 'checkoutcom', id: 'p24' },
-    ],
+    [{ gateway: 'checkoutcom' }],
 );

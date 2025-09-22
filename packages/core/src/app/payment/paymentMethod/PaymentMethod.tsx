@@ -1,23 +1,20 @@
 import {
-    CheckoutSelectors,
-    CustomerInitializeOptions,
-    CustomerRequestOptions,
-    PaymentInitializeOptions,
-    PaymentMethod,
-    PaymentRequestOptions,
+    type CheckoutSelectors,
+    type CustomerInitializeOptions,
+    type CustomerRequestOptions,
+    type PaymentInitializeOptions,
+    type PaymentMethod,
+    type PaymentRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, lazy, memo, Suspense } from 'react';
+import React, { type FunctionComponent, lazy, memo, Suspense } from 'react';
 
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../../checkout';
 
 const BraintreeCreditCardPaymentMethod = lazy(() => import(/* webpackChunkName: "braintree-credit-card-payment-method" */'./BraintreeCreditCardPaymentMethod'));
 const HostedCreditCardPaymentMethod = lazy(() => import(/* webpackChunkName: "hosted-credit-card-payment-method" */'./HostedCreditCardPaymentMethod'));
 const HostedPaymentMethod = lazy(() => import(/* webpackChunkName: "hosted-payment-method" */'./HostedPaymentMethod'));
-const MasterpassPaymentMethod = lazy(() => import(/* webpackChunkName: "masterpass-payment-method" */'./MasterpassPaymentMethod'));
-const PaypalPaymentsProPaymentMethod = lazy(() => import(/* webpackChunkName: "paypal-payments-pro-payment-method" */'./PaypalPaymentsProPaymentMethod'));
-const PPSDKPaymentMethod = lazy(() => import(/* webpackChunkName: "ppsdk-payment-method" */'./PPSDKPaymentMethod'));
 
 import PaymentMethodId from './PaymentMethodId';
 import PaymentMethodProviderType from './PaymentMethodProviderType';
@@ -53,32 +50,13 @@ const PaymentMethodComponent: FunctionComponent<
 > = (props) => {
     const { method } = props;
 
-    if (method.type === PaymentMethodProviderType.PPSDK) {
-        return <Suspense><PPSDKPaymentMethod {...props} /></Suspense>;
-    }
-
-    if (method.id === PaymentMethodId.Masterpass) {
-        return <Suspense><MasterpassPaymentMethod {...props} /></Suspense>;
-    }
-
     if (method.id === PaymentMethodId.Braintree) {
         return <Suspense><BraintreeCreditCardPaymentMethod {...props} /></Suspense>;
     }
 
     if (
-        method.type !== PaymentMethodProviderType.Hosted &&
-        method.id === PaymentMethodId.PaypalPaymentsPro
-    ) {
-        return <Suspense><PaypalPaymentsProPaymentMethod {...props} /></Suspense>;
-    }
-
-
-    if (
-        method.id === PaymentMethodId.BraintreeVenmo ||
         method.id === PaymentMethodId.Humm ||
         method.id === PaymentMethodId.Laybuy ||
-        method.id === PaymentMethodId.Sezzle ||
-        method.id === PaymentMethodId.Zip ||
         method.method === PaymentMethodType.Paypal ||
         method.method === PaymentMethodType.PaypalCredit ||
         method.type === PaymentMethodProviderType.Hosted

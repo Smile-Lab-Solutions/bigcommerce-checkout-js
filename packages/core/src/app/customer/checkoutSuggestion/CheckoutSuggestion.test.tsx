@@ -1,9 +1,9 @@
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { AnalyticsProviderMock } from '@bigcommerce/checkout/analytics';
 import { LocaleProvider } from '@bigcommerce/checkout/locale';
@@ -14,8 +14,8 @@ import { getCheckout } from '../../checkout/checkouts.mock';
 import { getStoreConfig } from '../../config/config.mock';
 
 import CheckoutSuggestion, {
-    CheckoutSuggestionProps,
-    WithCheckoutSuggestionsProps,
+    type CheckoutSuggestionProps,
+    type WithCheckoutSuggestionsProps,
 } from './CheckoutSuggestion';
 
 describe('CheckoutSuggestion', () => {
@@ -53,13 +53,13 @@ describe('CheckoutSuggestion', () => {
     });
 
     it('does not render anything if method id is not provided', () => {
-        const {container} = render(<TestComponent {...defaultProps} />);
+        const { container } = render(<TestComponent {...defaultProps} />);
 
         expect(container.innerHTML).toHaveLength(0);
     });
 
     it('initializes Bolt Checkout suggestion block', () => {
-        const {container} = render(
+        const { container } = render(
             <TestComponent {...defaultProps} providerWithCustomCheckout="bolt" />,
         );
 

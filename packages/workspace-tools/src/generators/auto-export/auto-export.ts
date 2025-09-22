@@ -11,16 +11,13 @@ export interface AutoExportOptions {
     outputPath: string;
     memberPattern: string;
     tsConfigPath: string;
-    useLazyLoad?: boolean;
 }
 
 export default async function autoExport({
     inputPath,
     ignorePackages,
-    outputPath,
     memberPattern,
     tsConfigPath,
-    useLazyLoad,
 }: AutoExportOptions): Promise<string> {
     let filePaths = await promisify(glob)(inputPath);
 
@@ -32,73 +29,31 @@ export default async function autoExport({
         });
     }
 
-    if (useLazyLoad) {
-        const componentRegistry = await createComponentRegistryExport(filePaths, memberPattern);
-        const lazyExports = await createLazyLoadingExports(filePaths, tsConfigPath, memberPattern);
+    const lazyExports = await createLazyLoadingExports(filePaths, tsConfigPath, memberPattern);
+    const componentRegistry = await createComponentRegistry(filePaths, memberPattern);
 
-        return [lazyExports, componentRegistry].filter(Boolean).join('\n\n');
-    }
+    validateComponentNames(lazyExports, componentRegistry);
 
-    const exportDeclarations = await Promise.all(
-        filePaths.map((filePath) => createExportDeclaration(filePath, tsConfigPath, memberPattern)),
-    );
+    return `${generateLazyLoadingCode(lazyExports)}
 
-    return ts
-        .createPrinter()
-        .printList(
-            ts.ListFormat.MultiLine,
-            ts.factory.createNodeArray(exportDeclarations.filter(exists)),
-            ts.createSourceFile(outputPath, '', ts.ScriptTarget.ESNext),
-        );
+${generateComponentRegistryCode(componentRegistry)}
+    `;
 }
 
-async function createExportDeclaration(
-    filePath: string,
-    tsConfigPath: string,
-    memberPattern: string,
-): Promise<ts.ExportDeclaration | undefined> {
-    const root = await getSource(filePath);
+function validateComponentNames(
+    lazyExports: Array<{ memberName: string; importPath: string }>,
+    componentRegistry: Record<string, unknown>,
+): void {
+    const lazyExportNames = lazyExports.map(({ memberName }) => memberName);
+    const componentRegistryNames = Object.keys(componentRegistry);
 
-    const memberNames = root.statements
-        .filter(ts.isExportDeclaration)
-        .flatMap((statement) => {
-            if (
-                !statement.exportClause ||
-                !ts.isNamedExports(statement.exportClause) ||
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                !statement.exportClause.elements
-            ) {
-                return [];
-            }
-
-            return statement.exportClause.elements.filter(ts.isExportSpecifier);
-        })
-
-        .map((element) =>
-            'escapedText' in element.name
-                ? element.name.escapedText.toString()
-                : JSON.stringify(element.name),
-        )
-        .filter((memberName: string) => new RegExp(memberPattern).exec(memberName));
-
-    if (memberNames.length === 0) {
-        return;
-    }
-
-    return ts.factory.createExportDeclaration(
-        undefined,
-        false,
-        ts.factory.createNamedExports(
-            memberNames.map((memberName) =>
-                ts.factory.createExportSpecifier(
-                    false,
-                    undefined,
-                    ts.factory.createIdentifier(memberName),
-                ),
-            ),
-        ),
-        ts.factory.createStringLiteral(getImportPath(filePath, tsConfigPath), true),
+    const onlyInRegistry = Array.from(componentRegistryNames).filter(
+        (name) => !lazyExportNames.includes(name),
     );
+
+    if (onlyInRegistry.length > 0) {
+        throw new Error(`Component name mismatch detected: ${onlyInRegistry.join(', ')}\n`);
+    }
 }
 
 async function getSource(filePath: string): Promise<ts.SourceFile> {
@@ -122,15 +77,11 @@ function getImportPath(packagePath: string, tsConfigPath: string): string {
     throw new Error('Unable to resolve to a valid package.');
 }
 
-function exists<TValue>(value?: TValue): value is NonNullable<TValue> {
-    return value !== null && value !== undefined;
-}
-
 async function createLazyLoadingExports(
     filePaths: string[],
     tsConfigPath: string,
     memberPattern: string,
-): Promise<string> {
+): Promise<Array<{ memberName: string; importPath: string }>> {
     const memberMappings: Array<{ memberName: string; importPath: string }> = [];
 
     for (const filePath of filePaths) {
@@ -165,7 +116,7 @@ async function createLazyLoadingExports(
         }
     }
 
-    return generateLazyLoadingCode(memberMappings);
+    return memberMappings;
 }
 
 function generateLazyLoadingCode(
@@ -200,10 +151,10 @@ function toKebabCase(str: string): string {
         .toLowerCase();
 }
 
-async function createComponentRegistryExport(
+async function createComponentRegistry(
     filePaths: string[],
     memberPattern: string,
-): Promise<string> {
+): Promise<Record<string, unknown[]>> {
     const componentRegistry: Record<string, unknown[]> = {};
 
     const packageDirs = filePaths.map((filePath) => {
@@ -242,7 +193,7 @@ async function createComponentRegistryExport(
         }),
     );
 
-    return generateComponentRegistryCode(componentRegistry);
+    return componentRegistry;
 }
 
 function findToResolvableComponentCalls(

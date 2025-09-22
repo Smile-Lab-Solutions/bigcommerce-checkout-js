@@ -1,10 +1,10 @@
 import {
-    GatewayOrderPayment,
-    GiftCertificateOrderPayment,
-    Order,
-    OrderFee,
-    OrderPayment,
-    OrderShippingConsignment,
+    type GatewayOrderPayment,
+    type GiftCertificateOrderPayment,
+    type Order,
+    type OrderFee,
+    type OrderPayment,
+    type OrderShippingConsignment,
 } from '@bigcommerce/checkout-sdk';
 
 import { getBillingAddress } from '../billing/billingAddresses.mock';
@@ -115,8 +115,8 @@ export function getOrderWithShippingDiscount(): Order {
         ...getOrder(),
         consignments: {
             shipping: [
-                {...mockOrderShippingConsignment, discounts: [{ id: 1, amount: 2, code: 'coupon-shipping-discount', }, { id: 2, amount: 2, code: null, }]},
-                {...mockOrderShippingConsignment, discounts: [{ id: 1, amount: 3, code: 'coupon-shipping-discount', }, { id: 2, amount: 3, code: null, }, { id: 3, amount: 3, code: null, }]},
+                { ...mockOrderShippingConsignment, discounts: [{ id: 1, amount: 2, code: 'coupon-shipping-discount', }, { id: 2, amount: 2, code: null, }] },
+                { ...mockOrderShippingConsignment, discounts: [{ id: 1, amount: 3, code: 'coupon-shipping-discount', }, { id: 2, amount: 3, code: null, }, { id: 3, amount: 3, code: null, }] },
             ]
         },
         coupons: [getShippingCoupon()],

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { preventDefault } from "@bigcommerce/checkout/dom-utils";
 import { TranslatedString } from "@bigcommerce/checkout/locale";
@@ -10,14 +10,13 @@ import { IconClose, IconSize } from "../ui/icon";
 
 import ConsignmentAddressSelector from './ConsignmentAddressSelector';
 import ConsignmentLineItem from './ConsignmentLineItem';
-import { MultiShippingConsignmentData } from './MultishippingType';
+import { type MultiShippingConsignmentData } from './MultishippingType';
 import { MultiShippingOptions } from './shippingOption/MultiShippingOptions';
 
 export interface ConsignmentListItemProps {
     consignment: MultiShippingConsignmentData;
     consignmentNumber: number;
     defaultCountryCode?: string;
-    countriesWithAutocomplete: string[];
     isLoading: boolean;
     shippingQuoteFailedMessage: string;
     onUnhandledError(error: Error): void;
@@ -27,7 +26,6 @@ export interface ConsignmentListItemProps {
 const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
     consignment,
     consignmentNumber,
-    countriesWithAutocomplete,
     defaultCountryCode,
     isLoading,
     shippingQuoteFailedMessage,
@@ -60,7 +58,6 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
             </div>
             <ConsignmentAddressSelector
                 consignment={consignment}
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 defaultCountryCode={defaultCountryCode}
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}

@@ -1,18 +1,17 @@
 import {
-    CheckoutSelectors,
-    CheckoutService,
-    CustomerInitializeOptions,
-    CustomerRequestOptions,
+    type CheckoutSelectors,
+    type CheckoutService,
+    type CustomerInitializeOptions,
+    type CustomerRequestOptions,
 } from '@bigcommerce/checkout-sdk';
 import { noop } from 'lodash';
-import React, { FunctionComponent, memo } from 'react';
+import React, { type FunctionComponent, memo } from 'react';
 
 import { TranslatedString, useLocale } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 import { LazyContainer } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
-import { isExperimentEnabled } from '../common/utility';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
 import resolveCheckoutButton from './resolveCheckoutButton';
@@ -67,13 +66,10 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
         }
     }
 
-    const { getConfig } = checkoutState.data;
-
     const renderButtons = () => {
         return supportedMethodIds.map((methodId) => {
             const ResolvedCheckoutButton = resolveCheckoutButton(
                 { id: methodId },
-                isExperimentEnabled(getConfig()?.checkoutSettings, 'CHECKOUT-9432.lazy_load_payment_components', false)
             );
 
             if (!ResolvedCheckoutButton) {

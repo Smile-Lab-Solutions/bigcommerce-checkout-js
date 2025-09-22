@@ -15,10 +15,12 @@
 package.json @bigcommerce/team-checkout @bigcommerce/team-integrations @bigcommerce/team-paypal
 package-lock.json @bigcommerce/team-checkout @bigcommerce/team-integrations @bigcommerce/team-paypal
 
+## Payments team
+/packages/ppsdk-integration @bigcommerce/team-payments
+
 ## Payment integrations team
 
 /packages/affirm-integration @bigcommerce/team-integrations
-/packages/afterpay-integration @bigcommerce/team-integrations
 /packages/adyen-integration @bigcommerce/team-integrations
 /packages/barclay-integration @bigcommerce/team-integrations
 /packages/bolt-integration @bigcommerce/team-integrations
@@ -46,7 +48,6 @@ package-lock.json @bigcommerce/team-checkout @bigcommerce/team-integrations @big
 /packages/core/payment/paymentMethod/DigitalRiverPaymentMethod.tsx @bigcommerce/team-integrations
 /packages/core/payment/paymentMethod/KlarnaPaymentMethod.tsx @bigcommerce/team-integrations
 /packages/core/payment/paymentMethod/KlarnaV2PaymentMethod.tsx @bigcommerce/team-integrations
-/packages/core/payment/paymentMethod/MasterpassPaymentMethod.tsx @bigcommerce/team-integrations
 /packages/core/payment/paymentMethod/MonerisPaymentMethod.tsx @bigcommerce/team-integrations
 /packages/core/payment/paymentMethod/OpyPaymentMethod.tsx @bigcommerce/team-integrations
 /packages/core/payment/paymentMethod/StripePaymentMethod.tsx @bigcommerce/team-integrations
@@ -55,16 +56,14 @@ package-lock.json @bigcommerce/team-checkout @bigcommerce/team-integrations @big
 
 ## PayPal team
 /packages/core/payment/paymentMethod/BraintreeCreditCardPaymentMethod.tsx @bigcommerce/team-paypal
-/packages/core/payment/paymentMethod/PaypalCommerceCreditCardPaymentMethod.tsx @bigcommerce/team-paypal
-/packages/core/payment/paymentMethod/PaypalExpressPaymentMethod.tsx @bigcommerce/team-paypal
-/packages/core/payment/paymentMethod/PaypalPaymentsProPaymentMethod.tsx @bigcommerce/team-paypal
 
-/packages/braintree-integration @bigcommerce/team-paypal
 /packages/bigcommerce-payments-integration @bigcommerce/team-paypal
-/packages/paypal-commerce-integration @bigcommerce/team-paypal
-/packages/paypal-fastlane-integration @bigcommerce/team-paypal
-/packages/paypal-express-integration @bigcommerce/team-paypal
 /packages/bigcommerce-payments-utils @bigcommerce/team-paypal
+/packages/braintree-integration @bigcommerce/team-paypal
+/packages/paypal-commerce-integration @bigcommerce/team-paypal
+/packages/paypal-express-integration @bigcommerce/team-paypal
+/packages/paypal-fastlane-integration @bigcommerce/team-paypal
+/packages/paypal-payments-pro-integration @bigcommerce/team-paypal
 
 ## Shared
 /packages/core/customer/checkoutSuggestion @bigcommerce/team-checkout @bigcommerce/team-integrations @bigcommerce/team-paypal

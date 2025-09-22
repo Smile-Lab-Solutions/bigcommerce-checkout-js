@@ -1,5 +1,5 @@
 import { ErrorMessage, useFormikContext } from 'formik';
-import React, { FunctionComponent, memo, useCallback } from 'react';
+import React, { type FunctionComponent, memo, useCallback } from 'react';
 
 import { FormContext } from '@bigcommerce/checkout/ui';
 
@@ -33,7 +33,7 @@ const FormFieldError: FunctionComponent<FormFieldErrorProps> = ({ name, testId, 
 
     return (
         <FormContext.Consumer>
-            {({isSubmitted}) => (
+            {({ isSubmitted }) => (
                 <ul className="form-field-errors" data-test={testId}>
                     <li className="form-field-error">
                         {(hasError && isSubmitted) ? <ErrorMessage name={name} render={renderMessage} /> :

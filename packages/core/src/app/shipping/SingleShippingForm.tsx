@@ -1,26 +1,24 @@
 import {
-    Address,
-    CheckoutParams,
-    CheckoutSelectors,
-    Consignment,
-    Country,
-    CustomerAddress,
-    CustomerRequestOptions,
-    FormField,
-    RequestOptions,
-    ShippingInitializeOptions,
-    ShippingRequestOptions,
+    type Address,
+    type CheckoutParams,
+    type CheckoutSelectors,
+    type Consignment,
+    type CustomerRequestOptions,
+    type FormField,
+    type RequestOptions,
+    type ShippingInitializeOptions,
+    type ShippingRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import { FormikProps } from 'formik';
+import { type FormikProps } from 'formik';
 import { debounce, isEqual, noop } from 'lodash';
-import React, { PureComponent, ReactNode } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { lazy, object } from 'yup';
 
-import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { FormContext } from '@bigcommerce/checkout/ui';
 
 import {
-    AddressFormValues,
+    type AddressFormValues,
     getAddressFormFieldsValidationSchema,
     getTranslateAddressError,
     isEqualAddress,
@@ -40,23 +38,17 @@ import { SHIPPING_ADDRESS_FIELDS } from './ShippingAddressFields';
 import ShippingFormFooter from './ShippingFormFooter';
 
 export interface SingleShippingFormProps {
-    addresses: CustomerAddress[];
     isBillingSameAsShipping: boolean;
     cartHasChanged: boolean;
     consignments: Consignment[];
-    countries: Country[];
-    countriesWithAutocomplete: string[];
     customerMessage: string;
-    googleMapsApiKey?: string;
     isLoading: boolean;
     isShippingStepPending: boolean;
     isMultiShippingMode: boolean;
     methodId?: string;
     shippingAddress?: Address;
     shippingAutosaveDelay?: number;
-    shouldShowSaveAddress?: boolean;
     shouldShowOrderComments: boolean;
-    isFloatingLabelEnabled?: boolean;
     isInitialValueLoaded: boolean;
     shippingFormRenderTimestamp?: number;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
@@ -180,16 +172,11 @@ class SingleShippingForm extends PureComponent<
 
     render(): ReactNode {
         const {
-            addresses,
             cartHasChanged,
             isInitialValueLoaded,
             isLoading,
             onUnhandledError,
             methodId,
-            shouldShowSaveAddress,
-            countries,
-            countriesWithAutocomplete,
-            googleMapsApiKey,
             shippingAddress,
             consignments,
             shouldShowOrderComments,
@@ -198,7 +185,6 @@ class SingleShippingForm extends PureComponent<
             deinitialize,
             values: { shippingAddress: addressForm },
             isShippingStepPending,
-            isFloatingLabelEnabled,
             shippingFormRenderTimestamp,
         } = this.props;
 
@@ -214,16 +200,11 @@ class SingleShippingForm extends PureComponent<
             <Form autoComplete="on">
                 <Fieldset>
                     <ShippingAddress
-                        addresses={addresses}
                         consignments={consignments}
-                        countries={countries}
-                        countriesWithAutocomplete={countriesWithAutocomplete}
                         deinitialize={deinitialize}
                         formFields={this.getFields(addressForm && addressForm.countryCode)}
-                        googleMapsApiKey={googleMapsApiKey}
                         hasRequestedShippingOptions={hasRequestedShippingOptions}
                         initialize={initialize}
-                        isFloatingLabelEnabled={isFloatingLabelEnabled}
                         isLoading={isResettingAddress}
                         isShippingStepPending={isShippingStepPending}
                         methodId={methodId}
@@ -232,7 +213,6 @@ class SingleShippingForm extends PureComponent<
                         onUnhandledError={onUnhandledError}
                         onUseNewAddress={this.onUseNewAddress}
                         shippingAddress={shippingAddress}
-                        shouldShowSaveAddress={shouldShowSaveAddress}
                     />
                     {shouldShowBillingSameAsShipping && (
                         <div className="form-body">

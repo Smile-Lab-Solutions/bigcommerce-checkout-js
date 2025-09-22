@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import React, {FunctionComponent, ReactNode, useMemo, useState} from 'react';
+import React, { type FunctionComponent, type ReactNode, useMemo, useState } from 'react';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { Alert, AlertType, useThemeContext } from '@bigcommerce/checkout/ui';
 
@@ -14,7 +14,7 @@ import hasSelectedShippingOptions from './hasSelectedShippingOptions';
 import { useMultiShippingConsignmentItems } from './hooks/useMultishippingConsignmentItems';
 import isSelectedShippingOptionValid from './isSelectedShippingOptionValid';
 import MultiShippingFormFooter from './MultiShippingFormFooter';
-import { MultiShippingConsignmentData } from './MultishippingType';
+import { type MultiShippingConsignmentData } from './MultishippingType';
 import './MultiShippingForm.scss';
 import NewConsignment from './NewConsignment';
 
@@ -26,14 +26,12 @@ export interface MultiShippingFormProps {
     cartHasChanged: boolean;
     customerMessage: string;
     defaultCountryCode?: string;
-    countriesWithAutocomplete: string[];
     isLoading: boolean;
     onUnhandledError(error: Error): void;
     onSubmit(values: MultiShippingFormValues): void;
 }
 
 const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
-    countriesWithAutocomplete,
     defaultCountryCode,
     isLoading,
     onUnhandledError,
@@ -117,7 +115,6 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
                 <ConsignmentListItem
                     consignment={consignment}
                     consignmentNumber={consignment.consignmentNumber}
-                    countriesWithAutocomplete={countriesWithAutocomplete}
                     defaultCountryCode={defaultCountryCode}
                     isLoading={isLoading}
                     key={consignment.id}
@@ -129,7 +126,6 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
             {isAddShippingDestination && (
                 <NewConsignment
                     consignmentNumber={consignments.length === 0 ? 1 : (consignments.length + 1)}
-                    countriesWithAutocomplete={countriesWithAutocomplete}
                     defaultCountryCode={defaultCountryCode}
                     isLoading={isLoading}
                     onUnhandledError={onUnhandledError}
