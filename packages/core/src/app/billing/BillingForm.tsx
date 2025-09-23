@@ -48,8 +48,7 @@ const BillingForm = ({
     billingAddress,
     setFieldValue,
     values,
-   
-            storeCurrencyCode,
+    storeCurrencyCode,
     onUnhandledError,
 }: BillingFormProps & WithLanguageProps & FormikProps<BillingFormValues>) => {
     const [isResettingAddress, setIsResettingAddress] = useState(false);
@@ -159,7 +158,7 @@ const BillingForm = ({
                             setFieldValue={setFieldValue}
                             shouldShowSaveAddress={!isGuest}
                             type={AddressType.Billing}
-                                storeCurrencyCode={storeCurrencyCode}
+                            storeCurrencyCode={storeCurrencyCode}
                         />
                     </AddressFormSkeleton>
                 )}

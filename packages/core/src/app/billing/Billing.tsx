@@ -79,6 +79,8 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
         }
     };
 
+    const storeCurrencyCode = config.currency.code;
+
     useEffect(() => {
         const init = async () => {
             try {
@@ -110,6 +112,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
                     navigateNextStep={navigateNextStep}
                     onSubmit={handleSubmit}
                     onUnhandledError={onUnhandledError}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             </div>
         </AddressFormSkeleton>

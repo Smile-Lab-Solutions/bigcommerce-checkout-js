@@ -39,6 +39,7 @@ const ShippingAddressForm = (
             setFieldValue: formikSetFieldValue,
         },
         onFieldChange,
+        storeCurrencyCode
     }: ShippingAddressFormProps & ConnectFormikProps<SingleShippingFormValues>,
 ): ReactElement => {
     const {
@@ -133,7 +134,7 @@ const ShippingAddressForm = (
                         setFieldValue={setFieldValue}
                         shouldShowSaveAddress={shouldShowSaveAddress}
                         type={AddressType.Shipping}
-                            storeCurrencyCode={storeCurrencyCode}
+                        storeCurrencyCode={storeCurrencyCode}
                     />
                 </LoadingOverlay>
             )}

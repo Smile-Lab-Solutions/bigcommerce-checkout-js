@@ -76,6 +76,7 @@ const ShippingForm = ({
     isInitialValueLoaded,
     shippingFormRenderTimestamp,
     setIsMultishippingMode,
+    storeCurrencyCode
 }: ShippingFormProps & WithLanguageProps) => {
     const {
         checkoutState: {
@@ -133,7 +134,7 @@ const ShippingForm = ({
             shouldShowOrderComments={shouldShowOrderComments}
             signOut={signOut}
             updateAddress={updateAddress}
-                storeCurrencyCode={storeCurrencyCode}
+            storeCurrencyCode={storeCurrencyCode}
         />
     );
 };

@@ -430,7 +430,7 @@ const PaymentMethodTitle: FunctionComponent<
                         data-test="payment-method-logo"
                         src={logoUrl}
                     />
-                )}
+                )} */}
 
                 {titleText && (
                     <div className={classNames('paymentProviderHeader-name',

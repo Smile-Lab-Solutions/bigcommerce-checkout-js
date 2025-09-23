@@ -43,6 +43,7 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
         isLoading,
         shippingAddress,
         hasRequestedShippingOptions,
+        storeCurrencyCode
     } = props;
 
     const { setSubmitted } = useContext(FormContext);

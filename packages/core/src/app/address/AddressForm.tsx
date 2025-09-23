@@ -28,6 +28,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         setFieldValue = noop,
         onChange = noop,
         type,
+        storeCurrencyCode,
     }) => {
     const { language } = useLocale();
     const { themeV2 } = useThemeContext();

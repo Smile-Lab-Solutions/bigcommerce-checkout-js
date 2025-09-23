@@ -48,7 +48,7 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                         { 'stepHeader-counter--complete': isComplete },
                     )}
                 />
-                {type === CheckoutStepType.Payment && (
+                {type === "payment" && (
                         <div className='iconLock'></div>
                 )}
 
@@ -59,8 +59,7 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
                 >{heading}</h2>
             </div>
 
-            {themeV2 && !isActive && isComplete &&
-                {type !== CheckoutStepType.Payment && (
+            {themeV2 && !isActive && isComplete && type !== "payment" &&
                 <div
                         className="stepHeader-body stepHeader-column optimizedCheckout-contentPrimary body-regular"
                     data-test="step-info"
@@ -78,7 +77,6 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
     
                 </div>
             }
-            )}
 
             {isEditable && !isActive && (
                 <div className="stepHeader-actions stepHeader-column">
