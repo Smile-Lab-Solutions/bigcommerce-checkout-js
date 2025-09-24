@@ -390,7 +390,12 @@ const PaymentMethodTitle: FunctionComponent<
     }
 
     // Set card icons array to empty
-    method.supportedCards = [];
+    //  only for non google pay methods
+    //  to ensure google pay will still load
+    //  Google Pay (Via stripe) - BC payment Id (googlepaystripeupe)
+    if (method.id !== "googlepaystripeupe") {
+        method.supportedCards = [];
+    }
 
     return (
         <div className={
