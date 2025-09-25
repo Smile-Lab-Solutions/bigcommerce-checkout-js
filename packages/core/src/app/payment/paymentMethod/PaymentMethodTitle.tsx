@@ -287,6 +287,33 @@ export function getPaymentMethodTitle(
                 titleText: language.translate('payment.credit_debit_card_text'),
                 titleSubText: ''
             },
+            [PaymentMethodId.Partially]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'For people with a bad or zero credit',
+            },
+            // Cash on Delivery is used for Bread
+            ['cod']: {
+                logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-bread.svg',
+                titleText: '',
+                titleSubText: 'Up to 18 months credit from 0% APR',
+            },
+            // Cheque is used for PayTomorrow
+            // ['cheque']: {
+            //     logoUrl: '',
+            //     titleText: 'Pay over 6 months 0% APR',
+            //     titleSubText: 'For people with a 600+ FICO credit score',
+            // },
+            [PaymentMethodId.TerraceFinance]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'Payment solutions tailored for you',
+            },
+            [PaymentMethodId.Flex]: {
+                logoUrl: method.logoUrl ? method.logoUrl : '',
+                titleText: methodDisplayName,
+                titleSubText: 'Pay with HSA/FSA',
+            },
         };
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
@@ -436,6 +463,20 @@ const PaymentMethodTitle: FunctionComponent<
                         src={logoUrl}
                     />
                 )} */}
+
+                {/* Paypal payment second icon */}
+                {method.id === 'paypalcommerce' && (
+                    <>
+                        <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
+                        <img
+                            alt={methodName}
+                            className="paymentProviderHeader-img"
+                            data-test="payment-method-logo"
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                            id='paypalcommerceSecondIcon'
+                        />
+                    </>
+                )}
 
                 {titleText && (
                     <div className={classNames('paymentProviderHeader-name',
