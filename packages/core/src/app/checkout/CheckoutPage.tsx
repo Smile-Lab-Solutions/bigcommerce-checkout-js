@@ -327,7 +327,7 @@ class Checkout extends Component<
     }
 
     private renderContent(): ReactNode {
-        const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop, extensionState } = this.props;
+        const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop, extensionState, cartUrl } = this.props;
 
         const { activeStepType, defaultStepType, isCartEmpty } = this.state;
 
@@ -342,6 +342,13 @@ class Checkout extends Component<
         return (
             <>
                 <div className="layout-main">
+                    <div style={{padding: '1.5rem 0px'}}>
+                        <a className="modal-header-link cart-modal-link" href={cartUrl} style={{display: 'flex', alignItems: 'center'}}>
+                            <div className='arrowLeft'></div>
+                            Edit Cart
+                        </a>
+                    </div>
+
                     <LoadingNotification isLoading={extensionState.isShowingLoadingIndicator} />
 
                     {/* <Extension region={ExtensionRegion.GlobalWebWorker} /> */}
