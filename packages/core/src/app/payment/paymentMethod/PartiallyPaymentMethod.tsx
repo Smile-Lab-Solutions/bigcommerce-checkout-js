@@ -91,9 +91,9 @@ class PartiallyPaymentMethod extends Component<
         //  1 - iconic single
         //  2 - iconic dual
         var offerList: { [key: string]: string } = {
-          GBP0: "046f59a9-f59c-45f2-9081-266b02a8f920",
-          GBP1: "5315c331-474d-40e9-ab65-7ac1627183e3",
-          GBP2: "6ec63bb0-a2e5-4980-919e-633fd2f9ea3d",
+          GBP0: "e316f8d1-8e46-41bc-b1ff-9f8f5f787efb",
+          GBP1: "e316f8d1-8e46-41bc-b1ff-9f8f5f787efb",
+          GBP2: "e316f8d1-8e46-41bc-b1ff-9f8f5f787efb",
           AUD0: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
           AUD1: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
           AUD2: "94e14131-d9b5-49e0-a38d-9f8cd5568009",
@@ -200,10 +200,11 @@ class PartiallyPaymentMethod extends Component<
   private getListText: (currency: string | undefined) => ReactNode = (currency) => {
     if (currency === "GBP") {
       return <>
-        <li><div className="circleCheck"></div>No Credit Check | 100% Acceptance</li>
-        <li><div className="circleCheck"></div>Spread the cost over 12 months</li>
-        <li><div className="circleCheck"></div>From £150 deposit</li>
-        <li><div className="circleCheck"></div>£25 Payment Plan Admin Fee (Non Refundable)</li>
+        <li><div className="circleCheck"></div>Just $99 deposit today</li>
+        <li><div className="circleCheck"></div>Monthly payments from £29.33</li>
+        <li><div className="circleCheck"></div>Spread the cost over 6 months</li>
+        <li><div className="circleCheck"></div>No Credit Check</li>
+        <li><div className="circleCheck"></div>£25 Plan fee (Non refundable) included in deposit payment</li>
       </>
     } else if (currency === "USD") {
       return <>
