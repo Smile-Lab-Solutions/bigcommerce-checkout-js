@@ -628,12 +628,12 @@ export function mapToPaymentProps({
  
     // Check In Store payment method is enabled on store
     if (inStoreMethod.length) {
+
+        const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
         // Only for US payment methods
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
-
-            const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
-
             // Adding Terrace Finance
             // Check TF is set for store and if not a reorder
             if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS') && !isReorder) {
@@ -656,7 +656,7 @@ export function mapToPaymentProps({
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP')) {
             // Adding Partially
-            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS') && !isReorder) {
                 methods = methods.concat(getPartiallyMethod());
                 loadPartiallyJs();
             }
