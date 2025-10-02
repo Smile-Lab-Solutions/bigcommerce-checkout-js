@@ -94,6 +94,8 @@
             "error_heading": "Si è verificato un errore",
             "leave_warning": "Uscire dalla pagina? I dati inseriti potrebbero non essere salvati.",
             "loading_text": "Caricamento in corso",
+            "missing_shipping_method_heading": "Metodo di spedizione non disponibile",
+            "invalid_shipping_address": "Indirizzo di spedizione non valido",
             "ok_action": "Ok",
             "error_code": "Codice di errore:",
             "request_id": "ID richiesta:",
@@ -217,6 +219,9 @@
                 "only_numbers": "Il numero di avviamento deve contenere solo numeri",
                 "length": "Il numero di avviamento deve contenere 9 cifre"
             },
+            "bluesnap_direct_company_name": {
+                "length_max": "Il nome dell'azienda è troppo lungo"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Tipo di account",
                 "is_required": "È necessario selezionare il tipo di conto"
@@ -239,7 +244,6 @@
             "braintreeach_vaulting_mandate_text": "Cliccando su \"Effettua ordine\", autorizzo Braintree, un servizio di PayPal, a verificare i dati del mio conto bancario per conto di {storeName} utilizzando i dati bancari e i report sui consumatori e autorizzo {storeName} a effettuare un addebito elettronico/ACH sul mio conto {accountType}, con nome del titolare {depositoryName}, numero di routing {routingNumber} e numero di conto {accountNumber}, che sarà archiviato e addebitato alla data di scadenza o successivamente. Riconosco che le transazioni ACH da me autorizzate sono conformi a tutte le leggi vigenti.",
             "complete_with_brand": "Completa ordine",
             "continue_with_brand": "Continua con {brandName}",
-            "ccavenuemars_description_text": "Checkout con CCAvenue",
             "checkoutcom_document_label_boleto": "CPF o CNPJ",
             "checkoutcom_document_label_oxxo": "CURP",
             "checkoutcom_document_label_qpay": "ID nazionale",
@@ -276,11 +280,10 @@
             "credit_card_number_required_error": "Il numero della carta di credito è obbligatorio",
             "credit_card_number_mismatch_error": "Il numero di carta inserito non corrisponde a quello memorizzato nel tuo account",
             "credit_debit_card_text": "Carta di credito/debito",
+            "payment_methods_text": "Metodi di pagamento",
+            "redeemable_payments_text": "Pagamenti riscattabili",
+            "instrument_storage_options_text": "Opzioni di archiviazione dei pagamenti",
             "stripev3_auth_3ds_fail": "L'utente non ha effettuato l'autenticazione",
-            "digitalriver_dropin_error": "Si è verificato un problema durante l'elaborazione del pagamento. Riprova o contattaci.",
-            "digitalriver_checkout_error": "Si è verificato un problema in fase di check-out: controlla i tuoi dati e riprova, oppure contatta il servizio clienti",
-            "digitalriver_checkout_error_title": "Errore durante l'elaborazione della richiesta.",
-            "digitalriver_display_name_text": "Seleziona il tuo metodo di pagamento",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm non è in grado di elaborare il pagamento per questo ordine: seleziona un altro metodo di pagamento.",
             "klarna_continue_action": "Prosegui con Klarna",
@@ -557,7 +560,9 @@
             "choose_shipping_address": "Scegli un indirizzo di spedizione",
             "multishipping_unavailable_action": "La spedizione a più indirizzi non disponibile",
             "multishipping_unavailable_message": "La spedizione a più indirizzi non è disponibile quando una promozione aggiunge un articolo gratuito al tuo carrello.",
-            "checkout_switched_to_single_shipping": "Il checkout è stato aggiornato automaticamente in modo che venga utilizzato un solo indirizzo di spedizione. La spedizione a più indirizzi non è disponibile quando nel carrello è presente un articolo promozionale gratuito."
+            "checkout_switched_to_single_shipping": "Il checkout è stato aggiornato automaticamente in modo che venga utilizzato un solo indirizzo di spedizione. La spedizione a più indirizzi non è disponibile quando nel carrello è presente un articolo promozionale gratuito.",
+            "guest_multishipping_no_shipping_address_message": "Nessun indirizzo di spedizione inserito",
+            "guest_multishipping_enter_shipping_address_action": "Inserisci l'indirizzo di spedizione"
         },
         "social": {
             "share_action": "Condividi",

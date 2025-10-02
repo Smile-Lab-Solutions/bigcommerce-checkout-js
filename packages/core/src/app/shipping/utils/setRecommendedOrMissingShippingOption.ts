@@ -1,4 +1,4 @@
-import { CheckoutSelectors, Consignment, ShippingRequestOptions } from '@bigcommerce/checkout-sdk';
+import { type CheckoutSelectors, type Consignment, type ShippingRequestOptions } from '@bigcommerce/checkout-sdk';
 
 const createShippingOptionsMap = (consignments: Consignment[]): Map<string, string | undefined> => {
     return new Map(
@@ -12,7 +12,7 @@ export const setRecommendedOrMissingShippingOption = async (
     selectConsignmentShippingOption: (
         consignmentId: string,
         shippingOptionId: string,
-        options?: ShippingRequestOptions<object> | undefined,
+        options?: ShippingRequestOptions<object>,
     ) => Promise<CheckoutSelectors>,
 ): Promise<void> => {
     const previousShippingOptions = createShippingOptionsMap(previousConsignment);
@@ -25,7 +25,6 @@ export const setRecommendedOrMissingShippingOption = async (
                 // eslint-disable-next-line no-await-in-loop
                 await selectConsignmentShippingOption(consignment.id, previousShippingOptionId);
 
-                // eslint-disable-next-line no-continue
                 continue;
             }
 

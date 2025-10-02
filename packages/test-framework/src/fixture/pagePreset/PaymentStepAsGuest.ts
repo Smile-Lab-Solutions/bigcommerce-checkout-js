@@ -1,12 +1,12 @@
-import { Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 
 import { ApiRequestsSender } from './ApiRequestsSender';
-import { CheckoutPagePreset } from './CheckoutPagePreset';
+import { type CheckoutPagePreset } from './CheckoutPagePreset';
 import { Locales } from './types';
 
 export class PaymentStepAsGuest implements CheckoutPagePreset {
     constructor(
-        private currency: string = 'USD',
+        private currency = 'USD',
         private countryCode?: string,
         private locale: string = Locales.US,
     ) {}

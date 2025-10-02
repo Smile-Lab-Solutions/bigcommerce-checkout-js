@@ -7,7 +7,7 @@ import { MapToPropsFactory } from '@bigcommerce/checkout/legacy-hoc';
 import { WithLanguageProps, withLanguage } from '@bigcommerce/checkout/locale';
 import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';
-import { LoadingOverlay } from '../../ui/loading';
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 import { withCheckout } from '../../checkout';
 
 export interface HostedPaymentMethodProps {

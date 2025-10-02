@@ -1,18 +1,19 @@
-import { Country, FormField } from '@bigcommerce/checkout-sdk';
-import { FormikProps, withFormik } from 'formik';
-import React, { FunctionComponent } from 'react';
+import { type Address, type FormField } from '@bigcommerce/checkout-sdk';
+import { type FormikProps, withFormik } from 'formik';
+import React, { type FunctionComponent } from 'react';
 import { lazy } from 'yup';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { Button, ButtonVariant } from '../ui/button';
 import { Form } from '../ui/form';
-import { LoadingOverlay } from '../ui/loading';
 import { Modal, ModalHeader } from '../ui/modal';
 
 import AddressForm from './AddressForm';
+import AddressType from './AddressType';
 import getAddressFormFieldsValidationSchema from './getAddressFormFieldsValidationSchema';
-import { AddressFormValues } from './mapAddressToFormValues';
+import mapAddressToFormValues, { type AddressFormValues } from './mapAddressToFormValues';
 
 export interface AddressFormModalProps extends AddressFormProps {
     isOpen: boolean;
@@ -20,44 +21,34 @@ export interface AddressFormModalProps extends AddressFormProps {
 }
 
 export interface AddressFormProps {
-    countries?: Country[];
-    countriesWithAutocomplete: string[];
-    googleMapsApiKey?: string;
     isLoading: boolean;
     shouldShowSaveAddress?: boolean;
     defaultCountryCode?: string;
-    isFloatingLabelEnabled?: boolean;
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
+    selectedAddress?: Address;
     storeCurrencyCode: string;
 }
 
 const SaveAddress: FunctionComponent<
     AddressFormProps & WithLanguageProps & FormikProps<AddressFormValues>
 > = ({
-    googleMapsApiKey,
     getFields,
-    countriesWithAutocomplete,
-    countries,
     values,
     setFieldValue,
     isLoading,
     onRequestClose,
     storeCurrencyCode,
-    isFloatingLabelEnabled,
 }) => (
     <Form autoComplete="on">
         <LoadingOverlay isLoading={isLoading}>
             <AddressForm
-                countries={countries}
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 countryCode={values.countryCode}
                 formFields={getFields(values.countryCode)}
-                googleMapsApiKey={googleMapsApiKey}
-                isFloatingLabelEnabled={isFloatingLabelEnabled}
                 setFieldValue={setFieldValue}
                 shouldShowSaveAddress={false}
+                type={AddressType.Shipping}
                 storeCurrencyCode={storeCurrencyCode}
             />
             <div className="form-actions">
@@ -66,7 +57,6 @@ const SaveAddress: FunctionComponent<
                     variant={ButtonVariant.Secondary}>
                     <TranslatedString id="common.cancel_action" />
                 </Button>
-
 
                 <Button
                     disabled={isLoading}
@@ -86,22 +76,12 @@ const SaveAddressForm = withLanguage(
         handleSubmit: (values, { props: { onSaveAddress } }) => {
             onSaveAddress(values);
         },
-        mapPropsToValues: ({ defaultCountryCode = '' }) => ({
-            firstName: '',
-            lastName: '',
-            address1: '',
-            address2: '',
-            customFields: {},
-            country: '',
-            countryCode: defaultCountryCode,
-            stateOrProvince: '',
-            stateOrProvinceCode: '',
-            postalCode: '',
-            phone: '',
-            city: '',
-            company: '',
-            shouldSaveAddress: false,
-        }),
+        mapPropsToValues: ({ getFields, selectedAddress }) => {
+            return mapAddressToFormValues(
+                getFields(selectedAddress && selectedAddress.countryCode),
+                selectedAddress,
+            )
+        },
         validationSchema: ({ language, getFields }: AddressFormProps & WithLanguageProps) =>
             lazy<Partial<AddressFormValues>>((values) =>
                 getAddressFormFieldsValidationSchema({

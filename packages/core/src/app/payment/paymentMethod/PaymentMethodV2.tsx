@@ -1,20 +1,15 @@
-import { PaymentMethod } from '@bigcommerce/checkout-sdk';
-import React, { ComponentType } from 'react';
+import { type PaymentMethod } from '@bigcommerce/checkout-sdk';
+import React, { type ComponentType, Suspense } from 'react';
 
-import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import {
-    PaymentFormProvider,
-    PaymentFormValues,
-    PaymentMethodResolveId,
-    PaymentMethodProps as ResolvedPaymentMethodProps,
-} from '@bigcommerce/checkout/payment-integration-api';
+import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { PaymentFormProvider, type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 
-import { withCheckout, WithCheckoutProps } from '../../checkout';
-import { connectFormik, WithFormikProps } from '../../common/form';
-import { withForm, WithFormProps } from '../../ui/form';
+import { withCheckout, type WithCheckoutProps } from '../../checkout';
+import { connectFormik, type WithFormikProps } from '../../common/form';
+import { withForm, type WithFormProps } from '../../ui/form';
 import createPaymentFormService from '../createPaymentFormService';
 import resolvePaymentMethod from '../resolvePaymentMethod';
-import withPayment, { WithPaymentProps } from '../withPayment';
+import withPayment, { type WithPaymentProps } from '../withPayment';
 
 import { default as PaymentMethodV1 } from './PaymentMethod';
 
@@ -22,9 +17,6 @@ export interface PaymentMethodProps {
     method: PaymentMethod;
     isEmbedded?: boolean;
     isUsingMultiShipping?: boolean;
-    resolveComponent?(
-        query: PaymentMethodResolveId,
-    ): ComponentType<ResolvedPaymentMethodProps> | undefined;
     onUnhandledError(error: Error): void;
 }
 
@@ -47,7 +39,6 @@ const PaymentMethodContainer: ComponentType<
     language,
     method,
     onUnhandledError,
-    resolveComponent = resolvePaymentMethod,
     setSubmit,
     setSubmitted,
     setValidationSchema,
@@ -64,11 +55,13 @@ const PaymentMethodContainer: ComponentType<
         setValidationSchema,
     };
 
-    const ResolvedPaymentMethod = resolveComponent({
-        id: method.id,
-        gateway: method.gateway,
-        type: method.type,
-    });
+    const ResolvedPaymentMethod = resolvePaymentMethod(
+        {
+            id: method.id,
+            gateway: method.gateway,
+            type: method.type,
+        },
+    );
 
     if (!ResolvedPaymentMethod) {
         return (
@@ -85,14 +78,16 @@ const PaymentMethodContainer: ComponentType<
 
     return (
         <PaymentFormProvider paymentForm={paymentForm}>
-            <ResolvedPaymentMethod
-                checkoutService={checkoutService}
-                checkoutState={checkoutState}
-                language={language}
-                method={method}
-                onUnhandledError={onUnhandledError}
-                paymentForm={paymentForm}
-            />
+            <Suspense>
+                <ResolvedPaymentMethod
+                    checkoutService={checkoutService}
+                    checkoutState={checkoutState}
+                    language={language}
+                    method={method}
+                    onUnhandledError={onUnhandledError}
+                    paymentForm={paymentForm}
+                />
+            </Suspense>
         </PaymentFormProvider>
     );
 };

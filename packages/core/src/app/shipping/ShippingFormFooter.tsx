@@ -1,8 +1,9 @@
 import { ExtensionRegion } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { OrderComments } from '../orderComments';
 import { Alert, AlertType } from '../ui/alert';
@@ -19,6 +20,7 @@ export interface ShippingFormFooterProps {
     shouldDisableSubmit: boolean;
     isInitialValueLoaded: boolean;
     isLoading: boolean;
+    shippingFormRenderTimestamp?: number;
 }
 
 const ShippingFormFooter: FunctionComponent<ShippingFormFooterProps> = ({
@@ -29,7 +31,10 @@ const ShippingFormFooter: FunctionComponent<ShippingFormFooterProps> = ({
     shouldDisableSubmit,
     isInitialValueLoaded,
     isLoading,
+    shippingFormRenderTimestamp,
 }) => {
+    const { themeV2 } = useThemeContext();
+
     return (
         <>
             <Extension region={ExtensionRegion.ShippingShippingAddressFormAfter} />
@@ -37,7 +42,7 @@ const ShippingFormFooter: FunctionComponent<ShippingFormFooterProps> = ({
                 id="checkout-shipping-options"
                 legend={
                     <>
-                        <Legend>
+                        <Legend themeV2={themeV2}>
                             <TranslatedString id="shipping.shipping_method_label" />
                         </Legend>
 
@@ -55,6 +60,7 @@ const ShippingFormFooter: FunctionComponent<ShippingFormFooterProps> = ({
                     isInitialValueLoaded={isInitialValueLoaded}
                     isMultiShippingMode={isMultiShippingMode}
                     isUpdatingAddress={isLoading}
+                    shippingFormRenderTimestamp={shippingFormRenderTimestamp}
                     shouldShowShippingOptions={shouldShowShippingOptions}
                 />
             </Fieldset>
@@ -63,6 +69,7 @@ const ShippingFormFooter: FunctionComponent<ShippingFormFooterProps> = ({
 
             <div className="form-actions">
                 <Button
+                    className={themeV2 ? 'body-bold' : ''}
                     disabled={shouldDisableSubmit}
                     id="checkout-shipping-continue"
                     isLoading={isLoading}

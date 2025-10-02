@@ -1,14 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Field, FieldProps, Formik } from 'formik';
+import { Field, type FieldProps, Formik } from 'formik';
 import { noop } from 'lodash';
 import React from 'react';
-import { Omit } from 'utility-types';
+import { type Omit } from 'utility-types';
+import { config } from 'yargs';
 
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import { getInstruments, getStoreConfig } from '@bigcommerce/checkout/test-mocks';
 
@@ -19,8 +20,9 @@ import {
     isSepaInstrument,
 } from '../../guards';
 
-import AccountInstrumentSelect, { AccountInstrumentSelectProps } from './AccountInstrumentSelect';
-import { config } from 'yargs';
+import AccountInstrumentSelect, {
+    type AccountInstrumentSelectProps,
+} from './AccountInstrumentSelect';
 
 describe('AccountInstrumentSelect', () => {
     let defaultProps: Omit<AccountInstrumentSelectProps, keyof FieldProps<string>>;

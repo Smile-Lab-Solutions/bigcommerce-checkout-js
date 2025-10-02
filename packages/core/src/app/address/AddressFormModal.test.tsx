@@ -1,18 +1,18 @@
 import '@testing-library/jest-dom';
-import { CheckoutService, createCheckoutService } from '@bigcommerce/checkout-sdk';
+import { type CheckoutService, createCheckoutService } from '@bigcommerce/checkout-sdk';
+import faker from '@faker-js/faker';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import { getCheckout } from '../checkout/checkouts.mock';
 import { getStoreConfig } from '../config/config.mock';
 
-import AddressFormModal, { AddressFormModalProps } from './AddressFormModal';
+import AddressFormModal, { type AddressFormModalProps } from './AddressFormModal';
 import { getFormFields } from './formField.mock';
-
 
 describe('AddressFormModal Component', () => {
     let checkoutService: CheckoutService;
@@ -20,12 +20,10 @@ describe('AddressFormModal Component', () => {
 
     const renderAddressFormModal = (props?: Partial<AddressFormModalProps>): void => {
         const defaultProps = {
-            countriesWithAutocomplete: ['AU'],
             isLoading: false,
             isOpen: true,
             getFields: jest.fn(getFormFields),
             onSaveAddress: jest.fn(),
-            countries: [],
         };
 
         render(
@@ -84,8 +82,11 @@ describe('AddressFormModal Component', () => {
 
         expect(screen.getByText('First Name is required')).toBeInTheDocument();
         expect(screen.getByText('Last Name is required')).toBeInTheDocument();
-        expect(screen.getByText('Address is required')).toBeInTheDocument();
-        expect(screen.getByText('Address is required')).toBeInTheDocument();
+
+        await userEvent.clear(screen.getByTestId('addressLine1Input-text'));
+        await userEvent.click(screen.getByText('Save Address'));
+
+        expect(await screen.findByText('Address is required')).toBeInTheDocument();
     });
 
     it('successfully submits address form with required fields', async () => {
@@ -98,6 +99,7 @@ describe('AddressFormModal Component', () => {
         await userEvent.click(screen.getByTestId('lastNameInput-text'));
         await userEvent.keyboard('Doe');
         await userEvent.click(screen.getByTestId('addressLine1Input-text'));
+        await userEvent.clear(screen.getByTestId('addressLine1Input-text'));
         await userEvent.keyboard('MockedAddress');
         await userEvent.click(screen.getByText('Save Address'));
 
@@ -114,5 +116,20 @@ describe('AddressFormModal Component', () => {
                 address1: 'MockedAddress',
             }),
         );
+    });
+
+    it('renders prefilled address form in the modal when selectedAddress is present', () => {
+        const address = JSON.parse(JSON.stringify({
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            address1: faker.address.streetAddress(),
+        }));
+
+        renderAddressFormModal({ selectedAddress: address });
+
+        expect(screen.getByLabelText('First Name')).toHaveDisplayValue(address.firstName);
+        expect(screen.getByLabelText('Last Name')).toHaveDisplayValue(address.lastName);
+        expect(screen.getByLabelText('Address')).toHaveDisplayValue(address.address1);
+        expect(screen.getByLabelText('Apartment/Suite/Building (Optional)')).toHaveDisplayValue('');
     });
 });

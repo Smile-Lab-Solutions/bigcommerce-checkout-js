@@ -1,11 +1,13 @@
-import React, { FunctionComponent } from "react";
+import classNames from "classnames";
+import React, { type FunctionComponent } from "react";
 
 import { TranslatedString } from "@bigcommerce/checkout/locale";
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { FormField, TextInput } from "../ui/form";
 import { isMobileView as isMobileViewUI } from "../ui/responsive";
 
-import { MultiShippingTableItemWithType } from "./MultishippingV2Type";
+import { type MultiShippingTableItemWithType } from "./MultishippingType";
 
 interface LeftToAllocateItemProps {
     item: MultiShippingTableItemWithType;
@@ -14,6 +16,7 @@ interface LeftToAllocateItemProps {
 
 const LeftToAllocateItem: FunctionComponent<LeftToAllocateItemProps> = ({ item, error }: LeftToAllocateItemProps) => {
     const isMobileView = isMobileViewUI();
+    const { themeV2 } = useThemeContext();
 
     return (
         <tr>
@@ -21,15 +24,22 @@ const LeftToAllocateItem: FunctionComponent<LeftToAllocateItemProps> = ({ item, 
                 <figure className="left-to-allocate-item-figure">
                     {item.imageUrl && <img alt={item.name} src={item.imageUrl} />}
                 </figure>
-                <div className="left-to-allocate-item-name">
-                    <p>{item.name}</p>
+                <div>
+                    <p className={classNames('left-to-allocate-item-name',
+                        { 'body-regular': themeV2 })}>
+                        {item.name}
+                    </p>
                     {item.options?.map(option => (
-                        <p className="left-to-allocate-item-option" key={option.nameId}>{option.name}: {option.value}</p>
+                        <p className={classNames('left-to-allocate-item-option',
+                            { 'sub-text-medium': themeV2 })}
+                            key={option.nameId}>
+                            {option.name}: {option.value}
+                        </p>
                     ))}
                 </div>
             </td>
-            {!isMobileView && <td>{item.quantity}</td>}
-            <td>
+            {!isMobileView && <td className={themeV2 ? 'body-regular' : ''}>{item.quantity}</td>}
+            <td className={themeV2 ? 'body-regular' : ''}>
                 {isMobileView && <TranslatedString data={{ count: item.quantity }} id="shipping.multishipping_left_to_allocate_message" />}
                 <FormField
                     additionalClassName={error ? "form-field--error" : ""}
@@ -39,6 +49,7 @@ const LeftToAllocateItem: FunctionComponent<LeftToAllocateItemProps> = ({ item, 
                         disabled={item.quantity === 0}
                         id={field.name}
                         min={0}
+                        themeV2={themeV2}
                         type="number"
                     />}
                     name={item.id.toString()}

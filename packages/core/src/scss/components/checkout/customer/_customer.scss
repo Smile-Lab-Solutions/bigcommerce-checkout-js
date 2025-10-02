@@ -8,6 +8,10 @@
 .customerEmail-container {
     @include grid-row;
 
+    @include breakpoint("small") {
+        margin-bottom: spacing("half");
+    }
+
     margin-bottom: 1rem;
 
     .customerEmail-floating--enabled {
@@ -46,6 +50,10 @@
 .customerEmail-button {
     padding: $customerEmail-button-padding;
     width: 100%;
+}
+
+.customer-login-link {
+    margin-bottom: #{spacing("half") + spacing("third")};
 }
 
 .stripeCustomerEmail-button {
@@ -119,6 +127,10 @@ $buttonWidthMap: (
 .checkout-button-container {
     margin: spacing('double') 0 0;
 
+    p {
+        margin-bottom: #{spacing("half") + spacing("third")}
+    }
+
     .checkoutRemote {
         display: grid;
         grid-gap: $floating-form-field-spacing;
@@ -137,14 +149,6 @@ $buttonWidthMap: (
     #braintreepaypalcreditCheckoutButton,
     #braintreepaypalCheckoutButton {
         width: 100%;
-    }
-
-    .skeleton-container {
-        background-color: color("greys", "lightest");
-        border: none;
-        height: $wallet-button-height;
-        margin-bottom: 0;
-        padding: 0;
     }
 
     .gpay-button.short {
@@ -230,7 +234,7 @@ $buttonWidthMap: (
     display: flex;
     height: spacing("half");
     justify-content: space-between;
-    margin-top: spacing('double');
+    margin-top: #{spacing('base') + spacing('base')};
     text-align: center;
     width: 100%;
 

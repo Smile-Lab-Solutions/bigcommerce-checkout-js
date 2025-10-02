@@ -1,20 +1,20 @@
 import {
-    Address,
-    CheckoutSelectors,
-    Country,
-    FormField,
-    ShippingInitializeOptions,
+    type Address,
+    type CheckoutSelectors,
+    type Country,
+    type ShippingInitializeOptions,
 } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo } from 'react';
+import classNames from 'classnames';
+import { isEmpty } from 'lodash';
+import React, { type FunctionComponent, memo } from 'react';
 
 import { localizeAddress } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
-import { isExperimentEnabled } from '../common/utility';
 
 import AddressType from './AddressType';
-import isValidStaticAddress from './isValidStaticAddress';
 
 import './StaticAddress.scss';
 
@@ -29,46 +29,49 @@ export interface StaticAddressEditableProps extends StaticAddressProps {
 
 interface WithCheckoutStaticAddressProps {
     countries?: Country[];
-    fields?: FormField[];
-    validateAddressFields?: boolean;
 }
 
 const StaticAddress: FunctionComponent<
     StaticAddressEditableProps & WithCheckoutStaticAddressProps
     > = ({
         countries,
-        fields,
         address: addressWithoutLocalization,
-        validateAddressFields = false,
     }) => {
+
+    const { themeV2 } = useThemeContext();
+
     const address = localizeAddress(addressWithoutLocalization, countries);
-    const isValid = isValidStaticAddress(address, validateAddressFields, fields);
+    const isValid = !isEmpty(address);
 
     return !isValid ? null : (
         <div className="vcard checkout-address--static" data-test="static-address">
             {(address.firstName || address.lastName) && (
-                <p className="fn address-entry">
+                <p className={classNames('fn address-entry',
+                    { 'body-regular': themeV2 })}>
                     <span className="first-name">{`${address.firstName} `}</span>
                     <span className="family-name">{address.lastName}</span>
                 </p>
             )}
 
             {(address.phone || address.company) && (
-                <p className="address-entry">
+                <p className={classNames('address-entry',
+                    { 'body-regular': themeV2 })}>
                     <span className="company-name">{`${address.company} `}</span>
                     <span className="tel">{address.phone}</span>
                 </p>
             )}
 
             <div className="adr">
-                <p className="street-address address-entry">
+                <p className={classNames('street-address address-entry',
+                    { 'body-regular': themeV2 })}>
                     <span className="address-line-1">{`${address.address1} `}</span>
                     {address.address2 && (
                         <span className="address-line-2">{` / ${address.address2}`}</span>
                     )}
                 </p>
 
-                <p className="address-entry">
+                <p className={classNames('address-entry',
+                    { 'body-regular': themeV2 })}>
                     {address.city && <span className="locality">{`${address.city}, `}</span>}
                     {address.localizedProvince && (
                         <span className="region">{`${address.localizedProvince}, `}</span>
@@ -87,33 +90,18 @@ const StaticAddress: FunctionComponent<
 
 export function mapToStaticAddressProps(
     context: CheckoutContextProps,
-    { address, type }: StaticAddressProps,
+    { type }: StaticAddressProps,
 ): WithCheckoutStaticAddressProps | null {
     const {
         checkoutState: {
-            data: { getConfig, getBillingCountries, getShippingCountries, getBillingAddressFields, getShippingAddressFields },
+            data: { getBillingCountries, getShippingCountries },
         },
     } = context;
-
-    const config = getConfig();
-
-    const validateAddressFields =
-        isExperimentEnabled(
-            config?.checkoutSettings,
-            'CHECKOUT-7560.address_fields_max_length_validation',
-        );
 
     return {
         countries: type === AddressType.Billing
             ? getBillingCountries()
             : getShippingCountries(),
-        fields:
-            type === AddressType.Billing
-                ? getBillingAddressFields(address.countryCode)
-                : type === AddressType.Shipping
-                ? getShippingAddressFields(address.countryCode)
-                : undefined,
-        validateAddressFields,
     };
 }
 

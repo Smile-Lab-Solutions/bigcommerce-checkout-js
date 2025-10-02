@@ -1,13 +1,14 @@
-import { FormikErrors } from "formik";
-import React, { FunctionComponent } from "react";
+import { type FormikErrors } from "formik";
+import React, { type FunctionComponent } from "react";
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { isMobileView as isMobileViewUI } from "../ui/responsive";
 
-import { AllocateItemsModalFormValues } from "./AllocateItemsModal";
+import { type AllocateItemsModalFormValues } from "./AllocateItemsModal";
 import LeftToAllocateItem from "./LeftToAllocateItem";
-import { MultiShippingTableItemWithType } from "./MultishippingV2Type";
+import { type MultiShippingTableItemWithType } from "./MultishippingType";
 
 interface LeftToAllocateItemsTableProps {
     items: MultiShippingTableItemWithType[];
@@ -16,14 +17,15 @@ interface LeftToAllocateItemsTableProps {
 
 const LeftToAllocateItemsTable: FunctionComponent<LeftToAllocateItemsTableProps> = ({ items, formErrors }: LeftToAllocateItemsTableProps) => {
     const isMobileView = isMobileViewUI();
+    const { themeV2 } = useThemeContext();
 
     return (
         <table className="table left-to-allocate-items-table">
             <thead>
                 <tr>
-                    <th><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_item" /></th>
-                    {!isMobileView && <th><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_left_to_allocate" /></th>}
-                    <th><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_quantity" /></th>
+                    <th className={themeV2 ? 'body-medium' : ''}><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_item" /></th>
+                    {!isMobileView && <th className={themeV2 ? 'body-medium' : ''}><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_left_to_allocate" /></th>}
+                    <th className={themeV2 ? 'body-medium' : ''}><TranslatedString id="shipping.multishipping_left_to_allocate_items_table_quantity" /></th>
                 </tr>
             </thead>
             <tbody>
@@ -32,7 +34,7 @@ const LeftToAllocateItemsTable: FunctionComponent<LeftToAllocateItemsTableProps>
                         error={formErrors[item.id.toString()]}
                         item={item}
                         key={item.id}
-                    />      
+                    />
                 ))}
             </tbody>
         </table>

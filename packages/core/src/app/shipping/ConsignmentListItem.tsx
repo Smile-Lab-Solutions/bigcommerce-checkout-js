@@ -1,22 +1,22 @@
-import React, { FunctionComponent } from 'react';
+import classNames from 'classnames';
+import React, { type FunctionComponent } from 'react';
 
 import { preventDefault } from "@bigcommerce/checkout/dom-utils";
 import { TranslatedString } from "@bigcommerce/checkout/locale";
 import { useCheckout } from "@bigcommerce/checkout/payment-integration-api";
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { IconClose, IconSize } from "../ui/icon";
 
-
 import ConsignmentAddressSelector from './ConsignmentAddressSelector';
 import ConsignmentLineItem from './ConsignmentLineItem';
-import { MultiShippingConsignmentData } from './MultishippingV2Type';
-import { MultiShippingOptionsV2 } from './shippingOption/MultiShippingOptionsV2';
+import { type MultiShippingConsignmentData } from './MultishippingType';
+import { MultiShippingOptions } from './shippingOption/MultiShippingOptions';
 
 export interface ConsignmentListItemProps {
     consignment: MultiShippingConsignmentData;
     consignmentNumber: number;
     defaultCountryCode?: string;
-    countriesWithAutocomplete: string[];
     isLoading: boolean;
     shippingQuoteFailedMessage: string;
     onUnhandledError(error: Error): void;
@@ -27,7 +27,6 @@ export interface ConsignmentListItemProps {
 const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
     consignment,
     consignmentNumber,
-    countriesWithAutocomplete,
     defaultCountryCode,
     isLoading,
     shippingQuoteFailedMessage,
@@ -37,6 +36,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
 }: ConsignmentListItemProps) => {
 
     const { checkoutService: { deleteConsignment } } = useCheckout();
+    const { themeV2 } = useThemeContext();
 
     const handleClose = async () => {
         await deleteConsignment(consignment.id);
@@ -45,7 +45,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
 
     return (
         <div className='consignment-container'>
-            <div className='consignment-header'>
+            <div className={classNames('consignment-header', { 'sub-header': themeV2 })}>
                 <h3>
                     <TranslatedString data={{ consignmentNumber }} id="shipping.multishipping_consignment_index_heading" />
                 </h3>
@@ -60,7 +60,6 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
             </div>
             <ConsignmentAddressSelector
                 consignment={consignment}
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 defaultCountryCode={defaultCountryCode}
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}
@@ -73,7 +72,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}
             />
-            <MultiShippingOptionsV2
+            <MultiShippingOptions
                 consignment={consignment}
                 isLoading={isLoading}
                 resetErrorConsignmentNumber={resetErrorConsignmentNumber}

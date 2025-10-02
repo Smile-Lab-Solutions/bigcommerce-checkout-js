@@ -1,5 +1,5 @@
-import { Page } from '@playwright/test';
-import { MODE, Polly } from '@pollyjs/core';
+import { type Page } from '@playwright/test';
+import { type MODE, Polly } from '@pollyjs/core';
 import { API } from '@pollyjs/node-server';
 import FSPersister from '@pollyjs/persister-fs';
 import { includes, isObject } from 'lodash';
@@ -199,7 +199,6 @@ export class PollyObject {
             const entries = api.getRecording(this.polly.recordingId).body?.log?.entries;
 
             if (entries) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return entries;
             }
 

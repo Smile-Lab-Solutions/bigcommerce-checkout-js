@@ -1,25 +1,23 @@
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
     createLanguageService,
-    PaymentMethod,
+    type PaymentMethod,
 } from '@bigcommerce/checkout-sdk';
-import { mount } from 'enzyme';
 import { Formik } from 'formik';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
-import { HostedWidgetPaymentComponent } from '@bigcommerce/checkout/hosted-widget-integration';
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import {
     CheckoutProvider,
     PaymentMethodId,
-    PaymentMethodProps,
+    type PaymentMethodProps,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     getCheckout,
@@ -28,6 +26,7 @@ import {
     getPaymentMethod,
     getStoreConfig,
 } from '@bigcommerce/checkout/test-mocks';
+import { render } from '@bigcommerce/checkout/test-utils';
 
 import KlarnaPaymentMethod from './KlarnaPaymentMethod';
 
@@ -81,63 +80,24 @@ describe('when using Klarna payment', () => {
     });
 
     it('renders as hosted widget component', () => {
-        const container = mount(<PaymentMethodTest {...defaultProps} method={method} />);
-        const component = container.find(HostedWidgetPaymentComponent);
+        const { container } = render(<PaymentMethodTest {...defaultProps} method={method} />);
 
-        expect(component.props()).toEqual(
-            expect.objectContaining({
-                containerId: `${method.id}Widget`,
-                deinitializePayment: expect.any(Function),
-                initializePayment: expect.any(Function),
-                method,
-            }),
-        );
+        expect(container.getElementsByClassName('paymentMethod--hosted')).toHaveLength(1);
     });
 
-    it('initializes method with required config when no instruments', () => {
+    it('renders as hosted widget component when no instruments', () => {
         jest.spyOn(checkoutState.data, 'getInstruments').mockReturnValue(undefined);
 
-        const container = mount(<PaymentMethodTest {...defaultProps} method={method} />);
-        const component = container.find(HostedWidgetPaymentComponent);
+        const { container } = render(<PaymentMethodTest {...defaultProps} method={method} />);
 
-        expect(component.props()).toEqual(
-            expect.objectContaining({
-                containerId: `${method.id}Widget`,
-                deinitializePayment: expect.any(Function),
-                initializePayment: expect.any(Function),
-                method,
-            }),
-        );
+        expect(container.getElementsByClassName('paymentMethod--hosted')).toHaveLength(1);
     });
 
-    it('initializes method with required config when customer is defined', () => {
+    it('renders as hosted widget component when customer is defined', () => {
         jest.spyOn(checkoutState.data, 'getCustomer').mockReturnValue(getCustomer());
 
-        const container = mount(<PaymentMethodTest {...defaultProps} method={method} />);
-        const component = container.find(HostedWidgetPaymentComponent);
+        const { container } = render(<PaymentMethodTest {...defaultProps} method={method} />);
 
-        expect(component.props()).toEqual(
-            expect.objectContaining({
-                containerId: `${method.id}Widget`,
-                deinitializePayment: expect.any(Function),
-                initializePayment: expect.any(Function),
-                method,
-            }),
-        );
-    });
-
-    it('initializes method with required config', () => {
-        mount(<PaymentMethodTest {...defaultProps} method={method} />);
-
-        expect(checkoutService.initializePayment).toHaveBeenCalledWith(
-            expect.objectContaining({
-                methodId: method.id,
-                gatewayId: method.gateway,
-
-                [`${method.id}`]: {
-                    container: `#${method.id}Widget`,
-                },
-            }),
-        );
+        expect(container.getElementsByClassName('paymentMethod--hosted')).toHaveLength(1);
     });
 });

@@ -1,21 +1,22 @@
-import { CheckoutSelectors, RequestError } from '@bigcommerce/checkout-sdk';
+import { type CheckoutSelectors, type RequestError } from '@bigcommerce/checkout-sdk';
 import { memoizeOne } from '@bigcommerce/memoize';
-import { FieldProps, FormikProps, withFormik } from 'formik';
+import classNames from 'classnames';
+import { type FieldProps, type FormikProps, withFormik } from 'formik';
 import { noop } from 'lodash';
-import React, { FunctionComponent, KeyboardEvent, memo, useCallback } from 'react';
+import React, { type FunctionComponent, type KeyboardEvent, memo, type ReactNode, useCallback } from 'react';
 import { object, string } from 'yup';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
-import { FormContextType, FormProvider } from '@bigcommerce/checkout/ui';
+import { type FormContextType, FormProvider, useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { Alert, AlertType } from '../ui/alert';
 import { Button, ButtonVariant } from '../ui/button';
 import { FormField, Label, TextInput } from '../ui/form';
 import { Toggle } from '../ui/toggle';
 
-import AppliedRedeemables, { AppliedRedeemablesProps } from './AppliedRedeemables';
+import AppliedRedeemables, { type AppliedRedeemablesProps } from './AppliedRedeemables';
 
 export interface RedeemableFormValues {
     redeemableCode: string;
@@ -47,30 +48,33 @@ export type RedeemableProps = {
 
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
-> = ({ shouldCollapseCouponCode, showAppliedRedeemables, storeCurrencyCode, ...formProps }) => (
-    <Toggle openByDefault={!shouldCollapseCouponCode}>
-        {({ toggle, isOpen }) => (
-            <>
-                {shouldCollapseCouponCode && (
-                    <a
-                        aria-controls="redeemable-collapsable"
-                        aria-expanded={isOpen}
-                        className="redeemable-label couponButton"
-                        data-test="redeemable-label"
-                        href="#"
-                        onClick={preventDefault(toggle)}
-                    >
-                        {storeCurrencyCode === 'USD' && (
+    > = ({ shouldCollapseCouponCode, showAppliedRedeemables, storeCurrencyCode, ...formProps }) => {
+        const { themeV2 } = useThemeContext();
+
+        return (
+            <Toggle openByDefault={!shouldCollapseCouponCode}>
+                {({ toggle, isOpen }): ReactNode => (
+                    <>
+                        {shouldCollapseCouponCode && (
+                            <a
+                                aria-controls="redeemable-collapsable"
+                                aria-expanded={isOpen}
+                                className={classNames('redeemable-label couponButton', { 'body-cta': themeV2 })}
+                                data-test="redeemable-label"
+                                href="#"
+                                onClick={preventDefault(toggle)}
+                            >
+                                {storeCurrencyCode === 'USD' && (
                            <TranslatedString id="redeemable.toggle_action_us" />
                         )}
                         {storeCurrencyCode !== 'USD' && (
                             <TranslatedString id="redeemable.toggle_action" />
-                        )}
+                                )}
                     </a>
-                )}
-                {(!shouldCollapseCouponCode && storeCurrencyCode !== 'AUD') && (
-                    <div className="redeemable-label">
-                        <div className='checkout-notifications'>
+                        )}
+                        {(!shouldCollapseCouponCode && storeCurrencyCode !== 'AUD') && (
+                            <div className={classNames('redeemable-label', { 'body-cta': themeV2 })}>
+                                <div className='checkout-notifications'>
                             <div className="notification notification--info">
                                 <div className="notification__content">
                                     <p>
@@ -91,12 +95,12 @@ const Redeemable: FunctionComponent<
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
                                     <TranslatedString id="redeemable.toggle_action" />
-                                )}
+                                        )}
                             </b>
                         </span>
                     </div>
-                )}
-                <div className='checkout-notifications partiallyCouponWarning tfCouponWarning' style={{ display: 'none' }}>
+                        )}
+                        <div className='checkout-notifications partiallyCouponWarning tfCouponWarning' style={{ display: 'none' }}>
                     <div className="notification notification--info">
                         <div className="notification__content">
                             <p>
@@ -111,15 +115,16 @@ const Redeemable: FunctionComponent<
                     </div>
                 </div>
                 {(isOpen || !shouldCollapseCouponCode) && (
-                    <div data-test="redeemable-collapsable" id="redeemable-collapsable">
-                        <RedeemableForm {...formProps} />
-                        {showAppliedRedeemables && <AppliedRedeemables {...formProps} />}
-                    </div>
+                            <div data-test="redeemable-collapsable" id="redeemable-collapsable">
+                                <RedeemableForm {...formProps} />
+                                {showAppliedRedeemables && <AppliedRedeemables {...formProps} />}
+                            </div>
+                        )}
+                    </>
                 )}
-            </>
-        )}
-    </Toggle>
-);
+            </Toggle>
+        );
+    }
 
 const RedeemableForm: FunctionComponent<
     Partial<RedeemableProps> & FormikProps<RedeemableFormValues> & WithLanguageProps
@@ -129,6 +134,7 @@ const RedeemableForm: FunctionComponent<
             statuses: { isSubmittingOrder }
         }
     } = useCheckout();
+    const { themeV2 } = useThemeContext();
 
     const handleSubmitForm = (setSubmitted: FormContextType['setSubmitted']) => {
         if (isSubmittingOrder()) {
@@ -147,7 +153,7 @@ const RedeemableForm: FunctionComponent<
 
             // note: to prevent submitting main form, we manually intercept
             // the enter key event and submit the "subform".
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 || event.key === 'Enter') {
                 handleSubmitForm(setSubmitted);
                 event.preventDefault();
             }
@@ -232,11 +238,14 @@ const RedeemableForm: FunctionComponent<
                                     className="form-input optimizedCheckout-form-input"
                                     onKeyDown={handleKeyDown(setSubmitted)}
                                     testId="redeemableEntry-input"
+                                themeV2={themeV2}
                                 />
                             )}
 
                             <Button
-                                className="form-prefixPostfix-button--postfix"
+                                className={classNames('form-prefixPostfix-button--postfix', {
+                                    'body-bold': themeV2,
+                                })}
                                 disabled={isSubmittingOrder()}
                                 id="applyRedeemableButton"
                                 isLoading={isApplyingRedeemable}

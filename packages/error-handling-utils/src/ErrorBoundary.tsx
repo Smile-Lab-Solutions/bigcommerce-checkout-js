@@ -1,9 +1,9 @@
-import { Component, ReactNode } from 'react';
+import { Component, type ReactNode } from 'react';
 
-import ErrorLogger from './ErrorLogger';
+import type ErrorLogger from './ErrorLogger';
 
 export interface ErrorBoundaryProps {
-    children: ReactNode;
+    children?: ReactNode;
     fallback?: ReactNode;
     logger?: ErrorLogger;
     filter?(error: Error): boolean;
@@ -28,8 +28,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             throw error;
         }
 
+        // Adding errorCode with value `ErrorBoundary` to collect usage statistics of ErrorBoundary
         if (logger) {
-            logger.log(error);
+            logger.log(error, {
+                errorCode: 'ErrorBoundary',
+            });
         }
     }
 

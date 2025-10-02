@@ -1,9 +1,7 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { type FunctionComponent, useEffect } from 'react';
 
-import {
-    usePayPalCommerceFastlaneInstruments
-} from '../hooks/usePayPalCommerceFastlaneInstruments';
-import { PayPalFastlaneCardComponentRef } from '../PayPalCommerceFastlanePaymentMethod';
+import { usePayPalCommerceFastlaneInstruments } from '../hooks/usePayPalCommerceFastlaneInstruments';
+import { type PayPalFastlaneCardComponentRef } from '../PayPalCommerceFastlanePaymentMethod';
 
 import PayPalCommerceFastlaneCreditCardForm from './PayPalCommerceFastlaneCreditCardForm';
 import PayPalCommerceFastlaneInstrumentsForm from './PayPalCommerceFastlaneInstrumentsForm';
@@ -13,14 +11,12 @@ interface PayPalCommerceFastlaneFormProps {
     showPayPalCardSelector?: PayPalFastlaneCardComponentRef['showPayPalCardSelector'];
 }
 
-const PayPalCommerceFastlaneForm: FunctionComponent<
-    PayPalCommerceFastlaneFormProps
-> = ({ renderPayPalCardComponent, showPayPalCardSelector }) => {
-    const {
-        instruments,
-        handleSelectInstrument,
-        selectedInstrument,
-    } = usePayPalCommerceFastlaneInstruments();
+const PayPalCommerceFastlaneForm: FunctionComponent<PayPalCommerceFastlaneFormProps> = ({
+    renderPayPalCardComponent,
+    showPayPalCardSelector,
+}) => {
+    const { instruments, handleSelectInstrument, selectedInstrument } =
+        usePayPalCommerceFastlaneInstruments();
 
     const shouldShowInstrumentsForm = instruments.length > 0;
 

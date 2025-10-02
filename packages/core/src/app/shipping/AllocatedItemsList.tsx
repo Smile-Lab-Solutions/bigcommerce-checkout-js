@@ -1,12 +1,13 @@
 import React from "react";
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { IconClose } from "../ui/icon";
 
 import { renderItemContent } from "./ConsignmentLineItemDetail";
 import { ItemSplitTooltip } from "./ItemSplitTooltip";
-import { MultiShippingTableData, MultiShippingTableItemWithType } from "./MultishippingV2Type";
+import { type MultiShippingTableData, type MultiShippingTableItemWithType } from "./MultishippingType";
 
 interface AllocatedItemsListProps {
     assignedItems: MultiShippingTableData;
@@ -14,9 +15,11 @@ interface AllocatedItemsListProps {
 }
 
 const AllocatedItemsList = ({ assignedItems, onUnassignItem }: AllocatedItemsListProps) => {
+    const { themeV2 } = useThemeContext();
+
     return (
         <div className="allocated-line-items">
-            <h3>
+            <h3 className={themeV2 ? 'body-bold' : ''}>
                 <TranslatedString data={{ count: assignedItems.shippableItemsCount }} id="shipping.multishipping_item_allocated_message" />
                 {assignedItems.hasSplitItems && (
                     <ItemSplitTooltip />
@@ -25,7 +28,7 @@ const AllocatedItemsList = ({ assignedItems, onUnassignItem }: AllocatedItemsLis
             <ul className="allocated-line-items-list">
                 {assignedItems.lineItems.map(item => (
                     <li key={item.id}>
-                        {renderItemContent(item)}
+                        {renderItemContent(item, themeV2)}
                         <span data-test={`remove-${item.id.toString()}-button`} onClick={() => onUnassignItem(item)}>
                             <IconClose />
                         </span>

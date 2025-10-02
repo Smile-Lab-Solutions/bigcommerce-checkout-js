@@ -1,26 +1,25 @@
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
     createLanguageService,
-    PaymentInitializeOptions,
-    PaymentMethod,
-    WithStripeUPEPaymentInitializeOptions,
+    type PaymentInitializeOptions,
+    type PaymentMethod,
 } from '@bigcommerce/checkout-sdk';
 import { render } from '@testing-library/react';
 import { Formik } from 'formik';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import {
     CheckoutProvider,
     PaymentMethodId,
-    PaymentMethodProps,
+    type PaymentMethodProps,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     getCheckout,
@@ -30,7 +29,7 @@ import {
     getPaymentMethod,
     getStoreConfig,
 } from '@bigcommerce/checkout/test-mocks';
-import { AccordionContext, AccordionContextProps } from '@bigcommerce/checkout/ui';
+import { AccordionContext, type AccordionContextProps } from '@bigcommerce/checkout/ui';
 
 import StripeUPEPaymentMethod from './StripeUPEPaymentMethod';
 
@@ -119,8 +118,6 @@ describe('when using StripeUPE payment', () => {
                 containerId: 'stripe-pay_now-component-field',
                 onError: expect.any(Function),
                 render: expect.any(Function),
-                paymentMethodSelect: expect.any(Function),
-                handleClosePaymentMethod: expect.any(Function),
                 style: {
                     fieldBackground: '',
                     fieldBorder: '',
@@ -152,8 +149,6 @@ describe('when using StripeUPE payment', () => {
                 containerId: 'stripe-pay_now-component-field',
                 onError: expect.any(Function),
                 render: expect.any(Function),
-                paymentMethodSelect: expect.any(Function),
-                handleClosePaymentMethod: expect.any(Function),
                 style: {
                     fieldBackground: '',
                     fieldBorder: '',
@@ -181,7 +176,7 @@ describe('when using StripeUPE payment', () => {
             expect.objectContaining({
                 methodId: method.id,
                 gatewayId: method.gateway,
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
                 [`${method.gateway}`]: {
                     containerId: `stripe-${method.id}-component-field`,
                     style: {
@@ -195,71 +190,8 @@ describe('when using StripeUPE payment', () => {
                     },
                     onError: expect.any(Function),
                     render: expect.any(Function),
-                    paymentMethodSelect: expect.any(Function),
-                    handleClosePaymentMethod: expect.any(Function),
                 },
             }),
         );
-    });
-
-    describe('# Stripe OCS accordion', () => {
-        let collapseElementMock: jest.Mock;
-
-        beforeEach(() => {
-            collapseElementMock = jest.fn();
-        });
-
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
-        it('should call collapse BC accordion when stripe accordion item is selected', () => {
-            jest.spyOn(checkoutService, 'initializePayment').mockImplementation(
-                (options: WithStripeUPEPaymentInitializeOptions) => {
-                    options.stripeupe?.paymentMethodSelect?.('methodId');
-
-                    return Promise.resolve(checkoutState);
-                },
-            );
-            render(<PaymentMethodTest {...defaultProps} method={method} />);
-
-            expect(onToggleMock).toHaveBeenCalled();
-        });
-
-        it('should collapse stripe accordion when BC accordion item selected', () => {
-            jest.spyOn(checkoutService, 'initializePayment').mockImplementation(
-                (options: WithStripeUPEPaymentInitializeOptions) => {
-                    options.stripeupe?.handleClosePaymentMethod?.(collapseElementMock);
-
-                    return Promise.resolve(checkoutState);
-                },
-            );
-
-            const { rerender } = render(<PaymentMethodTest {...defaultProps} method={method} />);
-
-            accordionContextValues.selectedItemId = 'nonStripeItem';
-
-            rerender(<PaymentMethodTest {...defaultProps} method={method} />);
-
-            expect(collapseElementMock).toHaveBeenCalled();
-        });
-
-        it('should not collapse stripe accordion when Stripe accordion item selected', () => {
-            jest.spyOn(checkoutService, 'initializePayment').mockImplementation(
-                (options: WithStripeUPEPaymentInitializeOptions) => {
-                    options.stripeupe?.handleClosePaymentMethod?.(collapseElementMock);
-
-                    return Promise.resolve(checkoutState);
-                },
-            );
-
-            const { rerender } = render(<PaymentMethodTest {...defaultProps} method={method} />);
-
-            accordionContextValues.selectedItemId = 'stripeupe-card';
-
-            rerender(<PaymentMethodTest {...defaultProps} method={method} />);
-
-            expect(collapseElementMock).not.toHaveBeenCalled();
-        });
     });
 });

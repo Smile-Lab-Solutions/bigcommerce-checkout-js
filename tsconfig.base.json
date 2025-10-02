@@ -16,6 +16,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
+      "@bigcommerce/checkout/ui/icon/*": ["packages/ui/src/icon/*"],
       "@bigcommerce/checkout/adyen-integration": ["packages/adyen-integration/src/index.ts"],
       "@bigcommerce/checkout/affirm-integration": ["packages/affirm-integration/src/index.ts"],
       "@bigcommerce/checkout/amazon-pay-v2-integration": [
@@ -26,8 +27,14 @@
         "packages/apple-pay-integration/src/index.ts"
       ],
       "@bigcommerce/checkout/barclay-integration": ["packages/barclay-integration/src/index.ts"],
+      "@bigcommerce/checkout/bigcommerce-payments-integration": [
+        "packages/bigcommerce-payments-integration/src/index.ts"
+      ],
       "@bigcommerce/checkout/bluesnap-direct-integration": [
         "packages/bluesnap-direct-integration/src/index.ts"
+      ],
+      "@bigcommerce/checkout/bigcommerce-payments-utils": [
+        "packages/bigcommerce-payments-utils/src/index.ts"
       ],
       "@bigcommerce/checkout/bolt-integration": ["packages/bolt-integration/src/index.ts"],
       "@bigcommerce/checkout/braintree-integration": [
@@ -40,12 +47,10 @@
       "@bigcommerce/checkout/checkoutcom-integration": [
         "packages/checkoutcom-integration/src/index.ts"
       ],
+      "@bigcommerce/checkout/clearpay-integration": ["packages/clearpay-integration/src/index.ts"],
       "@bigcommerce/checkout/core": ["packages/core/src/app/index.ts"],
       "@bigcommerce/checkout/credit-card-integration": [
         "packages/credit-card-integration/src/index.ts"
-      ],
-      "@bigcommerce/checkout/digitalriver-integration": [
-        "packages/digitalriver-integration/src/index.ts"
       ],
       "@bigcommerce/checkout/dom-utils": ["packages/dom-utils/src/index.ts"],
       "@bigcommerce/checkout/error-handling-utils": ["packages/error-handling-utils/src/index.ts"],
@@ -55,12 +60,6 @@
       "@bigcommerce/checkout/hosted-credit-card-integration": [
         "packages/hosted-credit-card-integration/src/index.ts"
       ],
-      "@bigcommerce/checkout/hosted-dropin-integration": [
-        "packages/hosted-dropin-integration/src/index.ts"
-      ],
-      "@bigcommerce/checkout/hosted-field-integration": [
-        "packages/hosted-field-integration/src/index.ts"
-      ],
       "@bigcommerce/checkout/hosted-payment-integration": [
         "packages/hosted-payment-integration/src/index.ts"
       ],
@@ -69,7 +68,6 @@
       ],
       "@bigcommerce/checkout/instrument-utils": ["packages/instrument-utils/src/index.ts"],
       "@bigcommerce/checkout/klarna-integration": ["packages/klarna-integration/src/index.ts"],
-      "@bigcommerce/checkout/stripe-integration": ["packages/stripe-integration/src/index.ts"],
       "@bigcommerce/checkout/legacy-hoc": ["packages/legacy-hoc/src/index.ts"],
       "@bigcommerce/checkout/locale": ["packages/locale/src/index.ts"],
       "@bigcommerce/checkout/mollie-integration": ["packages/mollie-integration/src/index.ts"],
@@ -89,16 +87,24 @@
       "@bigcommerce/checkout/paypal-fastlane-integration": [
         "packages/paypal-fastlane-integration/src/index.ts"
       ],
+      "@bigcommerce/checkout/paypal-payments-pro-integration": [
+        "packages/paypal-payments-pro-integration/src/index.ts"
+      ],
+      "@bigcommerce/checkout/paypal-utils": ["packages/paypal-utils/src/index.ts"],
+      "@bigcommerce/checkout/ppsdk-integration": ["packages/ppsdk-integration/src/index.ts"],
       "@bigcommerce/checkout/squarev2-integration": ["packages/squarev2-integration/src/index.ts"],
+      "@bigcommerce/checkout/stripe-integration": ["packages/stripe-integration/src/index.ts"],
       "@bigcommerce/checkout/td-bank-integration": ["packages/td-bank-integration/src/index.ts"],
       "@bigcommerce/checkout/test-framework": ["packages/test-framework/src/index.ts"],
       "@bigcommerce/checkout/test-mocks": ["packages/test-mocks/src/index.ts"],
       "@bigcommerce/checkout/test-utils": ["packages/test-utils/src/index.ts"],
       "@bigcommerce/checkout/ui": ["packages/ui/src/index.ts"],
+      "@bigcommerce/checkout/utility": ["packages/utility/src/index.ts"],
       "@bigcommerce/checkout/wallet-button-integration": [
         "packages/wallet-button-integration/src/index.ts"
       ],
-      "@bigcommerce/checkout/workspace-tools": ["packages/workspace-tools/src/index.ts"]
+      "@bigcommerce/checkout/workspace-tools": ["packages/workspace-tools/src/index.ts"],
+      "@bigcommerce/checkout/worldpay-access-integration": ["packages/worldpay-access-integration/src/index.ts"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -106,7 +112,7 @@
     "strict": true,
     "strictNullChecks": true,
     "stripInternal": true,
-    "target": "es5",
+    "target": "es2015",
     "allowJs": true
   }
 }

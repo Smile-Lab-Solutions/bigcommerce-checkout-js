@@ -53,7 +53,17 @@
 .checkout-step {
     border-bottom: container("border");
     counter-increment: $checkoutStep-counter;
-    padding: spacing("single") 0;
+    padding: #{spacing("fifth") + spacing("fifth")} 0 0;
+
+    &:last-child {
+        border: 0;
+    }
+}
+
+.checkout-view-header {
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .checkout-view-content {
@@ -66,8 +76,7 @@
     margin-bottom: spacing("single");
 }
 
-.checkout-form,
-.checklist-skeleton {
+.checkout-form {
     margin: 0;
 
     @include breakpoint("small") {
@@ -132,7 +141,7 @@
     align-items: top;
     display: flex;
     flex-wrap: wrap;
-    padding: 1rem 0;
+    padding: #{spacing("half") + spacing("third")} 0;
 
     @include breakpoint("small") {
         flex-wrap: nowrap;
@@ -168,7 +177,6 @@
 
         .checkout-form,
         div.stepHeader-body,
-        div.checklist-skeleton,
         h2.stepHeader-title {
             margin-left: 0;
         }
@@ -209,6 +217,13 @@
 
     .button {
         margin-bottom: 0;
+        border: none;
+    }
+
+    .button:hover, .button:focus {
+        background: none;
+        box-shadow: none;
+        outline: none;
     }
 }
 

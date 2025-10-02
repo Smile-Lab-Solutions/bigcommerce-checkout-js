@@ -1,17 +1,20 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     CreditCardPaymentMethodComponent,
-    CreditCardPaymentMethodProps,
+    type CreditCardPaymentMethodProps,
 } from '@bigcommerce/checkout/credit-card-integration';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 
 import checkoutcomCustomFormFields, { ccDocumentField } from './CheckoutcomCustomFormFields';
-import { checkoutcomPaymentMethods, getCheckoutcomValidationSchemas } from './checkoutcomFieldsets';
+import {
+    type checkoutcomPaymentMethods,
+    getCheckoutcomValidationSchemas,
+} from './checkoutcomFieldsets';
 import { checkoutcomPaymentMethodsArray } from './checkoutcomFieldsets/getCheckoutcomFieldsetValidationSchemas';
 
 export interface CheckoutcomCustomPaymentMethodProps
@@ -29,6 +32,10 @@ const CheckoutcomCustomPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
     checkoutState,
     ...rest
 }) => {
+    const { getConfig } = checkoutState.data;
+    const isIdealHostedPageExperimentOn =
+        getConfig()?.checkoutSettings.features['PI-2979.checkoutcom_enable_ideal_hosted_page'];
+
     const checkoutCustomMethod = method.id;
     const CheckoutcomCustomFieldset =
         checkoutCustomMethod in checkoutcomCustomFormFields
@@ -37,7 +44,10 @@ const CheckoutcomCustomPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
 
     const billingAddress = checkoutState.data.getBillingAddress();
 
-    if (!isCheckoutcomPaymentMethod(checkoutCustomMethod)) {
+    if (
+        !isCheckoutcomPaymentMethod(checkoutCustomMethod) ||
+        (checkoutCustomMethod === 'ideal' && isIdealHostedPageExperimentOn)
+    ) {
         return null;
     }
 
@@ -61,12 +71,5 @@ const CheckoutcomCustomPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
 
 export default toResolvableComponent<PaymentMethodProps, PaymentMethodResolveId>(
     CheckoutcomCustomPaymentMethod,
-    [
-        { gateway: 'checkoutcom', id: 'ideal' },
-        { gateway: 'checkoutcom', id: 'fawry' },
-        { gateway: 'checkoutcom', id: 'oxxo' },
-        { gateway: 'checkoutcom', id: 'boleto' },
-        { gateway: 'checkoutcom', id: 'sepa' },
-        { gateway: 'checkoutcom', id: 'qpay' },
-    ],
+    [{ gateway: 'checkoutcom' }],
 );

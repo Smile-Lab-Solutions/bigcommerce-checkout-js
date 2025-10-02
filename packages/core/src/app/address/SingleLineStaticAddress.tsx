@@ -1,12 +1,11 @@
-import { Address } from '@bigcommerce/checkout-sdk';
+import { type Address } from '@bigcommerce/checkout-sdk';
+import classNames from 'classnames';
+import { isEmpty } from 'lodash';
 import React from "react";
 
-import { useCheckout } from "@bigcommerce/checkout/payment-integration-api";
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
-import { isExperimentEnabled } from '../common/utility';
-
-import AddressType from "./AddressType";
-import isValidStaticAddress from './isValidStaticAddress';
+import type AddressType from "./AddressType";
 
 export interface SingleLineStaticAddressProps {
     address: Address;
@@ -34,32 +33,14 @@ export const getAddressContent: (value: Address) => string = ({
     return `${firstName} ${lastName}, ${address}`;
 };
 
-const SingleLineStaticAddress = ({ address, type }: SingleLineStaticAddressProps) => {
-    const {
-        checkoutState: {
-            data: { getConfig, getBillingAddressFields, getShippingAddressFields },
-        }
-    } = useCheckout();
+const SingleLineStaticAddress = ({ address }: SingleLineStaticAddressProps) => {
+    const { themeV2 } = useThemeContext();
 
-    const config = getConfig();
-    const validateAddressFields =
-        isExperimentEnabled(
-            config?.checkoutSettings,
-            'CHECKOUT-7560.address_fields_max_length_validation',
-        );
-
-    const fields =
-        type === AddressType.Billing
-            ? getBillingAddressFields(address.countryCode)
-            : type === AddressType.Shipping
-                ? getShippingAddressFields(address.countryCode)
-                : undefined;
-
-    const isValid = isValidStaticAddress(address, validateAddressFields, fields);
+    const isValid = !isEmpty(address);
 
     return !isValid ? null : (
         <div className="vcard checkout-address--static" data-test="static-address">
-            <p className="address-entry">
+            <p className={classNames('address-entry', { 'body-regular': themeV2 })}>
                 {getAddressContent(address)}
             </p>
         </div>

@@ -1,28 +1,28 @@
 import '@testing-library/jest-dom';
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
-    PaymentInitializeOptions,
-    PaymentMethod,
+    type PaymentInitializeOptions,
+    type PaymentMethod,
 } from '@bigcommerce/checkout-sdk';
 import { Formik } from 'formik';
 import each from 'jest-each';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import {
     createLocaleContext,
     LocaleContext,
-    LocaleContextType,
+    type LocaleContextType,
 } from '@bigcommerce/checkout/locale';
 import {
     CheckoutProvider,
     getPaymentMethodName,
     PaymentFormContext,
-    PaymentFormService,
+    type PaymentFormService,
     PaymentMethodId,
-    PaymentMethodProps,
+    type PaymentMethodProps,
     PaymentMethodType,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
@@ -124,7 +124,7 @@ describe('when using Google Pay payment', () => {
         PaymentMethodId.StripeGooglePay,
         PaymentMethodId.StripeUPEGooglePay,
         PaymentMethodId.WorldpayAccessGooglePay,
-        GooglePayPaymentMethodId.TdOnlineMartGooglePay,
+        GooglePayPaymentMethodId.tdOnlineMartGooglePay,
     ]).it('initializes %s with required config', (id: PaymentMethodId) => {
         method.id = id;
 
@@ -137,7 +137,7 @@ describe('when using Google Pay payment', () => {
                 [id]: {
                     walletButton: 'walletButton',
                     onError: defaultProps.onUnhandledError,
-
+                    loadingContainerId: 'checkout-app',
                     onPaymentSelect: expect.any(Function),
                 },
             }),
@@ -145,93 +145,89 @@ describe('when using Google Pay payment', () => {
     });
 
     each([
-        GooglePayPaymentMethodId.AdyenV2GooglePay,
-        GooglePayPaymentMethodId.AdyenV3GooglePay,
-        GooglePayPaymentMethodId.AuthorizeNetGooglePay,
-        GooglePayPaymentMethodId.BNZGooglePay,
-        GooglePayPaymentMethodId.BraintreeGooglePay,
-        GooglePayPaymentMethodId.PayPalCommerceGooglePay,
-        GooglePayPaymentMethodId.CheckoutcomGooglePay,
-        GooglePayPaymentMethodId.CybersourceV2GooglePay,
-        GooglePayPaymentMethodId.OrbitalGooglePay,
-        GooglePayPaymentMethodId.StripeGooglePay,
-        GooglePayPaymentMethodId.StripeUPEGooglePay,
-        GooglePayPaymentMethodId.WorldpayAccessGooglePay,
-        GooglePayPaymentMethodId.TdOnlineMartGooglePay,
-    ]).it(
-        'reinitializes method once payment option is selected',
-        async (id: GooglePayPaymentMethodId) => {
-            method.id = id;
-            render(<GooglePayPaymentMethodTest {...defaultProps} method={method} />);
+        GooglePayPaymentMethodId.adyenV2GooglePay,
+        GooglePayPaymentMethodId.adyenV3GooglePay,
+        GooglePayPaymentMethodId.authorizeNetGooglePay,
+        GooglePayPaymentMethodId.bnzGooglePay,
+        GooglePayPaymentMethodId.braintreeGooglePay,
+        GooglePayPaymentMethodId.payPalCommerceGooglePay,
+        GooglePayPaymentMethodId.bigcommercePaymentsGooglePay,
+        GooglePayPaymentMethodId.checkoutcomGooglePay,
+        GooglePayPaymentMethodId.cybersourceV2GooglePay,
+        GooglePayPaymentMethodId.orbitalGooglePay,
+        GooglePayPaymentMethodId.stripeGooglePay,
+        GooglePayPaymentMethodId.stripeUPEGooglePay,
+        GooglePayPaymentMethodId.worldpayAccessGooglePay,
+        GooglePayPaymentMethodId.tdOnlineMartGooglePay,
+    ]).it('reinitializes method once payment option is selected', async (id: string) => {
+        method.id = id;
+        render(<GooglePayPaymentMethodTest {...defaultProps} method={method} />);
 
-            const options: PaymentInitializeOptions = (
-                checkoutService.initializePayment as jest.Mock
-            ).mock.calls[0][0];
+        const options: PaymentInitializeOptions = (checkoutService.initializePayment as jest.Mock)
+            .mock.calls[0][0];
 
-            (checkoutService.initializePayment as jest.Mock).mockReset();
+        (checkoutService.initializePayment as jest.Mock).mockReset();
 
-            options.googlepaybraintree!.onPaymentSelect!();
+        options.googlepaybraintree!.onPaymentSelect!();
 
-            options[id]!.onPaymentSelect!();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (options as Record<string, any>)[id]!.onPaymentSelect!();
 
-            await new Promise((resolve) => process.nextTick(resolve));
+        await new Promise((resolve) => process.nextTick(resolve));
 
-            expect(checkoutService.deinitializePayment).toHaveBeenCalledWith({
+        expect(checkoutService.deinitializePayment).toHaveBeenCalledWith({
+            methodId: method.id,
+        });
+        expect(checkoutService.initializePayment).toHaveBeenCalledWith(
+            expect.objectContaining({
                 methodId: method.id,
-            });
-            expect(checkoutService.initializePayment).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    methodId: method.id,
 
-                    [method.id]: expect.any(Object),
-                }),
-            );
-        },
-    );
+                [method.id]: expect.any(Object),
+            }),
+        );
+    });
 
     each([
-        GooglePayPaymentMethodId.AdyenV2GooglePay,
-        GooglePayPaymentMethodId.AdyenV3GooglePay,
-        GooglePayPaymentMethodId.AuthorizeNetGooglePay,
-        GooglePayPaymentMethodId.BNZGooglePay,
-        GooglePayPaymentMethodId.BraintreeGooglePay,
-        GooglePayPaymentMethodId.PayPalCommerceGooglePay,
-        GooglePayPaymentMethodId.CheckoutcomGooglePay,
-        GooglePayPaymentMethodId.CybersourceV2GooglePay,
-        GooglePayPaymentMethodId.OrbitalGooglePay,
-        GooglePayPaymentMethodId.StripeGooglePay,
-        GooglePayPaymentMethodId.StripeUPEGooglePay,
-        GooglePayPaymentMethodId.WorldpayAccessGooglePay,
-        GooglePayPaymentMethodId.TdOnlineMartGooglePay,
-    ]).it(
-        'catches error during component reinitialization',
-        async (id: GooglePayPaymentMethodId) => {
-            method.id = id;
-            render(<GooglePayPaymentMethodTest {...defaultProps} method={method} />);
-            jest.spyOn(checkoutService, 'initializePayment').mockImplementation(() =>
-                Promise.reject(new Error('test error')),
-            );
+        GooglePayPaymentMethodId.adyenV2GooglePay,
+        GooglePayPaymentMethodId.adyenV3GooglePay,
+        GooglePayPaymentMethodId.authorizeNetGooglePay,
+        GooglePayPaymentMethodId.bnzGooglePay,
+        GooglePayPaymentMethodId.braintreeGooglePay,
+        GooglePayPaymentMethodId.payPalCommerceGooglePay,
+        GooglePayPaymentMethodId.bigcommercePaymentsGooglePay,
+        GooglePayPaymentMethodId.checkoutcomGooglePay,
+        GooglePayPaymentMethodId.cybersourceV2GooglePay,
+        GooglePayPaymentMethodId.orbitalGooglePay,
+        GooglePayPaymentMethodId.stripeGooglePay,
+        GooglePayPaymentMethodId.stripeUPEGooglePay,
+        GooglePayPaymentMethodId.worldpayAccessGooglePay,
+        GooglePayPaymentMethodId.tdOnlineMartGooglePay,
+    ]).it('catches error during component reinitialization', async (id: string) => {
+        method.id = id;
+        render(<GooglePayPaymentMethodTest {...defaultProps} method={method} />);
+        jest.spyOn(checkoutService, 'initializePayment').mockImplementation(() =>
+            Promise.reject(new Error('test error')),
+        );
 
-            const options: PaymentInitializeOptions = (
-                checkoutService.initializePayment as jest.Mock
-            ).mock.calls[0][0];
+        const options: PaymentInitializeOptions = (checkoutService.initializePayment as jest.Mock)
+            .mock.calls[0][0];
 
-            options[id]!.onPaymentSelect!();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (options as Record<string, any>)[id]!.onPaymentSelect!();
 
-            await new Promise((resolve) => process.nextTick(resolve));
+        await new Promise((resolve) => process.nextTick(resolve));
 
-            expect(checkoutService.deinitializePayment).toHaveBeenCalledWith({
+        expect(checkoutService.deinitializePayment).toHaveBeenCalledWith({
+            methodId: method.id,
+        });
+        expect(checkoutService.initializePayment).toHaveBeenCalledWith(
+            expect.objectContaining({
                 methodId: method.id,
-            });
-            expect(checkoutService.initializePayment).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    methodId: method.id,
 
-                    [method.id]: expect.any(Object),
-                }),
-            );
+                [method.id]: expect.any(Object),
+            }),
+        );
 
-            expect(defaultProps.onUnhandledError).toHaveBeenCalled();
-        },
-    );
+        expect(defaultProps.onUnhandledError).toHaveBeenCalled();
+    });
 });

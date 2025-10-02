@@ -1,17 +1,16 @@
 import {
-    CheckoutService,
+    type CheckoutService,
     createCheckoutService,
     createEmbeddedCheckoutMessenger,
-    EmbeddedCheckoutMessenger,
+    type EmbeddedCheckoutMessenger,
 } from '@bigcommerce/checkout-sdk';
-import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { act, type FunctionComponent } from 'react';
 
 import {
-    AnalyticsContextProps,
-    AnalyticsEvents,
+    type AnalyticsContextProps,
+    type AnalyticsEvents,
     AnalyticsProviderMock,
 } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
@@ -20,7 +19,15 @@ import {
     CHECKOUT_ROOT_NODE_ID,
     CheckoutProvider,
 } from '@bigcommerce/checkout/payment-integration-api';
-import { CheckoutPageNodeObject } from '@bigcommerce/checkout/test-framework';
+import {
+    CheckoutPageNodeObject,
+    CheckoutPreset,
+    checkoutWithShippingDiscount,
+    consignmentAutomaticDiscount,
+    consignmentCouponDiscount,
+} from '@bigcommerce/checkout/test-framework';
+import { renderWithoutWrapper as render, screen, waitFor } from '@bigcommerce/checkout/test-utils';
+import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
 import { createErrorLogger } from '../common/error';
 import {
@@ -28,7 +35,7 @@ import {
     createEmbeddedCheckoutSupport,
 } from '../embeddedCheckout';
 
-import Checkout, { CheckoutProps } from './Checkout';
+import Checkout, { type CheckoutProps } from './Checkout';
 
 describe('Checkout', () => {
     let checkout: CheckoutPageNodeObject;
@@ -36,7 +43,7 @@ describe('Checkout', () => {
     let checkoutService: CheckoutService;
     let defaultProps: CheckoutProps & AnalyticsContextProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
-    let analyticsTracker: Partial<AnalyticsEvents>;
+    let analyticsTracker: AnalyticsEvents;
 
     beforeAll(() => {
         checkout = new CheckoutPageNodeObject();
@@ -60,9 +67,20 @@ describe('Checkout', () => {
         });
         analyticsTracker = {
             checkoutBegin: jest.fn(),
-            trackStepViewed: jest.fn(),
             trackStepCompleted: jest.fn(),
+            trackStepViewed: jest.fn(),
+            orderPurchased: jest.fn(),
+            customerEmailEntry: jest.fn(),
+            customerSuggestionInit: jest.fn(),
+            customerSuggestionExecute: jest.fn(),
+            customerPaymentMethodExecuted: jest.fn(),
+            showShippingMethods: jest.fn(),
+            selectedPaymentMethod: jest.fn(),
+            clickPayButton: jest.fn(),
+            paymentRejected: jest.fn(),
+            paymentComplete: jest.fn(),
             exitCheckout: jest.fn(),
+            walletButtonClick: jest.fn(),
         };
         defaultProps = {
             checkoutId: 'x',
@@ -80,8 +98,10 @@ describe('Checkout', () => {
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
-                        <ExtensionProvider checkoutService={checkoutService}>
-                            <Checkout {...props} />
+                        <ExtensionProvider checkoutService={checkoutService} errorLogger={defaultProps.errorLogger}>
+                            <ThemeProvider>
+                                <Checkout {...props} />
+                            </ThemeProvider>
                         </ExtensionProvider>
                     </AnalyticsProviderMock>
                 </LocaleProvider>
@@ -119,6 +139,7 @@ describe('Checkout', () => {
 
         it('render component with proper id', async () => {
             render(<CheckoutTest {...defaultProps} />);
+
             await checkout.waitForCustomerStep();
 
             const wrapper = screen.getByTestId('checkout-page-container');
@@ -127,19 +148,19 @@ describe('Checkout', () => {
         });
 
         it('renders list of promotion banners', async () => {
-            checkout.use('CartWithPromotions');
+            checkout.use(CheckoutPreset.CheckoutWithPromotions);
 
             render(<CheckoutTest {...defaultProps} />);
 
             await checkout.waitForCustomerStep();
 
-            expect(screen.queryAllByRole('alert')).toHaveLength(2);
+            expect(screen.queryAllByRole('status')).toHaveLength(2);
             expect(screen.getByText('You are eligible for a discount')).toBeInTheDocument();
             expect(screen.getByText('Get a discount if you order more')).toBeInTheDocument();
         });
 
         it('renders modal error when theres an error flash message', async () => {
-            checkout.use('ErrorFlashMessage');
+            checkout.use(CheckoutPreset.ErrorFlashMessage);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -149,7 +170,7 @@ describe('Checkout', () => {
         });
 
         it('renders modal error when theres an custom error flash message', async () => {
-            checkout.use('CustomErrorFlashMessage');
+            checkout.use(CheckoutPreset.CustomErrorFlashMessage);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -160,7 +181,7 @@ describe('Checkout', () => {
         });
 
         it('does not render shipping checkout step if not required', async () => {
-            checkout.use('CartWithoutPhysicalItem');
+            checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -178,7 +199,7 @@ describe('Checkout', () => {
         });
 
         it('tracks a step viewed when a step is expanded', async () => {
-            checkout.use('CartWithShippingAddress');
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -191,6 +212,76 @@ describe('Checkout', () => {
             await checkout.waitForShippingStep();
 
             expect(analyticsTracker.trackStepViewed).toHaveBeenCalledWith('shipping');
+        });
+    });
+
+    describe('prerendering analytics', () => {
+        let originalPrerendering: boolean | undefined;
+        let mockAddEventListener: jest.SpyInstance;
+
+        beforeEach(() => {
+            originalPrerendering = (document as any).prerendering;
+            mockAddEventListener = jest.spyOn(document, 'addEventListener');
+        });
+
+        afterEach(() => {
+            (document as any).prerendering = originalPrerendering;
+            mockAddEventListener.mockRestore();
+        });
+
+        it('calls checkoutBegin immediately when not prerendering', async () => {
+            (document as any).prerendering = false;
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForCustomerStep();
+
+            expect(analyticsTracker.checkoutBegin).toHaveBeenCalled();
+            expect(mockAddEventListener).not.toHaveBeenCalledWith(
+                'prerenderingchange',
+                expect.any(Function),
+                { once: true }
+            );
+        });
+
+        it('adds prerenderingchange event listener when prerendering', async () => {
+            (document as any).prerendering = true;
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForCustomerStep();
+
+            expect(analyticsTracker.checkoutBegin).not.toHaveBeenCalled();
+            expect(mockAddEventListener).toHaveBeenCalledWith(
+                'prerenderingchange',
+                expect.any(Function),
+                { once: true }
+            );
+        });
+
+        it('calls checkoutBegin when prerenderingchange event fires', async () => {
+            (document as any).prerendering = true;
+
+            let eventHandler: () => void;
+
+            mockAddEventListener.mockImplementation((event, handler) => {
+                if (event === 'prerenderingchange') {
+                    eventHandler = handler;
+                }
+            });
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForCustomerStep();
+
+            expect(analyticsTracker.checkoutBegin).not.toHaveBeenCalled();
+
+            // Simulate the prerenderingchange event
+            act(() => {
+                eventHandler();
+            });
+
+            expect(analyticsTracker.checkoutBegin).toHaveBeenCalled();
         });
     });
 
@@ -209,21 +300,23 @@ describe('Checkout', () => {
 
             await checkout.waitForCustomerStep();
 
-            await userEvent.type(screen.getByLabelText('Email'), 'test@example.com');
-            await userEvent.click(screen.getByText('Continue'));
-
-            await screen.findByText('test@example.com');
+            await act(async () => {
+                await userEvent.type(screen.getByLabelText('Email'), 'test@example.com');
+                await userEvent.click(screen.getByText('Continue'));
+            });
 
             expect(analyticsTracker.trackStepCompleted).toHaveBeenCalledWith('customer');
         });
 
         it('navigates to next step when shopper continues as guest', async () => {
-            render(<CheckoutTest {...defaultProps} />);
+            render(<CheckoutTest {...defaultProps} />, { legacyRoot: true });
 
             await checkout.waitForCustomerStep();
 
-            await userEvent.type(await screen.findByLabelText('Email'), 'test@example.com');
-            await userEvent.click(await screen.findByText('Continue'));
+            await act(async () => {
+                await userEvent.type(await screen.findByLabelText('Email'), 'test@example.com');
+                await userEvent.click(await screen.findByText('Continue'));
+            });
 
             await screen.findByText('test@example.com');
 
@@ -231,21 +324,36 @@ describe('Checkout', () => {
         });
 
         it('logs unhandled error', async () => {
-            checkout.use('UnsupportedProvider');
+            checkout.use(CheckoutPreset.UnsupportedProvider);
 
             render(<CheckoutTest {...defaultProps} />);
 
             await checkout.waitForCustomerStep();
 
-            const error = new Error('Apple pay is not supported');
+            const error = new Error(
+                'Unable to proceed because payment method data is unavailable or not properly configured.',
+            );
 
             expect(defaultProps.errorLogger.log).toHaveBeenCalledWith(error);
+        });
+
+        it('renders checkout button container with ApplePay', async () => {
+            (window as any).ApplePaySession = {};
+
+            checkout.use(CheckoutPreset.RemoteProviders);
+            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForShippingStep();
+
+            expect(screen.getByText('Check out faster with:')).toBeInTheDocument();
         });
     });
 
     describe('shipping step', () => {
         it('renders shipping component when shipping step is active', async () => {
-            checkout.use('CartWithBillingEmail');
+            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -260,7 +368,7 @@ describe('Checkout', () => {
         });
 
         it('renders custom shipping method and locks shipping component', async () => {
-            checkout.use('CartWithCustomShippingAndBilling');
+            checkout.use(CheckoutPreset.CheckoutWithCustomShippingAndBilling);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -269,7 +377,7 @@ describe('Checkout', () => {
             expect(screen.getByText('Manual Order Custom Shipping Method')).toBeInTheDocument();
             expect(screen.getAllByRole('button', { name: 'Edit' })).toHaveLength(2);
             expect(screen.getByText(/test payment provider/i)).toBeInTheDocument();
-            expect(screen.getByText(/pay in store/i)).toBeInTheDocument();
+            expect(screen.getByRole('radio', { name: /pay in store/i })).toBeInTheDocument();
             expect(screen.getByText(/place order/i)).toBeInTheDocument();
         });
 
@@ -280,7 +388,7 @@ describe('Checkout', () => {
                 throw error;
             });
 
-            checkout.use('CartWithBillingEmail');
+            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -292,7 +400,7 @@ describe('Checkout', () => {
 
     describe('billing step', () => {
         it('renders billing component when billing step is active', async () => {
-            checkout.use('CartWithShippingAddress');
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -307,7 +415,7 @@ describe('Checkout', () => {
         });
 
         it('renders shipping component with summary data', async () => {
-            checkout.use('CartWithShippingAddress');
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -318,6 +426,120 @@ describe('Checkout', () => {
             expect(screen.getByText(/pickup in store/i)).toBeInTheDocument();
         });
 
+        it('renders shipping summary with shipping discount', async () => {
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
+            checkout.updateCheckout('get',
+                '/checkout/*',
+                checkoutWithShippingDiscount,
+            );
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForBillingStep();
+
+            const shippingOptionsInShippingSummary = screen.getByTestId('static-shipping-option');
+
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('Pickup In Store');
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('$3.00');
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('$1.00');
+
+            const shippingCostInOrderSummary = screen.getByTestId('cart-shipping');
+
+            expect(shippingCostInOrderSummary).toHaveTextContent('Shipping');
+            expect(shippingCostInOrderSummary).toHaveTextContent('$3.00');
+            expect(shippingCostInOrderSummary).toHaveTextContent('$1.00');
+
+            const couponDetailInOrderSummary = screen.getByTestId('cart-coupon');
+
+            expect(couponDetailInOrderSummary).toHaveTextContent('TEST-SHIPPING-DISCOUNT-CODE');
+            expect(couponDetailInOrderSummary).toHaveTextContent('$3.00');
+        });
+
+        it('renders shipping summary with 100% off shipping discount', async () => {
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
+            checkout.updateCheckout('get',
+                '/checkout/*',
+                {
+                    ...checkoutWithShippingDiscount,
+                    consignments: [{
+                        ...checkoutWithShippingDiscount.consignments[0],
+                        discounts: [
+                            { ...consignmentAutomaticDiscount, amount: 3 }
+                        ]
+                    }],
+                    coupons: [],
+                },
+            );
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForBillingStep();
+
+            const shippingOptionsInShippingSummary = screen.getByTestId('static-shipping-option');
+
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('Pickup In Store');
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('$3.00');
+            expect(shippingOptionsInShippingSummary).toHaveTextContent('$0.00');
+
+            const shippingCostInOrderSummary = screen.getByTestId('cart-shipping');
+
+            expect(shippingCostInOrderSummary).toHaveTextContent('Shipping');
+            expect(shippingCostInOrderSummary).toHaveTextContent('$3.00');
+            expect(shippingCostInOrderSummary).toHaveTextContent('Free');
+        });
+
+        it('renders multi-shipping summary with shipping discount', async () => {
+            checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+            checkout.updateCheckout('get',
+                '/checkout/*',
+                {
+                    ...checkoutWithShippingDiscount,
+                    shippingCostBeforeDiscount: 6,
+                    consignments: [
+                        checkoutWithShippingDiscount.consignments[0],
+                        {
+                            ...checkoutWithShippingDiscount.consignments[0],
+                            id: 'consignment-2',
+                            discounts: [
+                                { ...consignmentAutomaticDiscount, amount: 3 },
+                                { ...consignmentCouponDiscount, amount: 1 },
+                            ]
+                        }
+                    ],
+                    coupons: [{
+                        ...checkoutWithShippingDiscount.coupons[0],
+                        discountedAmount: 4,
+                    }]
+                }
+            );
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForBillingStep();
+
+            const shippingOptionsInShippingSummary = screen.getAllByTestId('static-shipping-option');
+
+            expect(shippingOptionsInShippingSummary).toHaveLength(2);
+            expect(shippingOptionsInShippingSummary[0]).toHaveTextContent('Pickup In Store');
+            expect(shippingOptionsInShippingSummary[0]).toHaveTextContent('$3.00');
+            expect(shippingOptionsInShippingSummary[0]).toHaveTextContent('$1.00');
+
+            expect(shippingOptionsInShippingSummary[1]).toHaveTextContent('Pickup In Store');
+            expect(shippingOptionsInShippingSummary[1]).toHaveTextContent('$0.00');
+            expect(shippingOptionsInShippingSummary[1]).toHaveTextContent('$3.00');
+
+            const shippingCostInOrderSummary = screen.getByTestId('cart-shipping');
+
+            expect(shippingCostInOrderSummary).toHaveTextContent('Shipping');
+            expect(shippingCostInOrderSummary).toHaveTextContent('$6.00');
+            expect(shippingCostInOrderSummary).toHaveTextContent('$1.00');
+
+            const couponDetailInOrderSummary = screen.getByTestId('cart-coupon');
+
+            expect(couponDetailInOrderSummary).toHaveTextContent('TEST-SHIPPING-DISCOUNT-CODE');
+            expect(couponDetailInOrderSummary).toHaveTextContent('$4.00');
+        });
+
         it('logs unhandled error', async () => {
             const error = new Error();
 
@@ -325,7 +547,7 @@ describe('Checkout', () => {
                 throw error;
             });
 
-            checkout.use('CartWithShippingAddress');
+            checkout.use(CheckoutPreset.CheckoutWithShipping);
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -337,25 +559,31 @@ describe('Checkout', () => {
 
     describe('payment step', () => {
         it('renders payment component when payment step is active', async () => {
-            checkout.use('CartWithShippingAndBilling');
+            checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
 
             render(<CheckoutTest {...defaultProps} />);
 
             await checkout.waitForPaymentStep();
 
             expect(screen.getByText(/test payment provider/i)).toBeInTheDocument();
-            expect(screen.getByText(/pay in store/i)).toBeInTheDocument();
+            expect(screen.getByRole('radio', { name: /pay in store/i })).toBeInTheDocument();
             expect(screen.getByText(/place order/i)).toBeInTheDocument();
         });
 
         it('logs unhandled error', async () => {
-            checkout.use('CartWithShippingAndBilling');
+            const error = new Error();
 
-            render(<CheckoutTest {...defaultProps} />);
+            checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
 
-            await checkout.waitForPaymentStep();
+            jest.spyOn(checkoutService, 'loadPaymentMethods').mockImplementation(() => {
+                throw error;
+            });
 
-            expect(defaultProps.errorLogger.log).toHaveBeenCalled();
+            render(<CheckoutTest {...defaultProps} />, { legacyRoot: true });
+
+            await waitFor(() => {
+                expect(defaultProps.errorLogger.log).toHaveBeenCalledWith(error);
+            });
         });
     });
 });

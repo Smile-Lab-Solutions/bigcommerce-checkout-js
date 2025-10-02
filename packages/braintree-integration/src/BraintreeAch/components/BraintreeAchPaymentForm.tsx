@@ -1,5 +1,5 @@
-import { PaymentMethod } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { type PaymentMethod } from '@bigcommerce/checkout-sdk';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import {
     AccountInstrumentFieldset,
@@ -76,7 +76,7 @@ const BraintreeAchPaymentForm: FunctionComponent<BraintreeAchPaymentFormProps> =
                 const braintreeAchFormValues = getFormValues();
                 const isValid = await validateBraintreeAchForm(braintreeAchFormValues);
 
-                if (!isValid) {
+                if (!isValid && getFieldValue('orderConsent')) {
                     setFieldValue('orderConsent', false);
                 }
 

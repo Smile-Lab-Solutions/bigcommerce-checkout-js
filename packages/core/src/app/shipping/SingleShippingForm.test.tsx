@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
-import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { createLocaleContext, LocaleContext } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
@@ -11,7 +11,7 @@ import { getAddressFormFields } from '../address/formField.mock';
 import { getStoreConfig } from '../config/config.mock';
 
 import { getShippingAddress } from './shipping-addresses.mock';
-import SingleShippingForm, { SingleShippingFormProps } from './SingleShippingForm';
+import SingleShippingForm, { type SingleShippingFormProps } from './SingleShippingForm';
 
 describe('SingleShippingForm', () => {
     const checkoutService = createCheckoutService();
@@ -31,6 +31,7 @@ describe('SingleShippingForm', () => {
         isInitialValueLoaded: true,
         isLoading: false,
         isShippingStepPending: false,
+        shippingFormRenderTimestamp: undefined,
         onSubmit: jest.fn(),
         getFields: jest.fn(() => addressFormFields),
         onUnhandledError: jest.fn(),
@@ -45,7 +46,7 @@ describe('SingleShippingForm', () => {
     const waitingDelay = shippingAutosaveDelay * 1.1;
 
     const createSingleShippingFormComponent = (props?: Partial<SingleShippingFormProps>) => {
-        const localeContext: LocaleContextType = createLocaleContext(getStoreConfig());
+        const localeContext = createLocaleContext(getStoreConfig());
 
         return (
             <CheckoutProvider checkoutService={checkoutService}>
@@ -228,31 +229,6 @@ describe('SingleShippingForm', () => {
         );
     });
 
-    it('calls updateAddress when address is updated but form is rendered before its initial value is loaded', async () => {
-        const updateAddress = jest.fn();
-        const { rerender } = renderSingleShippingFormComponent({
-            updateAddress,
-            isInitialValueLoaded: false,
-            countries: [],
-            getFields: jest.fn(() => []),
-        });
-        
-        rerender(createSingleShippingFormComponent({
-            updateAddress,
-            isInitialValueLoaded: true,
-        }));
-
-        await userEvent.clear(screen.getByTestId('addressLine1Input-text'));
-        await userEvent.keyboard('foo 1');
-
-        await userEvent.clear(screen.getByTestId('addressLine1Input-text'));
-        await userEvent.keyboard('foo 2');
-
-        await new Promise((resolve) => setTimeout(resolve, waitingDelay));
-
-        expect(updateAddress).toHaveBeenCalled();
-    });
-
     it('does not call updateAddress if modified field produces invalid address', async () => {
         const updateAddress = jest.fn();
 
@@ -360,5 +336,53 @@ describe('SingleShippingForm', () => {
         renderSingleShippingFormComponent({ methodId: 'amazonpay' });
 
         expect(screen.queryByTestId('billingSameAsShipping')).not.toBeInTheDocument();
+    });
+
+    it('re-renders itself when shippingFormRenderTimestamp is changed', async () => {
+        const customField = {
+            custom: true,
+            default: 'BigCommerce',
+            id: 'custom',
+            label: 'Custom',
+            name: 'custom',
+            required: false,
+        };
+
+        const { rerender } = renderSingleShippingFormComponent({
+            getFields: () => [...addressFormFields, customField],
+            shippingFormRenderTimestamp: 1,
+        });
+
+        expect(screen.getByTestId('customInput-text')).toHaveValue('BigCommerce');
+
+        rerender(
+            createSingleShippingFormComponent({
+                getFields: () => [
+                    ...addressFormFields,
+                    {
+                        ...customField,
+                        default: 'BigCommerce Sydney',
+                    },
+                ],
+                shippingFormRenderTimestamp: 1,
+            }),
+        );
+
+        expect(screen.getByTestId('customInput-text')).toHaveValue('BigCommerce');
+
+        rerender(
+            createSingleShippingFormComponent({
+                getFields: () => [
+                    ...addressFormFields,
+                    {
+                        ...customField,
+                        default: 'BigCommerce Sydney',
+                    },
+                ],
+                shippingFormRenderTimestamp: 2,
+            }),
+        );
+
+        expect(screen.getByTestId('customInput-text')).toHaveValue('BigCommerce Sydney');
     });
 });

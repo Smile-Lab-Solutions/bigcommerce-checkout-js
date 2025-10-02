@@ -1,5 +1,5 @@
-import { ExtensionRegion } from '@bigcommerce/checkout-sdk';
-import React, { useEffect } from 'react';
+import { type ExtensionRegion } from '@bigcommerce/checkout-sdk';
+import React, { type ReactNode, useEffect } from 'react';
 
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 
@@ -10,7 +10,7 @@ interface ExtensionProps {
     region: ExtensionRegion;
 }
 
-export const Extension = ({ region }: ExtensionProps): React.JSX.Element | null => {
+export const Extension = ({ region }: ExtensionProps): ReactNode | null => {
     const {
         checkoutState: {
             data: { getExtensions, getConfig, getCheckout },
@@ -32,9 +32,9 @@ export const Extension = ({ region }: ExtensionProps): React.JSX.Element | null 
                 extensionService.removeListeners(region);
             };
         }
-    }, [containerId, extensionService, isRegionEnabled, region]);
+    }, [containerId, isRegionEnabled, region]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (isRegionEnabled) {
+    if (isRegionEnabled && containerId !== '') {
         return <div id={containerId} />;
     }
 

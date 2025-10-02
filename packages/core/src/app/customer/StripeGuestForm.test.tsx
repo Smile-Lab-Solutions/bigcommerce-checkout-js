@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { fireEvent, render, screen, waitFor } from '@bigcommerce/checkout/test-utils';
 
 import CheckoutStepType from '../checkout/CheckoutStepType';
 
-import StripeGuestForm, { StripeGuestFormProps } from './StripeGuestForm';
+import StripeGuestForm, { type StripeGuestFormProps } from './StripeGuestForm';
 
 describe('StripeGuestForm', () => {
     let defaultProps: StripeGuestFormProps;
@@ -67,6 +67,19 @@ describe('StripeGuestForm', () => {
         const button = screen.getByTestId('stripe-customer-continue-as-guest-button');
 
         expect(button).toBeDisabled();
+    });
+
+    it('selects `Subscribe to our newsletter` checkbox by default', async () => {
+        render(
+            <TestComponent
+                defaultShouldSubscribe={true}
+                isLoading={true}
+                onContinueAsGuest={jest.fn()}
+                requiresMarketingConsent={false}
+            />
+        );
+
+        expect(screen.getByTestId('should-subscribe-checkbox')).toBeChecked();
     });
 
     it('executes a function when the button is clicked', async () => {

@@ -1,9 +1,11 @@
 import { ConsignmentLineItem } from "@bigcommerce/checkout-sdk";
-import React, { FunctionComponent, useState } from "react";
+import classNames from "classnames";
+import React, { type FunctionComponent, useState } from "react";
 
 import { preventDefault } from "@bigcommerce/checkout/dom-utils";
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { useCheckout } from "@bigcommerce/checkout/payment-integration-api";
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { IconChevronDown, IconChevronUp } from "../ui/icon";
 import { isMobileView as isMobileViewUI } from "../ui/responsive";
@@ -14,7 +16,7 @@ import { AssignItemFailedError, UnassignItemError } from "./errors";
 import { useDeallocateItem } from "./hooks/useDeallocateItem";
 import { useMultiShippingConsignmentItems } from "./hooks/useMultishippingConsignmentItems";
 import { ItemSplitTooltip } from "./ItemSplitTooltip";
-import { MultiShippingConsignmentData, MultiShippingTableItemWithType } from "./MultishippingV2Type";
+import { type MultiShippingConsignmentData, type MultiShippingTableItemWithType } from "./MultishippingType";
 
 interface ConsignmentLineItemProps {
     consignmentNumber: number;
@@ -30,6 +32,7 @@ const ConsignmentLineItem: FunctionComponent<ConsignmentLineItemProps> = ({ cons
     const { unassignedItems } = useMultiShippingConsignmentItems();
     const { checkoutService: { assignItemsToAddress: assignItem } } = useCheckout();
     const deleteItem = useDeallocateItem();
+    const { themeV2 } = useThemeContext();
 
     const toggleAllocateItemsModal = () => {
         setIsOpenAllocateItemsModal(!isOpenAllocateItemsModal);
@@ -95,14 +98,18 @@ const ConsignmentLineItem: FunctionComponent<ConsignmentLineItemProps> = ({ cons
             />
             <div className="consignment-line-item-header">
                 <div>
-                    <h3>{itemsCount > 1 ? `${itemsCount} items` : `${itemsCount} item`} allocated </h3>
+                    <h3 className={themeV2 ? 'body-bold' : ''}>
+                        <TranslatedString data={{ count: itemsCount }} id="shipping.multishipping_item_allocated_message" />
+                    </h3>
 
                     {consignment.hasSplitItems && (
                         <ItemSplitTooltip />
                     )}
-                    
+
                     <a
-                        className="expand-items-button"
+                        className={classNames('expand-items-button',
+                            { 'body-cta': themeV2 }
+                        )}
                         data-test="expand-items-button"
                         href="#"
                         onClick={preventDefault(toggleShowItems)}
@@ -121,6 +128,7 @@ const ConsignmentLineItem: FunctionComponent<ConsignmentLineItemProps> = ({ cons
                     </a>
                 </div>
                 <a
+                    className={themeV2 ? 'body-cta' : ''}
                     data-test="reallocate-items-button"
                     href="#"
                     onClick={preventDefault(toggleAllocateItemsModal)}
@@ -131,7 +139,7 @@ const ConsignmentLineItem: FunctionComponent<ConsignmentLineItemProps> = ({ cons
             {showItems
                 ? <ConsignmentLineItemDetail lineItems={consignment.lineItems} />
                 : null
-            }       
+            }
         </div>
     )
 }

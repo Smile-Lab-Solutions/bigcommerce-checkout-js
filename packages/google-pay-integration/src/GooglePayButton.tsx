@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { CheckoutButton } from '@bigcommerce/checkout/checkout-button-integration';
 import {
-    CheckoutButtonProps,
-    CheckoutButtonResolveId,
+    type CheckoutButtonProps,
+    type CheckoutButtonResolveId,
     EmbeddedCheckoutUnsupportedError,
     isEmbedded,
     toResolvableComponent,
@@ -45,5 +45,6 @@ export default toResolvableComponent<CheckoutButtonProps, CheckoutButtonResolveI
         { id: 'googlepaystripeupe' },
         { id: 'googlepayworldpayaccess' },
         { id: 'googlepaytdonlinemart' },
+        { id: 'googlepaystripeocs' },
     ],
 );

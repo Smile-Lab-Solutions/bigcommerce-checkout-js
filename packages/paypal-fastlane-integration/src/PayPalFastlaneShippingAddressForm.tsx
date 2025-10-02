@@ -1,13 +1,13 @@
 import {
-    Address,
-    CheckoutSelectors,
-    Country,
-    CustomerAddress,
-    FormField,
-    ShippingInitializeOptions,
-    ShippingRequestOptions,
+    type Address,
+    type CheckoutSelectors,
+    type Country,
+    type CustomerAddress,
+    type FormField,
+    type ShippingInitializeOptions,
+    type ShippingRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import React, { memo, MutableRefObject } from 'react';
+import React, { memo, type MutableRefObject } from 'react';
 
 import { localizeAddress, TranslatedString } from '@bigcommerce/checkout/locale';
 import {
@@ -23,6 +23,7 @@ import PoweredByPayPalFastlaneLabel from './PoweredByPayPalFastlaneLabel';
 
 export interface PayPalFastlaneStaticAddressProps {
     address: Address;
+    countries?: Country[];
     formFields: FormField[];
     isLoading: boolean;
     methodId: string;
@@ -32,7 +33,6 @@ export interface PayPalFastlaneStaticAddressProps {
     onAddressSelect(address: Address): void;
     onFieldChange(fieldName: string, value: string): void;
     onUnhandledError?(error: Error): void;
-    countries?: Country[];
 }
 
 export interface PayPalFastlaneAddressComponentRef {
@@ -44,9 +44,10 @@ const PayPalFastlaneShippingAddressForm = (props: PayPalFastlaneStaticAddressPro
         address: addressWithoutLocalization,
         formFields,
         isLoading,
+        onAddressSelect,
         onFieldChange,
         countries,
-        paypalFastlaneShippingComponentRef
+        paypalFastlaneShippingComponentRef,
     } = props;
     const address = localizeAddress(addressWithoutLocalization, countries);
 
@@ -62,9 +63,11 @@ const PayPalFastlaneShippingAddressForm = (props: PayPalFastlaneStaticAddressPro
                 await paypalFastlaneShippingComponentRef.current.showAddressSelector();
 
             if (selectedAddress) {
-                props.onAddressSelect({
+                const customFields = shouldShowCustomFormFields ? address.customFields : {};
+
+                onAddressSelect({
                     ...selectedAddress,
-                    ...(shouldShowCustomFormFields ? address.customFields : {}),
+                    ...customFields,
                 });
             }
         }
@@ -75,14 +78,14 @@ const PayPalFastlaneShippingAddressForm = (props: PayPalFastlaneStaticAddressPro
             <div className="stepHeader" style={{ padding: 0 }}>
                 <div className="stepHeader-body subheader">
                     <div className="vcard checkout-address--static">
-                        {(address.firstName || address.lastName) && (
+                        {!!(address.firstName || address.lastName) && (
                             <p className="fn address-entry">
                                 <span className="first-name">{`${address.firstName} `}</span>
                                 <span className="family-name">{address.lastName}</span>
                             </p>
                         )}
 
-                        {(address.phone || address.company) && (
+                        {!!(address.phone || address.company) && (
                             <p className="address-entry">
                                 <span className="company-name">{`${address.company} `}</span>
                                 <span className="tel">{address.phone}</span>
@@ -92,22 +95,22 @@ const PayPalFastlaneShippingAddressForm = (props: PayPalFastlaneStaticAddressPro
                         <div className="adr">
                             <p className="street-address address-entry">
                                 <span className="address-line-1">{`${address.address1} `}</span>
-                                {address.address2 && (
+                                {!!address.address2 && (
                                     <span className="address-line-2">{` / ${address.address2}`}</span>
                                 )}
                             </p>
 
                             <p className="address-entry">
-                                {address.city && (
+                                {!!address.city && (
                                     <span className="locality">{`${address.city}, `}</span>
                                 )}
-                                {address.localizedProvince && (
+                                {!!address.localizedProvince && (
                                     <span className="region">{`${address.localizedProvince}, `}</span>
                                 )}
-                                {address.postalCode && (
+                                {!!address.postalCode && (
                                     <span className="postal-code">{`${address.postalCode} / `}</span>
                                 )}
-                                {address.localizedCountry && (
+                                {!!address.localizedCountry && (
                                     <span className="country-name">{`${address.localizedCountry} `}</span>
                                 )}
                             </p>

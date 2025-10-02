@@ -1,5 +1,5 @@
 import { some } from 'lodash';
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { type FunctionComponent, useCallback } from 'react';
 
 import { HostedWidgetPaymentComponent } from '@bigcommerce/checkout/hosted-widget-integration';
 import {
@@ -7,8 +7,8 @@ import {
     isInstrumentCardNumberRequiredSelector,
 } from '@bigcommerce/checkout/instrument-utils';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 
@@ -20,12 +20,11 @@ const KlarnaV2PaymentMethod: FunctionComponent<PaymentMethodProps> = ({
     ...rest
 }) => {
     const initializeKlarnaV2Payment = useCallback(
-        (options) =>
+        (options: any) =>
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             checkoutService.initializePayment({
                 ...options,
                 klarnav2: {
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
                     container: `#${options.methodId}Widget`,
                 },
             }),

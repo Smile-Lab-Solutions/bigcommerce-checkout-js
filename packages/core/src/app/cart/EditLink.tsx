@@ -1,8 +1,9 @@
-import React, { FunctionComponent, memo, useState } from 'react';
+import classNames from 'classnames';
+import React, { type FunctionComponent, memo, useState } from 'react';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { ConfirmationModal } from '@bigcommerce/checkout/ui';
+import { ConfirmationModal, useThemeContext } from '@bigcommerce/checkout/ui';
 
 export interface EditLinkProps {
     className?: string;
@@ -12,6 +13,8 @@ export interface EditLinkProps {
 
 const EditLink: FunctionComponent<EditLinkProps> = ({ className, url, isMultiShippingMode }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { themeV2 } = useThemeContext();
 
     const gotoCartPage = () => {
         window.location.assign(url);
@@ -28,7 +31,8 @@ const EditLink: FunctionComponent<EditLinkProps> = ({ className, url, isMultiShi
                     onRequestClose={() => setIsModalOpen(false)}
                 />
                 <a
-                    className={className || 'cart-header-link'}
+                    className={classNames((className || 'cart-header-link'),
+                        { 'body-cta': themeV2 })}
                     data-test="cart-edit-link"
                     href="#"
                     id="cart-edit-link"
@@ -42,7 +46,8 @@ const EditLink: FunctionComponent<EditLinkProps> = ({ className, url, isMultiShi
 
     return (
         <a
-            className={className || 'cart-header-link'}
+            className={classNames((className || 'cart-header-link'),
+                { 'body-cta': themeV2 })}
             data-test="cart-edit-link"
             href={url}
             id="cart-edit-link"

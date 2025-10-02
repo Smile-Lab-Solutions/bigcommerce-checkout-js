@@ -1,11 +1,11 @@
-import { ExtensionRegion, ShippingOption } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo, useCallback } from 'react';
+import { ExtensionRegion, type ShippingOption } from '@bigcommerce/checkout-sdk';
+import React, { type FunctionComponent, memo, useCallback } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
+import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { EMPTY_ARRAY } from '../../common/utility';
 import { Checklist, ChecklistItem } from '../../ui/form';
-import { LoadingOverlay } from '../../ui/loading';
 
 import StaticShippingOption from './StaticShippingOption';
 
@@ -35,7 +35,6 @@ const ShippingOptionListItem: FunctionComponent<ShippingOptionListItemProps> = (
         ),
         [isSelected, isMultiShippingMode, shippingOption],
     );
-
 
     return (
         <ChecklistItem

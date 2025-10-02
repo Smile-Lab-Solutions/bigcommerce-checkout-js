@@ -1,10 +1,12 @@
 import classNames from 'classnames';
-import { FieldProps, FormikProps, withFormik } from 'formik';
-import React, { FunctionComponent, memo, ReactNode, useCallback } from 'react';
+import { type FieldProps, type FormikProps, withFormik } from 'formik';
+import React, { type FunctionComponent, memo, type ReactNode, useCallback, useEffect } from 'react';
 import { object, string } from 'yup';
 
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { PayPalFastlaneWatermark } from '@bigcommerce/checkout/paypal-fastlane-integration';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import { getPrivacyPolicyValidationSchema, PrivacyPolicyField } from '../privacyPolicy';
 import { Button, ButtonVariant } from '../ui/button';
@@ -50,6 +52,7 @@ const GuestForm: FunctionComponent<
     canSubscribe,
     checkoutButtons,
     continueAsGuestButtonLabelId,
+    defaultShouldSubscribe,
     isLoading,
     onChangeEmail,
     onShowLogin,
@@ -58,13 +61,54 @@ const GuestForm: FunctionComponent<
     isExpressPrivacyPolicy,
     isFloatingLabelEnabled,
     shouldShowEmailWatermark,
+    setFieldValue,
 }) => {
+    const {
+        checkoutState: {
+            data: { getConfig }
+        }
+    } = useCheckout();
+    const { themeV2 } = useThemeContext();
+
+    const config = getConfig();
+
     const renderField = useCallback(
         (fieldProps: FieldProps<boolean>) => (
             <SubscribeField {...fieldProps} requiresMarketingConsent={requiresMarketingConsent} />
         ),
         [requiresMarketingConsent],
     );
+
+    useEffect(() => {
+        void setFieldValue(
+            'shouldSubscribe',
+            getShouldSubscribeValue(requiresMarketingConsent, defaultShouldSubscribe),
+            );
+    }, [requiresMarketingConsent, defaultShouldSubscribe]);
+
+    if (!config) {
+        return null;
+    }
+
+    const {
+        checkoutSettings: {
+            shouldRedirectToStorefrontForAuth,
+        },
+        links: {
+            checkoutLink,
+            loginLink,
+        }
+    } = config;
+
+    const handleLogin: () => void = () => {
+        if (shouldRedirectToStorefrontForAuth) {
+            window.location.assign(`${loginLink}?redirectTo=${checkoutLink}`);
+
+            return;
+        }
+
+        return onShowLogin();
+    }
 
     return (
         <Form
@@ -96,7 +140,9 @@ const GuestForm: FunctionComponent<
                         })}
                     >
                         <Button
-                            className="customerEmail-button"
+                            className={classNames('customerEmail-button', {
+                                'body-bold': themeV2,
+                            })}
                             id="checkout-customer-continue"
                             isLoading={isLoading}
                             testId="customer-continue-as-guest-button"
@@ -113,12 +159,14 @@ const GuestForm: FunctionComponent<
                 )}
 
                 {!isLoading && (
-                    <p>
+                    <p className={classNames('customer-login-link',
+                        { 'body-regular': themeV2 })}
+                    >
                         <TranslatedString id="customer.login_text" />{' '}
                         <a
                             data-test="customer-continue-button"
                             id="checkout-customer-login"
-                            onClick={onShowLogin}
+                            onClick={handleLogin}
                             role="button"
                             tabIndex={0}
                         >

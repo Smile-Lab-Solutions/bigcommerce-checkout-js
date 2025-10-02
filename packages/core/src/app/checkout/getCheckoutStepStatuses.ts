@@ -1,4 +1,4 @@
-import { CheckoutPayment, CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import { type CheckoutPayment, type CheckoutSelectors } from '@bigcommerce/checkout-sdk';
 import { compact } from 'lodash';
 import { createSelector } from 'reselect';
 
@@ -45,7 +45,7 @@ const getCustomerStepStatus = createSelector(
         const isUsingWallet =
             checkout && checkout.payments
                 ? checkout.payments.some(
-                    (payment: CheckoutPayment) => SUPPORTED_METHODS.indexOf(payment.providerId) >= 0,
+                    (payment: CheckoutPayment) => SUPPORTED_METHODS.includes(payment.providerId),
                   )
                 : false;
         const isGuest = !!(customer && customer.isGuest);
@@ -97,7 +97,7 @@ const getBillingStepStatus = createSelector(
         const isUsingWallet =
             checkout && checkout.payments
                 ? checkout.payments.some(
-                      (payment) => SUPPORTED_METHODS.indexOf(payment.providerId) >= 0,
+                      (payment) => SUPPORTED_METHODS.includes(payment.providerId),
                   )
                 : false;
         const isComplete = hasAddress || isUsingWallet;
@@ -192,13 +192,8 @@ const getShippingStepStatus = createSelector(
     },
     ({ data }: CheckoutSelectors) => data.getConfig(),
     (shippingAddress, consignments, cart, shippingAddressFields, config) => {
-        const validateAddressFields =
-            isExperimentEnabled(
-                config?.checkoutSettings,
-                'CHECKOUT-7560.address_fields_max_length_validation'
-            );
         const hasAddress = shippingAddress
-            ? isValidAddress(shippingAddress, shippingAddressFields, validateAddressFields)
+            ? isValidAddress(shippingAddress, shippingAddressFields)
             : false;
         const hasOptions = consignments ? hasSelectedShippingOptions(consignments) : false;
         const hasUnassignedItems =

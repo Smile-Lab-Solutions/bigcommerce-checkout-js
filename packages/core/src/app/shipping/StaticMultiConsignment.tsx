@@ -1,32 +1,39 @@
-import { Cart, Consignment } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo } from 'react';
+import { type Cart, type Consignment } from '@bigcommerce/checkout-sdk';
+import classNames from 'classnames';
+import React, { type FunctionComponent, memo } from 'react';
 
 import { localizeAddress, TranslatedString } from '@bigcommerce/checkout/locale';
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { isPayPalFastlaneAddress, PoweredByPayPalFastlaneLabel, usePayPalFastlaneAddress } from '@bigcommerce/checkout/paypal-fastlane-integration';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
 import ConsignmentLineItemDetail from './ConsignmentLineItemDetail';
 import findLineItems from './findLineItems';
 import getLineItemsCount from './getLineItemsCount';
+import getShippingCostAfterAutomaticDiscount from './getShippingCostAfterAutomaticDiscount';
 import { StaticShippingOption } from './shippingOption';
+
 import './StaticMultiConsignment.scss';
 
 interface StaticMultiConsignmentProps {
     consignment: Consignment;
     cart: Cart;
     consignmentNumber: number;
+    isShippingDiscountDisplayEnabled: boolean;
 }
 
 const StaticMultiConsignment: FunctionComponent<StaticMultiConsignmentProps> = ({
     consignment,
     cart,
     consignmentNumber,
+    isShippingDiscountDisplayEnabled,
 }) => {
     const {
         checkoutState: {
             data: { getShippingCountries },
         },
     } = useCheckout();
+    const { themeV2 } = useThemeContext();
 
     const { shippingAddress: addressWithoutLocalization, selectedShippingOption } = consignment;
     const address = localizeAddress(addressWithoutLocalization, getShippingCountries());
@@ -37,25 +44,29 @@ const StaticMultiConsignment: FunctionComponent<StaticMultiConsignmentProps> = (
 
     return (
         <div className="staticMultiConsignment">
-            <h3 className="staticMultiConsignment-header">
+            <h3 className={classNames('staticMultiConsignment-header',
+                { 'body-bold': themeV2 })}>
                 <TranslatedString data={{ consignmentNumber }} id="shipping.multishipping_consignment_index_heading" />
             </h3>
 
             <div className="checkout-address--static">
-                <p className="address-entry">
+                <p className={classNames('address-entry',
+                    { 'sub-text': themeV2 })}>
                     <span className="first-name">{`${address.firstName} `}</span>
                     <span className="family-name">{address.lastName}</span>
                 </p>
                 <div className="address-details">
-                    <p className="street-address address-entry">
-                        <span className="address-line-1">{`${address.address1}`}</span>
+                    <p className={classNames('street-address address-entry',
+                        { 'sub-text': themeV2 })}>
+                        <span className="address-line-1">{address.address1}</span>
                         {address.address2 && (
                             <span className="address-line-2">{`, ${address.address2}`}</span>
                         )}
                     </p>
 
-                    <p className="address-entry">
-                        {address.city && <span className="locality">{`${address.city}`}</span>}
+                    <p className={classNames('address-entry',
+                        { 'sub-text': themeV2 })}>
+                        {address.city && <span className="locality">{address.city}</span>}
                         {address.localizedProvince && (
                             <span className="region">{`, ${address.localizedProvince}`}</span>
                         )}
@@ -72,14 +83,14 @@ const StaticMultiConsignment: FunctionComponent<StaticMultiConsignmentProps> = (
             {showPayPalFastlaneAddressLabel && <PoweredByPayPalFastlaneLabel />}
 
             <div className="staticConsignment-items">
-            <strong>
+                <span className={themeV2 ? 'body-bold' : ''}>
                 <TranslatedString
                     data={{ count: getLineItemsCount(lineItems) }}
                     id="cart.item_count_text"
                 />
-            </strong>
-            
-            <ConsignmentLineItemDetail lineItems={lineItems} />
+                </span>
+
+                <ConsignmentLineItemDetail isMultiShippingSummary lineItems={lineItems} />
         </div>
 
             {selectedShippingOption && (
@@ -88,6 +99,7 @@ const StaticMultiConsignment: FunctionComponent<StaticMultiConsignmentProps> = (
                         <StaticShippingOption
                             displayAdditionalInformation={false}
                             method={selectedShippingOption}
+                            shippingCostAfterDiscount={isShippingDiscountDisplayEnabled ? getShippingCostAfterAutomaticDiscount(selectedShippingOption.cost, [consignment]) : undefined}
                         />
                     </div>
                 </div>

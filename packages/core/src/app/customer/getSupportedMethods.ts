@@ -1,11 +1,10 @@
-import { isApplePayWindow } from "../common/utility";
-
 const APPLE_PAY = 'applepay';
 
 // TODO: The API should tell UI which payment method offers its own checkout button
 export const SUPPORTED_METHODS: string[] = [
     'amazonpay',
     APPLE_PAY,
+    'chasepay',
     'braintreevisacheckout',
     'braintreepaypal',
     'braintreepaypalcredit',
@@ -26,14 +25,10 @@ export const SUPPORTED_METHODS: string[] = [
     'googlepayworldpayaccess',
     'googlepaypaypalcommerce',
     'googlepaytdonlinemart',
+    'stripeocs',
+    'googlepaystripeocs',
 ];
 
 export const getSupportedMethodIds = (methodIds: string[]): string[] => {
-    return methodIds.filter((methodId) => {
-        if (methodId === APPLE_PAY && !isApplePayWindow(window)) {
-            return false;
-        }
-
-        return SUPPORTED_METHODS.indexOf(methodId) !== -1;
-    });
+    return methodIds.filter((methodId) => SUPPORTED_METHODS.includes(methodId));
 }

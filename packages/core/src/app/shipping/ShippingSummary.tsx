@@ -1,25 +1,24 @@
 
-import { Cart, Consignment } from '@bigcommerce/checkout-sdk';
-import React, { FunctionComponent, memo } from 'react';
+import { type Cart, type Consignment } from '@bigcommerce/checkout-sdk';
+import React, { type FunctionComponent, memo } from 'react';
 
 import StaticConsignment from './StaticConsignment';
 import StaticMultiConsignment from './StaticMultiConsignment';
 
-
 interface ShippingSummaryProps {
-    isNewMultiShippingUIEnabled: boolean;
+    isShippingDiscountDisplayEnabled: boolean;
     isMultiShippingMode: boolean;
     consignments: Consignment[];
     cart: Cart;
 }
 
 const ShippingSummary: FunctionComponent<ShippingSummaryProps> = ({
-    isNewMultiShippingUIEnabled,
+    isShippingDiscountDisplayEnabled,
     isMultiShippingMode,
     consignments,
     cart
 }) => {
-    if (isNewMultiShippingUIEnabled && isMultiShippingMode) {
+    if (isMultiShippingMode) {
         return (
             <>
                 {consignments.map((consignment, index) => (
@@ -28,6 +27,7 @@ const ShippingSummary: FunctionComponent<ShippingSummaryProps> = ({
                             cart={cart}
                             consignment={consignment}
                             consignmentNumber={index + 1}
+                            isShippingDiscountDisplayEnabled={isShippingDiscountDisplayEnabled}
                         />
                     </div>
                 ))}
@@ -43,6 +43,7 @@ const ShippingSummary: FunctionComponent<ShippingSummaryProps> = ({
                         cart={cart}
                         compactView={consignments.length < 2}
                         consignment={consignment}
+                        isShippingDiscountDisplayEnabled={isShippingDiscountDisplayEnabled}
                     />
                 </div>
             ))}

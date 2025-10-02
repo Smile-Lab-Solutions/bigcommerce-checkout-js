@@ -1,27 +1,27 @@
 import {
-    CartChangedError,
-    CheckoutSelectors,
-    CheckoutService,
-    CheckoutSettings,
-    OrderRequestBody,
-    PaymentMethod,
+    type CartChangedError,
+    type CheckoutSelectors,
+    type CheckoutService,
+    type CheckoutSettings,
+    type OrderRequestBody,
+    type PaymentMethod,
 } from '@bigcommerce/checkout-sdk';
 import { memoizeOne } from '@bigcommerce/memoize';
 import { compact, find, isEmpty, noop } from 'lodash';
-import React, { Component, ReactNode } from 'react';
-import { ObjectSchema } from 'yup';
+import React, { Component, type ReactNode } from 'react';
+import { type ObjectSchema } from 'yup';
 
-import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
-import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
-import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { type AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
+import { type ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
+import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { type CheckoutContextProps, type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ChecklistSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
 import { withCheckout } from '../checkout';
 import {
     ErrorModal,
-    ErrorModalOnCloseProps,
+    type ErrorModalOnCloseProps,
     isCartChangedError,
     isErrorWithType,
 } from '../common/error';
@@ -123,7 +123,6 @@ class Payment extends Component<
             usableStoreCredit,
             checkoutServiceSubscribe,
         } = this.props;
-
 
         if (usableStoreCredit) {
             this.handleStoreCreditChange(true);
@@ -318,20 +317,16 @@ class Payment extends Component<
         });
     };
 
-    // tslint:disable:cyclomatic-complexity
     private handleBeforeUnload: (event: BeforeUnloadEvent) => string | undefined = (event) => {
         const { defaultMethod, isSubmittingOrder, language } = this.props;
         const { selectedMethod = defaultMethod } = this.state;
 
-        // TODO: Perhaps there is a better way to handle `adyen`, `afterpay`, `amazonpay`,
-        // `checkout.com`, `converge`, `sagepay`, `stripev3` and `sezzle`. They require
-        //  a redirection to another website during the payment flow but are not
-        //  categorised as hosted payment methods.
         if (
             !isSubmittingOrder ||
             !selectedMethod ||
             selectedMethod.type === PaymentMethodProviderType.Hosted ||
             selectedMethod.type === PaymentMethodProviderType.PPSDK ||
+            selectedMethod.skipRedirectConfirmationAlert ||
             selectedMethod.gateway === PaymentMethodId.BlueSnapDirect ||
             selectedMethod.gateway === PaymentMethodId.BlueSnapV2 ||
             selectedMethod.id === PaymentMethodId.AmazonPay ||
@@ -341,7 +336,6 @@ class Payment extends Component<
             selectedMethod.id === PaymentMethodId.Converge ||
             selectedMethod.id === PaymentMethodId.Humm ||
             selectedMethod.id === PaymentMethodId.Laybuy ||
-            selectedMethod.id === PaymentMethodId.Opy ||
             selectedMethod.id === PaymentMethodId.Quadpay ||
             selectedMethod.id === PaymentMethodId.SagePay ||
             selectedMethod.id === PaymentMethodId.Sezzle ||
@@ -458,7 +452,7 @@ class Payment extends Component<
 
         const { selectedMethod = defaultMethod, submitFunctions } = this.state;
 
-        analyticsTracker.clickPayButton({shouldCreateAccount: values.shouldCreateAccount});
+        analyticsTracker.clickPayButton({ shouldCreateAccount: values.shouldCreateAccount });
 
         const customSubmit =
             selectedMethod &&
@@ -634,12 +628,12 @@ export function mapToPaymentProps({
  
     // Check In Store payment method is enabled on store
     if (inStoreMethod.length) {
+
+        const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
+
         // Only for US payment methods
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
-
-            const isReorder = checkout.cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
-
             // Adding Terrace Finance
             // Check TF is set for store and if not a reorder
             if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS') && !isReorder) {
@@ -662,7 +656,7 @@ export function mapToPaymentProps({
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'GB' && config.shopperCurrency.code === 'GBP')) {
             // Adding Partially
-            if (inStoreMethod[0].config.displayName?.includes('Partially PIS')) {
+            if (inStoreMethod[0].config.displayName?.includes('Partially PIS') && !isReorder) {
                 methods = methods.concat(getPartiallyMethod());
                 loadPartiallyJs();
             }
@@ -728,6 +722,10 @@ export function mapToPaymentProps({
             return !!method.initializationData.showInCheckout;
         }
 
+        if (method.id === PaymentMethodId.BraintreeLocalPaymentMethod) {
+            return false;
+        }
+
         // Remove In Store as this payment method
         //  is only for checking custom payment merchant integration
         if (method.id === 'instore'){
@@ -743,7 +741,7 @@ export function mapToPaymentProps({
         ];
 
         filteredMethods = methods.filter((method: PaymentMethod) => {
-            return multiShippingIncompatibleMethodIds.indexOf(method.id) === -1;
+            return !multiShippingIncompatibleMethodIds.includes(method.id);
         });
     }
 
@@ -816,6 +814,7 @@ export function getPartiallyMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }
 
@@ -835,6 +834,7 @@ export function getTerraceFinanceMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }
 
@@ -854,5 +854,6 @@ export function getFlexMethod(): PaymentMethod {
             redirectUrl: `${window.location.origin}/pages/complete/`
         },
         type: 'PAYMENT_TYPE_API',
+        skipRedirectConfirmationAlert: false
     };
 }

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
+import React, { type FunctionComponent, memo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
@@ -101,10 +101,6 @@ const PaymentSubmitButtonText: FunctionComponent<PaymentSubmitButtonTextProps> =
                     }
                 />
             );
-        }
-
-        if (methodId === PaymentMethodId.Opy) {
-            return <TranslatedString data={{ methodName }} id="payment.opy_continue_action" />;
         }
 
         if (methodId === PaymentMethodId.Quadpay) {

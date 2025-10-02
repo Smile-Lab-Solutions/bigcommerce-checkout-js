@@ -1,10 +1,12 @@
-import { Consignment, ConsignmentCreateRequestBody, ConsignmentLineItem } from "@bigcommerce/checkout-sdk";
+import { type Consignment, type ConsignmentCreateRequestBody, type ConsignmentLineItem } from "@bigcommerce/checkout-sdk";
+import classNames from "classnames";
 import { find } from "lodash";
 import React, { useMemo, useState } from "react";
 
 import { preventDefault } from "@bigcommerce/checkout/dom-utils";
 import { TranslatedString } from "@bigcommerce/checkout/locale";
 import { useCheckout } from "@bigcommerce/checkout/payment-integration-api";
+import { useThemeContext } from "@bigcommerce/checkout/ui";
 
 import { EMPTY_ARRAY } from "../common/utility";
 
@@ -17,7 +19,6 @@ import { setRecommendedOrMissingShippingOption } from './utils';
 interface NewConsignmentProps {
     consignmentNumber: number;
     defaultCountryCode?: string;
-    countriesWithAutocomplete: string[];
     isLoading: boolean;
     setIsAddShippingDestination: React.Dispatch<React.SetStateAction<boolean>>;
     onUnhandledError(error: Error): void;
@@ -27,7 +28,6 @@ interface NewConsignmentProps {
 
 const NewConsignment = ({
     consignmentNumber,
-    countriesWithAutocomplete,
     defaultCountryCode,
     isLoading,
     onUnhandledError,
@@ -38,7 +38,7 @@ const NewConsignment = ({
     const [consignmentRequest, setConsignmentRequest] = useState<ConsignmentCreateRequestBody | undefined>();
     const [isOpenAllocateItemsModal, setIsOpenAllocateItemsModal] = useState(false);
     const { unassignedItems } = useMultiShippingConsignmentItems();
-
+    const { themeV2 } = useThemeContext();
     const {
         checkoutState: {
             data: { getShippingCountries, getConsignments: getPreviousConsignments },
@@ -59,7 +59,6 @@ const NewConsignment = ({
             country: country ? country.name : consignmentRequest.address.countryCode,
         };
     }, [consignmentRequest]);
-
 
     const toggleAllocateItemsModal = () => {
         setIsOpenAllocateItemsModal(!isOpenAllocateItemsModal);
@@ -102,13 +101,12 @@ const NewConsignment = ({
 
     return (
         <div className='consignment-container'>
-            <div className='consignment-header'>
+            <div className={classNames('consignment-header', { 'sub-header': themeV2 })}>
                 <h3>
                     <TranslatedString data={{ consignmentNumber }} id="shipping.multishipping_consignment_index_heading" />
                 </h3>
             </div>
             <ConsignmentAddressSelector
-                countriesWithAutocomplete={countriesWithAutocomplete}
                 defaultCountryCode={defaultCountryCode}
                 isLoading={isLoading}
                 onUnhandledError={onUnhandledError}
@@ -127,8 +125,11 @@ const NewConsignment = ({
                     unassignedItems={unassignedItems}
                 />
                 <div className="new-consignment-line-item-header">
-                    <h3><TranslatedString id="shipping.multishipping_no_item_allocated_message" /></h3>
+                    <h3 className={themeV2 ? 'body-bold' : ''}>
+                        <TranslatedString id="shipping.multishipping_no_item_allocated_message" />
+                    </h3>
                     <a
+                        className={themeV2 ? 'body-cta' : ''}
                         data-test="allocate-items-button"
                         href="#"
                         onClick={preventDefault(toggleAllocateItemsModal)}

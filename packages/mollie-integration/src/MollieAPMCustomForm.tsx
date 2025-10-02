@@ -1,9 +1,15 @@
-import { PaymentMethod } from '@bigcommerce/checkout-sdk';
-import { FieldProps } from 'formik';
-import React, { FunctionComponent, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import { type PaymentMethod } from '@bigcommerce/checkout-sdk';
+import { type FieldProps, useField } from 'formik';
+import React, {
+    type FunctionComponent,
+    type SyntheticEvent,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { DropdownTrigger, FormField } from '@bigcommerce/checkout/ui';
 
 export interface MollieCustomCardFormProps {
@@ -87,18 +93,18 @@ const MollieAPMCustomForm: FunctionComponent<MollieCustomCardFormProps & WithLan
 
 export const HiddenInput: FunctionComponent<HiddenInputProps> = ({
     field: { value, ...restField },
-    form,
     selectedIssuer,
 }) => {
-    const Input = useCallback(() => <input {...restField} type="hidden" />, [restField]);
+    const [field, _, helpers] = useField(restField.name);
+    const Input = useCallback(() => <input {...field} type="hidden" />, [field]);
 
     useEffect(() => {
         if (value === selectedIssuer) {
             return;
         }
 
-        form.setFieldValue(restField.name, selectedIssuer?.id);
-    }, [value, form, selectedIssuer, restField.name]);
+        void helpers.setValue(selectedIssuer?.id);
+    }, [value, selectedIssuer, helpers]);
 
     return <Input />;
 };

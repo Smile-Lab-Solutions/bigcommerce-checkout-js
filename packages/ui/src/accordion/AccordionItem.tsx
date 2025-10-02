@@ -1,5 +1,11 @@
 import classNames from 'classnames';
-import React, { FunctionComponent, memo, ReactNode, useCallback, useContext } from 'react';
+import React, {
+    type FunctionComponent,
+    memo,
+    type ReactNode,
+    useCallback,
+    useContext,
+} from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import AccordionContext from './AccordionContext';
@@ -33,7 +39,7 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
     const { onToggle, selectedItemId } = useContext(AccordionContext);
     const isSelected = selectedItemId === itemId;
 
-    const transitionEndListener = useCallback((node: Node, done) => {
+    const transitionEndListener = useCallback((node: Node, done: () => void) => {
         node.addEventListener('transitionend', ({ target }: Event) => {
             if (target === node) {
                 done();
@@ -56,7 +62,9 @@ const AccordionItem: FunctionComponent<AccordionItemProps> = ({
                     timeout={{}}
                     unmountOnExit
                 >
-                    <div className={bodyClassName}>{children}</div>
+                    <div aria-live="polite" className={bodyClassName}>
+                        {children}
+                    </div>
                 </CSSTransition>
             ) : null}
         </li>

@@ -1,4 +1,4 @@
-import { Address, CustomerAddress, FormField } from '@bigcommerce/checkout-sdk';
+import { type Address, type CustomerAddress, type FormField } from '@bigcommerce/checkout-sdk';
 import { some } from 'lodash';
 
 import isEqualAddress from './isEqualAddress';
@@ -8,9 +8,8 @@ export default function isValidCustomerAddress(
     address: Address | undefined,
     addresses: CustomerAddress[],
     formFields: FormField[],
-    validateAddressFields?: boolean,
 ): boolean {
-    if (!address || !isValidAddress(address, formFields, validateAddressFields)) {
+    if (!address || !isValidAddress(address, formFields)) {
         return false;
     }
 

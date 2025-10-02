@@ -1,4 +1,4 @@
-import { Address, CustomerAddress, PaymentProviderCustomer } from '@bigcommerce/checkout-sdk';
+import { type Address } from '@bigcommerce/checkout-sdk';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -16,21 +16,20 @@ interface PayPalFastlaneAddressComponentProps {
 const PayPalFastlaneAddressComponentMock = ({
     selectedAddress,
 }: PayPalFastlaneAddressComponentProps) => {
-    const {
-        isPayPalFastlaneEnabled,
-        paypalFastlaneAddresses,
-        shouldShowPayPalFastlaneLabel,
-    } = usePayPalFastlaneAddress();
+    const { isPayPalFastlaneEnabled, paypalFastlaneAddresses, shouldShowPayPalFastlaneLabel } =
+        usePayPalFastlaneAddress();
 
     return (
         <>
-            <div data-test='isPayPalFastlaneEnabled'>
+            <div data-test="isPayPalFastlaneEnabled">
                 {isPayPalFastlaneEnabled ? 'true' : 'false'}
             </div>
-            <div data-test='isPayPalFastlaneAddress'>
-                {isPayPalFastlaneAddress(selectedAddress, paypalFastlaneAddresses) ? 'true' : 'false'}
+            <div data-test="isPayPalFastlaneAddress">
+                {isPayPalFastlaneAddress(selectedAddress, paypalFastlaneAddresses)
+                    ? 'true'
+                    : 'false'}
             </div>
-            <div data-test='shouldShowPayPalFastlaneLabel'>
+            <div data-test="shouldShowPayPalFastlaneLabel">
                 {shouldShowPayPalFastlaneLabel ? 'true' : 'false'}
             </div>
             <ul>
@@ -44,34 +43,7 @@ const PayPalFastlaneAddressComponentMock = ({
 
 describe('usePayPalFastlaneAddress', () => {
     const defaultStoreConfig = getStoreConfig();
-    const defaultCustomer = getCustomer()
-
-    const useCheckoutMock = (
-        paymentProviderCustomer: PaymentProviderCustomer,
-        customerAddress?: CustomerAddress[],
-        providerWithCustomCheckout = PaymentIntegrationApi.PaymentMethodId.BraintreeAcceleratedCheckout,
-    ) => {
-        jest.spyOn(PaymentIntegrationApi, 'useCheckout').mockImplementation(
-            jest.fn().mockImplementation(() => ({
-                checkoutState: {
-                    data: {
-                        getPaymentProviderCustomer: () => paymentProviderCustomer,
-                        getConfig: () => ({
-                            ...defaultStoreConfig,
-                            checkoutSettings: {
-                                ...defaultStoreConfig.checkoutSettings,
-                                providerWithCustomCheckout,
-                            },
-                        }),
-                        getCustomer: () => ({
-                            ...defaultCustomer,
-                            addresses: customerAddress,
-                        }),
-                    }
-                }
-            }))
-        );
-    };
+    const defaultCustomer = getCustomer();
 
     const defaultAddress = getAddress();
     const paypalAddress1 = {
@@ -87,22 +59,39 @@ describe('usePayPalFastlaneAddress', () => {
         address1: 'address-PP2',
     };
 
+    beforeEach(() => {
+        jest.spyOn(PaymentIntegrationApi, 'useCheckout').mockImplementation(
+            jest.fn().mockImplementation(() => ({
+                checkoutState: {
+                    data: {
+                        getPaymentProviderCustomer: () => ({
+                            addresses: [paypalAddress1, paypalAddress2],
+                        }),
+                        getConfig: () => ({
+                            ...defaultStoreConfig,
+                            checkoutSettings: {
+                                ...defaultStoreConfig.checkoutSettings,
+                                providerWithCustomCheckout:
+                                    PaymentIntegrationApi.PaymentMethodId
+                                        .BraintreeAcceleratedCheckout,
+                            },
+                        }),
+                        getCustomer: () => ({
+                            ...defaultCustomer,
+                            addresses: [],
+                        }),
+                    },
+                },
+            })),
+        );
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('renders with PP addresses, selected PP address', () => {
-        useCheckoutMock(
-            { addresses: [paypalAddress1, paypalAddress2] },
-            [],
-            PaymentIntegrationApi.PaymentMethodId.BraintreeAcceleratedCheckout,
-        );
-
-        render(
-            <PayPalFastlaneAddressComponentMock
-                selectedAddress={paypalAddress1}
-            />
-        );
+        render(<PayPalFastlaneAddressComponentMock selectedAddress={paypalAddress1} />);
 
         const addressItems = screen.getAllByRole('listitem');
 

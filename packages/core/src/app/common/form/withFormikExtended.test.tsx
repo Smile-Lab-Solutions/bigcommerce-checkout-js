@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
-import React, { ComponentType } from 'react';
+import { ErrorMessage } from 'formik';
+import React, { act, type ComponentType } from 'react';
 import { object, string } from 'yup';
 
 import { render, screen } from '@bigcommerce/checkout/test-utils';
@@ -12,7 +13,6 @@ import withFormikExtended from './withFormikExtended';
 describe('withFormikExtended', () => {
     interface TestComponentProps {
         defaultTitle?: string;
-        isInitialValueLoaded?: boolean;
         submit(values: TestComponentValues): void;
     }
 
@@ -24,6 +24,7 @@ describe('withFormikExtended', () => {
         <Form>
             <Label htmlFor="title">Title</Label>
             <Input id="title" name="title" type="text" />
+            <ErrorMessage component="div" name="title" />
             <Button type="submit">Submit</Button>
         </Form>
     );
@@ -35,9 +36,7 @@ describe('withFormikExtended', () => {
         mapPropsToValues({ defaultTitle }) {
             return { title: defaultTitle };
         },
-        isInitialValid({ defaultTitle }) {
-            return !!defaultTitle;
-        },
+        enableReinitialize: true,
         validationSchema: object({
             title: string().required(),
         }),
@@ -45,18 +44,22 @@ describe('withFormikExtended', () => {
 
     it('resets form after initital value is loaded', async () => {
         const submit = jest.fn();
-        const { rerender } = render(<DecoratedTestComponent isInitialValueLoaded={false} submit={ submit } />);
+        const { rerender } = render(<DecoratedTestComponent submit={submit} />);
 
-        await userEvent.click(screen.getByText('Submit'));
+        await act(async () => {
+            await userEvent.click(screen.getByText('Submit'));
+        });
 
-        // The initial value is invalid at this point therefore the submit function should not called
+        expect(screen.getByText('title is a required field')).toBeInTheDocument();
         expect(submit).not.toHaveBeenCalled();
 
-        rerender(<DecoratedTestComponent defaultTitle="Hello" isInitialValueLoaded={true} submit={ submit } />);
+        await act(async () => {
+            rerender(<DecoratedTestComponent defaultTitle="Hello" submit={submit} />);
 
-        await userEvent.click(screen.getByText('Submit'));
+            await userEvent.click(screen.getByText('Submit'));
+        });
 
-        // The initial value is now valid therefore the submit function should be called
+        expect(screen.queryByText('title is a required field')).not.toBeInTheDocument();
         expect(submit).toHaveBeenCalled();
     });
 });

@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { useThemeContext } from '@bigcommerce/checkout/ui';
 
-
-import { AddressSelectProps } from './AddressSelect';
+import { type AddressSelectProps } from './AddressSelect';
 import SingleLineStaticAddress from './SingleLineStaticAddress';
 import StaticAddress from './StaticAddress';
 
@@ -17,11 +17,14 @@ const AddressSelectButton: FunctionComponent<AddressSelectButtonProps & WithLang
     showSingleLineAddress,
     placeholderText,
 }) => {
+    const { themeV2 } = useThemeContext();
     const [ariaExpanded, setAriaExpanded] = useState(false);
 
     const SelectedAddress = () => {
         if (!selectedAddress) {
-            return placeholderText ?? <TranslatedString id="address.enter_address_action" />;
+            return (<span className={themeV2 ? 'body-regular' : ''} data-test="address-select-placeholder">
+                {placeholderText ?? <TranslatedString id="address.enter_address_action" />}
+            </span>);
         }
 
         return showSingleLineAddress
@@ -32,8 +35,8 @@ const AddressSelectButton: FunctionComponent<AddressSelectButtonProps & WithLang
     return (
         <a
             aria-controls="addressDropdown"
-            aria-describedby={language.translate('address.enter_or_select_address_action')}
             aria-expanded={ariaExpanded}
+            aria-label={language.translate('address.enter_or_select_address_action')}
             className="button dropdown-button dropdown-toggle--select"
             data-test="address-select-button"
             href="#"

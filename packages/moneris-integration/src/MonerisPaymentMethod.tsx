@@ -1,13 +1,13 @@
-import { CardInstrument, PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
+import { type CardInstrument, type PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
 import { some } from 'lodash';
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { type FunctionComponent, useCallback } from 'react';
 
 import {
     getHostedInstrumentValidationSchema,
     useHostedCreditCard,
 } from '@bigcommerce/checkout/hosted-credit-card-integration';
 import {
-    HostedWidgetComponentProps,
+    type HostedWidgetComponentProps,
     HostedWidgetPaymentComponent,
 } from '@bigcommerce/checkout/hosted-widget-integration';
 import {
@@ -15,8 +15,8 @@ import {
     isInstrumentCardNumberRequiredSelector,
 } from '@bigcommerce/checkout/instrument-utils';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 
@@ -60,26 +60,26 @@ const MonerisPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
     const isInstrumentFeatureAvailable =
         !isGuestCustomer && Boolean(method.config.isVaultingEnabled);
 
-        const initializeMonerisPayment: HostedWidgetComponentProps['initializePayment'] = useCallback(
-            async (options: PaymentInitializeOptions, selectedInstrument) => {
-                const paymentConfig = {
-                    ...options,
-                    moneris: {
-                        containerId,
-                        ...(selectedInstrument && {
-                            form: await getHostedFormOptions(selectedInstrument),
-                        }),
-                    },
-                };
+    const initializeMonerisPayment: HostedWidgetComponentProps['initializePayment'] = useCallback(
+        async (options: PaymentInitializeOptions, selectedInstrument) => {
+            const paymentConfig = {
+                ...options,
+                moneris: {
+                    containerId,
+                    ...(selectedInstrument && {
+                        form: await getHostedFormOptions(selectedInstrument),
+                    }),
+                },
+            };
 
-                return checkoutService.initializePayment(paymentConfig);
-            },
-            [containerId, getHostedFormOptions, checkoutService],
-        );
+            return checkoutService.initializePayment(paymentConfig);
+        },
+        [containerId, getHostedFormOptions, checkoutService],
+    );
 
     const validateInstrument = (_shouldShowNumber: boolean, selectedInstrument: CardInstrument) => {
         return getHostedStoredCardValidationFieldset(selectedInstrument);
-    }
+    };
 
     return (
         <HostedWidgetPaymentComponent

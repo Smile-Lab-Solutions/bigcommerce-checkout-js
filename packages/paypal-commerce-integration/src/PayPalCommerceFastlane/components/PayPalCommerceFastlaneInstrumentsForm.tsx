@@ -1,12 +1,11 @@
-import { CardInstrument } from '@bigcommerce/checkout-sdk';
+import { type CardInstrument } from '@bigcommerce/checkout-sdk';
+import React, { type FunctionComponent } from 'react';
 
-import React, { FunctionComponent } from 'react';
-
-import { CreditCardIcon, Button, ButtonSize, ButtonVariant } from '@bigcommerce/checkout/ui';
-import { PoweredByPayPalFastlaneLabel } from '@bigcommerce/checkout/paypal-fastlane-integration';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { PoweredByPayPalFastlaneLabel } from '@bigcommerce/checkout/paypal-fastlane-integration';
+import { Button, ButtonSize, ButtonVariant, CreditCardIcon } from '@bigcommerce/checkout/ui';
 
-import { PayPalFastlaneCardComponentRef } from '../PayPalCommerceFastlanePaymentMethod';
+import { type PayPalFastlaneCardComponentRef } from '../PayPalCommerceFastlanePaymentMethod';
 
 import './PayPalCommerceFastlaneInstrumentsForm.scss';
 
@@ -28,18 +27,14 @@ function mapFromInstrumentCardType(type: string): string {
 }
 
 interface PayPalCommerceFastlaneInstrumentsFormProps {
+    selectedInstrument: CardInstrument;
     onChange: PayPalFastlaneCardComponentRef['showPayPalCardSelector'];
     handleSelectInstrument(instrument: CardInstrument): void;
-    selectedInstrument: CardInstrument;
 }
 
 const PayPalCommerceFastlaneInstrumentsForm: FunctionComponent<
     PayPalCommerceFastlaneInstrumentsFormProps
-> = ({
-    onChange,
-    handleSelectInstrument,
-    selectedInstrument,
-}) => {
+> = ({ onChange, handleSelectInstrument, selectedInstrument }) => {
     const cardType = mapFromInstrumentCardType(selectedInstrument.brand).toLowerCase();
 
     const handleChange = async () => {
@@ -50,7 +45,7 @@ const PayPalCommerceFastlaneInstrumentsForm: FunctionComponent<
                 handleSelectInstrument(result);
             }
         }
-    }
+    };
 
     return (
         <div
@@ -61,7 +56,10 @@ const PayPalCommerceFastlaneInstrumentsForm: FunctionComponent<
                 <div className="paypal-commerce-fastlane-instrument-details">
                     <CreditCardIcon cardType={cardType} />
 
-                    <div className="instrumentSelect-card" data-test="paypal-fastlane-instrument-last4">
+                    <div
+                        className="instrumentSelect-card"
+                        data-test="paypal-fastlane-instrument-last4"
+                    >
                         {/* &#9679; is a ● */}
                         <span>&#9679;&#9679;&#9679;&#9679; {selectedInstrument.last4}</span>
                     </div>
@@ -73,10 +71,10 @@ const PayPalCommerceFastlaneInstrumentsForm: FunctionComponent<
 
             <div className="paypal-commerce-fastlane-instrument-change-action">
                 <Button
+                    onClick={handleChange}
                     size={ButtonSize.Tiny}
                     testId="paypal-commerce-fastlane-instrument-change"
                     variant={ButtonVariant.Secondary}
-                    onClick={handleChange}
                 >
                     <TranslatedString id="common.change_action" />
                 </Button>

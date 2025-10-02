@@ -1,8 +1,8 @@
 import { memoize } from '@bigcommerce/memoize';
-import { object, ObjectSchema, string, StringSchema } from 'yup';
+import { object, type ObjectSchema, string, type StringSchema } from 'yup';
 
 import getCustomFormFieldsValidationSchema, {
-    FormFieldsValidationSchemaOptions,
+    type FormFieldsValidationSchemaOptions,
 } from './getCustomFormFieldsValidationSchema';
 
 export const WHITELIST_REGEXP = /^[^<>]*$/;
@@ -14,8 +14,6 @@ export interface FormFieldValues {
 export default memoize(function getFormFieldsValidationSchema({
     formFields,
     translate = () => undefined,
-    validateGoogleMapAutoCompleteMaxLength = false,
-    validateAddressFields = false,
 }: FormFieldsValidationSchemaOptions): ObjectSchema<FormFieldValues> {
     return object({
         ...formFields
@@ -26,15 +24,10 @@ export default memoize(function getFormFieldsValidationSchema({
                 if (required) {
                     schema[name] = schema[name]
                         .trim()
-                        .required(translate('required', { label, name}));
+                        .required(translate('required', { label, name }));
                 }
 
-                if (name === 'address1' && maxLength && validateGoogleMapAutoCompleteMaxLength) {
-                    schema[name] = schema[name]
-                        .max(maxLength, translate('max', { label, name, max: maxLength }));
-                }
-
-                if ((name === 'address1' || name === 'address2') && maxLength && validateAddressFields) {
+                if ((name === 'address1' || name === 'address2') && maxLength) {
                     schema[name] = schema[name]
                         .max(maxLength, translate('max', { label, name, max: maxLength }));
                 }
@@ -45,6 +38,7 @@ export default memoize(function getFormFieldsValidationSchema({
                 );
 
                 return schema;
+                // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
             }, {} as { [key: string]: StringSchema }),
     }).concat(
         getCustomFormFieldsValidationSchema({ formFields, translate }),

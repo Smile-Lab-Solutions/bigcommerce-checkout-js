@@ -12,8 +12,10 @@ export { TextInputIframeContainer } from './TextInputIframeContainer';
 export { FormContext, FormContextType, FormProvider } from './contexts';
 export {
     AddressFormSkeleton,
+    CartSummarySkeleton,
+    CheckoutPageSkeleton,
     ChecklistSkeleton,
-    CustomerSkeleton,
+    OrderConfirmationPageSkeleton,
     WalletButtonsContainerSkeleton,
 } from './LoadingSkeleton';
 export { Label } from './Label';

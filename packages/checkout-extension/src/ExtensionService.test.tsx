@@ -1,10 +1,11 @@
 import {
     createCheckoutService,
     ExtensionCommandType,
+    ExtensionQueryType,
     ExtensionRegion,
 } from '@bigcommerce/checkout-sdk';
 
-import { ErrorLevelType, ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
+import { ErrorLevelType, type ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { getCart, getStoreConfig } from '@bigcommerce/checkout/test-mocks';
 
 import { getExtensions } from './Extension.mock';
@@ -12,7 +13,8 @@ import { ExtensionRegionContainer } from './ExtensionRegionContainer';
 import { ExtensionService } from './ExtensionService';
 
 describe('ExtensionService', () => {
-    const remover = jest.fn();
+    const commandHandlerRemover = jest.fn();
+    const queryHandlerRemover = jest.fn();
     const dispatch = jest.fn();
     const errorLogger: ErrorLogger = {
         log: jest.fn(),
@@ -28,7 +30,10 @@ describe('ExtensionService', () => {
         jest.spyOn(checkoutService, 'renderExtension').mockReturnValue(
             Promise.resolve(checkoutService.getState()),
         );
-        jest.spyOn(checkoutService, 'handleExtensionCommand').mockReturnValue(remover);
+        jest.spyOn(checkoutService, 'handleExtensionCommand').mockReturnValue(
+            commandHandlerRemover,
+        );
+        jest.spyOn(checkoutService, 'handleExtensionQuery').mockReturnValue(queryHandlerRemover);
         jest.spyOn(checkoutService.getState().data, 'getExtensions').mockReturnValue(
             getExtensions(),
         );
@@ -103,7 +108,9 @@ describe('ExtensionService', () => {
         );
     });
 
-    it('adds and removes command handlers', async () => {
+    it('adds and removes command or query handlers', async () => {
+        jest.spyOn(checkoutService, 'clearExtensionCache').mockReturnValue();
+
         await extensionService.renderExtension(
             ExtensionRegionContainer.ShippingShippingAddressFormBefore,
             ExtensionRegion.ShippingShippingAddressFormBefore,
@@ -126,10 +133,30 @@ describe('ExtensionService', () => {
             ExtensionCommandType.ShowLoadingIndicator,
             expect.any(Function),
         );
+        expect(checkoutService.handleExtensionCommand).toHaveBeenNthCalledWith(
+            4,
+            '123',
+            ExtensionCommandType.ReRenderShippingForm,
+            expect.any(Function),
+        );
+        expect(checkoutService.handleExtensionCommand).toHaveBeenNthCalledWith(
+            5,
+            '123',
+            ExtensionCommandType.ReRenderShippingStep,
+            expect.any(Function),
+        );
+        expect(checkoutService.handleExtensionQuery).toHaveBeenNthCalledWith(
+            1,
+            '123',
+            ExtensionQueryType.GetConsignments,
+            expect.any(Function),
+        );
 
         extensionService.removeListeners(ExtensionRegion.ShippingShippingAddressFormBefore);
 
-        expect(remover).toBeCalledTimes(3);
+        expect(commandHandlerRemover).toBeCalledTimes(5);
+        expect(queryHandlerRemover).toBeCalledTimes(1);
+        expect(checkoutService.clearExtensionCache).toHaveBeenCalled();
     });
 
     describe('isRegionInUse()', () => {

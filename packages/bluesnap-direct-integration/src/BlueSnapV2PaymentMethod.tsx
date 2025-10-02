@@ -1,8 +1,8 @@
-import { PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
+import { type PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
 import React, {
     createRef,
-    FunctionComponent,
-    RefObject,
+    type FunctionComponent,
+    type RefObject,
     useCallback,
     useRef,
     useState,
@@ -10,16 +10,16 @@ import React, {
 
 import {
     HostedPaymentComponent,
-    HostedPaymentMethodProps,
+    type HostedPaymentComponentProps,
 } from '@bigcommerce/checkout/hosted-payment-integration';
 import {
-    PaymentMethodProps,
-    PaymentMethodResolveId,
+    type PaymentMethodProps,
+    type PaymentMethodResolveId,
     toResolvableComponent,
 } from '@bigcommerce/checkout/payment-integration-api';
 import { LoadingOverlay, Modal } from '@bigcommerce/checkout/ui';
 
-export type BlueSnapV2PaymentMethodProps = HostedPaymentMethodProps;
+export type BlueSnapV2PaymentMethodProps = HostedPaymentComponentProps;
 
 interface BlueSnapV2PaymentMethodRef {
     paymentPageContentRef: RefObject<HTMLDivElement>;
@@ -50,7 +50,6 @@ const BlueSnapV2PaymentMethod: FunctionComponent<PaymentMethodProps> = ({
 
     const initializeBlueSnapV2Payment = useCallback(
         (options: PaymentInitializeOptions) => {
-
             return checkoutService.initializePayment({
                 ...options,
                 bluesnapv2: {

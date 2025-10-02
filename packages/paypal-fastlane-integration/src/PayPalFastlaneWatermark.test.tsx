@@ -1,23 +1,23 @@
-import { render, screen } from '@testing-library/react';
-import React, { FunctionComponent } from 'react';
-
-import { CheckoutContext, CheckoutProvider } from "@bigcommerce/checkout/payment-integration-api";
-import { getStoreConfig } from '@bigcommerce/checkout/test-mocks';
 import {
-    CheckoutSelectors,
-    CheckoutService,
+    type CheckoutSelectors,
+    type CheckoutService,
     createCheckoutService,
 } from '@bigcommerce/checkout-sdk';
+import { render, screen } from '@testing-library/react';
+import React, { type FunctionComponent } from 'react';
 
-import PayPalFastlaneWatermark from './PayPalFastlaneWatermark';
+import { CheckoutContext, CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { getStoreConfig } from '@bigcommerce/checkout/test-mocks';
+
 import isFastlaneHostWindow from './is-fastlane-window';
+import PayPalFastlaneWatermark from './PayPalFastlaneWatermark';
 
-describe('PayPalFastlaneWatermark Component',() => {
+describe('PayPalFastlaneWatermark Component', () => {
     let checkoutService: CheckoutService;
     let checkoutState: CheckoutSelectors;
     let PayPalFastlaneWatermarkComponent: FunctionComponent;
 
-    const paymentMethodDataMock =  {
+    const paymentMethodDataMock = {
         logoUrl: '',
         supportedCards: [],
         config: {
@@ -31,14 +31,16 @@ describe('PayPalFastlaneWatermark Component',() => {
     };
 
     Object.defineProperties(window, {
-        "braintreeFastlane": {
+        braintreeFastlane: {
             value: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 FastlaneWatermarkComponent: jest.fn(),
             },
             configurable: true,
         },
-        "paypalFastlane": {
+        paypalFastlane: {
             value: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 FastlaneWatermarkComponent: jest.fn(),
             },
             configurable: true,
@@ -60,7 +62,7 @@ describe('PayPalFastlaneWatermark Component',() => {
 
     describe('braintree fastlane privacy settings', () => {
         beforeEach(() => {
-            const braintreeFastlanePaymentMethod =  {
+            const braintreeFastlanePaymentMethod = {
                 ...paymentMethodDataMock,
                 id: 'braintreeacceleratedcheckout',
                 method: 'braintreeacceleratedcheckout',
@@ -71,19 +73,25 @@ describe('PayPalFastlaneWatermark Component',() => {
                 checkoutSettings: {
                     ...getStoreConfig().checkoutSettings,
                     providerWithCustomCheckout: 'braintreeacceleratedcheckout',
-                }
+                },
             });
-            jest.spyOn(checkoutState.data, 'getPaymentMethod').mockReturnValue(braintreeFastlanePaymentMethod);
+            jest.spyOn(checkoutState.data, 'getPaymentMethod').mockReturnValue(
+                braintreeFastlanePaymentMethod,
+            );
         });
 
         it('renders fastlane privacy settings container', async () => {
             const text = 'BigCommerce Braintree Fastlane';
 
             if (isFastlaneHostWindow(window)) {
-                jest.spyOn(window.braintreeFastlane, 'FastlaneWatermarkComponent').mockReturnValueOnce(
-                    new Promise(resolve => {
+                jest.spyOn(
+                    window.braintreeFastlane,
+                    'FastlaneWatermarkComponent',
+                ).mockReturnValueOnce(
+                    new Promise((resolve) => {
                         resolve({
                             render: (containerId) => {
+                                // eslint-disable-next-line testing-library/no-node-access
                                 const container = document.querySelector(containerId);
 
                                 if (container) {
@@ -97,15 +105,18 @@ describe('PayPalFastlaneWatermark Component',() => {
 
             render(<PayPalFastlaneWatermarkComponent />);
 
-            expect(await screen.findByText(text)).toBeDefined();
+            expect(await screen.findByText(text)).toBeInTheDocument();
         });
 
         it('renders braintree fastlane privacy settings', async () => {
             const renderWatermark = jest.fn();
 
             if (isFastlaneHostWindow(window)) {
-                jest.spyOn(window.braintreeFastlane, 'FastlaneWatermarkComponent').mockReturnValueOnce(
-                    new Promise(resolve => {
+                jest.spyOn(
+                    window.braintreeFastlane,
+                    'FastlaneWatermarkComponent',
+                ).mockReturnValueOnce(
+                    new Promise((resolve) => {
                         resolve({
                             render: renderWatermark,
                         });
@@ -123,7 +134,7 @@ describe('PayPalFastlaneWatermark Component',() => {
 
     describe('paypal commerce fastlane privacy settings', () => {
         beforeEach(() => {
-            const paypalCommerceFastlanePaymentMethod =  {
+            const paypalCommerceFastlanePaymentMethod = {
                 ...paymentMethodDataMock,
                 id: 'paypalcommerceacceleratedcheckout',
                 method: 'paypalcommerceacceleratedcheckout',
@@ -134,9 +145,11 @@ describe('PayPalFastlaneWatermark Component',() => {
                 checkoutSettings: {
                     ...getStoreConfig().checkoutSettings,
                     providerWithCustomCheckout: 'paypalcommerceacceleratedcheckout',
-                }
+                },
             });
-            jest.spyOn(checkoutState.data, 'getPaymentMethod').mockReturnValue(paypalCommerceFastlanePaymentMethod);
+            jest.spyOn(checkoutState.data, 'getPaymentMethod').mockReturnValue(
+                paypalCommerceFastlanePaymentMethod,
+            );
         });
 
         it('renders fastlane privacy settings container', async () => {
@@ -144,9 +157,10 @@ describe('PayPalFastlaneWatermark Component',() => {
 
             if (isFastlaneHostWindow(window)) {
                 jest.spyOn(window.paypalFastlane, 'FastlaneWatermarkComponent').mockReturnValueOnce(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve({
                             render: (containerId) => {
+                                // eslint-disable-next-line testing-library/no-node-access
                                 const container = document.querySelector(containerId);
 
                                 if (container) {
@@ -160,7 +174,7 @@ describe('PayPalFastlaneWatermark Component',() => {
 
             render(<PayPalFastlaneWatermarkComponent />);
 
-            expect(await screen.findByText(text)).toBeDefined();
+            expect(await screen.findByText(text)).toBeInTheDocument();
         });
 
         it('renders paypal fastlane privacy settings', async () => {
@@ -168,7 +182,7 @@ describe('PayPalFastlaneWatermark Component',() => {
 
             if (isFastlaneHostWindow(window)) {
                 jest.spyOn(window.paypalFastlane, 'FastlaneWatermarkComponent').mockReturnValue(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve({
                             render: renderWatermark,
                         });

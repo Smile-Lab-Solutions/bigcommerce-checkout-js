@@ -94,6 +94,8 @@
             "error_heading": "Es ist etwas schiefgegangen",
             "leave_warning": "Wollen Sie wirklich gehen? Von Ihnen eingegebene Daten werden möglicherweise nicht gespeichert.",
             "loading_text": "Wird geladen",
+            "missing_shipping_method_heading": "Versandmethode nicht verfügbar",
+            "invalid_shipping_address": "Ungültige Versandadresse",
             "ok_action": "Ok",
             "error_code": "Fehlercode:",
             "request_id": "Anfrage-ID:",
@@ -217,6 +219,9 @@
                 "only_numbers": "Die Routing-Nummer darf nur Zahlen enthalten.",
                 "length": "Die Routing-Nummer muss aus 9 Ziffern bestehen."
             },
+            "bluesnap_direct_company_name": {
+                "length_max": "Der Firmenname ist zu lang"
+            },
             "bluesnap_direct_account_type": {
                 "label": "Konto-Typ",
                 "is_required": "Es muss ein Konto-Typ angegeben werden."
@@ -239,7 +244,6 @@
             "braintreeach_vaulting_mandate_text": "Durch Klicken auf „Bestellung aufgeben“ autorisiere ich Braintree, einen Service von PayPal, meine Bankkontodaten mithilfe von Bankinformationen und Verbraucherberichten im Namen von {storeName} zu verifizieren, und ich ermächtige {storeName}, eine ACH- oder elektronische Abbuchung von meinem {accountType}-Konto (Depotname: {depositoryName}, Bankleitzahl: {routingNumber} und Kontonummer: {accountNumber}) zu veranlassen, die archiviert und am oder nach dem Fälligkeitsdatum eingezogen wird. Ich bestätige, dass die von mir autorisierten ACH-Transaktionen mit allen geltenden Gesetzen übereinstimmen.",
             "complete_with_brand": "Bestellung abschließen",
             "continue_with_brand": "Weiter mit {brandName}",
-            "ccavenuemars_description_text": "Bezahlvorgang mit CCAvenue abschließen",
             "checkoutcom_document_label_boleto": "CPF oder CNPJ",
             "checkoutcom_document_label_oxxo": "CURP",
             "checkoutcom_document_label_qpay": "Nationale ID",
@@ -276,11 +280,10 @@
             "credit_card_number_required_error": "Kreditkartennummer erforderlich",
             "credit_card_number_mismatch_error": "Die eingegebene Kartennummer entspricht nicht der in Ihrem Konto gespeicherten Karte",
             "credit_debit_card_text": "Kredit-/Debitkarte",
+            "payment_methods_text": "Zahlungsmethoden",
+            "redeemable_payments_text": "Einlösbare Zahlungen",
+            "instrument_storage_options_text": "Optionen zur Speicherung von Zahlungen",
             "stripev3_auth_3ds_fail": "Benutzer hat sich nicht authentifiziert",
-            "digitalriver_dropin_error": "Bei der Verarbeitung Ihrer Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder nehmen Sie Kontakt zu uns auf.",
-            "digitalriver_checkout_error": "Es gab ein Problem mit Ihrem Bezahlvorgang, bitte prüfen Sie Ihre Details und versuchen Sie es erneut oder kontaktieren Sie den Kundendienst.",
-            "digitalriver_checkout_error_title": "Fehler beim Verarbeiten der Anfrage.",
-            "digitalriver_display_name_text": "Bitte wählen Sie Ihre Zahlungsmethode aus.",
             "google_pay_name_text": "Google Pay",
             "humm_not_processable_error": "Humm kann Ihre Zahlung für diese Bestellung nicht verarbeiten, bitte wählen Sie eine andere Zahlungsmethode aus.",
             "klarna_continue_action": "Weiter mit Klarna",
@@ -557,7 +560,9 @@
             "choose_shipping_address": "Wählen Sie eine Versandadresse",
             "multishipping_unavailable_action": "Versand an mehrere Adressen nicht möglich",
             "multishipping_unavailable_message": "Der Versand an mehrere Adressen ist nicht möglich, wenn aufgrund einer Werbeaktion ein kostenloser Artikel zu Ihrem Warenkorb hinzugefügt wird.",
-            "checkout_switched_to_single_shipping": "Ihr Checkout wurde automatisch aktualisiert, um eine einzige Lieferadresse zu verwenden. Der Versand an mehrere Adressen ist nicht möglich, wenn sich ein kostenloser Werbeartikel in Ihrem Warenkorb befindet."
+            "checkout_switched_to_single_shipping": "Ihr Checkout wurde automatisch aktualisiert, um eine einzige Lieferadresse zu verwenden. Der Versand an mehrere Adressen ist nicht möglich, wenn sich ein kostenloser Werbeartikel in Ihrem Warenkorb befindet.",
+            "guest_multishipping_no_shipping_address_message": "Es wurde keine Lieferadresse eingegeben",
+            "guest_multishipping_enter_shipping_address_action": "Versandadresse eingeben"
         },
         "social": {
             "share_action": "Freigeben",

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import { CheckoutService, createCheckoutService } from '@bigcommerce/checkout-sdk';
+import { type CheckoutService, createCheckoutService } from '@bigcommerce/checkout-sdk';
 import { noop } from 'lodash';
 import React from 'react';
 
-import { createLocaleContext, LocaleContext, LocaleContextType } from '@bigcommerce/checkout/locale';
+import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
 import { fireEvent, render, screen } from '@bigcommerce/checkout/test-utils';
 
@@ -12,7 +12,7 @@ import { getStoreConfig } from '../config/config.mock';
 import { getCustomer } from '../customer/customers.mock';
 
 import { getAddress } from './address.mock';
-import AddressSelect, { AddressSelectProps } from './AddressSelect';
+import AddressSelect, { type AddressSelectProps } from './AddressSelect';
 import AddressType from './AddressType';
 import { getAddressContent } from './SingleLineStaticAddress';
 
@@ -77,10 +77,10 @@ describe('AddressSelect component', () => {
         // TODO: update with userEvent and investigate range.cloneRange() issue
         fireEvent.click(screen.getByTestId('address-select-button'));
 
-        // INFO: there 2 'static-address' component should be in the document
+        // INFO: there 4 'static-address' component should be in the document
         // 1st one is located in Address select button (head of dropdown)
-        // 2d one is a part of dropdown option with address
-        expect(screen.getAllByTestId('static-address')).toHaveLength(2);
+        // The remaining 3 are part of the dropdown options for addresses
+        expect(screen.getAllByTestId('static-address')).toHaveLength(4);
         expect(screen.getByText('Enter a new address')).toBeInTheDocument();
     });
 
@@ -115,7 +115,6 @@ describe('AddressSelect component', () => {
         const selectedAddress = getCustomer().addresses[0];
 
         renderAddressSelect({ onSelectAddress, selectedAddress });
-
 
         const addressSelectButton = screen.getByTestId('address-select-button');
 
