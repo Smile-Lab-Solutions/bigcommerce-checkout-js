@@ -4,18 +4,13 @@ import {
     type CustomerInitializeOptions,
     type CustomerRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import { noop } from 'lodash';
 import React, { type FunctionComponent, memo } from 'react';
 
-import { TranslatedString, useLocale } from '@bigcommerce/checkout/locale';
 import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
-import { LazyContainer } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
-import resolveCheckoutButton from './resolveCheckoutButton';
-import CheckoutButtonV1Resolver from './WalletButtonV1Resolver';
 
 export interface CheckoutButtonListProps {
     hideText?: boolean;
@@ -34,18 +29,10 @@ interface WithCheckoutCheckoutButtonListProps {
 }
 
 const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps & CheckoutButtonListProps> = ({
-    checkoutService,
-    checkoutState,
-    hideText = false,
-    isInitializing = false,
     methodIds = [],
     checkEmbeddedSupport,
-    deinitialize,
-    initialize,
-    onClick = noop,
     onError,
 }) => {
-    const { language } = useLocale();
     const supportedMethodIds = getSupportedMethodIds(methodIds);
 
     if (supportedMethodIds.length === 0) {
@@ -66,41 +53,41 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
         }
     }
 
-    const renderButtons = () => {
-        return supportedMethodIds.map((methodId) => {
-            const ResolvedCheckoutButton = resolveCheckoutButton(
-                { id: methodId },
-            );
+    // const renderButtons = () => {
+    //     return supportedMethodIds.map((methodId) => {
+    //         const ResolvedCheckoutButton = resolveCheckoutButton(
+    //             { id: methodId },
+    //         );
 
-            if (!ResolvedCheckoutButton) {
-                return <CheckoutButtonV1Resolver
-                    deinitialize={deinitialize}
-                    initialize={initialize}
-                    isShowingWalletButtonsOnTop={false}
-                    key={methodId}
-                    methodId={methodId}
-                    onClick={onClick}
-                    onError={onClick}
-                />
-            }
+    //         if (!ResolvedCheckoutButton) {
+    //             return <CheckoutButtonV1Resolver
+    //                 deinitialize={deinitialize}
+    //                 initialize={initialize}
+    //                 isShowingWalletButtonsOnTop={false}
+    //                 key={methodId}
+    //                 methodId={methodId}
+    //                 onClick={onClick}
+    //                 onError={onClick}
+    //             />
+    //         }
 
-            return <LazyContainer key={methodId}>
-                <ResolvedCheckoutButton
-                    checkoutService={checkoutService}
-                    checkoutState={checkoutState}
-                    containerId={`${methodId}CheckoutButton`}
-                    language={language}
-                    methodId={methodId}
-                    onUnhandledError={onClick}
-                    onWalletButtonClick={onClick}
-                />
-            </LazyContainer>;
-        });
-    };
+    //         return <LazyContainer key={methodId}>
+    //             <ResolvedCheckoutButton
+    //                 checkoutService={checkoutService}
+    //                 checkoutState={checkoutState}
+    //                 containerId={`${methodId}CheckoutButton`}
+    //                 language={language}
+    //                 methodId={methodId}
+    //                 onUnhandledError={onClick}
+    //                 onWalletButtonClick={onClick}
+    //             />
+    //         </LazyContainer>;
+    //     });
+    // };
 
     return (
         <>
-            {!isInitializing && !hideText && (
+            {/* {!isInitializing && !hideText && (
                 <p>
                     <TranslatedString id="remote.continue_with_text" />
                 </p>
@@ -108,7 +95,7 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
 
             <div className="checkoutRemote">
                 {renderButtons()}
-            </div>
+            </div> */}
         </>
     );
 };
