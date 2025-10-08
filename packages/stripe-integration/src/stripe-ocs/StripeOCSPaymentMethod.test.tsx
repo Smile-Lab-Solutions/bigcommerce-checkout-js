@@ -7,6 +7,7 @@ import {
     type PaymentMethod,
     type WithStripeOCSPaymentInitializeOptions,
 } from '@bigcommerce/checkout-sdk';
+import { createStripeOCSPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/stripe';
 import { render } from '@testing-library/react';
 import { Formik } from 'formik';
 import { noop } from 'lodash';
@@ -78,7 +79,14 @@ describe('when using Stripe OCS payment', () => {
         checkoutService = createCheckoutService();
         checkoutState = checkoutService.getState();
         localeContext = createLocaleContext(getStoreConfig());
-        method = { ...getPaymentMethod(), id: methodId, gateway: gatewayId };
+        method = {
+            ...getPaymentMethod(),
+            id: methodId,
+            gateway: gatewayId,
+            initializationData: {
+                isCustomChecklistItem: true,
+            },
+        };
         initializePayment = jest
             .spyOn(checkoutService, 'initializePayment')
             .mockResolvedValue(checkoutState);
@@ -134,6 +142,7 @@ describe('when using Stripe OCS payment', () => {
         expect(initializePayment).toHaveBeenCalledWith({
             gatewayId,
             methodId,
+            integrations: [createStripeOCSPaymentStrategy],
             [gatewayId]: {
                 containerId: expectedContainerId,
                 layout: defaultAccordionLayout,
@@ -164,6 +173,7 @@ describe('when using Stripe OCS payment', () => {
         expect(initializePayment).toHaveBeenCalledWith({
             gatewayId,
             methodId,
+            integrations: [createStripeOCSPaymentStrategy],
             [gatewayId]: {
                 containerId: expectedContainerId,
                 layout: defaultAccordionLayout,
@@ -256,6 +266,74 @@ describe('when using Stripe OCS payment', () => {
     });
 
     describe('# Stripe OCS accordion layout', () => {
+        it('should initialize with auto layout when isCustomChecklistItem is false', () => {
+            method = {
+                ...method,
+                initializationData: {
+                    isCustomChecklistItem: false,
+                },
+            };
+
+            render(<PaymentMethodTest {...defaultProps} method={method} />);
+
+            expect(checkoutService.initializePayment).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    methodId: method.id,
+                    gatewayId: method.gateway,
+                    [gatewayId]: {
+                        containerId: expectedContainerId,
+                        layout: {
+                            ...defaultAccordionLayout,
+                            type: 'auto',
+                        },
+                        appearance: {
+                            variables: { color: '#cccccc' },
+                        },
+                        fonts: [{ cssSrc: 'fontSrc' }],
+                        onError: expect.any(Function),
+                        render: expect.any(Function),
+                        paymentMethodSelect: expect.any(Function),
+                        handleClosePaymentMethod: expect.any(Function),
+                        togglePreloader: expect.any(Function),
+                    },
+                }),
+            );
+        });
+
+        it('should initialize with accordion layout when isCustomChecklistItem is true', () => {
+            method = {
+                ...method,
+                initializationData: {
+                    isCustomChecklistItem: true,
+                },
+            };
+
+            render(<PaymentMethodTest {...defaultProps} method={method} />);
+
+            expect(checkoutService.initializePayment).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    methodId: method.id,
+                    gatewayId: method.gateway,
+                    [gatewayId]: {
+                        containerId: expectedContainerId,
+                        layout: {
+                            ...defaultAccordionLayout,
+                            type: 'accordion',
+                        },
+                        appearance: {
+                            variables: { color: '#cccccc' },
+                        },
+                        fonts: [{ cssSrc: 'fontSrc' }],
+                        onError: expect.any(Function),
+                        render: expect.any(Function),
+                        paymentMethodSelect: expect.any(Function),
+                        handleClosePaymentMethod: expect.any(Function),
+                        togglePreloader: expect.any(Function),
+                    },
+                }),
+            );
+        });
+
         it('accordion collapsed when selected different payment method', () => {
             accordionContextValues.selectedItemId = 'nonStripeItem';
 
