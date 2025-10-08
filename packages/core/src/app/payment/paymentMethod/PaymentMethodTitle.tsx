@@ -186,7 +186,7 @@ export function getPaymentMethodTitle(
                 logoUrl: method.initializationData?.enableBillie
                         ? cdnPath('/img/payment-providers/klarna-billie-header.png')
                         : cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Pay in 4 interest free installments' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -312,7 +312,7 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.Flex]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Pay with HSA/FSA',
+                titleSubText: 'Pay with your HSA/FSA card',
             },
         };
 
@@ -472,7 +472,7 @@ const PaymentMethodTitle: FunctionComponent<
                             alt={methodName}
                             className="paymentProviderHeader-img"
                             data-test="payment-method-logo"
-                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit-blue.png'
                             id='paypalcommerceSecondIcon'
                         />
                     </>
@@ -515,7 +515,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {/* US Terrace Finance promo code info */}
-                {method.gateway === PaymentMethodId.TerraceFinance && (
+                {/* {method.gateway === PaymentMethodId.TerraceFinance && (
                     <div className='checkout-notifications merchant' style={{ width: '100%' }}>
                         <div className="notification notification--info">
                             <div className="notification__content">
@@ -525,7 +525,7 @@ const PaymentMethodTitle: FunctionComponent<
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 {/* US PayTomorrow promo code info */}
                 {/* {method.id === 'cheque' && (
