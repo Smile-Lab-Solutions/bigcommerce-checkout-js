@@ -186,7 +186,7 @@ export function getPaymentMethodTitle(
                 logoUrl: method.initializationData?.enableBillie
                         ? cdnPath('/img/payment-providers/klarna-billie-header.png')
                         : cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: storeCurrency === 'USD' ? 'Pay in 4 interest free installments' : methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Pay later' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -465,7 +465,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )} */}
 
                 {/* Paypal payment second icon */}
-                {method.id === 'paypalcommerce' && (
+                {method.id === 'paypalcommerce' && storeCurrency !== 'AUD' && (
                     <>
                         <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
                         <img
@@ -515,7 +515,7 @@ const PaymentMethodTitle: FunctionComponent<
                 )}
 
                 {/* US Terrace Finance promo code info */}
-                {/* {method.gateway === PaymentMethodId.TerraceFinance && (
+                {method.gateway === PaymentMethodId.TerraceFinance && (
                     <div className='checkout-notifications merchant' style={{ width: '100%' }}>
                         <div className="notification notification--info">
                             <div className="notification__content">
@@ -525,7 +525,7 @@ const PaymentMethodTitle: FunctionComponent<
                             </div>
                         </div>
                     </div>
-                )} */}
+                )}
 
                 {/* US PayTomorrow promo code info */}
                 {/* {method.id === 'cheque' && (

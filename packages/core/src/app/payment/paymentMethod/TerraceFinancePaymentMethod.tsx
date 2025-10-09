@@ -9,6 +9,7 @@ import withPayment, { WithPaymentProps } from '../withPayment';
 import { noop } from 'lodash';
 import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 import { withCheckout } from '../../checkout';
+import { toggleCouponBlock } from '../../../../../../scripts/custom/terraceFinance';
 
 export interface HostedPaymentMethodProps {
   method: PaymentMethod;
@@ -31,19 +32,21 @@ class TerraceFinancePaymentMethod extends Component<
   async componentDidMount(): Promise<CheckoutSelectors | void> {
       const {
           method,
+          checkout,
           setSubmit,
           disableSubmit,
+          removeCoupon
       } = this.props;
 
-      // try {
-      //   if (checkout && checkout.coupons.length > 0){
-      //     checkout.coupons.forEach(coupon => {
-      //       removeCoupon(coupon.code);
-      //     });
-      //   }
+      try {
+        if (checkout && checkout.coupons.length > 0){
+          checkout.coupons.forEach(coupon => {
+            removeCoupon(coupon.code);
+          });
+        }
 
-      //   toggleCouponBlock(true);
-      // } catch(e){}
+        toggleCouponBlock(true);
+      } catch(e){}
 
       disableSubmit(method, false);
       setSubmit(method, this.handleSubmit);
@@ -57,13 +60,13 @@ class TerraceFinancePaymentMethod extends Component<
             <ul className="list-element">
               {this.getListText()}
             </ul>
-            {/* <div className="checkout-notifications tfCouponWarning" style={{display: 'block'}}>
+            <div className="checkout-notifications tfCouponWarning" style={{display: 'block'}}>
               <div className="notification notification--info">
                 <div className="notification__content">
                   <p><i>Sorry, promo codes cannot be used with Terrace Finance</i></p>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </LoadingOverlay>
@@ -84,9 +87,9 @@ class TerraceFinancePaymentMethod extends Component<
     try {
       if (checkout && method && config && checkout.billingAddress) {
 
-        // if (checkout && checkout.coupons.length > 0){
-        //   throw new Error('coupon');
-        // }
+        if (checkout && checkout.coupons.length > 0){
+          throw new Error('coupon');
+        }
 
         // ONLY ENTER PASSWORD WHEN DEPLOYING
         // DO NOT PUSH TO REPO
@@ -155,8 +158,8 @@ class TerraceFinancePaymentMethod extends Component<
                           Condition: "New",
                           Price: x.listPrice,
                           Quantity: x.quantity,
-                          Discount: x.discountAmount,
-                          Total: x.salePrice
+                          Discount: x.sku.startsWith('IMPKIT-') ? x.listPrice : x.discountAmount,
+                          Total: x.sku.startsWith('IMPKIT-') ? 0 : x.salePrice
                         }
                       ));
     
@@ -238,11 +241,11 @@ class TerraceFinancePaymentMethod extends Component<
     </>
   }
 
-  // componentWillUnmount(): void {
-  //   {
-  //     toggleCouponBlock(false);
-  //   }
-  // }
+  componentWillUnmount(): void {
+    {
+      toggleCouponBlock(false);
+    }
+  }
 }
 
 const mapFromCheckoutProps: MapToPropsFactory<
