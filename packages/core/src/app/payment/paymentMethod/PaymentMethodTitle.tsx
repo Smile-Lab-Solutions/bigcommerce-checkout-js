@@ -334,6 +334,16 @@ export function getPaymentMethodTitle(
             return customTitles[PaymentMethodId.PaypalCommerceAlternativeMethod];
         }
 
+        if (
+          method.gateway === PaymentMethodId.BigCommercePaymentsAlternativeMethod &&
+          method.id === PaymentMethodId.Klarna
+        ) {
+            return {
+                logoUrl: cdnPath('/img/payment-providers/klarna.png'),
+                titleText: methodDisplayName,
+            };
+        }
+
         if (method.id === PaymentMethodId.BigCommercePaymentsVenmo) {
             return customTitles[PaymentMethodId.BigCommercePaymentsAlternativeMethod];
         }

@@ -3,7 +3,8 @@ import {
     type LineItemMap,
     type ShopperCurrency,
     type StoreCurrency,
-} from '@bigcommerce/checkout-sdk';
+} from '@bigcommerce/checkout-sdk/essential';
+import classNames from 'classnames';
 import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
