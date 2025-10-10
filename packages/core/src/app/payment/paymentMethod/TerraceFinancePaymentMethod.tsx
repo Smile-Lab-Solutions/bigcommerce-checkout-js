@@ -158,8 +158,8 @@ class TerraceFinancePaymentMethod extends Component<
                           Condition: "New",
                           Price: x.listPrice,
                           Quantity: x.quantity,
-                          Discount: x.discountAmount,
-                          Total: x.salePrice
+                          Discount: x.sku.startsWith('IMPKIT-') ? x.listPrice : x.discountAmount,
+                          Total: x.sku.startsWith('IMPKIT-') ? 0 : x.salePrice
                         }
                       ));
     
@@ -227,11 +227,7 @@ class TerraceFinancePaymentMethod extends Component<
 
   private getListText: () => ReactNode = () => {
     return <>
-      <li>
-        <div className="circleCheck"></div>
-        <b>90 Days SAC (Same As Cash)</b>
-        <p style={{ margin: 0, fontStyle: 'italic' }}>Interest free finance. <br className="show-mobile"></br>No additional charges.</p>
-        </li>
+      <li><div className="circleCheck"></div><b>NEW</b> - 180 Days same-as-cash option</li>
       <li><div className="circleCheck"></div><b>Early pay-off discounts available</b></li>
       <li><div className="circleCheck"></div>Soft Credit pull on application</li>
       <li><div className="circleCheck"></div>$99 due today</li>

@@ -668,28 +668,28 @@ export function mapToPaymentProps({
         // Order is as follows
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card (nmi)
+        // Affirm (affirm)
+        // Terrace Finance (terracefinance)
         // Paypal (paypalcommerce)
         // Venmo (paypalcommercevenmo)
-        // Affirm (affirm)
         // Klarna (pay_over_time)
+        // Flex (flex)
         // Afterpay (pay_by_installment)
         // Zip (quadpay)
-        // Flex (flex)
         // Partially (partially)
-        // Terrace Finance (terracefinance)
         // Bread Pay (cod)
         // Paytomorrow (cheque)
         let paymentOrder = [ 
             'nmi',
+            'affirm',
+            'terracefinance',
             'paypalcommerce',
             'paypalcommercevenmo',
-            'affirm',
             'pay_over_time',
+            'flex',
             'pay_by_installment',
             'quadpay',
-            'flex',
             'partially',
-            'terracefinance',
             'cod',
             'cheque'
         ];

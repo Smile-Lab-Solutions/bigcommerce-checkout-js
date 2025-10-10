@@ -186,7 +186,7 @@ export function getPaymentMethodTitle(
                 logoUrl: method.initializationData?.enableBillie
                         ? cdnPath('/img/payment-providers/klarna-billie-header.png')
                         : cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Pay later' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -312,7 +312,7 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.Flex]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'Pay with HSA/FSA',
+                titleSubText: 'Pay with your HSA/FSA card',
             },
         };
 
@@ -465,18 +465,18 @@ const PaymentMethodTitle: FunctionComponent<
                 )} */}
 
                 {/* Paypal payment second icon */}
-                {method.id === 'paypalcommerce' && (
+                {/* {method.id === 'paypalcommerce' && (
                     <>
                         <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
                         <img
                             alt={methodName}
                             className="paymentProviderHeader-img"
                             data-test="payment-method-logo"
-                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit.png'
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit-blue.png'
                             id='paypalcommerceSecondIcon'
                         />
                     </>
-                )}
+                )} */}
 
                 {titleText && (
                     <div className={classNames('paymentProviderHeader-name',
