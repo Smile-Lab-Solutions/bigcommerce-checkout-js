@@ -189,7 +189,7 @@
         },
         "payment": {
             "affirm_name_text": "Affirm",
-            "affirm_display_name_text": "Pay over time",
+            "affirm_display_name_text": "From $0 down over 12 months",
             "affirm_body_text": "You will be redirected to Affirm to securely complete your purchase. Just fill out a few pieces of basic information and get a real-time decision. Checking your eligibility won't affect your credit score.",
             "afterpay_name_text": "Afterpay",
             "afterpay_description": "Checkout with Afterpay",
@@ -373,6 +373,7 @@
             "tax_provider_unavailable": "Sales tax could not be calculated. Please try again. If unsuccessful, please reach out to our support team to complete checkout.",
             "terracefinance_continue_action": "Proceed with Terrace Finance",
             "flex_continue_action": "Proceed with Flex",
+            "affirm_continue_action": "Proceed with Affirm",
             "vco_name_text": "Click to pay",
             "visa_checkout_continue_action": "Continue with Click to pay",
             "zip_continue_action": "Place Order",
