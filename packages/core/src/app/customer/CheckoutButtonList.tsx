@@ -4,17 +4,13 @@ import {
     type CustomerInitializeOptions,
     type CustomerRequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import { noop } from 'lodash';
-import React, { type FunctionComponent, lazy, memo } from 'react';
+import React, { type FunctionComponent, memo } from 'react';
 
 import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../checkout';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
-import resolveCheckoutButton from './resolveCheckoutButton';
-
-const CheckoutButtonV1Resolver = lazy(() => import(/* webpackChunkName: "wallet-button-v1-resolver" */'./WalletButtonV1Resolver'));
 
 export interface CheckoutButtonListProps {
     hideText?: boolean;
@@ -63,19 +59,19 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
     //             { id: methodId },
     //         );
 
-            if (!ResolvedCheckoutButton) {
-                return <LazyContainer key={methodId}>
-                    <CheckoutButtonV1Resolver
-                        deinitialize={deinitialize}
-                        initialize={initialize}
-                        isShowingWalletButtonsOnTop={false}
-                        key={methodId}
-                        methodId={methodId}
-                        onClick={onClick}
-                        onError={onClick}
-                    />
-                </LazyContainer>
-            }
+    // if (!ResolvedCheckoutButton) {
+    //     return <LazyContainer key={methodId}>
+    //         <CheckoutButtonV1Resolver
+    //             deinitialize={deinitialize}
+    //             initialize={initialize}
+    //             isShowingWalletButtonsOnTop={false}
+    //             key={methodId}
+    //             methodId={methodId}
+    //             onClick={onClick}
+    //             onError={onClick}
+    //         />
+    //     </LazyContainer>
+    // }
 
     //         return <LazyContainer key={methodId}>
     //             <ResolvedCheckoutButton

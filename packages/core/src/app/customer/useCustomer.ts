@@ -58,6 +58,7 @@ export interface CustomerData {
     providerWithCustomCheckout?: string;
     isPaymentDataRequired: boolean;
     shouldRenderStripeForm: boolean;
+    storeHash: string;
 }
 
 export interface CustomerActions {
@@ -181,6 +182,7 @@ export const useCustomer = (): UseCustomerReturn => {
         providerWithCustomCheckout: customCheckoutProvider,
         isPaymentDataRequired: isPaymentDataRequired(),
         shouldRenderStripeForm: customCheckoutProvider === PaymentMethodId.StripeUPE && shouldUseStripeLinkByMinimumAmount(cart),
+        storeHash: config.storeProfile.storeHash
     };
 
     // Customer actions

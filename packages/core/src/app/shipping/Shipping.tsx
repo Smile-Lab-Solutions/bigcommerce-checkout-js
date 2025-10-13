@@ -63,6 +63,8 @@ function Shipping({
         updateCheckout,
         updateShippingAddress,
         updateBillingAddress,
+        shouldShowOrderComments,
+        storeCurrencyCode
     } = useShipping();
 
     useEffect(() => {
@@ -130,7 +132,7 @@ function Shipping({
             promises.push(updateBillingAddress(updatedShippingAddress));
         }
 
-        if (shouldShowOrderComments && orderComment === ''){
+        if (shouldShowOrderComments && values.orderComment === ''){
             onUnhandledError(new Error("Please enter your previous order number"));
         } 
         else 
@@ -213,6 +215,7 @@ function Shipping({
                     onSingleShippingSubmit={handleSingleShippingSubmit}
                     onUnhandledError={onUnhandledError}
                     setIsMultishippingMode={setIsMultishippingMode}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             </div>
         </AddressFormSkeleton>

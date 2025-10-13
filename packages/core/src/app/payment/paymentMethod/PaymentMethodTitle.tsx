@@ -186,7 +186,7 @@ export function getPaymentMethodTitle(
                 logoUrl: method.initializationData?.enableBillie
                         ? cdnPath('/img/payment-providers/klarna-billie-header.png')
                         : cdnPath('/img/payment-providers/klarna-header.png'),
-                titleText: storeCurrency === 'USD' ? 'Pay in 4 or 12 interest free installments' : methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Flexible ways to pay' : methodDisplayName,
                 titleSubText: '',
             },
             [PaymentMethodId.Laybuy]: {
@@ -340,7 +340,8 @@ export function getPaymentMethodTitle(
         ) {
             return {
                 logoUrl: cdnPath('/img/payment-providers/klarna.png'),
-                titleText: methodDisplayName,
+                titleText: storeCurrency === 'USD' ? 'Flexible ways to pay' : methodDisplayName,
+                titleSubText: '',
             };
         }
 

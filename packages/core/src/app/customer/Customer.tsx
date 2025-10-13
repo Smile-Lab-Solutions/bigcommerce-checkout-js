@@ -47,50 +47,6 @@ export interface CustomerProps {
     onWalletButtonClick?(methodName: string): void;
 }
 
-export interface WithCheckoutCustomerProps {
-    canSubscribe: boolean;
-    customerAccountFields: FormField[];
-    checkoutButtonIds: string[];
-    defaultShouldSubscribe: boolean;
-    email?: string;
-    firstName?: string;
-    forgotPasswordUrl: string;
-    isContinuingAsGuest: boolean;
-    isCreatingAccount: boolean;
-    isExecutingPaymentMethodCheckout: boolean;
-    isGuestEnabled: boolean;
-    hasBillingId: boolean;
-    isInitializing: boolean;
-    isSendingSignInEmail: boolean;
-    isSignInEmailEnabled: boolean;
-    isSigningIn: boolean;
-    privacyPolicyUrl?: string;
-    providerWithCustomCheckout?: string;
-    requiresMarketingConsent: boolean;
-    signInEmail?: SignInEmail;
-    signInEmailError?: Error;
-    isBuyNowCart: boolean;
-    isAccountCreationEnabled: boolean;
-    isPaymentDataRequired: boolean;
-    createAccountError?: Error;
-    signInError?: Error;
-    isFloatingLabelEnabled?: boolean;
-    isExpressPrivacyPolicy: boolean;
-    shouldRedirectToStorefrontForAuth: boolean;
-    clearError(error: Error): Promise<CheckoutSelectors>;
-    continueAsGuest(credentials: GuestCredentials): Promise<CheckoutSelectors>;
-    deinitializeCustomer(options: CustomerRequestOptions): Promise<CheckoutSelectors>;
-    executePaymentMethodCheckout(
-        options: ExecutePaymentMethodCheckoutOptions,
-    ): Promise<CheckoutSelectors>;
-    initializeCustomer(options: CustomerInitializeOptions): Promise<CheckoutSelectors>;
-    sendLoginEmail(params: { email: string }): Promise<CheckoutSelectors>;
-    signIn(credentials: CustomerCredentials): Promise<CheckoutSelectors>;
-    createAccount(values: CustomerAccountRequestBody): Promise<CheckoutSelectors>;
-    shouldRenderStripeForm: boolean;
-    storeHash: string;
-}
-
 export interface CustomerState {
     isEmailLoginFormOpen: boolean;
     isReady: boolean;
@@ -225,7 +181,7 @@ const Customer: React.FC<CustomerProps> = ({
             // Handle arctic leaf call here
             // Fires when customer enters email and continues
             // No need to wait for customer to sign in
-            fireArctic(email, storeHash);
+            fireArctic(email, customerData.data.storeHash);
 
             if (customer && customer.shouldEncourageSignIn && customer.isGuest && !paymentProviderCustomer?.stripeLinkAuthenticationState) {
                 return onChangeViewType(CustomerViewType.SuggestedLogin);

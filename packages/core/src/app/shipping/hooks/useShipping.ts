@@ -66,10 +66,12 @@ export const useShipping = () => {
 
     const {
         checkoutSettings: {
-            enableOrderComments,
             hasMultiShippingEnabled,
         },
     } = config;
+
+    const shouldShowOrderComments = 
+        cart.lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
 
     const methodId = getShippingMethodId(checkout, config);
     const isLoading =
@@ -119,12 +121,13 @@ export const useShipping = () => {
         providerWithCustomCheckout,
         shippingAddress,
         shouldShowMultiShipping,
-        shouldShowOrderComments: enableOrderComments,
+        shouldShowOrderComments: shouldShowOrderComments,
         signOut: checkoutService.signOutCustomer,
         unassignItem: checkoutService.unassignItemsToAddress,
         updateBillingAddress: checkoutService.updateBillingAddress,
         updateCheckout: checkoutService.updateCheckout,
         updateShippingAddress: checkoutService.updateShippingAddress,
         shouldRenderStripeForm: providerWithCustomCheckout === PaymentMethodId.StripeUPE && shouldUseStripeLinkByMinimumAmount(cart),
+        storeCurrencyCode: config.currency.code,
     };
 }
