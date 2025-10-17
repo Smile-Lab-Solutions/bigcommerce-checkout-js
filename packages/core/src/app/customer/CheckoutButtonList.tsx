@@ -59,17 +59,19 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
     //             { id: methodId },
     //         );
 
-    //         if (!ResolvedCheckoutButton) {
-    //             return <CheckoutButtonV1Resolver
-    //                 deinitialize={deinitialize}
-    //                 initialize={initialize}
-    //                 isShowingWalletButtonsOnTop={false}
-    //                 key={methodId}
-    //                 methodId={methodId}
-    //                 onClick={onClick}
-    //                 onError={onClick}
-    //             />
-    //         }
+    // if (!ResolvedCheckoutButton) {
+    //     return <LazyContainer key={methodId}>
+    //         <CheckoutButtonV1Resolver
+    //             deinitialize={deinitialize}
+    //             initialize={initialize}
+    //             isShowingWalletButtonsOnTop={false}
+    //             key={methodId}
+    //             methodId={methodId}
+    //             onClick={onClick}
+    //             onError={onClick}
+    //         />
+    //     </LazyContainer>
+    // }
 
     //         return <LazyContainer key={methodId}>
     //             <ResolvedCheckoutButton

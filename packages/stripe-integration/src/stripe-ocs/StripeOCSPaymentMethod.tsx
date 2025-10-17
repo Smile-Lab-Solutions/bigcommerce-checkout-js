@@ -1,4 +1,11 @@
-import { type PaymentInitializeOptions } from '@bigcommerce/checkout-sdk';
+import {
+    type CustomerInitializeOptions,
+    type PaymentInitializeOptions,
+} from '@bigcommerce/checkout-sdk';
+import {
+    createStripeLinkV2CustomerStrategy,
+    createStripeOCSPaymentStrategy,
+} from '@bigcommerce/checkout-sdk/integrations/stripe';
 import { noop, some } from 'lodash';
 import React, {
     type FunctionComponent,
@@ -97,6 +104,9 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
         statuses: { isLoadingInstruments },
     } = checkoutState;
     const checkout = getCheckout();
+    const {
+        initializationData: { isCustomChecklistItem },
+    } = method;
 
     const initializeStripePayment = useCallback(
         async (options: PaymentInitializeOptions) => {
@@ -104,10 +114,11 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
 
             return checkoutService.initializePayment({
                 ...options,
+                integrations: [createStripeOCSPaymentStrategy],
                 stripeocs: {
                     containerId,
                     layout: {
-                        type: 'accordion',
+                        type: isCustomChecklistItem ? 'accordion' : 'auto',
                         defaultCollapsed: selectedItemId !== methodSelector,
                         radios: true,
                         linkInAccordion: true,
@@ -130,6 +141,7 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
             containerId,
             selectedItemId,
             methodSelector,
+            isCustomChecklistItem,
             checkoutService,
             onUnhandledError,
             renderSubmitButton,
@@ -149,6 +161,15 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
                 }
             `}
         </style>
+    );
+    const initializeStripeCustomer = useCallback(
+        (options: CustomerInitializeOptions) => {
+            return checkoutService.initializeCustomer({
+                ...options,
+                integrations: [createStripeLinkV2CustomerStrategy],
+            });
+        },
+        [checkoutService],
     );
 
     const renderCheckoutElementsForStripeOCSStyling = () => (
@@ -202,6 +223,7 @@ const StripeOCSPaymentMethod: FunctionComponent<PaymentMethodProps> = ({
                 disableSubmit={disableSubmit}
                 hideContentWhenSignedOut
                 hidePaymentSubmitButton={hidePaymentSubmitButton}
+                initializeCustomer={initializeStripeCustomer}
                 initializePayment={initializeStripePayment}
                 instruments={instruments}
                 isInstrumentCardCodeRequired={isInstrumentCardCodeRequiredSelector(checkoutState)}

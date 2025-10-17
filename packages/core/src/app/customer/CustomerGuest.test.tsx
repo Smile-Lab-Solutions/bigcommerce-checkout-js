@@ -1,4 +1,10 @@
 import '@testing-library/jest-dom';
+
+import { AnalyticsProviderMock } from '@bigcommerce/checkout/analytics';
+import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
+import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { getGuestCustomer } from '@bigcommerce/checkout/test-mocks';
+import { render, screen } from '@bigcommerce/checkout/test-utils';
 import {
     type Cart,
     type Checkout,
@@ -7,26 +13,20 @@ import {
     createCheckoutService,
     type StoreConfig,
 } from '@bigcommerce/checkout-sdk';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import userEvent from '@testing-library/user-event';
 import React, { type FunctionComponent } from 'react';
-
-import { AnalyticsProviderMock } from '@bigcommerce/checkout/analytics';
-import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
-import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
-import { getGuestCustomer } from '@bigcommerce/checkout/test-mocks';
-import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import { getCart } from '../cart/carts.mock';
 import { getCheckout } from '../checkout/checkouts.mock';
 import CheckoutStepType from '../checkout/CheckoutStepType';
 import { getStoreConfig } from '../config/config.mock';
 
-import Customer, { type CustomerProps, type WithCheckoutCustomerProps } from './Customer';
+import Customer, { type CustomerProps } from './Customer';
 import CustomerViewType from './CustomerViewType';
 
 describe('Customer Guest', () => {
-    let CustomerTest: FunctionComponent<CustomerProps & Partial<WithCheckoutCustomerProps>>;
+    let CustomerTest: FunctionComponent<CustomerProps>;
     let checkoutService: CheckoutService;
     let localeContext: LocaleContextType;
     let checkout: Checkout;
@@ -267,11 +267,19 @@ describe('Customer Guest', () => {
     it('calls onUnhandledError if initialize was failed', async () => {
         const error = new Error();
 
+        jest.spyOn(checkoutService.getState().data, 'getConfig').mockReturnValue({
+            ...config,
+            checkoutSettings: {
+                ...config.checkoutSettings,
+                providerWithCustomCheckout: 'bolt',
+            },
+        });
+
         jest.spyOn(checkoutService, 'initializeCustomer').mockRejectedValue(error);
 
         const unhandledError = jest.fn();
 
-        render(<CustomerTest {...defaultProps} onUnhandledError={unhandledError} providerWithCustomCheckout='bolt' viewType={CustomerViewType.Guest} />);
+        render(<CustomerTest {...defaultProps} onUnhandledError={unhandledError} viewType={CustomerViewType.Guest} />);
         await new Promise(resolve => process.nextTick(resolve));
 
         expect(unhandledError).toHaveBeenCalledWith(error);

@@ -1,18 +1,3 @@
-import {
-    type BillingAddress,
-    type Cart,
-    type Checkout as CheckoutObject,
-    type CheckoutService,
-    createCheckoutService,
-    createEmbeddedCheckoutMessenger,
-    type Customer as CustomerData,
-    type EmbeddedCheckoutMessenger,
-    type StoreConfig,
-} from '@bigcommerce/checkout-sdk';
-import faker from '@faker-js/faker';
-import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import React, { act, type FunctionComponent } from 'react';
 
 import {
     type AnalyticsContextProps,
@@ -40,6 +25,21 @@ import {
 } from '@bigcommerce/checkout/test-framework';
 import { renderWithoutWrapper as render, screen } from '@bigcommerce/checkout/test-utils';
 import { ThemeProvider } from '@bigcommerce/checkout/ui';
+import {
+    type BillingAddress,
+    type Cart,
+    type Checkout as CheckoutObject,
+    type CheckoutService,
+    createCheckoutService,
+    createEmbeddedCheckoutMessenger,
+    type Customer as CustomerData,
+    type EmbeddedCheckoutMessenger,
+    type StoreConfig,
+} from '@bigcommerce/checkout-sdk';
+import { faker } from '@faker-js/faker';
+import userEvent from '@testing-library/user-event';
+import { rest } from 'msw';
+import React, { act, type FunctionComponent } from 'react';
 
 import { getBillingAddress } from '../billing/billingAddresses.mock';
 import { getCart } from '../cart/carts.mock';
@@ -55,7 +55,7 @@ import {
 } from '../embeddedCheckout';
 import { PaymentMethodId } from '../payment/paymentMethod';
 
-import Customer, { type CustomerProps, type WithCheckoutCustomerProps } from './Customer';
+import Customer, { type CustomerProps } from './Customer';
 import { getGuestCustomer } from './customers.mock';
 import CustomerViewType from './CustomerViewType';
 
@@ -287,6 +287,42 @@ describe('Customer Component', () => {
         expect(screen.getByRole('button', { name: 'Sign Out' })).toBeInTheDocument();
     });
 
+    it('calls onContinueAsGuestError when empty cart error is thrown', async () => {
+        const customerEmail = faker.internet.email();
+
+        render(
+            <CheckoutTest {...defaultProps} />)
+        ;
+
+        await checkout.waitForCustomerStep();
+
+        checkout.setRequestHandler(
+            rest.post(
+                '/api/storefront/checkouts/*/billing-address',
+                (_, res, ctx) => res(
+                    ctx.status(400),
+                    ctx.json({
+                        type: 'empty_cart',
+                        title: 'Empty cart',
+                        detail: 'Cart is empty'
+                    })
+                )
+            )
+        );
+        
+        await act(async () => {
+            await userEvent.clear(await screen.findByLabelText('Email'));
+            await userEvent.type(await screen.findByLabelText('Email'), customerEmail);
+            await userEvent.click(await screen.findByText('Continue'));
+        });
+
+        // Wait for the ReactModal to appear using its data-test attribute
+        expect(await screen.findByTestId('modal-body')).toBeInTheDocument();
+        
+        // Check for the actual error message from the translation
+        expect(await screen.findByText("Your cart contains items that aren't available for purchase or have exceeded the purchase limit. To place your order, please create a new cart with the quantities to the allowed limit or with different items.")).toBeInTheDocument();
+    });
+
     describe('sign in link shouldRedirectToStorefrontForAuth', () => {
         it('redirects to the login page if experiment is on and shouldRedirectToStorefrontForAuth is true', async () => {
             Object.defineProperty(window, 'location', {
@@ -385,7 +421,7 @@ describe('Customer Component', () => {
 });
 
 describe('Customer Component with Stripe', () => {
-    let CustomerTest: FunctionComponent<CustomerProps & Partial<WithCheckoutCustomerProps>>;
+    let CustomerTest: FunctionComponent<CustomerProps>;
     let billingAddress: BillingAddress;
     let checkout: CheckoutObject;
     let cart: Cart;

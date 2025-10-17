@@ -673,8 +673,8 @@ export function mapToPaymentProps({
         // Paypal (paypalcommerce)
         // Venmo (paypalcommercevenmo)
         // Klarna (pay_over_time)
-        // Flex (flex)
         // Afterpay (pay_by_installment)
+        // Flex (flex)
         // Zip (quadpay)
         // Partially (partially)
         // Bread Pay (cod)
@@ -686,8 +686,8 @@ export function mapToPaymentProps({
             'paypalcommerce',
             'paypalcommercevenmo',
             'pay_over_time',
-            'flex',
             'pay_by_installment',
+            'flex',
             'quadpay',
             'partially',
             'cod',

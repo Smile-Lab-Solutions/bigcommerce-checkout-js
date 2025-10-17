@@ -200,7 +200,7 @@ class PartiallyPaymentMethod extends Component<
   private getListText: (currency: string | undefined) => ReactNode = (currency) => {
     if (currency === "GBP") {
       return <>
-        <li><div className="circleCheck"></div>Just $99 deposit today</li>
+        <li><div className="circleCheck"></div>Just £99 deposit today</li>
         <li><div className="circleCheck"></div>Monthly payments from £29.33</li>
         <li><div className="circleCheck"></div>Spread the cost over 6 months</li>
         <li><div className="circleCheck"></div>No Credit Check</li>
