@@ -1,14 +1,14 @@
-import { createCheckoutService, createEmbeddedCheckoutMessenger } from '@bigcommerce/checkout-sdk/essential';
+import { type CheckoutInitialState, createCheckoutService, createEmbeddedCheckoutMessenger } from '@bigcommerce/checkout-sdk/essential';
 import type { BrowserOptions } from '@sentry/browser';
 import React, { type ReactElement, useEffect, useMemo } from 'react';
 import ReactModal from 'react-modal';
 
 import { AnalyticsProvider } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+import { ThemeProvider } from '@bigcommerce/checkout/contexts';
 import { ErrorBoundary } from '@bigcommerce/checkout/error-handling-utils';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
-import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
 import '../../scss/App.scss';
 
@@ -23,6 +23,7 @@ import Checkout from './Checkout';
 export interface CheckoutAppProps {
     checkoutId: string;
     containerId: string;
+    initialState?: CheckoutInitialState;
     publicPath?: string;
     sentryConfig?: BrowserOptions;
     sentrySampleRate?: number;
@@ -52,13 +53,13 @@ const CheckoutApp = (props: CheckoutAppProps): ReactElement => {
     }, []);
 
     return (
-        <ErrorBoundary logger={errorLogger}>
+        <ErrorBoundary errorLogger={errorLogger}>
             <LocaleProvider checkoutService={checkoutService}>
-                <CheckoutProvider checkoutService={checkoutService}>
+                <CheckoutProvider checkoutService={checkoutService} errorLogger={errorLogger}>
                     <AnalyticsProvider checkoutService={checkoutService}>
                         <ExtensionProvider
                             checkoutService={checkoutService}
-                            errorLogger={createErrorLogger()}
+                            errorLogger={errorLogger}
                         >
                             <ThemeProvider>
                                 <Checkout

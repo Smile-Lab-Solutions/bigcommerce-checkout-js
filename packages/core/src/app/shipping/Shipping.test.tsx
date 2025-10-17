@@ -16,6 +16,7 @@ import {
     AnalyticsProviderMock,
 } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+import { ThemeProvider } from '@bigcommerce/checkout/contexts';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
@@ -36,7 +37,6 @@ import {
     shippingQuoteFailedMessage,
 } from '@bigcommerce/checkout/test-framework';
 import { renderWithoutWrapper as render, screen, within } from '@bigcommerce/checkout/test-utils';
-import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
 import Checkout, { type CheckoutProps } from '../checkout/Checkout';
 import { createErrorLogger } from '../common/error';
@@ -125,7 +125,10 @@ describe('Shipping step', () => {
 
     describe('Shipping step happy paths', () => {
         it('completes the shipping step as a guest and goes to the payment step by default', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             const { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -187,7 +190,9 @@ describe('Shipping step', () => {
         });
 
         it('completes the shipping step as a guest and goes to the billing step', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -228,7 +233,10 @@ describe('Shipping step', () => {
         });
 
         it('completes the shipping step as a customer with no saved address and goes to the payment step by default', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithLoggedInCustomer);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithLoggedInCustomer);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             const { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -294,7 +302,10 @@ describe('Shipping step', () => {
         });
 
         it('selects the valid customer address and completes the shipping step', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             const { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -370,14 +381,10 @@ describe('Shipping step', () => {
                 },
             };
 
-            checkout.setRequestHandler(
-                rest.get(
-                    '/api/storefront/checkout-settings',
-                    (_, res, ctx) => res(ctx.json(config),
-                    )
-                ));
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart, { config });
 
-            checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             const { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -443,7 +450,10 @@ describe('Shipping step', () => {
         });
 
         it('selects the invalid customer address, fills the address form and finally completes the shipping step', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithCustomerHavingInvalidAddress);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithCustomerHavingInvalidAddress);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             const { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -528,7 +538,10 @@ describe('Shipping step', () => {
         });
 
         it('goes back to the shipping step as a guest and updates the shipping address form correctly', async () => {
-            checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             checkout.updateCheckout(
                 'put',
@@ -592,8 +605,12 @@ describe('Shipping step', () => {
         });
     });
 
-    it('renders and validates shipping form built-in and customfields', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithBillingEmailAndCustomFormFields);
+    it.only('renders and validates shipping form built-in and customfields', async () => {
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmailAndCustomFormFields);
+
+        jest.spyOn(checkoutService, 'updateShippingAddress');
+        jest.spyOn(checkoutService, 'updateBillingAddress');
+
         render(<CheckoutTest {...defaultProps} />);
 
         await checkout.waitForShippingStep();
@@ -686,7 +703,6 @@ describe('Shipping step', () => {
 
     describe('Shipping options', () => {
         it('sees the quote failed message when no shipping option available', async () => {
-            jest.spyOn(checkoutService, 'updateShippingAddress');
             jest.mock('lodash', () => ({
                 ...jest.requireActual('lodash'),
                 debounce: (fn) => {
@@ -696,7 +712,10 @@ describe('Shipping step', () => {
                 },
             }));
 
-            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -733,10 +752,10 @@ describe('Shipping step', () => {
         });
 
         it('selects another shipping option', async () => {
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
             jest.spyOn(checkoutService, 'updateShippingAddress');
             jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
-
-            checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
 
             const  { container } = render(<CheckoutTest {...defaultProps} />);
 
@@ -770,23 +789,45 @@ describe('Shipping step', () => {
     });
 
     it('renders multi-shipping static consignments', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart, {
+            checkout: {
+                ...checkoutWithMultiShippingCart,
+                consignments: [
+                    {
+                        ...consignment,
+                        lineItemIds: ['x', 'y'],
+                    },
+                    {
+                        ...consignment,
+                        id: 'consignment-2',
+                        lineItemIds: ['z'],
+                    },
+                ],
+            },
+        });
+
+        /*
         checkout.updateCheckout('get',
             '/checkout/*',
             {
-            ...checkoutWithMultiShippingCart,
-            consignments: [
-                {
-                    ...consignment,
-                    lineItemIds: ['x', 'y'],
-                },
-                {
-                    ...consignment,
-                    id: 'consignment-2',
-                    lineItemIds: ['z'],
-                },
-            ],
-        });
+                ...checkoutWithMultiShippingCart,
+                consignments: [
+                    {
+                        ...consignment,
+                        lineItemIds: ['x', 'y'],
+                    },
+                    {
+                        ...consignment,
+                        id: 'consignment-2',
+                        lineItemIds: ['z'],
+                    },
+                ],
+            }
+        );
+        */
+
+        jest.spyOn(checkoutService, 'updateShippingAddress');
+        jest.spyOn(checkoutService, 'updateBillingAddress');
 
         render(<CheckoutTest {...defaultProps} />);
 

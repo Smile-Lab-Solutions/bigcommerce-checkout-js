@@ -7,7 +7,8 @@ import {
 import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
-import { useThemeContext } from '@bigcommerce/checkout/ui';
+import { useThemeContext } from '@bigcommerce/checkout/contexts';
+import { TranslatedString } from '@bigcommerce/checkout/locale';
 
 import OrderSummaryHeader from './OrderSummaryHeader';
 import OrderSummaryItems from './OrderSummaryItems';
