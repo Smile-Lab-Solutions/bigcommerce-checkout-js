@@ -13,7 +13,7 @@ import { createTDOnlineMartPaymentStrategy } from '@bigcommerce/checkout-sdk/int
 import { createZipPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/zip';
 import React, { type FunctionComponent, lazy, memo, Suspense } from 'react';
 
-import { type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { CaptureMessageComponent, type CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../../checkout';
 
@@ -76,7 +76,51 @@ const PaymentMethodComponent: FunctionComponent<
         method.method === PaymentMethodType.CreditCard ||
         method.type === PaymentMethodProviderType.Api
     ) {
-        return <Suspense><HostedCreditCardPaymentMethod {...props} /></Suspense>;
+        const knownMethods = [
+            { id: 'authorizenet', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'clover', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'cba_mpgs', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'cybersourcev2', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'ewayrapid', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'hps', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'nmi', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'quickbooks', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'sagepay', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'stripe', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'usaepay', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'vantiv', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'orbital', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'elavon', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'firstdatae4v14', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'cybersource', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'migs', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'vantivcore', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'bnz', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'shopkeep', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'paymetric', gateway: null, method: PaymentMethodType.CreditCard, type: PaymentMethodProviderType.Api },
+            { id: 'googlepay', gateway: null, method: PaymentMethodType.GooglePay, type: PaymentMethodProviderType.Api },
+            { id: 'bigpaypay', gateway: null, method: 'zzzblackhole', type: PaymentMethodProviderType.Api },
+            { id: 'testgateway', gateway: null, method: 'zzzblackhole', type: PaymentMethodProviderType.Api },
+            { id: 'afterpay', gateway: null, method: 'pay_by_installment', type: PaymentMethodProviderType.Api },
+        ];
+
+        let sentryMessage: string;
+
+        if (knownMethods.some(knownMethod =>
+            knownMethod.id === method.id &&
+            knownMethod.gateway === method.gateway &&
+            knownMethod.method === method.method &&
+            knownMethod.type === method.type
+        )) {
+            sentryMessage = '';
+        }else {
+            sentryMessage = `DataHostedCreditCardPaymentMethodUpdated ${JSON.stringify(method)}`;
+        }
+
+        return <>
+                <CaptureMessageComponent message={sentryMessage} />
+                <Suspense><HostedCreditCardPaymentMethod {...props} /></Suspense>
+            </>;
     }
 
     return null;
