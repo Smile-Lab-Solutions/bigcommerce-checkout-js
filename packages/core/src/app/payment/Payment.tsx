@@ -47,6 +47,8 @@ import {
 import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
 import _ from 'lodash';
 
+import { terraceFinanceSubmit, flexSubmit } from './paymentMethod/CustomMethodsSubmit';
+
 export interface PaymentProps {
     errorLogger: ErrorLogger;
     isEmbedded?: boolean;
@@ -320,7 +322,8 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
             onSubmit = noop,
             onSubmitError = noop,
             submitOrder,
-            analyticsTracker
+            analyticsTracker,
+            loadCheckout
         } = props;
 
         const { selectedMethod = defaultMethod, submitFunctions } = state;
@@ -336,12 +339,22 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
         }
 
         try {
-            const state = await submitOrder(mapToOrderRequestBody(values, isPaymentDataRequired()));
-            const order = state.data.getOrder();
-
-            analyticsTracker.paymentComplete();
-
-            onSubmit(order?.orderId);
+            if (selectedMethod?.id === 'terracefinance') {
+                disableSubmit(selectedMethod, true);
+                terraceFinanceSubmit(await loadCheckout(), handleError);
+                disableSubmit(selectedMethod, false);
+            } else if (selectedMethod?.id === 'flex') {
+                disableSubmit(selectedMethod, true);
+                flexSubmit(await loadCheckout(), handleError);
+                disableSubmit(selectedMethod, false);
+            } else {
+                const state = await submitOrder(mapToOrderRequestBody(values, isPaymentDataRequired()));
+                const order = state.data.getOrder();
+    
+                analyticsTracker.paymentComplete();
+    
+                onSubmit(order?.orderId);
+            }
         } catch (error) {
             analyticsTracker.paymentRejected();
 
