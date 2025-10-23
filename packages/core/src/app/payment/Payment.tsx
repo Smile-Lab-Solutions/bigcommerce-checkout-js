@@ -47,7 +47,7 @@ import {
 import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
 import _ from 'lodash';
 
-import { terraceFinanceSubmit, flexSubmit } from './paymentMethod/CustomMethodsSubmit';
+import { terraceFinanceSubmit, flexSubmit, partiallySubmit } from './paymentMethod/CustomMethodsSubmit';
 
 export interface PaymentProps {
     errorLogger: ErrorLogger;
@@ -347,7 +347,12 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
                 disableSubmit(selectedMethod, true);
                 flexSubmit(await loadCheckout(), handleError);
                 disableSubmit(selectedMethod, false);
-            } else {
+            } else if (selectedMethod?.id === 'partially'){
+                disableSubmit(selectedMethod, true);
+                partiallySubmit(await loadCheckout(), handleError);
+                disableSubmit(selectedMethod, false);
+            }
+            else {
                 const state = await submitOrder(mapToOrderRequestBody(values, isPaymentDataRequired()));
                 const order = state.data.getOrder();
     
