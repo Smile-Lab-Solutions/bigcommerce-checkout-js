@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.697.6](https://github.com/bigcommerce/checkout-js/compare/v1.697.5...v1.697.6) (2025-10-23)
+
+
+### Code Refactoring
+
+* **common:** CHECKOUT-9513 Optimise loader file size ([f32698c](https://github.com/bigcommerce/checkout-js/commit/f32698cb78b5ee4242479a6de3613d546ba567dc))
+* **common:** CHECKOUT-9513 Optimise manifest JSON for loader ([0e2d0f5](https://github.com/bigcommerce/checkout-js/commit/0e2d0f5eb0322892fecb450ca0e4dd49c605f766))
+
+### [1.697.5](https://github.com/bigcommerce/checkout-js/compare/v1.697.4...v1.697.5) (2025-10-23)
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-5990 fixed loading CC fields ([389e53d](https://github.com/bigcommerce/checkout-js/commit/389e53d2855975f527176e5aabb310a3914304e9))
+* **payment:** PAYPAL-5990 fixed loading CC fields ([bdbc9fa](https://github.com/bigcommerce/checkout-js/commit/bdbc9fa77c8c2f70876b82db13bcfadd597c2620))
+* **payment:** PAYPAL-5990 fixed loading CC fields ([cb0b1ef](https://github.com/bigcommerce/checkout-js/commit/cb0b1efff1b7be6d36e3da959af7d38ff0a67175))
+* **payment:** PAYPAL-5990 fixed loading CC fields ([e488018](https://github.com/bigcommerce/checkout-js/commit/e488018c5fb25f44ca3289446637bb8d8ec53886))
+* **payment:** PAYPAL-5990 fixed loading CC fields ([afdc776](https://github.com/bigcommerce/checkout-js/commit/afdc7764fd20e5f6ed76d35421ae98d47b3e729d))
+
+### [1.697.4](https://github.com/bigcommerce/checkout-js/compare/v1.697.3...v1.697.4) (2025-10-23)
+
+### [1.697.3](https://github.com/bigcommerce/checkout-js/compare/v1.697.2...v1.697.3) (2025-10-23)
+
+### [1.697.2](https://github.com/bigcommerce/checkout-js/compare/v1.697.1...v1.697.2) (2025-10-23)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9429 Relocate extension context ([#2659](https://github.com/bigcommerce/checkout-js/issues/2659)) ([5f6a7d3](https://github.com/bigcommerce/checkout-js/commit/5f6a7d3d05e0065f06dddf7645ed4aaeeea6c968))
+
+### [1.697.1](https://github.com/bigcommerce/checkout-js/compare/v1.697.0...v1.697.1) (2025-10-22)
+
+
+### Code Refactoring
+
+* **test:** CHECKOUT-9429 Refactor analyticsTracker in tests ([#2656](https://github.com/bigcommerce/checkout-js/issues/2656)) ([d293c8d](https://github.com/bigcommerce/checkout-js/commit/d293c8d6e9f69f7af57aceca8a088fb78d657bd4))
+
+## [1.697.0](https://github.com/bigcommerce/checkout-js/compare/v1.696.1...v1.697.0) (2025-10-22)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9547 Update Data Collection Points IV ([#2655](https://github.com/bigcommerce/checkout-js/issues/2655)) ([f593d59](https://github.com/bigcommerce/checkout-js/commit/f593d5933043100e64cb1f6cd7d288bf5d8cb0de))
+
+### [1.696.1](https://github.com/bigcommerce/checkout-js/compare/v1.696.0...v1.696.1) (2025-10-21)
+
+## [1.696.0](https://github.com/bigcommerce/checkout-js/compare/v1.695.0...v1.696.0) (2025-10-21)
+
+
+### Features
+
+* **payment:** PAYPAL-2197 add paypal express integration import ([c0cde13](https://github.com/bigcommerce/checkout-js/commit/c0cde13a518dad08e38b8b305757919ab5edd699))
+
+## [1.695.0](https://github.com/bigcommerce/checkout-js/compare/v1.694.3...v1.695.0) (2025-10-21)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9547 Update Data Collection Points III ([#2653](https://github.com/bigcommerce/checkout-js/issues/2653)) ([2136e92](https://github.com/bigcommerce/checkout-js/commit/2136e92191009bccbfbb02a9dd043ff9921608d8))
+
+### [1.694.3](https://github.com/bigcommerce/checkout-js/compare/v1.694.2...v1.694.3) (2025-10-20)
+
+### [1.694.2](https://github.com/bigcommerce/checkout-js/compare/v1.694.1...v1.694.2) (2025-10-20)
+
+### [1.694.1](https://github.com/bigcommerce/checkout-js/compare/v1.694.0...v1.694.1) (2025-10-20)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9429 Relocate analytics context ([#2649](https://github.com/bigcommerce/checkout-js/issues/2649)) ([0c11925](https://github.com/bigcommerce/checkout-js/commit/0c119253c967a5fa754e1ce864a434720df946be))
+
 ## [1.694.0](https://github.com/bigcommerce/checkout-js/compare/v1.693.2...v1.694.0) (2025-10-17)
 
 
