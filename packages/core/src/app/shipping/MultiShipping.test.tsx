@@ -9,13 +9,15 @@ import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
 import React, { act, type FunctionComponent } from 'react';
 
+import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
 import {
-    type AnalyticsContextProps,
-    type AnalyticsEvents,
-    AnalyticsProviderMock,
-} from '@bigcommerce/checkout/analytics';
-import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
-import { ThemeProvider } from '@bigcommerce/checkout/contexts';
+  type AnalyticsContextProps,
+  type AnalyticsEvents,
+  AnalyticsProviderMock,
+  ExtensionProvider,
+  type ExtensionServiceInterface,
+  ThemeProvider,
+} from '@bigcommerce/checkout/contexts';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
@@ -45,6 +47,7 @@ describe('Multi-shipping', () => {
     let checkout: CheckoutPageNodeObject;
     let CheckoutTest: FunctionComponent<CheckoutProps>;
     let checkoutService: CheckoutService;
+    let extensionService: ExtensionServiceInterface;
     let defaultProps: CheckoutProps & AnalyticsContextProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
     let analyticsTracker: AnalyticsEvents;
@@ -68,6 +71,7 @@ describe('Multi-shipping', () => {
         window.scrollTo = jest.fn();
 
         checkoutService = createCheckoutService();
+        extensionService = new ExtensionService(checkoutService, createErrorLogger());
         embeddedMessengerMock = createEmbeddedCheckoutMessenger({
             parentOrigin: 'https://store.url',
         });
@@ -105,10 +109,7 @@ describe('Multi-shipping', () => {
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
                         <ExtensionProvider
-                            checkoutService={checkoutService}
-                            errorLogger={{
-                                log: jest.fn(),
-                            }}
+                            extensionService={extensionService}
                         >
                             <ThemeProvider>
                                 <Checkout {...props} />

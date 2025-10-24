@@ -15,13 +15,12 @@ import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import React, { act, type FunctionComponent } from 'react';
 
-import {
-    type AnalyticsContextProps,
-    type AnalyticsEvents,
+import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
+import { type AnalyticsContextProps, type AnalyticsEvents ,
     AnalyticsProviderMock,
-} from '@bigcommerce/checkout/analytics';
-import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
-import { ThemeProvider } from '@bigcommerce/checkout/contexts';
+    ExtensionProvider,
+    type ExtensionServiceInterface,
+ ThemeProvider } from '@bigcommerce/checkout/contexts';
 import {
     createLocaleContext,
     getLanguageService,
@@ -64,6 +63,7 @@ describe('Customer Component', () => {
     let checkout: CheckoutPageNodeObject;
     let CheckoutTest: FunctionComponent<CheckoutProps>;
     let checkoutService: CheckoutService;
+    let extensionService: ExtensionServiceInterface;
     let defaultProps: CheckoutProps & AnalyticsContextProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
     let analyticsTracker: AnalyticsEvents;
@@ -85,6 +85,7 @@ describe('Customer Component', () => {
         window.scrollTo = jest.fn();
 
         checkoutService = createCheckoutService();
+        extensionService = new ExtensionService(checkoutService, createErrorLogger());
         embeddedMessengerMock = createEmbeddedCheckoutMessenger({
             parentOrigin: 'https://store.url',
         });
@@ -119,12 +120,7 @@ describe('Customer Component', () => {
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
-                        <ExtensionProvider
-                            checkoutService={checkoutService}
-                            errorLogger={{
-                                log: jest.fn(),
-                            }}
-                        >
+                        <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>
                                 <Checkout {...props} />
                             </ThemeProvider>
@@ -310,7 +306,7 @@ describe('Customer Component', () => {
                 )
             )
         );
-        
+
         await act(async () => {
             await userEvent.clear(await screen.findByLabelText('Email'));
             await userEvent.type(await screen.findByLabelText('Email'), customerEmail);
@@ -319,7 +315,7 @@ describe('Customer Component', () => {
 
         // Wait for the ReactModal to appear using its data-test attribute
         expect(await screen.findByTestId('modal-body')).toBeInTheDocument();
-        
+
         // Check for the actual error message from the translation
         expect(await screen.findByText("Your cart contains items that aren't available for purchase or have exceeded the purchase limit. To place your order, please create a new cart with the quantities to the allowed limit or with different items.")).toBeInTheDocument();
     });
