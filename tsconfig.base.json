@@ -22,7 +22,6 @@
       "@bigcommerce/checkout/amazon-pay-v2-integration": [
         "packages/amazon-pay-v2-integration/src/index.ts"
       ],
-      "@bigcommerce/checkout/analytics": ["packages/analytics/src/index.ts"],
       "@bigcommerce/checkout/apple-pay-integration": [
         "packages/apple-pay-integration/src/index.ts"
       ],
@@ -104,7 +103,8 @@
         "packages/wallet-button-integration/src/index.ts"
       ],
       "@bigcommerce/checkout/workspace-tools": ["packages/workspace-tools/src/index.ts"],
-      "@bigcommerce/checkout/worldpay-access-integration": ["packages/worldpay-access-integration/src/index.ts"]
+      "@bigcommerce/checkout/worldpay-access-integration": ["packages/worldpay-access-integration/src/index.ts"],
+      "@bigcommerce/checkout/contexts": ["packages/contexts/src/index.ts"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

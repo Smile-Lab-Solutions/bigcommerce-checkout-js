@@ -1,6 +1,5 @@
 import React, { type FunctionComponent } from 'react';
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
 import ErrorBoundary from './ErrorBoundary';
@@ -26,7 +25,7 @@ describe('ErrorBoundary', () => {
         };
 
         render(
-            <ErrorBoundary logger={logger}>
+            <ErrorBoundary errorLogger={logger}>
                 <Child />
             </ErrorBoundary>,
         );
@@ -46,7 +45,7 @@ describe('ErrorBoundary', () => {
 
         expect(() =>
             render(
-                <ErrorBoundary filter={filterError} logger={logger}>
+                <ErrorBoundary errorLogger={logger} filter={filterError}>
                     <Child />
                 </ErrorBoundary>,
             ),

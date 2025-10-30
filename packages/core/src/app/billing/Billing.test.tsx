@@ -9,12 +9,13 @@ import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
 import React, { type FunctionComponent } from 'react';
 
+import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
 import {
-    type AnalyticsContextProps,
-    type AnalyticsEvents,
     AnalyticsProviderMock,
-} from '@bigcommerce/checkout/analytics';
-import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+    ExtensionProvider,
+    type ExtensionServiceInterface,
+    ThemeProvider,
+} from '@bigcommerce/checkout/contexts';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
@@ -23,21 +24,23 @@ import {
 import {
     CheckoutPageNodeObject,
     CheckoutPreset,
+    checkoutSettings,
     checkoutWithBillingEmail,
     checkoutWithDigitalCart,
     checkoutWithShipping,
     checkoutWithShippingAndBilling,
     consignment,
     customer,
+    formFields,
     payments,
     shippingAddress,
     shippingAddress2,
     shippingAddress3,
 } from '@bigcommerce/checkout/test-framework';
 import { act, renderWithoutWrapper as render, screen } from '@bigcommerce/checkout/test-utils';
-import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
-import Checkout, { type CheckoutProps } from '../checkout/Checkout';
+import Checkout from '../checkout/Checkout';
+import { type CheckoutIntermediateProps } from '../checkout/CheckoutIntermediate';
 import { getCheckoutPayment } from '../checkout/checkouts.mock';
 import { createErrorLogger } from '../common/error';
 import {
@@ -47,11 +50,11 @@ import {
 
 describe('Billing step', () => {
     let checkout: CheckoutPageNodeObject;
-    let CheckoutTest: FunctionComponent<CheckoutProps>;
+    let CheckoutTest: FunctionComponent<CheckoutIntermediateProps>;
     let checkoutService: CheckoutService;
-    let defaultProps: CheckoutProps & AnalyticsContextProps;
+    let extensionService: ExtensionServiceInterface;
+    let defaultProps: CheckoutIntermediateProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
-    let analyticsTracker: Partial<AnalyticsEvents>;
 
     const checkoutWithCustomer = {
         ...checkoutWithShipping,
@@ -73,34 +76,30 @@ describe('Billing step', () => {
     });
 
     beforeEach(() => {
+        const errorLogger = createErrorLogger();
+
         window.scrollTo = jest.fn();
 
         checkoutService = createCheckoutService();
         embeddedMessengerMock = createEmbeddedCheckoutMessenger({
             parentOrigin: 'https://store.url',
         });
-        analyticsTracker = {
-            checkoutBegin: jest.fn(),
-            trackStepViewed: jest.fn(),
-            trackStepCompleted: jest.fn(),
-            exitCheckout: jest.fn(),
-        };
         defaultProps = {
             checkoutId: 'x',
             containerId: CHECKOUT_ROOT_NODE_ID,
             createEmbeddedMessenger: () => embeddedMessengerMock,
             embeddedStylesheet: createEmbeddedCheckoutStylesheet(),
             embeddedSupport: createEmbeddedCheckoutSupport(getLanguageService()),
-            errorLogger: createErrorLogger(),
-            analyticsTracker,
+            errorLogger,
         };
+        extensionService = new ExtensionService(checkoutService, errorLogger);
 
         jest.spyOn(defaultProps.errorLogger, 'log').mockImplementation(noop);
         jest.spyOn(checkoutService, 'updateBillingAddress');
 
         jest.mock('lodash', () => ({
             ...jest.requireActual('lodash'),
-            debounce: (fn) => {
+            debounce: (fn: any) => {
                 fn.cancel = jest.fn();
 
                 return fn;
@@ -111,12 +110,7 @@ describe('Billing step', () => {
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
-                        <ExtensionProvider
-                            checkoutService={checkoutService}
-                            errorLogger={{
-                                log: jest.fn(),
-                            }}
-                        >
+                        <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>
                                 <Checkout {...props} />
                             </ThemeProvider>
@@ -128,7 +122,9 @@ describe('Billing step', () => {
     });
 
     it('completes the billing step as a guest and goes to the payment step', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithShipping);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithShipping);
+
+        jest.spyOn(checkoutService, 'updateBillingAddress');
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -153,7 +149,9 @@ describe('Billing step', () => {
     });
 
     it('edit the billing address and goes back to the payment step', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
+
+        jest.spyOn(checkoutService, 'updateBillingAddress');
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -186,14 +184,15 @@ describe('Billing step', () => {
     });
 
     it('should show order comments', async () => {
-        checkout.updateCheckout(
-            'get',
-            '/checkout/*',
-            {
+        defaultProps.initialState = {
+            config: checkoutSettings,
+            checkout: {
                 ...checkoutWithBillingEmail,
                 cart: checkoutWithDigitalCart.cart,
             },
-        );
+            formFields,
+            extensions: [],
+        };
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -203,17 +202,18 @@ describe('Billing step', () => {
     });
 
     it('should show PoweredByPayPalFastlaneLabel', async () => {
-        checkout.updateCheckout(
-            'get',
-            '/checkout/*',
-            {
+        defaultProps.initialState = {
+            config: checkoutSettings,
+            checkout: {
                 ...checkoutWithShipping,
                 billingAddress:checkoutWithBillingEmail.billingAddress,
                 payments:[
                     getCheckoutPayment(),
                 ],
             },
-        );
+            formFields,
+            extensions: [],
+        };
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -223,11 +223,9 @@ describe('Billing step', () => {
     });
 
     it('should show PoweredByPayPalFastlaneLabel and custom form fields', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithBillingEmailAndCustomFormFields);
-        checkout.updateCheckout(
-            'get',
-            '/checkout/*',
-            {
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmailAndCustomFormFields, {
+            config: checkoutSettings,
+            checkout: {
                 ...checkoutWithShipping,
                 billingAddress:checkoutWithBillingEmail.billingAddress,
                 consignments: [
@@ -273,7 +271,8 @@ describe('Billing step', () => {
                     getCheckoutPayment(),
                 ],
             },
-        );
+            formFields,
+        });
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -292,11 +291,14 @@ describe('Billing step', () => {
 
     describe('registered customer', () => {
         it('completes the billing step after selecting a valid address', async () => {
-            checkout.updateCheckout(
-                'get',
-                '/checkout/*',
-                checkoutWithCustomer
-            );
+            defaultProps.initialState = {
+                config: checkoutSettings,
+                checkout: checkoutWithCustomer,
+                formFields,
+                extensions: [],
+            };
+
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -354,11 +356,14 @@ describe('Billing step', () => {
                 phone: shippingAddress3.phone,
             } as BillingAddress;
 
-            checkout.updateCheckout(
-                'get',
-                '/checkout/*',
-                checkoutWithCustomer
-            );
+            defaultProps.initialState ={
+                config: checkoutSettings,
+                checkout: checkoutWithCustomer,
+                formFields,
+                extensions: [],
+            };
+
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             render(<CheckoutTest {...defaultProps} />);
 
@@ -405,11 +410,14 @@ describe('Billing step', () => {
         });
 
         it('completes the billing step after creating a new address even with existing addresses', async () => {
-            checkout.updateCheckout(
-                'get',
-                '/checkout/*',
-                checkoutWithCustomer
-            );
+            defaultProps.initialState = {
+                config: checkoutSettings,
+                checkout: checkoutWithCustomer,
+                formFields,
+                extensions: [],
+            };
+
+            jest.spyOn(checkoutService, 'updateBillingAddress');
 
             render(<CheckoutTest {...defaultProps} />);
 

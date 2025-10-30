@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { useExtensions } from '@bigcommerce/checkout/checkout-extension';
+import { useExtensions } from '@bigcommerce/checkout/contexts';
 import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 
 import { getCheckout } from '../checkouts.mock';
@@ -8,7 +8,7 @@ import { getCheckout } from '../checkouts.mock';
 import { useLoadCheckout } from './useLoadCheckout';
 
 jest.mock('@bigcommerce/checkout/payment-integration-api');
-jest.mock('@bigcommerce/checkout/checkout-extension');
+jest.mock('@bigcommerce/checkout/contexts');
 
 describe('useLoadCheckout', () => {
     const mockCheckoutService = {
@@ -25,6 +25,11 @@ describe('useLoadCheckout', () => {
 
         (useCheckout as jest.Mock).mockReturnValue({
             checkoutService: mockCheckoutService,
+            checkoutState: {
+                data: {
+                    getCheckout: () => undefined,
+                },
+            },
         });
 
         (useExtensions as jest.Mock).mockReturnValue({
@@ -70,5 +75,25 @@ describe('useLoadCheckout', () => {
         } catch {
             expect(mockCheckoutService.loadCheckout).toHaveBeenCalledTimes(3);
         }
+    });
+
+    it('does not load checkout if initial state is already loaded', async () => {
+        const mockCheckoutState = {
+            data: {
+                getCheckout,
+            },
+        };
+
+        (useCheckout as jest.Mock).mockReturnValue({
+            checkoutService: mockCheckoutService,
+            checkoutState: mockCheckoutState,
+        });
+
+        renderHook(() => useLoadCheckout(checkoutId));
+
+        await act(async () => {
+            expect(mockCheckoutService.loadCheckout).not.toHaveBeenCalled();
+            expect(mockExtensionService.loadExtensions).not.toHaveBeenCalled();
+        });
     });
 });

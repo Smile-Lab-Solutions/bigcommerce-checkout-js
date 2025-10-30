@@ -1,10 +1,26 @@
 
 import {
-    type AnalyticsContextProps,
-    type AnalyticsEvents,
+    type BillingAddress,
+    type Cart,
+    type Checkout as CheckoutObject,
+    type CheckoutService,
+    createCheckoutService,
+    createEmbeddedCheckoutMessenger,
+    type Customer as CustomerData,
+    type EmbeddedCheckoutMessenger,
+    type StoreConfig,
+} from '@bigcommerce/checkout-sdk';
+import { faker } from '@faker-js/faker';
+import userEvent from '@testing-library/user-event';
+import { rest } from 'msw';
+import React, { act, type FunctionComponent } from 'react';
+
+import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
+import { type AnalyticsContextProps, type AnalyticsEvents ,
     AnalyticsProviderMock,
-} from '@bigcommerce/checkout/analytics';
-import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+    ExtensionProvider,
+    type ExtensionServiceInterface,
+ ThemeProvider } from '@bigcommerce/checkout/contexts';
 import {
     createLocaleContext,
     getLanguageService,
@@ -24,22 +40,6 @@ import {
     checkoutWithMultiShippingCart,
 } from '@bigcommerce/checkout/test-framework';
 import { renderWithoutWrapper as render, screen } from '@bigcommerce/checkout/test-utils';
-import { ThemeProvider } from '@bigcommerce/checkout/ui';
-import {
-    type BillingAddress,
-    type Cart,
-    type Checkout as CheckoutObject,
-    type CheckoutService,
-    createCheckoutService,
-    createEmbeddedCheckoutMessenger,
-    type Customer as CustomerData,
-    type EmbeddedCheckoutMessenger,
-    type StoreConfig,
-} from '@bigcommerce/checkout-sdk';
-import { faker } from '@faker-js/faker';
-import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import React, { act, type FunctionComponent } from 'react';
 
 import { getBillingAddress } from '../billing/billingAddresses.mock';
 import { getCart } from '../cart/carts.mock';
@@ -63,6 +63,7 @@ describe('Customer Component', () => {
     let checkout: CheckoutPageNodeObject;
     let CheckoutTest: FunctionComponent<CheckoutProps>;
     let checkoutService: CheckoutService;
+    let extensionService: ExtensionServiceInterface;
     let defaultProps: CheckoutProps & AnalyticsContextProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
     let analyticsTracker: AnalyticsEvents;
@@ -84,6 +85,7 @@ describe('Customer Component', () => {
         window.scrollTo = jest.fn();
 
         checkoutService = createCheckoutService();
+        extensionService = new ExtensionService(checkoutService, createErrorLogger());
         embeddedMessengerMock = createEmbeddedCheckoutMessenger({
             parentOrigin: 'https://store.url',
         });
@@ -118,12 +120,7 @@ describe('Customer Component', () => {
             <CheckoutProvider checkoutService={checkoutService}>
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
-                        <ExtensionProvider
-                            checkoutService={checkoutService}
-                            errorLogger={{
-                                log: jest.fn(),
-                            }}
-                        >
+                        <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>
                                 <Checkout {...props} />
                             </ThemeProvider>
@@ -135,7 +132,7 @@ describe('Customer Component', () => {
     });
 
     it('edit guest customer email', async () => {
-        checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -182,7 +179,7 @@ describe('Customer Component', () => {
 
         const customerEmail = faker.internet.email();
 
-        checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -245,7 +242,7 @@ describe('Customer Component', () => {
         const email = faker.internet.email();
         const password = faker.internet.password();
 
-        checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -309,7 +306,7 @@ describe('Customer Component', () => {
                 )
             )
         );
-        
+
         await act(async () => {
             await userEvent.clear(await screen.findByLabelText('Email'));
             await userEvent.type(await screen.findByLabelText('Email'), customerEmail);
@@ -318,7 +315,7 @@ describe('Customer Component', () => {
 
         // Wait for the ReactModal to appear using its data-test attribute
         expect(await screen.findByTestId('modal-body')).toBeInTheDocument();
-        
+
         // Check for the actual error message from the translation
         expect(await screen.findByText("Your cart contains items that aren't available for purchase or have exceeded the purchase limit. To place your order, please create a new cart with the quantities to the allowed limit or with different items.")).toBeInTheDocument();
     });
@@ -345,14 +342,7 @@ describe('Customer Component', () => {
                 },
             };
 
-            checkout.setRequestHandler(
-                rest.get(
-                    '/api/storefront/checkout-settings',
-                    (_, res, ctx) => res(ctx.json(config),
-                )
-            ));
-
-            checkout.use(CheckoutPreset.CheckoutWithDigitalCart);
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithDigitalCart, { config });
             render(<CheckoutTest {...defaultProps} />);
             await checkout.waitForCustomerStep();
 
@@ -382,12 +372,7 @@ describe('Customer Component', () => {
             },
         };
 
-        checkout.setRequestHandler(
-            rest.get(
-                '/api/storefront/checkout-settings',
-                (_, res, ctx) => res(ctx.json(config),
-            )
-        ));
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithDigitalCart, { config });
 
         const customerEmail = faker.internet.email();
 

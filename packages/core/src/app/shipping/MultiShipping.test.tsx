@@ -9,12 +9,15 @@ import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
 import React, { act, type FunctionComponent } from 'react';
 
+import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
 import {
-    type AnalyticsContextProps,
-    type AnalyticsEvents,
-    AnalyticsProviderMock,
-} from '@bigcommerce/checkout/analytics';
-import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
+  type AnalyticsContextProps,
+  type AnalyticsEvents,
+  AnalyticsProviderMock,
+  ExtensionProvider,
+  type ExtensionServiceInterface,
+  ThemeProvider,
+} from '@bigcommerce/checkout/contexts';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
@@ -31,7 +34,6 @@ import {
     shippingQuoteFailedMessage,
 } from '@bigcommerce/checkout/test-framework';
 import { renderWithoutWrapper as render, screen } from '@bigcommerce/checkout/test-utils';
-import { ThemeProvider } from '@bigcommerce/checkout/ui';
 
 import { getAddressContent } from '../address/SingleLineStaticAddress';
 import Checkout, { type CheckoutProps } from '../checkout/Checkout';
@@ -45,6 +47,7 @@ describe('Multi-shipping', () => {
     let checkout: CheckoutPageNodeObject;
     let CheckoutTest: FunctionComponent<CheckoutProps>;
     let checkoutService: CheckoutService;
+    let extensionService: ExtensionServiceInterface;
     let defaultProps: CheckoutProps & AnalyticsContextProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
     let analyticsTracker: AnalyticsEvents;
@@ -68,6 +71,7 @@ describe('Multi-shipping', () => {
         window.scrollTo = jest.fn();
 
         checkoutService = createCheckoutService();
+        extensionService = new ExtensionService(checkoutService, createErrorLogger());
         embeddedMessengerMock = createEmbeddedCheckoutMessenger({
             parentOrigin: 'https://store.url',
         });
@@ -105,10 +109,7 @@ describe('Multi-shipping', () => {
                 <LocaleProvider checkoutService={checkoutService}>
                     <AnalyticsProviderMock>
                         <ExtensionProvider
-                            checkoutService={checkoutService}
-                            errorLogger={{
-                                log: jest.fn(),
-                            }}
+                            extensionService={extensionService}
                         >
                             <ThemeProvider>
                                 <Checkout {...props} />
@@ -129,15 +130,16 @@ describe('Multi-shipping', () => {
         // ✅sees the first consignment's previous selected shipping method restored
         // ✅sees the second consignment's default shipping method selected
 
-        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
 
-        checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
 
         render(<CheckoutTest {...defaultProps} />);
 
         await checkout.waitForShippingStep();
 
         await userEvent.click(screen.getByText(/Ship to multiple addresses/i));
+
         await userEvent.click(
             await screen.findByRole('button', {
                 name: 'Add new destination',
@@ -288,9 +290,9 @@ describe('Multi-shipping', () => {
         // ✅updates the first consignment's shipping address
         // ✅sees the first consignment's default shipping method selected
 
-        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
 
-        checkout.use(CheckoutPreset.CheckoutWithMultiShippingCart);
+        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
 
         render(<CheckoutTest {...defaultProps} />);
 
@@ -360,9 +362,9 @@ describe('Multi-shipping', () => {
     });
 
     it('completes multi-shipping as a guest', async () => {
-        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithGuestMultiShippingCart);
 
-        checkout.use(CheckoutPreset.CheckoutWithGuestMultiShippingCart);
+        jest.spyOn(checkoutService, 'selectConsignmentShippingOption');
 
         render(<CheckoutTest {...defaultProps} />);
 
