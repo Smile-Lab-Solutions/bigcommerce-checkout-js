@@ -5,9 +5,9 @@ import { compact } from 'lodash';
 import React, { type FunctionComponent, memo, type ReactNode } from 'react';
 
 import { BigCommercePaymentsPayLaterBanner } from '@bigcommerce/checkout/bigcommerce-payments-utils'
-import { useThemeContext } from '@bigcommerce/checkout/contexts';
+import { type CheckoutContextProps , useThemeContext } from '@bigcommerce/checkout/contexts';
 import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { type CheckoutContextProps , type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { BraintreePaypalCreditBanner, PaypalCommerceCreditBanner } from '@bigcommerce/checkout/paypal-utils';
 import { CreditCardIconList, mapFromPaymentMethodCardType } from '@bigcommerce/checkout/ui';
 
@@ -179,9 +179,17 @@ export function getPaymentMethodTitle(
                         ? method.logoUrl
                         : cdnPath('/img/payment-providers/paypalpaymentsprouk.png'),
                 titleText: '',
-                subtitle: (props: PaymentMethodSubtitleProps): ReactNode => (
-                    <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />
-                ),
+                subtitle: (props: PaymentMethodSubtitleProps): ReactNode => {
+                    if (isExperimentEnabled(checkoutSettings, 'CHECKOUT-9450.lazy_load_payment_strategies', false)) {
+                        if (method.id === PaymentMethodId.BraintreePaypalCredit || method.id === PaymentMethodId.BraintreePaypal) {
+                            return <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />;
+                        }
+
+                        return null;
+                    }
+
+                    return <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />;
+                },
             },
             [PaymentMethodId.Quadpay]: {
                 logoUrl: cdnPath('/img/payment-providers/quadpay.png'),
