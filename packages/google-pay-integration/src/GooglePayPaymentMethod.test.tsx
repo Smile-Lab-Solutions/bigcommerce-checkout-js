@@ -26,15 +26,15 @@ import { noop } from 'lodash';
 import React, { type FunctionComponent } from 'react';
 
 import {
-    createLocaleContext,
+    CheckoutProvider,
     LocaleContext,
     type LocaleContextType,
-} from '@bigcommerce/checkout/locale';
-import {
-    CheckoutProvider,
-    getPaymentMethodName,
     PaymentFormContext,
     type PaymentFormService,
+} from '@bigcommerce/checkout/contexts';
+import { createLocaleContext } from '@bigcommerce/checkout/locale';
+import {
+    getPaymentMethodName,
     PaymentMethodId,
     type PaymentMethodProps,
     PaymentMethodType,

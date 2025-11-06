@@ -12,14 +12,15 @@ import React, { type FunctionComponent } from 'react';
 import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
 import {
     AnalyticsProviderMock,
+    CheckoutProvider,
     ExtensionProvider,
     type ExtensionServiceInterface,
+    LocaleProvider,
     ThemeProvider,
 } from '@bigcommerce/checkout/contexts';
-import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
+import { getLanguageService } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
-    CheckoutProvider,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     CheckoutPageNodeObject,
@@ -40,7 +41,7 @@ import {
 import { act, renderWithoutWrapper as render, screen } from '@bigcommerce/checkout/test-utils';
 
 import Checkout from '../checkout/Checkout';
-import { type CheckoutIntermediateProps } from '../checkout/CheckoutIntermediate';
+import { type CheckoutInitializerProps } from '../checkout/CheckoutInitializer';
 import { getCheckoutPayment } from '../checkout/checkouts.mock';
 import { createErrorLogger } from '../common/error';
 import {
@@ -50,10 +51,10 @@ import {
 
 describe('Billing step', () => {
     let checkout: CheckoutPageNodeObject;
-    let CheckoutTest: FunctionComponent<CheckoutIntermediateProps>;
+    let CheckoutTest: FunctionComponent<CheckoutInitializerProps>;
     let checkoutService: CheckoutService;
     let extensionService: ExtensionServiceInterface;
-    let defaultProps: CheckoutIntermediateProps;
+    let defaultProps: CheckoutInitializerProps;
     let embeddedMessengerMock: EmbeddedCheckoutMessenger;
 
     const checkoutWithCustomer = {
@@ -108,7 +109,10 @@ describe('Billing step', () => {
 
         CheckoutTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
-                <LocaleProvider checkoutService={checkoutService}>
+                <LocaleProvider
+                    checkoutService={checkoutService}
+                    languageService={getLanguageService()}
+                >
                     <AnalyticsProviderMock>
                         <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>

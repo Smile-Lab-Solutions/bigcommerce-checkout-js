@@ -1,6 +1,11 @@
-import { type CardInstrument, type LegacyHostedFormOptions } from '@bigcommerce/checkout-sdk';
+import {
+    type CardInstrument,
+    type CheckoutService,
+    type LegacyHostedFormOptions,
+} from '@bigcommerce/checkout-sdk';
 import { createBlueSnapDirectCreditCardPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/bluesnap-direct';
 import { createCreditCardPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/credit-card';
+import { createTDOnlineMartPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/td-bank';
 import { compact, forIn } from 'lodash';
 import React, { type FunctionComponent, type ReactNode, useCallback, useState } from 'react';
 
@@ -21,15 +26,20 @@ import { getHostedCreditCardValidationSchema } from './getHostedCreditCardValida
 import { getHostedInstrumentValidationSchema } from './getHostedInstrumentValidationSchema';
 import { HostedCreditCardFieldset } from './HostedCreditCardFieldset';
 import { HostedCreditCardValidation } from './HostedCreditCardValidation';
-import { createTDOnlineMartPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/td-bank';
+import { createCheckoutComCreditCardPaymentStrategy } from '@bigcommerce/checkout-sdk/integrations/checkoutcom-custom';
 
-const HostedCreditCardComponent: FunctionComponent<PaymentMethodProps> = ({
+export interface HostedCreditCardComponentProps extends PaymentMethodProps {
+    initializePayment?: CheckoutService['initializePayment'];
+}
+
+const HostedCreditCardComponent: FunctionComponent<HostedCreditCardComponentProps> = ({
     method,
     checkoutService,
     checkoutState,
     paymentForm,
     language,
     onUnhandledError,
+    initializePayment: initializePaymentProp,
 }) => {
     const [focusedFieldType, setFocusedFieldType] = useState<string>();
 
@@ -237,7 +247,7 @@ const HostedCreditCardComponent: FunctionComponent<PaymentMethodProps> = ({
             ],
         );
 
-    const initializePayment = checkoutService.initializePayment;
+    const initializePayment = initializePaymentProp ?? checkoutService.initializePayment;
 
     const initializeHostedCreditCardPayment: CreditCardPaymentMethodProps['initializePayment'] =
         useCallback(
@@ -248,6 +258,7 @@ const HostedCreditCardComponent: FunctionComponent<PaymentMethodProps> = ({
                         createCreditCardPaymentStrategy,
                         createBlueSnapDirectCreditCardPaymentStrategy,
                         createTDOnlineMartPaymentStrategy,
+                        createCheckoutComCreditCardPaymentStrategy,
                     ],
                     creditCard: {
                         form: await getHostedFormOptions(selectedInstrument),
