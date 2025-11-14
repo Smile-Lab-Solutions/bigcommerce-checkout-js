@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.702.0](https://github.com/bigcommerce/checkout-js/compare/v1.701.8...v1.702.0) (2025-11-13)
+
+
+### Features
+
+* **payment:** remove experiment google pay billing address editing ([dcee781](https://github.com/bigcommerce/checkout-js/commit/dcee78187f7b425555459164db9464a2ba7aeb03))
+
+### [1.701.8](https://github.com/bigcommerce/checkout-js/compare/v1.701.7...v1.701.8) (2025-11-13)
+
+### [1.701.7](https://github.com/bigcommerce/checkout-js/compare/v1.701.6...v1.701.7) (2025-11-13)
+
+### [1.701.6](https://github.com/bigcommerce/checkout-js/compare/v1.701.5...v1.701.6) (2025-11-12)
+
+### [1.701.5](https://github.com/bigcommerce/checkout-js/compare/v1.701.4...v1.701.5) (2025-11-12)
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-6050 add header Wallet buttons on top of checkout page ([#2699](https://github.com/bigcommerce/checkout-js/issues/2699)) ([89e2a25](https://github.com/bigcommerce/checkout-js/commit/89e2a25dd5420895a8b9fb7c5eac600cf13ed3b9))
+
+### [1.701.4](https://github.com/bigcommerce/checkout-js/compare/v1.701.3...v1.701.4) (2025-11-12)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9657 Create PaymentStep ([#2700](https://github.com/bigcommerce/checkout-js/issues/2700)) ([4da656d](https://github.com/bigcommerce/checkout-js/commit/4da656dde21c85a5395f893e293a8122eef8b6b1))
+
+### [1.701.3](https://github.com/bigcommerce/checkout-js/compare/v1.701.2...v1.701.3) (2025-11-12)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9657 Create BillingStep ([#2697](https://github.com/bigcommerce/checkout-js/issues/2697)) ([2633229](https://github.com/bigcommerce/checkout-js/commit/26332295830946e2e623635cd40f553a52c67190))
+
+### [1.701.2](https://github.com/bigcommerce/checkout-js/compare/v1.701.1...v1.701.2) (2025-11-11)
+
+### [1.701.1](https://github.com/bigcommerce/checkout-js/compare/v1.701.0...v1.701.1) (2025-11-11)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9657 Remove renderContent method ([#2696](https://github.com/bigcommerce/checkout-js/issues/2696)) ([55d2cb5](https://github.com/bigcommerce/checkout-js/commit/55d2cb583d5015ad40c406e26b7eb4fe626a7059))
+
+## [1.701.0](https://github.com/bigcommerce/checkout-js/compare/v1.700.1...v1.701.0) (2025-11-11)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9450 Bump checkout-sdk version ([b1b633f](https://github.com/bigcommerce/checkout-js/commit/b1b633f5531ea33bf3437223f945ecf7611620b5))
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9450 Revert SDK version ([b8659bf](https://github.com/bigcommerce/checkout-js/commit/b8659bf6633a46a46986b4be30718ec5b5894170))
+* **payment:** PI-4517 bump checkout-sdk version due to the WP Access fix release ([81996f4](https://github.com/bigcommerce/checkout-js/commit/81996f4bd7295d7876462cb54c468e4befa23ed1))
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9429 Clean up code style ([#2693](https://github.com/bigcommerce/checkout-js/issues/2693)) ([a292319](https://github.com/bigcommerce/checkout-js/commit/a29231965e76ac7976f196c3a01b37cef2108703))
+
+### [1.700.1](https://github.com/bigcommerce/checkout-js/compare/v1.700.0...v1.700.1) (2025-11-06)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9450 Fix cba-mpgs missing strategy ([9df762f](https://github.com/bigcommerce/checkout-js/commit/9df762fc82e5d9532375b1dd0c4098db2b46caf7))
+
 ## [1.700.0](https://github.com/bigcommerce/checkout-js/compare/v1.699.2...v1.700.0) (2025-11-06)
 
 
