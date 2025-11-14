@@ -207,6 +207,7 @@ export function getPaymentMethodTitle(
                         ? method.logoUrl
                         : cdnPath('/img/payment-providers/paypalpaymentsprouk.png'),
                 titleText: '',
+                titleSubText: '',
                 subtitle: (props: PaymentMethodSubtitleProps): ReactNode => {
                     if (isExperimentEnabled(checkoutSettings, 'CHECKOUT-9450.lazy_load_payment_strategies', false)) {
                         if (method.id === PaymentMethodId.BraintreePaypalCredit || method.id === PaymentMethodId.BraintreePaypal) {

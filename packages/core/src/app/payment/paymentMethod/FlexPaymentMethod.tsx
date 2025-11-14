@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
+import { type CheckoutContextProps } from '@bigcommerce/checkout/contexts';
 import { Checkout, PaymentMethod, CheckoutSelectors, StoreConfig, Address } from '@bigcommerce/checkout-sdk';
 import { PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { ConnectFormikProps, connectFormik } from '../../common/form';
