@@ -224,7 +224,7 @@ class Checkout extends Component<
 
     render(): ReactNode {
         const { activeStepType, defaultStepType, error, isCartEmpty, isMultiShippingMode, isRedirecting } = this.state;
-        const { isPending, language, loginUrl, steps, themeV2 } = this.props;
+        const { isPending, language, loginUrl, steps, themeV2, cartUrl } = this.props;
 
         if(isRedirecting){
             return <OrderConfirmationPageSkeleton />;
@@ -259,6 +259,12 @@ class Checkout extends Component<
                         <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />
                         :<>
                             <div className="layout-main">
+                                <div style={{ padding: '1.5rem 0px' }}>
+                                    <a className="modal-header-link cart-modal-link" href={cartUrl} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <div className='arrowLeft'></div>
+                                        Edit Cart
+                                    </a>
+                                </div>
                                 <CheckoutHeader
                                     activeStepType={activeStepType}
                                     buttonConfigs={this.state.buttonConfigs}
