@@ -9,15 +9,19 @@ import { noop } from 'lodash';
 import React, { act, type FunctionComponent } from 'react';
 
 import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
-import { type AnalyticsContextProps, type AnalyticsEvents ,
+import {
+    type AnalyticsContextProps,
+    type AnalyticsEvents,
     AnalyticsProviderMock,
+    CheckoutProvider,
     ExtensionProvider,
     type ExtensionServiceInterface,
- ThemeProvider } from '@bigcommerce/checkout/contexts';
-import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
+    LocaleProvider,
+    ThemeProvider,
+} from '@bigcommerce/checkout/contexts';
+import { getLanguageService } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
-    CheckoutProvider,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     CheckoutPageNodeObject,
@@ -98,7 +102,7 @@ describe('Checkout', () => {
 
         CheckoutTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
-                <LocaleProvider checkoutService={checkoutService}>
+                <LocaleProvider checkoutService={checkoutService} languageService={getLanguageService()}>
                     <AnalyticsProviderMock>
                         <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>
@@ -323,20 +327,6 @@ describe('Checkout', () => {
             await screen.findByText('test@example.com');
 
             expect(screen.getByText('test@example.com')).toBeInTheDocument();
-        });
-
-        it('logs unhandled error', async () => {
-            checkoutService = checkout.use(CheckoutPreset.UnsupportedProvider);
-
-            render(<CheckoutTest {...defaultProps} />);
-
-            await checkout.waitForCustomerStep();
-
-            const error = new Error(
-                'Unable to proceed because payment method data is unavailable or not properly configured.',
-            );
-
-            expect(defaultProps.errorLogger.log).toHaveBeenCalledWith(error);
         });
 
         it('renders checkout button container with ApplePay', async () => {
