@@ -11,15 +11,16 @@ import React, { act, type FunctionComponent } from 'react';
 
 import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
 import {
-  AnalyticsProviderMock,
+    AnalyticsProviderMock,
+    CheckoutProvider,
     ExtensionProvider,
-  type ExtensionServiceInterface,
-  ThemeProvider,
+    type ExtensionServiceInterface,
+    LocaleProvider,
+    ThemeProvider,
 } from '@bigcommerce/checkout/contexts';
-import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
+import { getLanguageService } from '@bigcommerce/checkout/locale';
 import {
     CHECKOUT_ROOT_NODE_ID,
-    CheckoutProvider,
 } from '@bigcommerce/checkout/payment-integration-api';
 import {
     CheckoutPageNodeObject,
@@ -79,7 +80,10 @@ describe('Payment step', () => {
 
         CheckoutTest = (props) => (
             <CheckoutProvider checkoutService={checkoutService}>
-                <LocaleProvider checkoutService={checkoutService}>
+                <LocaleProvider
+                    checkoutService={checkoutService}
+                    languageService={getLanguageService()}
+                >
                     <AnalyticsProviderMock>
                         <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>

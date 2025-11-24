@@ -11,20 +11,18 @@ import React, { type FunctionComponent } from 'react';
 import { object, type Schema, string } from 'yup';
 
 import {
+    CheckoutContext,
+    LocaleContext,
+    type LocaleContextType,
+    PaymentFormContext,
+    type PaymentFormService,
+} from '@bigcommerce/checkout/contexts';
+import {
     getCreditCardValidationSchema,
     getInstrumentValidationSchema,
 } from '@bigcommerce/checkout/instrument-utils';
-import {
-    createLocaleContext,
-    LocaleContext,
-    type LocaleContextType,
-} from '@bigcommerce/checkout/locale';
-import {
-    CheckoutContext,
-    PaymentFormContext,
-    type PaymentFormService,
-    type PaymentMethodProps,
-} from '@bigcommerce/checkout/payment-integration-api';
+import { createLocaleContext } from '@bigcommerce/checkout/locale';
+import { type PaymentMethodProps } from '@bigcommerce/checkout/payment-integration-api';
 import {
     getCardInstrument,
     getCart,

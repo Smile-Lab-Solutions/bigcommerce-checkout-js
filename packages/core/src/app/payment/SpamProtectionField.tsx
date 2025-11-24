@@ -1,12 +1,12 @@
 import React, { type MouseEvent, useEffect, useState } from 'react';
 
+import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
 import { LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { isErrorWithType } from '../common/error';
 
-interface SpamProtectionFieldProps {
+export interface SpamProtectionFieldProps {
     didExceedSpamLimit?: boolean;
     onUnhandledError?(error: Error): void;
 }

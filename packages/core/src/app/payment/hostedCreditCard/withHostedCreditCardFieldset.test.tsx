@@ -7,10 +7,10 @@ import { Formik, type FormikProps } from 'formik';
 import { merge, noop } from 'lodash';
 import React, { type ComponentType, type FunctionComponent, type ReactNode } from 'react';
 
-import { createLocaleContext, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/locale';
+import { CheckoutProvider, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/contexts';
+import { createLocaleContext } from '@bigcommerce/checkout/locale';
 import {
     type CardInstrumentFieldsetValues,
-    CheckoutProvider,
 } from '@bigcommerce/checkout/payment-integration-api';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 import { FormContext, type FormContextType } from '@bigcommerce/checkout/ui';

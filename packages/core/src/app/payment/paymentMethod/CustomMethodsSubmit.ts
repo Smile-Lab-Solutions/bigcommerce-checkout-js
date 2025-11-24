@@ -317,7 +317,7 @@ export function flexSubmit(
                             flexCheckoutSessionDiscountRootData.push(
                                 {
                                     coupon_data: {
-                                        amount_off: d.discountedAmount * 100,
+                                        amount_off: parseFloat((d.discountedAmount * 100).toFixed(2)),
                                         name: "Discount",
                                         applies_to: {
                                             products: [flexProductId[1]]
