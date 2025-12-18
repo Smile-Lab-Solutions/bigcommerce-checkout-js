@@ -74,12 +74,18 @@ export {
     IconBitCoinCash,
     IconDogeCoin,
     IconEthereum,
+    IconGiftCertificateNew,
     IconLiteCoin,
     IconProps,
     IconShibaInu,
     IconSepa,
     IconUsdCoin,
     IconAch,
+    IconError,
+    IconCoupon,
+    IconRemoveCoupon,
+    IconDownArrow,
+    IconUpArrow,
 } from './icon';
 export { LazyContainer, LoadingNotification, LoadingOverlay, LoadingSpinner } from './loading';
 export {
