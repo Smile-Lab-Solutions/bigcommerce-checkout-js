@@ -292,7 +292,6 @@
             "humm_not_processable_error": "Humm cannot process your payment for this order, please select another payment method.",
             "klarna_continue_action": "Continue with Klarna",
             "klarna_name_text": "Klarna",
-            "masterpass_name_text": "Masterpass",
             "mollie_unsupported_method_error": "This payment method cannot be used towards the purchase of digital products. Please contact customer support or try again.",
             "opy_continue_action": "Continue with {methodName}",
             "opy_widget_slogan": "Buy now. Pay smarter.",
@@ -478,6 +477,7 @@
             }
         },
         "redeemable": {
+            "auto_promotion": "Automatic discount",
             "applied_text": "Applied",
             "apply_action": "Apply",
             "apply_store_credit_after_action": "store credit to order",
@@ -493,12 +493,16 @@
             "coupon_min_order_total": "Your order does not meet the minimum total for this discount code to be applied.",
             "coupon_min_order_total_us": "Your order does not meet the minimum total for this promo code to be applied.",
             "coupon_text": "Discount",
+            "coupon_placeholder": "Enter your code here",
+            "discounts_text": "Discounts",
             "gift_certificate_remaining_text": "Remaining",
             "gift_certificate_text": "Gift Card",
+            "manual_discount": "Manual discount",
             "remove_action": "Remove",
             "store_credit_available_text": "Your account currently has {storeCredit} total store credit available",
             "toggle_action": "Discount Code",
-            "toggle_action_us": "Promo Code"
+            "toggle_action_us": "Promo Code",
+            "total_savings_text": "You saved <span class=\"total-savings-highlight\">{totalDiscount}</span> in total!"
         },
         "remote": {
             "browser_unsupported": "The selected payment method requires a different web browser. Please choose another payment method.",
@@ -556,6 +560,8 @@
             "multishipping_left_to_allocate_items_table_item": "Item",
             "multishipping_left_to_allocate_items_table_left_to_allocate": "Left to allocate",
             "multishipping_left_to_allocate_items_table_quantity": "Quantity",
+            "no_countries_available_heading": "We're having trouble loading your shipping country",
+            "no_countries_available_message": "Please refresh the page or try again in a moment. If the issue continues, contact our support team and we'll help complete your order.",
             "multishipping_item_split_tooltip_message": "These item quantities are split into a separate row due to a quantity-based promotion or custom price.",
             "ship_to_multi": "Ship to multiple addresses",
             "ship_to_single": "Ship to a single address",

@@ -133,6 +133,9 @@
 // Checkout Skeleton
 @import "checkout/loadingSkeleton/component";
 
+// (multi) Coupon
+@import "checkout/coupon/component";
+
 .button:not(#addressToggle),
 .partiallyButton {
     background-color: #FF2788;

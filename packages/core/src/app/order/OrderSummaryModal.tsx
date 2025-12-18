@@ -5,10 +5,13 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { cloneElement, type FunctionComponent, isValidElement, type ReactNode } from 'react';
 
+import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { Button, IconCloseWithBorder } from '@bigcommerce/checkout/ui';
 
+import { isExperimentEnabled } from '../common/utility';
+import { NewOrderSummarySubtotals } from '../coupon';
 import { ShopperCurrency } from '../currency';
 import { Modal, ModalHeader } from '../ui/modal';
 import { isSmallScreen } from '../ui/responsive';
@@ -36,7 +39,6 @@ const OrderSummaryModal: FunctionComponent<
     OrderSummaryDrawerProps & OrderSummarySubtotalsProps
 > = ({
     additionalLineItems,
-    children,
     isTaxIncluded,
     taxes,
     onRequestClose,
@@ -49,6 +51,11 @@ const OrderSummaryModal: FunctionComponent<
     total,
     ...orderSummarySubtotalsProps
 }) => {
+    const { checkoutState } = useCheckout();
+    const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
+    const isMultiCouponEnabled = isExperimentEnabled(checkoutSettings, 'CHECKOUT-9674.multi_coupon_cart_checkout', false) && Boolean(checkoutState.data.getCheckout());
+
+    const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
 
     const subHeaderText = <OrderModalSummarySubheader
         amountWithCurrency={<ShopperCurrency amount={total} />}
@@ -84,9 +91,19 @@ const OrderSummaryModal: FunctionComponent<
         <OrderSummarySection>
             <OrderSummaryItems displayLineItemsCount={false} items={items} />
         </OrderSummarySection>
-        <OrderSummarySection>
-            <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
-        </OrderSummarySection>
+        {isMultiCouponEnabled
+            ? <NewOrderSummarySubtotals
+                fees={orderSummarySubtotalsProps.fees}
+                giftWrappingAmount={orderSummarySubtotalsProps.giftWrappingAmount}
+                handlingAmount={orderSummarySubtotalsProps.handlingAmount}
+                isTaxIncluded={isTaxIncluded}
+                storeCreditAmount={orderSummarySubtotalsProps.storeCreditAmount}
+                taxes={taxes}
+            />
+            : <OrderSummarySection>
+                    <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
+                    </OrderSummarySection>
+        }
         <OrderSummarySection>
             <OrderSummaryTotal
                 orderAmount={total}
