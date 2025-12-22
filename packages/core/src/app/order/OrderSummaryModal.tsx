@@ -55,8 +55,6 @@ const OrderSummaryModal: FunctionComponent<
     const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
     const isMultiCouponEnabled = isExperimentEnabled(checkoutSettings, 'CHECKOUT-9674.multi_coupon_cart_checkout', false) && Boolean(checkoutState.data.getCheckout());
 
-    const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
-
     const subHeaderText = <OrderModalSummarySubheader
         amountWithCurrency={<ShopperCurrency amount={total} />}
         items={items}
