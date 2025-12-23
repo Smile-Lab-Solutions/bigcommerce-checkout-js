@@ -195,11 +195,6 @@ export function getPaymentMethodTitle(
                 titleText: 'Buy now and pay over 6 weekly interest-free instalments',
                 titleSubText: '',
             },
-            [PaymentMethodId.Masterpass]: {
-                logoUrl: 'https://masterpass.com/dyn/img/acc/global/mp_mark_hor_blk.svg',
-                titleText: '',
-                titleSubText: '',
-            },
             [PaymentMethodType.Paypal]: {
                 // TODO: method.id === PaymentMethodId.BraintreeVenmo should be removed after the PAYPAL-1380.checkout_button_strategies_update experiment removal
                 logoUrl:
