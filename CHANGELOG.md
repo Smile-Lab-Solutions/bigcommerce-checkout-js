@@ -2,6 +2,91 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.718.2](https://github.com/bigcommerce/checkout-js/compare/v1.718.1...v1.718.2) (2026-01-05)
+
+
+### Bug Fixes
+
+* **payment:** Fix issue in tests with year ([989281a](https://github.com/bigcommerce/checkout-js/commit/989281ac82d5eee9b6ba81e96828f04409ed8971))
+
+### [1.718.1](https://github.com/bigcommerce/checkout-js/compare/v1.718.0...v1.718.1) (2025-12-30)
+
+## [1.718.0](https://github.com/bigcommerce/checkout-js/compare/v1.717.0...v1.718.0) (2025-12-30)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9646 Handle cart become empty during checkout ([#2747](https://github.com/bigcommerce/checkout-js/issues/2747)) ([30d6b73](https://github.com/bigcommerce/checkout-js/commit/30d6b734c9c1532d205dfc091b1634d0bcb397dc))
+
+## [1.717.0](https://github.com/bigcommerce/checkout-js/compare/v1.716.8...v1.717.0) (2025-12-29)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#2760](https://github.com/bigcommerce/checkout-js/issues/2760)) ([1285c70](https://github.com/bigcommerce/checkout-js/commit/1285c70da68f6a8969ef7c2725cf3d0448fb8cdc))
+
+### [1.716.8](https://github.com/bigcommerce/checkout-js/compare/v1.716.7...v1.716.8) (2025-12-24)
+
+### [1.716.7](https://github.com/bigcommerce/checkout-js/compare/v1.716.6...v1.716.7) (2025-12-24)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9733 fix the `return to checkout` button to be visible until the drawer is present. ([#2758](https://github.com/bigcommerce/checkout-js/issues/2758)) ([cdb9e47](https://github.com/bigcommerce/checkout-js/commit/cdb9e47303e1e58224c5136d26c235ce11caf82c))
+
+### [1.716.6](https://github.com/bigcommerce/checkout-js/compare/v1.716.5...v1.716.6) (2025-12-24)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9680 Add label to redeemableCode ([#2757](https://github.com/bigcommerce/checkout-js/issues/2757)) ([72c4921](https://github.com/bigcommerce/checkout-js/commit/72c4921460779b063c03ad72edb4d8e43a0bc726))
+
+### [1.716.5](https://github.com/bigcommerce/checkout-js/compare/v1.716.4...v1.716.5) (2025-12-24)
+
+### [1.716.4](https://github.com/bigcommerce/checkout-js/compare/v1.716.3...v1.716.4) (2025-12-23)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9680 Update data-test 3 ([#2754](https://github.com/bigcommerce/checkout-js/issues/2754)) ([e9252da](https://github.com/bigcommerce/checkout-js/commit/e9252daae7424f1b63abd1196ac63709faabd5a0))
+
+### [1.716.3](https://github.com/bigcommerce/checkout-js/compare/v1.716.2...v1.716.3) (2025-12-23)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9680 Update data-test 2 ([#2753](https://github.com/bigcommerce/checkout-js/issues/2753)) ([ad94104](https://github.com/bigcommerce/checkout-js/commit/ad941045486f995c1210bfc44c693152cac25617))
+
+### [1.716.2](https://github.com/bigcommerce/checkout-js/compare/v1.716.1...v1.716.2) (2025-12-23)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9680 Update data-test ([#2752](https://github.com/bigcommerce/checkout-js/issues/2752)) ([22aa2f8](https://github.com/bigcommerce/checkout-js/commit/22aa2f8c9f7ea0ff2926e514e6da0e9579538678))
+
+### [1.716.1](https://github.com/bigcommerce/checkout-js/compare/v1.716.0...v1.716.1) (2025-12-23)
+
+## [1.716.0](https://github.com/bigcommerce/checkout-js/compare/v1.715.2...v1.716.0) (2025-12-22)
+
+
+### Features
+
+* **payment:** authorizenet added to the new resolver ([c282a66](https://github.com/bigcommerce/checkout-js/commit/c282a6627e09ec73be91eeaac910ab46f0885f74))
+
+### [1.715.2](https://github.com/bigcommerce/checkout-js/compare/v1.715.1...v1.715.2) (2025-12-22)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9680 Refactor New Coupon UI Code ([#2748](https://github.com/bigcommerce/checkout-js/issues/2748)) ([8dbd88a](https://github.com/bigcommerce/checkout-js/commit/8dbd88af47b33daf3c5197cdcb5f8db17246056a))
+
+### [1.715.1](https://github.com/bigcommerce/checkout-js/compare/v1.715.0...v1.715.1) (2025-12-19)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9680 Update Hot Reloading ([#2744](https://github.com/bigcommerce/checkout-js/issues/2744)) ([3816073](https://github.com/bigcommerce/checkout-js/commit/381607360ece134470403af05c20ad81e4ca602e))
+
 ## [1.715.0](https://github.com/bigcommerce/checkout-js/compare/v1.714.0...v1.715.0) (2025-12-18)
 
 

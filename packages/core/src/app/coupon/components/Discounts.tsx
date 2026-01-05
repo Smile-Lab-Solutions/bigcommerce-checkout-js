@@ -1,4 +1,4 @@
-import React, { type FunctionComponent, useState } from 'react';
+import React, { createRef, type FunctionComponent, useState } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
@@ -11,7 +11,8 @@ const DiscountItems: FunctionComponent<{ coupons: DiscountItem[] }> = ({ coupons
     return (
         <TransitionGroup component={null}>
             {coupons.map((coupon) => {
-                const nodeRef = React.createRef<HTMLDivElement>();
+                const nodeRef = createRef<HTMLDivElement>();
+
                 return (
                     <CSSTransition
                         classNames="changeHighlight"
@@ -19,15 +20,17 @@ const DiscountItems: FunctionComponent<{ coupons: DiscountItem[] }> = ({ coupons
                         nodeRef={nodeRef}
                         timeout={{}}
                     >
-                        <div
-                            aria-live="polite"
-                            className="cart-priceItem optimizedCheckout-contentPrimary"
-                            ref={nodeRef}
-                        >
-                            <span className="cart-priceItem-label"><IconCoupon />{coupon.name}</span>
-                            <span className="cart-priceItem-value">
-                                -<ShopperCurrency amount={coupon.amount} />
-                            </span>
+                        <div data-test={coupon.testId}>
+                            <div
+                                aria-live="polite"
+                                className="cart-priceItem optimizedCheckout-contentPrimary"
+                                ref={nodeRef}
+                            >
+                                <span className="cart-priceItem-label"><IconCoupon />{coupon.name}</span>
+                                <span className="cart-priceItem-value" data-test="cart-price-value">
+                                    -<ShopperCurrency amount={coupon.amount} />
+                                </span>
+                            </div>
                         </div>
                     </CSSTransition>
                 );
@@ -36,9 +39,38 @@ const DiscountItems: FunctionComponent<{ coupons: DiscountItem[] }> = ({ coupons
     );
 };
 
-export const Discounts: FunctionComponent = () => {
+const DiscountsCollapsible: FunctionComponent<{ discounts: number; discountItems: DiscountItem[] }> = ({ discounts, discountItems }) => {
     const [isCouponDiscountsVisible, setIsCouponDiscountsVisible] = useState(true);
 
+    return (
+        <div>
+            <div
+                aria-controls="applied-coupon-discounts-collapsable"
+                aria-expanded={isCouponDiscountsVisible}
+                aria-live="polite"
+                className="coupon-discount-toggle cart-priceItem optimizedCheckout-contentPrimary"
+                onClick={() => setIsCouponDiscountsVisible(!isCouponDiscountsVisible)}
+            >
+                <span className="cart-priceItem-label">
+                    <div className="toggle-button">
+                        <TranslatedString id="redeemable.discounts_text" />
+                        {isCouponDiscountsVisible ? <IconDownArrow /> : <IconUpArrow />}
+                    </div>
+                </span>
+                <span className="cart-priceItem-value">
+                    -<ShopperCurrency amount={discounts} />
+                </span>
+            </div>
+            {isCouponDiscountsVisible && (
+                <div className="applied-discounts-list" id="applied-coupon-discounts-collapsable">
+                    <DiscountItems coupons={discountItems} />
+                </div>
+            )}
+        </div>
+    );
+};
+
+export const Discounts: FunctionComponent = () => {
     const {
         uiDetails: {
             subtotal,
@@ -48,42 +80,18 @@ export const Discounts: FunctionComponent = () => {
     } = useMultiCoupon();
 
     return (
-        <>
+        <div data-test="cart-subtotal">
             <div aria-live="polite" className="cart-priceItem optimizedCheckout-contentPrimary">
                 <span className="cart-priceItem-label">
                     <TranslatedString id="cart.subtotal_text" />
                 </span>
-                <span className="cart-priceItem-value">
+                <span className="cart-priceItem-value" data-test="cart-price-value">
                     <ShopperCurrency amount={subtotal} />
                 </span>
             </div>
-            {/* TODO: Create an accordian/collapsable component */}
             {discounts > 0 && (
-                <>
-                    <div
-                        aria-controls="applied-coupon-discounts-collapsable"
-                        aria-expanded={isCouponDiscountsVisible}
-                        aria-live="polite"
-                        className="coupon-discount-toggle cart-priceItem optimizedCheckout-contentPrimary"
-                        onClick={() => setIsCouponDiscountsVisible(!isCouponDiscountsVisible)}
-                    >
-                        <span className="cart-priceItem-label">
-                            <div className="toggle-button">
-                                <TranslatedString id="redeemable.discounts_text" />
-                                {isCouponDiscountsVisible ? <IconDownArrow /> : <IconUpArrow />}
-                            </div>
-                        </span>
-                        <span className="cart-priceItem-value">
-                            -<ShopperCurrency amount={discounts} />
-                        </span>
-                    </div>
-                    {isCouponDiscountsVisible && (
-                        <div className="applied-discounts-list" id="applied-coupon-discounts-collapsable">
-                            <DiscountItems coupons={discountItems} />
-                        </div>
-                    )}
-                </>
+                <DiscountsCollapsible discountItems={discountItems} discounts={discounts} />
             )}
-        </>
+        </div>
     );
 };

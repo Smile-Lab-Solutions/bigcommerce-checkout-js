@@ -3,7 +3,7 @@ import React, { type FunctionComponent, useState } from 'react';
 
 import { useLocale, useThemeContext } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { IconError, IconRemoveCoupon, TextInput } from '@bigcommerce/checkout/ui';
+import { Alert, AlertType, IconRemoveCoupon, TextInput } from '@bigcommerce/checkout/ui';
 
 import { Button, ButtonVariant } from '../../ui/button';
 import { useMultiCoupon } from '../useMultiCoupon';
@@ -51,11 +51,20 @@ export const CouponForm: FunctionComponent = () => {
 
     return (
         <>
-            <div className="coupon-form" id="coupon-form-collapsable">
+            <div
+                className="coupon-form"
+                data-test="redeemable-collapsable"
+                id="coupon-form-collapsable"
+            >
+                <label className="is-srOnly" htmlFor="redeemableCode">
+                    <TranslatedString id="redeemable.toggle_action" />
+                </label>
                 <TextInput
                     additionalClassName="form-input optimizedCheckout-form-input coupon-input"
                     aria-label={language.translate('redeemable.code_label')}
                     disabled={isCouponFormDisabled}
+                    id="redeemableCode"
+                    name="redeemableCode"
                     onChange={handleTextInputChange}
                     onClick={clearErrorOnClick}
                     placeholder={language.translate('redeemable.coupon_placeholder')}
@@ -74,16 +83,17 @@ export const CouponForm: FunctionComponent = () => {
                     testId="redeemableEntry-submit"
                     variant={ButtonVariant.Secondary}
                 >
-                    <TranslatedString id="redeemable.apply_action" />
+                    <TranslatedString id="redeemable.apply_action"/>
                 </Button>
             </div>
             <div className="applied-coupons-list">
                 {Boolean(couponError) &&
-                    <ul className="applied-coupon-error-message" role="alert">
-                        <IconError />
-                        <span>{couponError}</span>
-                        <span onClick={() => setCouponError(null)}><IconRemoveCoupon /></span>
-                    </ul>
+                    <Alert additionalClassName="no-padding" type={AlertType.Error}>
+                        <ul className="applied-coupon-error-message">
+                            <span>{couponError}</span>
+                            <span onClick={() => setCouponError(null)}><IconRemoveCoupon /></span>
+                        </ul>
+                    </Alert>
                 }
                 <ManageCouponsAndGiftCertificates />
             </div>
