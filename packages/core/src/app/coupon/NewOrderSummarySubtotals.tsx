@@ -63,21 +63,25 @@ const NewOrderSummarySubtotals: FunctionComponent<MultiCouponProps> = ({
             <section className="subtotals-with-multi-coupon cart-section optimizedCheckout-orderSummary-cartSection">
                 <Discounts />
 
-                <div
-                    aria-live="polite"
-                    className="cart-priceItem optimizedCheckout-contentPrimary"
-                >
-                    <span className="cart-priceItem-label">
-                        <TranslatedString id="shipping.shipping_heading" />
-                    </span>
-                    <span className="cart-priceItem-value">
-                        {(shippingBeforeDiscount > 0 && shippingBeforeDiscount !== shipping) && (
-                            <span className="cart-priceItem-before-discount">
-                                <ShopperCurrency amount={shippingBeforeDiscount} />
+                <div data-test="cart-shipping">
+                    <div
+                        aria-live="polite"
+                        className="cart-priceItem optimizedCheckout-contentPrimary"
+                    >
+                        <span className="cart-priceItem-label">
+                            <TranslatedString id="shipping.shipping_heading" />
+                        </span>
+                        <span className="cart-priceItem-value">
+                            {(shippingBeforeDiscount > 0 && shippingBeforeDiscount !== shipping) && (
+                                <span className="cart-priceItem-before-discount">
+                                    <ShopperCurrency amount={shippingBeforeDiscount} />
+                                </span>
+                            )}
+                            <span  data-test="cart-price-value">
+                                <ShopperCurrency amount={shipping} />
                             </span>
-                        )}
-                        <ShopperCurrency amount={shipping} />
-                    </span>
+                        </span>
+                    </div>
                 </div>
 
                 {!!giftWrappingAmount && (

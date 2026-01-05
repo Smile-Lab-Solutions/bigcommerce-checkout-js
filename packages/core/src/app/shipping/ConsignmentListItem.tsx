@@ -74,6 +74,7 @@ const ConsignmentListItem: FunctionComponent<ConsignmentListItemProps> = ({
             <MultiShippingOptions
                 consignment={consignment}
                 isLoading={isLoading}
+                onUnhandledError={onUnhandledError}
                 resetErrorConsignmentNumber={resetErrorConsignmentNumber}
                 shippingQuoteFailedMessage={shippingQuoteFailedMessage}
             />
