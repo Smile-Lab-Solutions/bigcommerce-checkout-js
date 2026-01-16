@@ -7,6 +7,7 @@ import { EMPTY_ARRAY } from '../common/utility';
 
 import { type AppliedGiftCertificateInfo } from './components';
 import { getDiscountItems } from './utils';
+import { hasSelectedShippingOptions } from '../shipping';
 
 export interface DiscountItem {
     name: string;
@@ -18,8 +19,8 @@ interface UIDetails {
     subtotal: number;
     discounts: number;
     discountItems: DiscountItem[];
-    shipping: number;
-    shippingBeforeDiscount: number;
+    shipping: number | undefined;
+    shippingBeforeDiscount: number | undefined;
 }
 
 interface UseMultiCouponValues {
@@ -43,14 +44,15 @@ export const useMultiCoupon = (): UseMultiCouponValues => {
     const { language } = useLocale();
 
     const {
-        data: { getConfig, getCheckout },
+        data: { getConfig, getCheckout, getOrder },
         statuses: { isSubmittingOrder, isPending, isApplyingCoupon, isApplyingGiftCertificate }
     } = checkoutState;
     const { checkoutSettings } = getConfig() ?? {};
     const checkout = getCheckout();
+    const order = getOrder();
 
-    if (!checkoutSettings || !checkout) {
-      throw new Error('Checkout is not available');
+    if (!checkoutSettings || !(checkout || order)) {
+        throw new Error('Checkout or order is not available');
     }
 
     const shouldDisableCouponForm = isSubmittingOrder() || isPending();
@@ -88,12 +90,29 @@ export const useMultiCoupon = (): UseMultiCouponValues => {
         await checkoutService.removeGiftCertificate(code);
     };
 
-    const uiDetails = {
-        subtotal: checkout.subtotal,
-        discounts: checkout.displayDiscountTotal,
-        discountItems: getDiscountItems(checkout, language),
-        shippingBeforeDiscount: checkout.shippingCostBeforeDiscount,
-        shipping: checkout.comparisonShippingCost,
+
+    let uiDetails = {} as UIDetails;
+
+    if(checkout) {
+        const allConsignmentsHaveSelectedShippingOption = hasSelectedShippingOptions(checkout.consignments);
+        
+        uiDetails = {
+            subtotal: checkout.subtotal,
+            discounts: checkout.displayDiscountTotal,
+            discountItems: getDiscountItems(checkout, language),
+            shippingBeforeDiscount: allConsignmentsHaveSelectedShippingOption ? checkout.shippingCostBeforeDiscount : undefined,
+            shipping: allConsignmentsHaveSelectedShippingOption ? checkout.comparisonShippingCost : undefined,
+        }
+    }
+    
+    if(order) {
+        uiDetails = {
+            subtotal: order.baseAmount,
+            discounts: order.displayDiscountTotal,
+            discountItems: getDiscountItems(order, language),
+            shippingBeforeDiscount: order.shippingCostBeforeDiscount,
+            shipping: order.comparisonShippingCost,
+        }
     }
 
     return {
