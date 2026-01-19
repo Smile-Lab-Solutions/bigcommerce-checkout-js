@@ -75,7 +75,6 @@ const OrderSummaryModal: FunctionComponent<
         totalDiscount = order.totalDiscount;
     }
    
-    const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
     const isTotalDiscountVisible = Boolean(totalDiscount && totalDiscount > 0);
 
     const subHeaderText = <OrderModalSummarySubheader
