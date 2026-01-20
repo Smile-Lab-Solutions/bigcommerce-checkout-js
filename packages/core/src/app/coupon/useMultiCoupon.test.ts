@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 
 import { useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
-import { getLocaleContext, getStoreConfig } from '@bigcommerce/checkout/test-mocks';
+import { getConsignment, getDigitalItem, getLocaleContext, getPhysicalItem, getStoreConfig } from '@bigcommerce/checkout/test-mocks';
 
 import { getCheckout } from '../checkout/checkouts.mock';
 
@@ -30,6 +30,7 @@ describe('useMultiCoupon', () => {
             getCheckout: jest.fn(),
             getCoupons: jest.fn(),
             getGiftCertificates: jest.fn(),
+            getOrder: jest.fn(),
         },
         statuses: {
             isApplyingCoupon: jest.fn(),
@@ -50,6 +51,7 @@ describe('useMultiCoupon', () => {
         checkoutState.data.getCheckout.mockReturnValue(getCheckout());
         checkoutState.data.getCoupons.mockReturnValue([]);
         checkoutState.data.getGiftCertificates.mockReturnValue([]);
+        checkoutState.data.getOrder.mockReturnValue(undefined);
         checkoutState.statuses.isSubmittingOrder.mockReturnValue(false);
         checkoutState.statuses.isPending.mockReturnValue(false);
         checkoutState.statuses.isApplyingCoupon.mockReturnValue(false);
@@ -79,7 +81,7 @@ describe('useMultiCoupon', () => {
         checkoutState.data.getConfig.mockReturnValue(undefined);
 
         expect(() => renderHook(() => useMultiCoupon())).toThrow(
-            'Checkout is not available'
+            'Checkout or order is not available'
         );
     });
 
@@ -87,15 +89,16 @@ describe('useMultiCoupon', () => {
         checkoutState.data.getConfig.mockReturnValue({});
 
         expect(() => renderHook(() => useMultiCoupon())).toThrow(
-            'Checkout is not available'
+            'Checkout or order is not available'
         );
     });
 
-    it('throws if checkout object is not available', () => {
+    it('throws if checkout and order object is not available', () => {
         checkoutState.data.getCheckout.mockReturnValue(undefined);
+        checkoutState.data.getOrder.mockReturnValue(undefined);
 
         expect(() => renderHook(() => useMultiCoupon())).toThrow(
-            'Checkout is not available'
+            'Checkout or order is not available'
         );
     });
 
@@ -369,8 +372,18 @@ describe('useMultiCoupon', () => {
     });
 
     describe('uiDetails', () => {
-        it('returns correct uiDetails structure', () => {
-            const checkout = getCheckout();
+
+        it('returns correct uiDetails structure when consignments information is complete', () => {
+            const checkout = {
+                ...getCheckout(),
+                consignments: [{
+                    ...getConsignment(),
+                    lineItemIds: [
+                        getPhysicalItem().id.toString(),
+                        getDigitalItem().id.toString(),
+                    ]
+                }],
+            }
 
             checkoutState.data.getCheckout.mockReturnValue(checkout);
 
@@ -385,6 +398,24 @@ describe('useMultiCoupon', () => {
             expect(result.current.uiDetails.discounts).toBe(checkout.displayDiscountTotal);
             expect(result.current.uiDetails.shipping).toBe(checkout.comparisonShippingCost);
             expect(result.current.uiDetails.shippingBeforeDiscount).toBe(checkout.shippingCostBeforeDiscount);
+        });
+        
+        it('returns correct uiDetails structure when consignments information is incomplete', () => {
+            const checkout = getCheckout();
+
+            checkoutState.data.getCheckout.mockReturnValue(checkout);
+
+            const { result } = renderHook(() => useMultiCoupon());
+
+            expect(result.current.uiDetails).toHaveProperty('subtotal');
+            expect(result.current.uiDetails).toHaveProperty('discounts');
+            expect(result.current.uiDetails).toHaveProperty('discountItems');
+            expect(result.current.uiDetails).toHaveProperty('shipping');
+            expect(result.current.uiDetails).toHaveProperty('shippingBeforeDiscount');
+            expect(result.current.uiDetails.subtotal).toBe(checkout.subtotal);
+            expect(result.current.uiDetails.discounts).toBe(checkout.displayDiscountTotal);
+            expect(result.current.uiDetails.shipping).toBe(undefined);
+            expect(result.current.uiDetails.shippingBeforeDiscount).toBe(undefined);
         });
 
         describe('discountItems', () => {
