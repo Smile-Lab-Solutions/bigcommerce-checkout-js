@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.724.0](https://github.com/bigcommerce/checkout-js/compare/v1.723.4...v1.724.0) (2026-01-26)
+
+
+### Features
+
+* **payment:** PI-4799 Add text for adyenv3 oxxo ticket ([6f56481](https://github.com/bigcommerce/checkout-js/commit/6f56481f008e5c15cad29d713a9742994d0c5c5a))
+
+### [1.723.4](https://github.com/bigcommerce/checkout-js/compare/v1.723.3...v1.723.4) (2026-01-22)
+
+### [1.723.3](https://github.com/bigcommerce/checkout-js/compare/v1.723.2...v1.723.3) (2026-01-22)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9450 Add AfterPay and BlueSnap strategies to order finalization ([b69c73c](https://github.com/bigcommerce/checkout-js/commit/b69c73c63972782ff2255c0f0acd595c835f2fe1))
+
+### [1.723.2](https://github.com/bigcommerce/checkout-js/compare/v1.723.1...v1.723.2) (2026-01-21)
+
+### [1.723.1](https://github.com/bigcommerce/checkout-js/compare/v1.723.0...v1.723.1) (2026-01-20)
+
+
+### Code Refactoring
+
+* **payment:** PAYPAL-6138 simplify sentry message logic for hosted payment methods ([f3dd898](https://github.com/bigcommerce/checkout-js/commit/f3dd898ebc61d9f15b5140bf14e03f245bfe094f))
+
+## [1.723.0](https://github.com/bigcommerce/checkout-js/compare/v1.722.1...v1.723.0) (2026-01-20)
+
+
+### Features
+
+* **payment:** PI-4599 Cleanup Experiment: PI-2979.checkoutcom_enable_ideal_hosted_page ([#2774](https://github.com/bigcommerce/checkout-js/issues/2774)) ([db8ca8b](https://github.com/bigcommerce/checkout-js/commit/db8ca8b97cd99d3ad9ca79beb47add946c18ccce))
+
+### [1.722.1](https://github.com/bigcommerce/checkout-js/compare/v1.722.0...v1.722.1) (2026-01-20)
+
+## [1.722.0](https://github.com/bigcommerce/checkout-js/compare/v1.721.3...v1.722.0) (2026-01-20)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9450 Bump checkout-sdk version ([cd55f53](https://github.com/bigcommerce/checkout-js/commit/cd55f53c8c77d441050f771b366700a5ec5b332a))
+
+### [1.721.3](https://github.com/bigcommerce/checkout-js/compare/v1.721.2...v1.721.3) (2026-01-19)
+
 ### [1.721.2](https://github.com/bigcommerce/checkout-js/compare/v1.721.1...v1.721.2) (2026-01-16)
 
 
