@@ -65,10 +65,10 @@ class PartiallyPaymentMethod extends Component<
     if (currency === "GBP") {
       return <>
         <li><div className="circleCheck"></div>Just £99 deposit today</li>
-        <li><div className="circleCheck"></div>Monthly payments from £29.33</li>
+        <li><div className="circleCheck"></div>Monthly payments from £21</li>
         <li><div className="circleCheck"></div>Spread the cost over 6 months</li>
         <li><div className="circleCheck"></div>No Credit Check</li>
-        <li><div className="circleCheck"></div>£25 Plan fee (Non refundable) included in deposit payment</li>
+        <li><div className="circleCheck"></div>£25 Plan Fee (Non refundable) added to the order total</li>
       </>
     } else if (currency === "USD") {
       return <>
