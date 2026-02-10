@@ -5,7 +5,7 @@ import {
     type StoreCurrency,
 } from '@bigcommerce/checkout-sdk/essential';
 import classNames from 'classnames';
-import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { useCheckout, useLocale, useThemeContext } from '@bigcommerce/checkout/contexts';
@@ -20,7 +20,6 @@ import OrderSummaryPrice from './OrderSummaryPrice';
 import OrderSummarySection from './OrderSummarySection';
 import OrderSummarySubtotals, { type OrderSummarySubtotalsProps } from './OrderSummarySubtotals';
 import OrderSummaryTotal from './OrderSummaryTotal';
-import removeBundledItems from './removeBundledItems';
 
 export interface OrderSummaryProps {
     lineItems: LineItemMap;
@@ -29,6 +28,7 @@ export interface OrderSummaryProps {
     storeCurrency: StoreCurrency;
     shopperCurrency: ShopperCurrency;
     additionalLineItems?: ReactNode;
+    showHeader?: boolean;
 }
 
 const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsProps> = ({
@@ -40,9 +40,9 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
     storeCurrency,
     taxes,
     total,
+    showHeader = true,
     ...orderSummarySubtotalsProps
 }) => {
-    const nonBundledLineItems = useMemo(() => removeBundledItems(lineItems), [lineItems]);
     const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
 
     const { themeV2 } = useThemeContext();
@@ -76,10 +76,10 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
 
     return (
         <article className="cart optimizedCheckout-orderSummary" data-test="cart">
-            <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
+            {showHeader && <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>}
 
             <OrderSummarySection>
-                <OrderSummaryItems displayLineItemsCount items={nonBundledLineItems} themeV2={themeV2} />
+                <OrderSummaryItems displayLineItemsCount items={lineItems} themeV2={themeV2} />
             </OrderSummarySection>
 
             <Extension region={ExtensionRegion.SummaryLastItemAfter} />
