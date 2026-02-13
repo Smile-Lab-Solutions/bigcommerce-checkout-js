@@ -90,7 +90,13 @@ const getDefaultPaymentMethod = ({
         if (method.id === PaymentMethodId.Bolt && method.initializationData) {
             return Boolean(method.initializationData.showInCheckout);
         }
-
+        
+        // Remove In Store as this payment method
+        //  is only for checking custom payment merchant integration
+        if (method.id === 'instore'){
+            return false;
+        }
+        
         return method.id !== PaymentMethodId.BraintreeLocalPaymentMethod;
     });
 
@@ -710,7 +716,7 @@ export function mapToPaymentProps({
     const paymentProviderCustomer = getPaymentProviderCustomer();
 
     const { isComplete = false } = getOrder() || {};
-    const methods = getPaymentMethods() || EMPTY_ARRAY;
+    let methods = getPaymentMethods() || EMPTY_ARRAY;
 
     if (!checkout || !config || !customer || isComplete) {
         return null;
