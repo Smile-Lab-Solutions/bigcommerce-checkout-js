@@ -618,6 +618,11 @@
             "mandate": {
                 "adyenv3": {
                     "boletobancario": "Boleto Bancário Ticket",
+                    "multibanco": {
+                        "reference": "Payment reference",
+                        "entity": "Entity number",
+                        "expires_at": "Expiry date"
+                    },
                     "oxxo": "OXXO Ticket"
                 },
                 "bluesnapdirect": {
