@@ -103,13 +103,13 @@ export function getPaymentMethodTitle(
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
                 titleText: '',
                 titleSubText: '',
-                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner containerId='bigcommerce-payments-banner-container' {...props} />
             },
             [PaymentMethodId.BigCommercePaymentsPayLater]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo_letter.svg'),
                 titleText: methodDisplayName,
                 titleSubText: '',
-                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner {...props} />
+                subtitle: (props: PaymentMethodSubtitleProps) => <BigCommercePaymentsPayLaterBanner containerId='bigcommerce-payments-paylater-banner-container' {...props} />
             },
             [PaymentMethodId.BigCommercePaymentsAlternativeMethod]: {
                 logoUrl: method.logoUrl || '',
