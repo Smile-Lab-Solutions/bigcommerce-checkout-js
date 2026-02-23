@@ -5,7 +5,7 @@ import React from 'react';
 
 import { CheckoutProvider, LocaleContext, type LocaleContextType } from '@bigcommerce/checkout/contexts';
 import { createLocaleContext } from '@bigcommerce/checkout/locale';
-import { render, screen } from '@bigcommerce/checkout/test-utils';
+import { render, screen, waitFor } from '@bigcommerce/checkout/test-utils';
 
 import {
     getCustomItem,
@@ -172,11 +172,10 @@ describe('OrderSummaryItems', () => {
                 },
             });
 
-            expect(screen.getAllByTestId('cart-item-product-title')).toHaveLength(4);
-            expect(screen.getByText('1 x Canvas Laundry Cart')).toBeInTheDocument();
-            expect(screen.getByText('1 x $100 Gift Certificate')).toBeInTheDocument();
-            expect(screen.getByText('1 x Digital Book')).toBeInTheDocument();
-            expect(screen.getByText('2 x Custom item')).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: '1 x Canvas Laundry Cart' })).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: '1 x $100 Gift Certificate' })).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: '1 x Digital Book' })).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: '2 x Custom item' })).toBeInTheDocument();
         });
 
         it('does not render actions', () => {
@@ -241,8 +240,10 @@ describe('OrderSummaryItems', () => {
 
                     expect(screen.getByText('See All')).toBeInTheDocument();
                     expect(screen.queryByText('See Less')).not.toBeInTheDocument();
-                    // eslint-disable-next-line testing-library/no-node-access, testing-library/no-container
-                    expect(container.querySelectorAll('.productList-item')).toHaveLength(4);
+                    await waitFor(() => {
+                        // eslint-disable-next-line testing-library/no-node-access, testing-library/no-container
+                        expect(container.querySelectorAll('.productList-item')).toHaveLength(4);
+                    });
                 });
             });
         });

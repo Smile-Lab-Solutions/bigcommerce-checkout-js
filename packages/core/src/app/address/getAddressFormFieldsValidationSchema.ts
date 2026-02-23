@@ -11,10 +11,12 @@ import {
 export interface AddressFormFieldsValidationSchemaOptions {
     formFields: FormField[];
     language?: LanguageService;
+    validateMaxLength?: boolean;
     countryCode?: String;
 }
 
 export function getTranslateAddressError(
+    formFields: FormField[],
     language?: LanguageService,
     countryCode?: String,
 ): TranslateValidationErrorFunction {
@@ -53,6 +55,30 @@ export function getTranslateAddressError(
             return language.translate(`address.custom_required_error`, { label });
         }
 
+        const field = formFields.find(f => f.name === name);
+
+        if ((type === 'max' || type === 'min') && field?.type === 'integer') {
+            const fieldMin = field?.min;
+            const fieldMax = field?.max;
+
+            // If both min and max are present, show range message
+            if (fieldMin !== undefined && fieldMax !== undefined) {
+                return language.translate(`address.custom_range_error`, { 
+                    label, 
+                    min: fieldMin, 
+                    max: fieldMax 
+                });
+            }
+
+            if (type === 'max' && fieldMax !== undefined) {
+                return language.translate(`address.custom_max_number_error`, { label, max: fieldMax });
+            }
+
+            if (type === 'min' && fieldMin !== undefined) {
+                return language.translate(`address.custom_min_number_error`, { label, min: fieldMin });
+            }
+        }
+
         if (type === 'max' && max) {
             return language.translate(`address.custom_max_error`, { label, max });
         }
@@ -70,10 +96,12 @@ export function getTranslateAddressError(
 export default memoize(function getAddressFormFieldsValidationSchema({
     formFields,
     language,
+    validateMaxLength,
     countryCode,
 }: AddressFormFieldsValidationSchemaOptions): ObjectSchema<FormFieldValues> {
     return getFormFieldsValidationSchema({
         formFields,
-        translate: getTranslateAddressError(language, countryCode),
+        translate: getTranslateAddressError(formFields, language, countryCode),
+        validateMaxLength,
     });
 });

@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.743.0](https://github.com/bigcommerce/checkout-js/compare/v1.742.0...v1.743.0) (2026-02-19)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9760 Transition animation for order summary ([#2773](https://github.com/bigcommerce/checkout-js/issues/2773)) ([2f2e9db](https://github.com/bigcommerce/checkout-js/commit/2f2e9db0d21140062b70491f1b122637ca155098))
+
+## [1.742.0](https://github.com/bigcommerce/checkout-js/compare/v1.741.1...v1.742.0) (2026-02-19)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#2833](https://github.com/bigcommerce/checkout-js/issues/2833)) ([6b21c7e](https://github.com/bigcommerce/checkout-js/commit/6b21c7e2a5883b82efb9ba55d7363a90d0fd0d3e))
+
+
+### Bug Fixes
+
+* **shipping:** CHECKOUT-9768 Update address form validation to respect form fields max length setting ([#2839](https://github.com/bigcommerce/checkout-js/issues/2839)) ([faef131](https://github.com/bigcommerce/checkout-js/commit/faef1311b4281aa725dca066999e52b1e77a63b0))
+
+### [1.741.1](https://github.com/bigcommerce/checkout-js/compare/v1.741.0...v1.741.1) (2026-02-18)
+
+## [1.741.0](https://github.com/bigcommerce/checkout-js/compare/v1.740.0...v1.741.0) (2026-02-18)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9808 fix order confirmation page subtotal value ([#2835](https://github.com/bigcommerce/checkout-js/issues/2835)) ([f469cf4](https://github.com/bigcommerce/checkout-js/commit/f469cf4de594500ce57d5993ec4d5f56615179f2))
+
+## [1.740.0](https://github.com/bigcommerce/checkout-js/compare/v1.739.4...v1.740.0) (2026-02-17)
+
+
+### Features
+
+* **payment:** Add Stripe Checkout Session strategy ([#2837](https://github.com/bigcommerce/checkout-js/issues/2837)) ([2eb53e2](https://github.com/bigcommerce/checkout-js/commit/2eb53e276da7d4fd9ee0ae12d83d8a314776bfff))
+
+### [1.739.4](https://github.com/bigcommerce/checkout-js/compare/v1.739.3...v1.739.4) (2026-02-17)
+
+### [1.739.3](https://github.com/bigcommerce/checkout-js/compare/v1.739.2...v1.739.3) (2026-02-16)
+
+### [1.739.2](https://github.com/bigcommerce/checkout-js/compare/v1.739.1...v1.739.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9049 fix error message text for number field ([#2828](https://github.com/bigcommerce/checkout-js/issues/2828)) ([025b3b5](https://github.com/bigcommerce/checkout-js/commit/025b3b5be8f8d49010d35a41475cd98bd4fef7cb))
+
+### [1.739.1](https://github.com/bigcommerce/checkout-js/compare/v1.739.0...v1.739.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-9797 Remove themeV2 conditional classes ([#2826](https://github.com/bigcommerce/checkout-js/issues/2826)) ([264ee02](https://github.com/bigcommerce/checkout-js/commit/264ee028c0bff0ee0b00f75bf4c552ea50fcd39a))
+
+## [1.739.0](https://github.com/bigcommerce/checkout-js/compare/v1.738.0...v1.739.0) (2026-02-15)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9299 update payment section font-styles for themeV2 ([#2825](https://github.com/bigcommerce/checkout-js/issues/2825)) ([be357ce](https://github.com/bigcommerce/checkout-js/commit/be357cebc6abf6c2cd486831e13c5b7941bc2b7d))
+
 ## [1.738.0](https://github.com/bigcommerce/checkout-js/compare/v1.737.0...v1.738.0) (2026-02-12)
 
 

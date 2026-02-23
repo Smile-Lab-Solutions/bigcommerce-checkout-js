@@ -19,6 +19,7 @@ export interface ShippingAddressFormProps {
     consignments: Consignment[];
     isLoading: boolean;
     formFields: FormField[];
+    validateMaxLength: boolean;
     onUseNewAddress(): void;
     onFieldChange(fieldName: string, value: string): void;
     onAddressSelect(address: Address): void;
@@ -34,6 +35,7 @@ const ShippingAddressForm = (
         onUseNewAddress,
         formFields,
         isLoading,
+        validateMaxLength,
         formik: {
             values: { shippingAddress: formAddress },
             setFieldValue: formikSetFieldValue,
@@ -83,12 +85,13 @@ const ShippingAddressForm = (
         }
     };
 
-        const hasAddresses = addresses && addresses.length > 0;
-        const hasValidCustomerAddress = isValidCustomerAddress(
-            shippingAddress,
-            addresses,
-            formFields,
-        );
+    const hasAddresses = addresses && addresses.length > 0;
+    const hasValidCustomerAddress = isValidCustomerAddress(
+        shippingAddress,
+        addresses,
+        formFields,
+        validateMaxLength,
+    );
 
         if (formFields.length > 0){
             // Remove company field
