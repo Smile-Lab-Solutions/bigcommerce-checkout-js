@@ -52,6 +52,7 @@ export interface SingleShippingFormProps {
     shouldShowOrderComments: boolean;
     isInitialValueLoaded: boolean;
     shippingFormRenderTimestamp?: number;
+    validateMaxLength: boolean;
     deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
     deleteConsignments(): Promise<Address | undefined>;
     getFields(countryCode?: string): FormField[];
@@ -193,6 +194,7 @@ class SingleShippingForm extends PureComponent<
             isShippingStepPending,
             storeCurrencyCode,
             shippingFormRenderTimestamp,
+            validateMaxLength,
         } = this.props;
 
         const { isResettingAddress, isUpdatingShippingData, hasRequestedShippingOptions } =
@@ -220,6 +222,7 @@ class SingleShippingForm extends PureComponent<
                         onUnhandledError={onUnhandledError}
                         onUseNewAddress={this.onUseNewAddress}
                         shippingAddress={shippingAddress}
+                        validateMaxLength={validateMaxLength}
                         storeCurrencyCode={storeCurrencyCode}
                     />
                     {shouldShowBillingSameAsShipping && (
@@ -371,23 +374,25 @@ export default withLanguage(
                 shippingAddress,
             ),
         }),
-        isInitialValid: ({ shippingAddress, getFields, language }) =>
+        isInitialValid: ({ shippingAddress, getFields, language, validateMaxLength }) =>
             !!shippingAddress &&
             getAddressFormFieldsValidationSchema({
                 language,
                 formFields: getFields(shippingAddress.countryCode),
+                validateMaxLength,
                 countryCode: shippingAddress.countryCode,
             }).isValidSync(shippingAddress),
         validationSchema: ({
             language,
             getFields,
             methodId,
+            validateMaxLength,
         }: SingleShippingFormProps & WithLanguageProps) =>
             shouldHaveCustomValidation(methodId)
                 ? object({
                       shippingAddress: lazy<Partial<AddressFormValues>>((formValues) =>
                           getCustomFormFieldsValidationSchema({
-                              translate: getTranslateAddressError(language),
+                              translate: getTranslateAddressError(getFields(formValues && formValues.countryCode), language),
                               formFields: getFields(formValues && formValues.countryCode),
                           }),
                       ),
@@ -397,6 +402,7 @@ export default withLanguage(
                           getAddressFormFieldsValidationSchema({
                               language,
                               formFields: getFields(formValues && formValues.countryCode),
+                              validateMaxLength,
                               countryCode: formValues.countryCode,
                           }),
                       ),

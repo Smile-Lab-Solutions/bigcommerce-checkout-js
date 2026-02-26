@@ -7,7 +7,7 @@ import {
 import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
-import { useCheckout, useLocale, useThemeContext } from '@bigcommerce/checkout/contexts';
+import { useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
 import { TranslatedHtml } from '@bigcommerce/checkout/locale';
 
 import { isExperimentEnabled } from '../common/utility';
@@ -45,7 +45,6 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
     const isReorder = 
         lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
 
-    const { themeV2 } = useThemeContext();
     const { currency } = useLocale();
 
     // TODO: When removing the experiment, rename `NewOrderSummarySubtotals` to `OrderSummarySubtotals`.
@@ -79,7 +78,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
             {showHeader && <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>}
 
             <OrderSummarySection>
-                <OrderSummaryItems displayLineItemsCount items={lineItems} themeV2={themeV2} />
+                <OrderSummaryItems displayLineItemsCount items={lineItems} />
             </OrderSummarySection>
 
             <Extension region={ExtensionRegion.SummaryLastItemAfter} />

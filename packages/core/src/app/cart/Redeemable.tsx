@@ -1,12 +1,11 @@
 import { type CheckoutSelectors, type RequestError } from '@bigcommerce/checkout-sdk';
 import { memoizeOne } from '@bigcommerce/memoize';
-import classNames from 'classnames';
 import { type FieldProps, type FormikProps, withFormik } from 'formik';
 import { noop } from 'lodash';
 import React, { type FunctionComponent, type KeyboardEvent, memo, type ReactNode, useCallback } from 'react';
 import { object, string } from 'yup';
 
-import { useCheckout, useThemeContext } from '@bigcommerce/checkout/contexts';
+import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { type FormContextType, FormProvider } from '@bigcommerce/checkout/ui';
@@ -49,7 +48,6 @@ export type RedeemableProps = {
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
     > = ({ shouldCollapseCouponCode, showAppliedRedeemables, storeCurrencyCode, ...formProps }) => {
-        const { themeV2 } = useThemeContext();
 
         return (
             <Toggle openByDefault={!shouldCollapseCouponCode}>
@@ -59,7 +57,7 @@ const Redeemable: FunctionComponent<
                             <a
                                 aria-controls="redeemable-collapsable"
                                 aria-expanded={isOpen}
-                                className={classNames('redeemable-label couponButton', { 'body-cta': themeV2 })}
+                                className="redeemable-label couponButton body-cta"
                                 data-test="redeemable-label"
                                 href="#"
                                 onClick={preventDefault(toggle)}
@@ -73,7 +71,7 @@ const Redeemable: FunctionComponent<
                     </a>
                         )}
                         {(!shouldCollapseCouponCode && storeCurrencyCode !== 'AUD') && (
-                            <div className={classNames('redeemable-label', { 'body-cta': themeV2 })}>
+                            <div className="redeemable-label body-cta">
                                 <div className='checkout-notifications'>
                             <div className="notification notification--info">
                                 <div className="notification__content">
@@ -134,7 +132,6 @@ const RedeemableForm: FunctionComponent<
             statuses: { isSubmittingOrder }
         }
     } = useCheckout();
-    const { themeV2 } = useThemeContext();
 
     const handleSubmitForm = (setSubmitted: FormContextType['setSubmitted']) => {
         if (isSubmittingOrder()) {
@@ -238,14 +235,11 @@ const RedeemableForm: FunctionComponent<
                                     className="form-input optimizedCheckout-form-input"
                                     onKeyDown={handleKeyDown(setSubmitted)}
                                     testId="redeemableEntry-input"
-                                themeV2={themeV2}
                                 />
                             )}
 
                             <Button
-                                className={classNames('form-prefixPostfix-button--postfix', {
-                                    'body-bold': themeV2,
-                                })}
+                                className="form-prefixPostfix-button--postfix body-bold"
                                 disabled={isSubmittingOrder()}
                                 id="applyRedeemableButton"
                                 isLoading={isApplyingRedeemable}
