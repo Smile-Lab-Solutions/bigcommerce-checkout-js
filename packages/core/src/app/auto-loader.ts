@@ -10,6 +10,7 @@ export interface CustomCheckoutWindow extends Window {
         publicPath?: string;
         sentryConfig?: BrowserOptions;
         permalinkStatus?: 'valid' | 'expired' | 'rate_limited' | null;
+        rollOutLazyPaymentStrategies?: boolean;
     };
 }
 
