@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.761.0](https://github.com/bigcommerce/checkout-js/compare/v1.760.0...v1.761.0) (2026-03-11)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9822 Hide billing same as shipping check based on capability ([#2883](https://github.com/bigcommerce/checkout-js/issues/2883)) ([b292a05](https://github.com/bigcommerce/checkout-js/commit/b292a058dbc239742da50212957096dc0b944763))
+* **checkout:** CHECKOUT-9835 Build searchable address selector ([#2875](https://github.com/bigcommerce/checkout-js/issues/2875)) ([0a151a3](https://github.com/bigcommerce/checkout-js/commit/0a151a3626da9e50da5e12d316aea4758ff60f64))
+* **checkout:** CHECKOUT-9835 Update Capabilities Context in Tests ([#2885](https://github.com/bigcommerce/checkout-js/issues/2885)) ([a73083f](https://github.com/bigcommerce/checkout-js/commit/a73083f1722edf3b7de837002f3a893793cecea7))
+
 ## [1.760.0](https://github.com/bigcommerce/checkout-js/compare/v1.759.1...v1.760.0) (2026-03-10)
 
 
