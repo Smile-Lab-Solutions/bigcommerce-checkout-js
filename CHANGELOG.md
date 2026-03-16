@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.763.0](https://github.com/bigcommerce/checkout-js/compare/v1.762.0...v1.763.0) (2026-03-16)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9866 implement b2b checkout billing and shipping settings ([#2889](https://github.com/bigcommerce/checkout-js/issues/2889)) ([5ff5633](https://github.com/bigcommerce/checkout-js/commit/5ff5633d1c9252f2b8da12b86fdb875dbcaea531))
+
 ## [1.762.0](https://github.com/bigcommerce/checkout-js/compare/v1.761.2...v1.762.0) (2026-03-13)
 
 
