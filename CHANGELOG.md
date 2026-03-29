@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.766.0](https://github.com/bigcommerce/checkout-js/compare/v1.765.2...v1.766.0) (2026-03-29)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9824 Display extra form fields in billing step ([#2904](https://github.com/bigcommerce/checkout-js/issues/2904)) ([f26d848](https://github.com/bigcommerce/checkout-js/commit/f26d84845325ac55367c56a8e8558c66d49d868d))
+
 ### [1.765.2](https://github.com/bigcommerce/checkout-js/compare/v1.765.1...v1.765.2) (2026-03-25)
 
 ### [1.765.1](https://github.com/bigcommerce/checkout-js/compare/v1.765.0...v1.765.1) (2026-03-23)
