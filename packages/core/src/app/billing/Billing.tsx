@@ -1,4 +1,4 @@
-import type { CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import type { CheckoutSelectors, FormField } from '@bigcommerce/checkout-sdk';
 import React, { type ReactElement, useEffect } from 'react';
 
 import { useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
@@ -16,6 +16,18 @@ export interface BillingProps {
     onReady(): void;
     onUnhandledError(error: Error): void;
 }
+
+const getFieldsWithExtraFields = (getBillingAddressFields: (countryCode: string) => FormField[], hasExtraAddressFields: boolean, getAddressExtraFormFields: () => FormField[], countryCode?: string) => {
+    const addressFields = getBillingAddressFields(countryCode || '');
+
+    if (!hasExtraAddressFields) {
+        return addressFields;
+    }
+
+    const extraAddressFields = getAddressExtraFormFields();
+
+    return [...addressFields, ...extraAddressFields];
+};
 
 const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): ReactElement => {
     const { checkoutService, checkoutState } = useCheckout();
@@ -48,8 +60,6 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
     const customerMessage  = checkout.customerMessage;
     const methodId  = getBillingMethodId(checkout);
     const billingAddress  = getBillingAddress();
-    const getFields  = getBillingAddressFields;
-    const extraFields = hasExtraAddressFields ? getAddressExtraFormFields() : [];
     const handleSubmit = async ({
                                     orderComment,
                                     ...addressValues
@@ -118,8 +128,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
                 <BillingForm
                     billingAddress={billingAddress}
                     customerMessage={customerMessage}
-                    extraFields={extraFields}
-                    getFields={getFields}
+                    getFields={(countryCode?: string) => getFieldsWithExtraFields(getBillingAddressFields, hasExtraAddressFields, getAddressExtraFormFields, countryCode)}
                     methodId={methodId}
                     navigateNextStep={navigateNextStep}
                     onSubmit={handleSubmit}
