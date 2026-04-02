@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.768.3](https://github.com/bigcommerce/checkout-js/compare/v1.768.2...v1.768.3) (2026-04-02)
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-6328 card name error schema ([0a9aeb1](https://github.com/bigcommerce/checkout-js/commit/0a9aeb1e33ef12ff2956f6fc2ccd69c4605a42f7))
+
 ### [1.768.2](https://github.com/bigcommerce/checkout-js/compare/v1.768.1...v1.768.2) (2026-04-02)
 
 ### [1.768.1](https://github.com/bigcommerce/checkout-js/compare/v1.768.0...v1.768.1) (2026-04-01)
