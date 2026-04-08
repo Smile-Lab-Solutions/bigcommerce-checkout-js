@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.770.0](https://github.com/bigcommerce/checkout-js/compare/v1.769.3...v1.770.0) (2026-04-08)
+
+
+### Features
+
+* **payment:** PI-5164 BlueSnapDirect added methodDisplayName ([6ff3b7b](https://github.com/bigcommerce/checkout-js/commit/6ff3b7bede6d315ef88c540d57755c0186fb8dcd))
+
 ### [1.769.3](https://github.com/bigcommerce/checkout-js/compare/v1.769.2...v1.769.3) (2026-04-08)
 
 ### [1.769.2](https://github.com/bigcommerce/checkout-js/compare/v1.769.1...v1.769.2) (2026-04-07)
