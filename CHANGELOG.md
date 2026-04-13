@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.771.0](https://github.com/bigcommerce/checkout-js/compare/v1.770.2...v1.771.0) (2026-04-13)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9890 add and update b2b extra fields in session storage ([#2920](https://github.com/bigcommerce/checkout-js/issues/2920)) ([13b5cb2](https://github.com/bigcommerce/checkout-js/commit/13b5cb2aa49555d018247aecf437fe9b27749d11))
+
 ### [1.770.2](https://github.com/bigcommerce/checkout-js/compare/v1.770.1...v1.770.2) (2026-04-10)
 
 ### [1.770.1](https://github.com/bigcommerce/checkout-js/compare/v1.770.0...v1.770.1) (2026-04-09)
