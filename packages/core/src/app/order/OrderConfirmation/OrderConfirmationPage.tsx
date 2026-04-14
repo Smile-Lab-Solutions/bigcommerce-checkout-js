@@ -2,7 +2,6 @@ import {
     type Order,
     type ShopperConfig,
     type ShopperCurrency,
-    type StoreConfig,
     type StoreCurrency,
 } from '@bigcommerce/checkout-sdk';
 import classNames from 'classnames';
@@ -16,7 +15,6 @@ import { loadOwlCarousel } from '../../../../../../scripts/custom/orderConfirmat
 
 interface OrderConfirmationPageProps {
     order: Order;
-    config: StoreConfig;
     supportEmail: string;
     supportPhoneNumber: string | undefined;
     paymentInstructions: string | undefined;

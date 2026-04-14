@@ -25,10 +25,18 @@ export interface CheckoutAppProps {
     publicPath?: string;
     sentryConfig?: BrowserOptions;
     sentrySampleRate?: number;
+    rollOutLazyPaymentStrategies?: boolean;
 }
 
 const CheckoutApp = (props: CheckoutAppProps): ReactElement => {
-    const { containerId, sentryConfig, publicPath, sentrySampleRate } = props;
+    let isCheckoutHookExperimentEnabled = false;
+    const { containerId, sentryConfig, publicPath, sentrySampleRate, initialState } = props;
+
+    if (initialState) {
+        isCheckoutHookExperimentEnabled = initialState?.config?.storeConfig
+            .checkoutSettings
+            .features['CHECKOUT-9842.roll_out_state_new_checkout_hook'] ?? false;
+    }
 
     const errorLogger = useMemo(() => createErrorLogger(
         { sentry: sentryConfig },
@@ -43,6 +51,7 @@ const CheckoutApp = (props: CheckoutAppProps): ReactElement => {
         locale: languageService.getLocale(),
         shouldWarnMutation: process.env.NODE_ENV === 'development',
         errorLogger,
+        rollOutLazyPaymentStrategies: props.rollOutLazyPaymentStrategies,
     }), []);
     const extensionService = useMemo(() => new ExtensionService(checkoutService, errorLogger), []);
     const embeddedStylesheet = useMemo(() => createEmbeddedCheckoutStylesheet(), []);
@@ -55,7 +64,11 @@ const CheckoutApp = (props: CheckoutAppProps): ReactElement => {
     return (
         <ErrorBoundary errorLogger={errorLogger}>
             <LocaleProvider checkoutService={checkoutService} languageService={languageService}>
-                <CheckoutProvider checkoutService={checkoutService} errorLogger={errorLogger}>
+                <CheckoutProvider
+                    checkoutService={checkoutService}
+                    errorLogger={errorLogger}
+                    isCheckoutHookExperimentEnabled={isCheckoutHookExperimentEnabled}
+                >
                     <AnalyticsProvider checkoutService={checkoutService}>
                         <ExtensionProvider extensionService={extensionService}>
                             <ThemeProvider>

@@ -18,9 +18,9 @@
             "custom_required_error": "{label} est obligatoire",
             "custom_min_error": "{label} doit comporter au moins {min} caractères",
             "custom_max_error": "{label} ne doit pas comporter plus de {max} caractères",
-            "custom_min_number_error": "{label} must be greater than or equal to {min}",
-            "custom_max_number_error": "{label} must be less than or equal to {max}",
-            "custom_range_error": "{label} must be between {min} and {max}",
+            "custom_min_number_error": "{label} doit être supérieur ou égal à {min}",
+            "custom_max_number_error": "{label} doit être inférieur ou égal à {max}",
+            "custom_range_error": "{label} doit être compris entre {min} et {max}",
             "invalid_characters_error": "{label} contient des caractères non valides",
             "custom_valid_error": "{label} n'est pas valide",
             "edit_address_action": "Modifier l'adresse",
@@ -37,6 +37,7 @@
             "postal_code_label": "Code postal",
             "postal_code_required_error": "Le code postal est requis",
             "save_in_addressbook": "Enregistrer cette adresse dans mon carnet d'adresses.",
+            "search_addresses": "Rechercher des adresses",
             "select_country_action": "Sélectionnez un pays",
             "select_state_action": "Sélectionnez un État",
             "state_label": "État/Province",
@@ -48,6 +49,7 @@
         "billing": {
             "billing_address_heading": "Adresse de facturation",
             "billing_heading": "Facturation",
+            "no_billing_addresses_warning": "Nous sommes désolés, mais vous n'avez pas d'adresse de facturation. Veuillez accéder à votre carnet d'adresses pour en créer une ou contacter l'administrateur de votre site.",
             "save_billing_address_error": "Une erreur s'est produite lors de l'enregistrement de l'adresse de facturation pour le devis. Veuillez réessayer.",
             "billing_address_amazonpay": "Géré par Amazon Pay",
             "use_shipping_address_label": "Mon adresse de facturation est identique à mon adresse de livraison."
@@ -70,7 +72,13 @@
             "items": "articles",
             "item_count_text": "{count, plural, one{1 article} other{# articles} }",
             "backorder_count_text": "{count} seront en attente de réapprovisionnement",
+            "backorder_quantities_changed_heading": "La quantité de commandes en attente de réapprovisionnement ont changé pour les articles ci-dessous :",
+            "cart_stock_modal_destination": "Destination n°{consignmentNumber} ({address})",
+            "ready_to_ship_count_text": "{count} prêt·s pour expédition",
+            "show_backorder_details": "Afficher les détails de la commande en attente",
+            "hide_backorder_details": "Masquer les détails de la commande en attente",
             "print_action": "Imprimer",
+            "qty_label": "Qté : {quantity}",
             "remaining_text": "restant·s",
             "remove_action": "supprimer",
             "return_to_checkout": "REVENIR AU PAIEMENT",
@@ -313,6 +321,7 @@
             "payment_method_invalid_error": "Une erreur s'est produite lors du traitement de votre paiement. Veuillez choisir un autre mode de paiement ou nous contacter pour obtenir de l'aide.",
             "payment_method_unavailable_error": "Ce prestataire de paiement est temporairement indisponible. Veuillez réessayer plus tard.",
             "payment_not_required_text": "Aucun paiement n'est requis pour cette commande.",
+            "payment_methods_unavailable_error": "Nous ne pouvons pas charger les modes de paiement pour le moment. Veuillez réessayer plus tard ou contacter la boutique pour obtenir de l'aide.",
             "paypal_complete_action": "Terminer la commande",
             "paypal_continue_action": "Continuer avec PayPal",
             "paypal_pay_later_complete_action": "Terminer la commande",
@@ -494,6 +503,7 @@
             "gift_certificate_remaining_text": "restant·s",
             "gift_certificate_text": "Chèque-cadeau",
             "manual_discount": "Remise manuelle",
+            "maximum_discount_applied_text": "Remise maximale appliquée",
             "remove_action": "Supprimer",
             "store_credit_available_text": "Un avoir de {storeCredit} est actuellement disponible sur votre compte",
             "toggle_action": "Code promotionnel/chèque-cadeau",
@@ -527,6 +537,7 @@
             "save_shipping_address_error": "Une erreur s'est produite lors de l'enregistrement de l'adresse de livraison pour le devis. Veuillez réessayer.",
             "save_shipping_option_error": "Une erreur s'est produite lors de l'enregistrement du devis de livraison pour votre commande. Veuillez réessayer.",
             "select_shipping_address_text": "Veuillez sélectionner une adresse de livraison pour obtenir une estimation des frais de livraison.",
+            "no_shipping_addresses_warning": "Nous sommes désolés, mais vous n'avez pas d'adresse de livraison. Veuillez accéder à votre carnet d'adresses pour en créer une ou contacter l'administrateur de votre site.",
             "shipping_address_heading": "Adresse de livraison",
             "multishipping_consignment_index_heading": "Destination #{consignmentNumber}",
             "multishipping_incomplete_consignment_error": "Veuillez compléter l'adresse, l'attribution des articles et la méthode de sélection pour Destination n° {consignmentNumber}.",
@@ -555,6 +566,7 @@
             "multishipping_left_to_allocate_items_table_item": "Article",
             "multishipping_left_to_allocate_items_table_left_to_allocate": "Articles restants pour attribution",
             "multishipping_left_to_allocate_items_table_quantity": "Quantité",
+            "multishipping_backordered_quantity": "({count} seront en attente de réapprovisionnement)",
             "no_countries_available_heading": "Nous rencontrons des difficultés à charger votre pays de livraison",
             "no_countries_available_message": "Veuillez actualiser la page ou réessayer dans un instant. Si le problème persiste, contactez notre équipe d’assistance et nous vous aiderons à finaliser votre commande.",
             "multishipping_item_split_tooltip_message": "Ces quantités d'articles sont réparties sur une ligne distincte en raison d'une promotion basée sur la quantité ou d'un prix personnalisé.",
@@ -609,8 +621,8 @@
                 "adyenv3": {
                     "boletobancario": "Ticket Boleto Bancário",
                     "multibanco": {
-                        "reference": "Payment reference",
-                        "entity": "Entity number",
+                        "reference": "Référence du paiement",
+                        "entity": "Numéro d'entité",
                         "expires_at": "Date d'expiration"
                     },
                     "oxxo": "Ticket OXXO"
@@ -652,7 +664,19 @@
             "thank_you_customer_heading": "Merci {name} !",
             "thank_you_heading": "Merci !",
             "continue_shopping": "Continuer mes achats »",
-            "order_status_update_facebook_messenger_heading": "Recevez toutes les mises à jour de votre commande sur Messenger"
+            "order_status_update_facebook_messenger_heading": "Recevez toutes les mises à jour de votre commande sur Messenger",
+            "expired_token": {
+                "heading": "Lien expiré",
+                "description": "Pour des raisons de sécurité, ce lien a expiré.",
+                "resend_action": "Renvoyer le lien sécurisé",
+                "sending": "Envoi en cours...",
+                "resend_success": "Un nouveau lien a été envoyé à votre adresse e-mail.",
+                "resend_error": "Impossible de renvoyer le lien. Veuillez réessayer plus tard."
+            },
+            "rate_limited": {
+                "heading": "Trop de demandes",
+                "message": "Vous avez effectué trop de tentatives. Veuillez patienter quelques minutes et réessayer."
+            }
         }
     }
 }

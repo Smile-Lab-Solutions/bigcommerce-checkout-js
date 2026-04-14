@@ -39,6 +39,7 @@
             "postal_code_required_error": "Postal Code is required",
             "postal_code_us_required_error": "ZIP Code is required",
             "save_in_addressbook": "Save this address in my address book.",
+            "search_addresses": "Search addresses",
             "select_country_action": "Select a country",
             "select_state_action": "Select a state",
             "state_label": "State/Province",
@@ -50,6 +51,7 @@
         "billing": {
             "billing_address_heading": "Billing Address",
             "billing_heading": "Billing Details",
+            "no_billing_addresses_warning": "Sorry, you have no billing address to choose from, please go to your address book to create an address or contact your site admin.",
             "save_billing_address_error": "An error occurred while saving the billing address to your price quote. Please try again.",
             "billing_address_amazonpay": "Managed by Amazon Pay",
             "use_shipping_address_label": "My billing address is the same as my shipping address."
@@ -72,7 +74,13 @@
             "items": "items",
             "item_count_text": "{count, plural, one{1 Item} other{# Items} }",
             "backorder_count_text": "{count} will be backordered",
+            "backorder_quantities_changed_heading": "The backorder quantities have changed for below items:",
+            "cart_stock_modal_destination": "Destination #{consignmentNumber} ({address})",
+            "ready_to_ship_count_text": "{count} ready to ship",
+            "show_backorder_details": "Show backorder details",
+            "hide_backorder_details": "Hide backorder details",
             "print_action": "Print",
+            "qty_label": "Qty: {quantity}",
             "remaining_text": "Remaining",
             "remove_action": "remove",
             "return_to_checkout": "RETURN TO CHECKOUT",
@@ -317,6 +325,7 @@
             "payment_method_invalid_error": "There's a problem processing your payment. Please contact us for assistance or choose another payment method.",
             "payment_method_unavailable_error": "This payment provider is temporarily unavailable. Please try again later.",
             "payment_not_required_text": "Payment is not required for this order.",
+            "payment_methods_unavailable_error": "We're unable to load payment methods at the moment. Please try again later or contact the store for assistance.",
             "paypal_complete_action": "Complete order",
             "paypal_continue_action": "Continue with PayPal",
             "paypal_pay_later_complete_action": "Complete order",
@@ -506,6 +515,7 @@
             "gift_certificate_remaining_text": "Remaining",
             "gift_certificate_text": "Gift Card",
             "manual_discount": "Manual discount",
+            "maximum_discount_applied_text": "Maximum discount applied",
             "remove_action": "Remove",
             "store_credit_available_text": "Your account currently has {storeCredit} total store credit available",
             "toggle_action": "Discount Code",
@@ -540,6 +550,7 @@
             "save_shipping_address_error": "An error occurred while saving the shipping address to your price quote. Please try again.",
             "save_shipping_option_error": "An error occurred while saving the shipping quote to your order. Please try again.",
             "select_shipping_address_text": "Please select a shipping address in order to see shipping quotes",
+            "no_shipping_addresses_warning": "Sorry, you have no shipping address to choose from, please go to your address book to create an address or contact your site admin.",
             "shipping_address_heading": "Shipping address",
             "multishipping_consignment_index_heading": "Destination #{consignmentNumber}",
             "multishipping_incomplete_consignment_error": "Please complete the address, item allocation, and method selection for Destination #{consignmentNumber}.",
@@ -568,6 +579,7 @@
             "multishipping_left_to_allocate_items_table_item": "Item",
             "multishipping_left_to_allocate_items_table_left_to_allocate": "Left to allocate",
             "multishipping_left_to_allocate_items_table_quantity": "Quantity",
+            "multishipping_backordered_quantity": "({count} will be backordered)",
             "no_countries_available_heading": "We're having trouble loading your shipping country",
             "no_countries_available_message": "Please refresh the page or try again in a moment. If the issue continues, contact our support team and we'll help complete your order.",
             "multishipping_item_split_tooltip_message": "These item quantities are split into a separate row due to a quantity-based promotion or custom price.",
@@ -665,7 +677,19 @@
             "thank_you_customer_heading": "Thank you {name}!",
             "thank_you_heading": "Thank you!",
             "continue_shopping": "Continue Shopping »",
-            "order_status_update_facebook_messenger_heading": "Get instant updates of your order to Messenger"
+            "order_status_update_facebook_messenger_heading": "Get instant updates of your order to Messenger",
+            "expired_token": {
+                "heading": "Link Expired",
+                "description": "For security, this link has expired.",
+                "resend_action": "Resend Secure Link",
+                "sending": "Sending...",
+                "resend_success": "A new link has been sent to your email address.",
+                "resend_error": "Failed to resend link. Please try again later."
+            },
+            "rate_limited": {
+                "heading": "Too Many Requests",
+                "message": "You've made too many attempts. Please wait a few minutes and try again."
+            }
         }
     }
 }
