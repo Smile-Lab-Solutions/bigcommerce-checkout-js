@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.772.0](https://github.com/bigcommerce/checkout-js/compare/v1.771.2...v1.772.0) (2026-04-14)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9889 Enable Extra Fields in Multi-shipping ([#2937](https://github.com/bigcommerce/checkout-js/issues/2937)) ([140303f](https://github.com/bigcommerce/checkout-js/commit/140303fdcdf1c44729abfc3d1b0949d25161656d))
+
 ### [1.771.2](https://github.com/bigcommerce/checkout-js/compare/v1.771.1...v1.771.2) (2026-04-13)
 
 ### [1.771.1](https://github.com/bigcommerce/checkout-js/compare/v1.771.0...v1.771.1) (2026-04-13)
