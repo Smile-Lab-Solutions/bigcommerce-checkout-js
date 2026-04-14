@@ -113,6 +113,7 @@ const SingleShippingForm: React.FC<
         shouldShowOrderComments,
         updateAddress,
         values,
+        storeCurrencyCode
     }) => {
     const { shipping: { hideBillingSameAsShippingCheck } } = useCapabilities();
 
@@ -319,6 +320,7 @@ const SingleShippingForm: React.FC<
                     onUseNewAddress={handleUseNewAddress}
                     shippingAddress={shippingAddress}
                     validateMaxLength={validateMaxLength}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
                 {shouldShowBillingSameAsShipping && (
                     <div className="form-body">

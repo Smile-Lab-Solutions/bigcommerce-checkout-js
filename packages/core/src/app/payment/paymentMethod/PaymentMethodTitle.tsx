@@ -322,11 +322,11 @@ export function getPaymentMethodTitle(
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
             if (method.id === 'credit_card') {
-                return { logoUrl: '', titleText: methodDisplayName }
+                return { logoUrl: '', titleText: methodDisplayName, titleSubText: '' }
             }
 
             if (method.id === 'ecp') {
-                return { logoUrl: '', titleText: methodDisplayName };
+                return { logoUrl: '', titleText: methodDisplayName, titleSubText: '' };
             }
 
             if (method.id === 'banktransfer') {
