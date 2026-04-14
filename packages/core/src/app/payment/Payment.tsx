@@ -1,4 +1,6 @@
 import {
+    type Cart,
+    type CartStockPositionsChangedError,
     type Checkout,
     type CheckoutSelectors,
     type CheckoutService,
@@ -41,11 +43,13 @@ import {
     ErrorModal,
     type ErrorModalOnCloseProps,
     isCartChangedError,
+    isCartStockPositionChangedError,
     isErrorWithType,
 } from '../common/error';
-import { EMPTY_ARRAY } from '../common/utility';
+import { EMPTY_ARRAY, isExperimentEnabled } from '../common/utility';
 import { TermsConditionsType } from '../termsConditions';
 
+import CartStockPositionsChangedModal from './CartStockPositionsChangedModal';
 import mapSubmitOrderErrorMessage, { mapSubmitOrderErrorTitle } from './mapSubmitOrderErrorMessage';
 import mapToOrderRequestBody from './mapToOrderRequestBody';
 import PaymentContext from './PaymentContext';
@@ -139,6 +143,8 @@ export interface PaymentProps {
 
 interface WithCheckoutPaymentProps {
     availableStoreCredit: number;
+    cart?: Cart;
+    consignments?: Consignment[];
     cartUrl: string;
     defaultMethod?: PaymentMethod;
     finalizeOrderError?: Error;
@@ -149,6 +155,7 @@ interface WithCheckoutPaymentProps {
     methods: PaymentMethod[];
     shouldExecuteSpamCheck: boolean;
     shouldLocaliseErrorMessages: boolean;
+    shouldShowSubmitPaymentButton: boolean;
     submitOrderError?: Error;
     termsConditionsText?: string;
     termsConditionsUrl?: string;
@@ -185,9 +192,51 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
         submitFunctions: {},
     });
 
+    const [isCartStockRefreshComplete, setIsCartStockRefreshComplete] = useState(false);
+
     const isReadyRef = useRef(state.isReady);
     const grandTotalChangeUnsubscribe = useRef<() => void>();
     const validationSchemasRef = useRef<validationSchemas>({});
+    const lastFormValuesRef = useRef<PaymentFormValues | null>(null);
+
+    const renderCartStockPositionsChangedModal = (
+      error: CartStockPositionsChangedError,
+    ): ReactNode => {
+      const { cart, clearError, consignments } = props;
+      const changedLineItemIds = error.changedItemIds;
+      const hasItemsToShow = !!changedLineItemIds?.length;
+
+      if (!hasItemsToShow) {
+        return null;
+      }
+
+      const onCartStockModalPlaceOrder = (): void => {
+        clearError(error);
+
+        const values = lastFormValuesRef.current;
+
+        if (values) {
+          handleSubmit(values);
+        }
+      };
+
+      const onCartStockModalRequestClose = (): void => {
+        clearError(error);
+        lastFormValuesRef.current = null;
+        setIsCartStockRefreshComplete(false);
+      };
+
+      return (
+        <CartStockPositionsChangedModal
+          cart={cart}
+          changedLineItemIds={changedLineItemIds}
+          consignments={consignments}
+          isOpen={true}
+          onPlaceOrder={onCartStockModalPlaceOrder}
+          onRequestClose={onCartStockModalRequestClose}
+        />
+      );
+    };
 
     const renderOrderErrorModal = (): ReactNode => {
             const { finalizeOrderError, language, shouldLocaliseErrorMessages, submitOrderError } =
@@ -205,6 +254,14 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
                 error.type === 'invalid_hosted_form_value'
             ) {
                 return null;
+            }
+
+            if (isCartStockPositionChangedError(error)) {
+                if (!isCartStockRefreshComplete) {
+                    return null;
+                }
+
+                return renderCartStockPositionsChangedModal(error);
             }
 
             return (
@@ -361,6 +418,19 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
         return onUnhandledError(error);
     }, []);
 
+    const onCartStockPositionChangedError = (values: PaymentFormValues): void => {
+        lastFormValuesRef.current = values;
+        setIsCartStockRefreshComplete(false);
+        props.loadCheckout()
+            .then(() => setIsCartStockRefreshComplete(true))
+            .catch(() => {
+                const { onUnhandledError = noop } = props;
+
+                onUnhandledError(new Error('Cart refresh failed after stock position change'));
+                setIsCartStockRefreshComplete(true);
+            });
+    };
+
     const handleSubmit = useCallback(async (values: PaymentFormValues) => {
         const {
             defaultMethod,
@@ -401,6 +471,10 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
 
             if (isCartChangedError(error)) {
                 return onCartChangedError();
+            }
+
+            if (isCartStockPositionChangedError(error)) {
+                return onCartStockPositionChangedError(values);
             }
 
             onSubmitError(error);
@@ -598,15 +672,16 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
     const { selectedMethod = props.defaultMethod } = state;
     const uniqueSelectedMethodId =
         selectedMethod && getUniquePaymentMethodId(selectedMethod.id, selectedMethod.gateway);
+    const shouldShowPaymentForm = props.shouldShowSubmitPaymentButton || (!isEmpty(props.methods) && props.defaultMethod);
 
     return (
         <PaymentContext.Provider value={getContextValue()}>
             <ChecklistSkeleton isLoading={!state.isReady}>
-                {!isEmpty(props.methods) && props.defaultMethod && (
+                {shouldShowPaymentForm &&
                     <PaymentForm
                         availableStoreCredit={props.availableStoreCredit}
-                        defaultGatewayId={props.defaultMethod.gateway}
-                        defaultMethodId={props.defaultMethod.id}
+                        defaultGatewayId={props.defaultMethod?.gateway}
+                        defaultMethodId={props.defaultMethod?.id || ''}
                         didExceedSpamLimit={state.didExceedSpamLimit}
                         isEmbedded={props.isEmbedded}
                         isInitializingPayment={props.isInitializingPayment}
@@ -628,7 +703,7 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
                         usableStoreCredit={props.usableStoreCredit}
                         validationSchema={(uniqueSelectedMethodId && validationSchemasRef.current[uniqueSelectedMethodId]) || undefined}
                     />
-                )}
+                }
             </ChecklistSkeleton>
 
             {renderOrderErrorModal()}
@@ -643,6 +718,7 @@ export function mapToPaymentProps({
 }: CheckoutContextProps): WithCheckoutPaymentProps | null {
     const {
         data: {
+            getCart,
             getCheckout,
             getConfig,
             getCustomer,
@@ -691,6 +767,8 @@ export function mapToPaymentProps({
     return {
         applyStoreCredit: checkoutService.applyStoreCredit,
         availableStoreCredit: customer.storeCredit,
+        cart: getCart(),
+        consignments,
         cartUrl: config.links.cartLink,
         clearError: checkoutService.clearError,
         defaultMethod,
@@ -707,6 +785,7 @@ export function mapToPaymentProps({
         shouldExecuteSpamCheck: checkout.shouldExecuteSpamCheck,
         shouldLocaliseErrorMessages:
             features['PAYMENTS-6799.localise_checkout_payment_error_messages'],
+        shouldShowSubmitPaymentButton: isExperimentEnabled(config.checkoutSettings, 'CHECKOUT-9729.show_submit_button_when_payment_not_required', false),
         submitOrder: checkoutService.submitOrder,
         submitOrderError: getSubmitOrderError(),
         checkoutServiceSubscribe: checkoutService.subscribe,

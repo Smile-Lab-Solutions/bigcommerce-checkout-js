@@ -1,10 +1,12 @@
+import { useCallback } from 'react';
 import { createSelector } from 'reselect';
 
-import { type CheckoutContextProps, useCheckout } from '@bigcommerce/checkout/contexts';
+import { type CheckoutContextProps, useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
 import { shouldUseStripeLinkByMinimumAmount } from '@bigcommerce/checkout/instrument-utils';
 import { PaymentMethodId } from '@bigcommerce/checkout/payment-integration-api';
 
 import { EMPTY_ARRAY, isExperimentEnabled } from '../../common/utility';
+import getBackorderCount from '../../order/getBackorderCount';
 import getProviderWithCustomCheckout from '../../payment/getProviderWithCustomCheckout';
 import getShippableItemsCount from '../getShippableItemsCount';
 import getShippingMethodId from '../getShippingMethodId';
@@ -26,6 +28,7 @@ const deleteConsignmentsSelector = createSelector(
 
 export const useShipping = () => {
     const { checkoutState, checkoutService } = useCheckout();
+    const { userJourney: { hasExtraAddressFields } } = useCapabilities();
 
     const {
         data: {
@@ -38,6 +41,7 @@ export const useShipping = () => {
             getBillingAddress,
             getShippingAddressFields,
             getShippingCountries,
+            getAddressExtraFormFields,
         },
         statuses: {
             isShippingStepPending,
@@ -94,6 +98,21 @@ export const useShipping = () => {
         config.checkoutSettings.providerWithCustomCheckout,
     );
 
+    const showDefaultShippingExpectationPrompt = getBackorderCount(cart.lineItems) > 0 && config.inventorySettings?.showDefaultShippingExpectationPrompt;
+    const defaultShippingExpectationPrompt = config.inventorySettings?.defaultShippingExpectationPrompt ?? undefined;
+
+    const getFieldsWithExtraFields = useCallback((countryCode?: string) => {
+        const addressFields = getShippingAddressFields(countryCode || '');
+
+        if (!hasExtraAddressFields) {
+            return addressFields;
+        }
+
+        const extraAddressFields = getAddressExtraFormFields();
+
+        return [...addressFields, ...extraAddressFields];
+    }, [getShippingAddressFields, getAddressExtraFormFields, hasExtraAddressFields]);
+
     return {
         assignItem: checkoutService.assignItemsToAddress,
         billingAddress: getBillingAddress(),
@@ -104,13 +123,19 @@ export const useShipping = () => {
         customer,
         customerMessage: checkout.customerMessage,
         createCustomerAddress: checkoutService.createCustomerAddress,
+        defaultShippingExpectationMessage: showDefaultShippingExpectationPrompt ? defaultShippingExpectationPrompt : undefined,
         deinitializeShippingMethod: checkoutService.deinitializeShipping,
-        deleteConsignments: deleteConsignmentsSelector({ checkoutService, checkoutState }),
-        getFields: getShippingAddressFields,
+        deleteConsignments: deleteConsignmentsSelector({
+            checkoutService,
+            checkoutState,
+        }),
+        hasMultiShippingEnabled,
+        getFields: getFieldsWithExtraFields,
         initializeShippingMethod: checkoutService.initializeShipping,
         isGuest: customer.isGuest,
         isInitializing: isLoadingShippingCountries() || isLoadingShippingOptions(),
         isLoading,
+        isNoCountriesErrorOnCheckoutEnabled: isExperimentEnabled(config.checkoutSettings, 'CHECKOUT-9630.no_countries_error_on_checkout', true),
         isShippingStepPending: isShippingStepPending(),
         loadShippingAddressFields: checkoutService.loadShippingAddressFields,
         loadBillingAddressFields: checkoutService.loadBillingAddressFields,

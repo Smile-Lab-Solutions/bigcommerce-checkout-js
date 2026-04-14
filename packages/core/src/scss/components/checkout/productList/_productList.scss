@@ -6,6 +6,9 @@
 //
 // -----------------------------------------------------------------------------
 
+$animation-duration: 300ms;
+$animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
 .productList {
     @include u-listBullets("none");
 
@@ -73,6 +76,13 @@
     margin-top: spacing("quarter");
 }
 
+.product-backorder-details-container {
+    overflow: hidden;
+    transition:
+        height $animation-duration $animation-easing,
+        opacity $animation-duration $animation-easing;
+}
+
 .product-actions {
     align-self: center;
     margin-left: auto;
@@ -96,9 +106,6 @@
 // PRODUCT ITEM ANIMATION
 // =============================================================================
 
-$animation-duration: 300ms;
-$animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
-
 // Product item animation (add/remove products via BOGO coupons)
 .productList-item {
     transition:
@@ -109,7 +116,8 @@ $animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
 // Accessibility: respect prefers-reduced-motion
 @media (prefers-reduced-motion: reduce) {
-    .productList-item {
+    .productList-item,
+    .product-backorder-details-container {
         transition: opacity 100ms ease-out !important;
     }
 }
