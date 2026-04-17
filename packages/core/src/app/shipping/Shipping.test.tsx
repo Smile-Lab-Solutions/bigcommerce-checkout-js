@@ -4,7 +4,6 @@ import {
     createEmbeddedCheckoutMessenger,
     type EmbeddedCheckoutMessenger,
 } from '@bigcommerce/checkout-sdk';
-import { faker } from '@faker-js/faker';
 import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
 import React, { type FunctionComponent } from 'react';
@@ -549,15 +548,15 @@ describe('Shipping step', () => {
 
             await userEvent.click(screen.getAllByRole('button', { name: 'Edit' })[1]);
 
-            const randomAddress1 = JSON.parse(JSON.stringify({
-                firstName: faker.name.firstName(),
-                lastName: faker.name.lastName(),
-                address1: faker.address.streetAddress(),
-                city: faker.address.city(),
+            const randomAddress1 = {
+                firstName: 'John',
+                lastName: 'Smith',
+                address1: '123 Test Street',
+                city: 'Test City',
                 countryCode: 'CC',
                 stateOrProvince: 'dummy state',
-                postalCode: faker.address.zipCode(),
-            }));
+                postalCode: '12345',
+            };
 
             await checkout.fillAddressForm(randomAddress1);
             await userEvent.selectOptions(
@@ -572,15 +571,15 @@ describe('Shipping step', () => {
                 }),
             );
 
-            const randomAddress2 = JSON.parse(JSON.stringify({
-                firstName: faker.name.firstName(),
-                lastName: faker.name.lastName(),
-                address1: faker.address.streetAddress(),
-                city: faker.address.city(),
+            const randomAddress2 = {
+                firstName: 'Jane',
+                lastName: 'Doe',
+                address1: '456 Sample Avenue',
+                city: 'Melbourne',
                 countryCode: 'AU',
-                stateOrProvinceCode: faker.helpers.arrayElement(['NSW', 'VIC', 'QLD', 'TAS']),
-                postalCode: faker.address.zipCode(),
-            }));
+                stateOrProvinceCode: 'VIC',
+                postalCode: '3000',
+            };
 
             await checkout.fillAddressForm(randomAddress2);
             await userEvent.selectOptions(
@@ -790,6 +789,43 @@ describe('Shipping step', () => {
             expect(checkoutService.selectConsignmentShippingOption).toHaveBeenCalled();
             // eslint-disable-next-line testing-library/no-container,testing-library/no-node-access
             expect(container.getElementsByClassName('form-checklist-item--selected')[0]).toHaveTextContent('Flat Rate$10.00');
+        });
+
+        it('displays strikethrough on shipping option when costAfterDiscount differs from cost', async () => {
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithBillingEmail);
+
+            jest.spyOn(checkoutService, 'updateShippingAddress');
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForShippingStep();
+
+            checkout.updateCheckout(
+                'post',
+                '/checkouts/xxxxxxxxxx-xxxx-xxax-xxxx-xxxxxx/consignments',
+                {
+                    ...checkoutWithBillingEmail,
+                    consignments: [
+                        {
+                            ...consignment,
+                            selectedShippingOption: undefined,
+                        },
+                    ],
+                },
+            );
+            checkout.updateCheckout(
+                'put',
+                '/checkouts/xxxxxxxxxx-xxxx-xxax-xxxx-xxxxxx/consignments/consignment-1',
+                {
+                    ...checkoutWithShipping,
+                },
+            );
+
+            await checkout.fillAddressForm();
+
+            expect(screen.getByRole('radio', { name: 'Pickup In Store $3.00' })).toBeInTheDocument();
+            expect(screen.getByRole('radio', { name: 'Flat Rate $10.00' })).toBeInTheDocument();
+            expect(screen.getByRole('radio', { name: 'Ship by Weight $30.00 $20.00' })).toBeInTheDocument();
         });
     });
 

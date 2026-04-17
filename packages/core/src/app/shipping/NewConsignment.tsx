@@ -6,6 +6,7 @@ import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { preventDefault } from "@bigcommerce/checkout/dom-utils";
 import { TranslatedString } from "@bigcommerce/checkout/locale";
 
+import { B2BExtraAddressFieldsSessionStorage } from '../address';
 import { EMPTY_ARRAY } from "../common/utility";
 
 import AllocateItemsModal from "./AllocateItemsModal";
@@ -69,6 +70,10 @@ const NewConsignment = ({
             return;
         }
 
+        const previousConsignmentIds = new Set(
+            (getPreviousConsignments() ?? []).map((c) => c.id),
+        );
+
         try {
             const {
                 data: { getConsignments },
@@ -78,6 +83,14 @@ const NewConsignment = ({
             });
 
             currentConsignments = getConsignments();
+
+            const newConsignment = currentConsignments?.find(
+                (c) => !previousConsignmentIds.has(c.id),
+            );
+
+            if (newConsignment) {
+                B2BExtraAddressFieldsSessionStorage.reassignConsignmentKey(newConsignment.id);
+            }
         } catch (error) {
             if (error instanceof AssignItemFailedError) {
                 onUnhandledError(error);

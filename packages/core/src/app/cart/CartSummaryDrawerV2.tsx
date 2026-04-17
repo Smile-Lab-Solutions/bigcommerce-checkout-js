@@ -1,9 +1,10 @@
 import { type Checkout, type ShopperCurrency as ShopperCurrencyType, type StoreCurrency } from '@bigcommerce/checkout-sdk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useRef, useState } from 'react';
 
-import { useCheckout } from '@bigcommerce/checkout/contexts';
+import { useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { IconArrowLeft, IconChevronDown, IconChevronUp } from '@bigcommerce/checkout/ui';
+import { CollapseCSSTransition, IconArrowLeft, IconChevronDown, IconChevronUp } from '@bigcommerce/checkout/ui';
+import { hideEditCartLink } from '@bigcommerce/checkout/utility';
 
 import { ShopperCurrency } from '../currency';
 import OrderSummary from '../order/OrderSummary';
@@ -29,8 +30,11 @@ export interface CartSummaryDrawerV2Props {
 
 const CartSummaryDrawerV2: FunctionComponent<CartSummaryDrawerV2Props> = ({ isMultiShippingMode }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    
+
+    const nodeRef = useRef<HTMLDivElement>(null);
+
     const checkoutContext = useCheckout();
+    const { userJourney: { disableEditCart } } = useCapabilities();
     const props = mapToCartSummaryProps(checkoutContext);
 
     if (!props) {
@@ -38,8 +42,8 @@ const CartSummaryDrawerV2: FunctionComponent<CartSummaryDrawerV2Props> = ({ isMu
     }
 
     const { cartUrl, isBuyNowCart, checkout } = props;
-    
-    const headerLink = isBuyNowCart ? null : (
+
+    const headerLink = hideEditCartLink(isBuyNowCart, disableEditCart) ? null : (
         <EditLink
             isMultiShippingMode={isMultiShippingMode}
             label={<TranslatedString id="cart.go_to_cart_action" />}
@@ -53,14 +57,14 @@ const CartSummaryDrawerV2: FunctionComponent<CartSummaryDrawerV2Props> = ({ isMu
             <IconArrowLeft />
             {headerLink}
         </div>
-        <button 
+        <button
             aria-expanded={isExpanded}
             className="cart-summary-toggle"
             onClick={() => setIsExpanded(!isExpanded)}
         >
             <span className='body-regular'>
-                <TranslatedString 
-                    id={isExpanded ? 'cart.hide_order_summary_action' : 'cart.show_order_summary_action'} 
+                <TranslatedString
+                    id={isExpanded ? 'cart.hide_order_summary_action' : 'cart.show_order_summary_action'}
                 />
                 {isExpanded ? <IconChevronUp /> : <IconChevronDown />}
             </span>
@@ -68,13 +72,17 @@ const CartSummaryDrawerV2: FunctionComponent<CartSummaryDrawerV2Props> = ({ isMu
                 <ShopperCurrency amount={checkout.outstandingBalance} />
             </span>
         </button>
-        {isExpanded && (
-            withRedeemable(OrderSummary)({
-                ...props,
-                headerLink: null,
-                showHeader: false,
-            })
-        )}
+        <CollapseCSSTransition isVisible={isExpanded} nodeRef={nodeRef}>
+            <div ref={nodeRef}>
+                {(
+                    withRedeemable(OrderSummary)({
+                        ...props,
+                        headerLink: null,
+                        showHeader: false,
+                    })
+                )}
+            </div>
+        </CollapseCSSTransition>
     </div>
     );
 };

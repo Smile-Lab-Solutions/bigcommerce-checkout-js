@@ -1,11 +1,11 @@
-import type { CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import type { CheckoutSelectors, FormField } from '@bigcommerce/checkout-sdk';
 import React, { type ReactElement, useEffect } from 'react';
 
-import { useCheckout } from '@bigcommerce/checkout/contexts';
+import { useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { AddressFormSkeleton } from '@bigcommerce/checkout/ui';
 
-import { isEqualAddress, mapAddressFromFormValues } from '../address';
+import { B2BExtraAddressFieldsSessionStorage, isEqualAddress, mapAddressFromFormValues } from '../address';
 import { Legend } from '../ui/form';
 
 import BillingForm, { type BillingFormValues } from './BillingForm';
@@ -17,8 +17,21 @@ export interface BillingProps {
     onUnhandledError(error: Error): void;
 }
 
+const getFieldsWithExtraFields = (getBillingAddressFields: (countryCode: string) => FormField[], hasExtraAddressFields: boolean, getAddressExtraFormFields: () => FormField[], countryCode?: string) => {
+    const addressFields = getBillingAddressFields(countryCode || '');
+
+    if (!hasExtraAddressFields) {
+        return addressFields;
+    }
+
+    const extraAddressFields = getAddressExtraFormFields();
+
+    return [...addressFields, ...extraAddressFields];
+};
+
 const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): ReactElement => {
     const { checkoutService, checkoutState } = useCheckout();
+    const { userJourney: { hasExtraAddressFields } } = useCapabilities();
 
     const {
         data: {
@@ -28,6 +41,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
             getCustomer,
             getBillingAddress,
             getBillingAddressFields,
+            getAddressExtraFormFields,
         },
         statuses: { isLoadingBillingCountries },
     } = checkoutState;
@@ -46,7 +60,6 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
     const customerMessage  = checkout.customerMessage;
     const methodId  = getBillingMethodId(checkout);
     const billingAddress  = getBillingAddress();
-    const getFields  = getBillingAddressFields;
     const handleSubmit = async ({
                                     orderComment,
                                     ...addressValues
@@ -55,7 +68,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
         const updateCheckout  = checkoutService.updateCheckout;
         const billingAddress  = getBillingAddress();
         const promises: Array<Promise<CheckoutSelectors>> = [];
-        const address = mapAddressFromFormValues(addressValues);
+        const address = mapAddressFromFormValues(addressValues, B2BExtraAddressFieldsSessionStorage.BILLING_KEY);
 
         if (address && !isEqualAddress(address, billingAddress)) {
             promises.push(updateAddress(address));
@@ -93,6 +106,19 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
         void init();
     }, []);
 
+    // TODO: Show warning message when restrictManualAddressEntry is true and no addresses are available
+    // Yet to decide where we get the addresses from in b2b flow??
+    // const hasAddresses = customer?.addresses && customer.addresses.length > 0;
+    // const showWarningMessage = restrictManualAddressEntry && !hasAddresses;
+
+    // if (showWarningMessage) {
+    //     return (
+    //         <div className="no-addresses-warning body-regular">
+    //             <TranslatedString id="billing.no_billing_addresses_warning" />
+    //         </div>
+    //     );
+    // }
+
     return (
         <AddressFormSkeleton isLoading={isInitializing}>
             <div className="checkout-form">
@@ -104,7 +130,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }:BillingProps): 
                 <BillingForm
                     billingAddress={billingAddress}
                     customerMessage={customerMessage}
-                    getFields={getFields}
+                    getFields={(countryCode?: string) => getFieldsWithExtraFields(getBillingAddressFields, hasExtraAddressFields, getAddressExtraFormFields, countryCode)}
                     methodId={methodId}
                     navigateNextStep={navigateNextStep}
                     onSubmit={handleSubmit}

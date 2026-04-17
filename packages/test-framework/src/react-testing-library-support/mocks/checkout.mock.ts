@@ -109,6 +109,8 @@ const consignment: Consignment = {
         additionalDescription: '',
         isRecommended: true,
     },
+    shippingCostBeforeDiscount: 3,
+    comparisonShippingCost: 3,
     shippingAddress: {
         ...shippingAddress1,
         shouldSaveAddress: true,
@@ -134,6 +136,17 @@ const consignment: Consignment = {
             description: 'Flat Rate',
             imageUrl: '',
             cost: 10,
+            transitTime: '',
+            isRecommended: false,
+            additionalDescription: '',
+        },
+        {
+            id: 'option-id-ship-by-weight',
+            type: 'shipping_by_weight',
+            description: 'Ship by Weight',
+            imageUrl: '',
+            cost: 30,
+            costAfterDiscount: 20,
             transitTime: '',
             isRecommended: false,
             additionalDescription: '',
@@ -328,10 +341,12 @@ const consignmentCoupon: Coupon = {
 const checkoutWithShippingDiscount: Checkout = {
     ...checkoutWithBillingEmail,
     shippingCostBeforeDiscount: 3,
+    comparisonShippingCost: 1,
     consignments: [
         {
             ...consignment,
             discounts: [consignmentAutomaticDiscount, consignmentCouponDiscount],
+            comparisonShippingCost: 1,
         },
     ],
     coupons: [consignmentCoupon],
@@ -465,6 +480,7 @@ enum CheckoutPreset {
     CheckoutWithPromotions = 'CheckoutWithPromotions',
     CheckoutWithShipping = 'CheckoutWithShipping',
     CheckoutWithShippingAndBilling = 'CheckoutWithShippingAndBilling',
+    CheckoutWithShippingAndExtraAddressFields = 'CheckoutWithShippingAndExtraAddressFields',
     CustomErrorFlashMessage = 'CustomErrorFlashMessage',
     ErrorFlashMessage = 'ErrorFlashMessage',
     UnsupportedProvider = 'UnsupportedProvider',
