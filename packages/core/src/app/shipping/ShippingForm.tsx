@@ -116,6 +116,7 @@ const ShippingForm = ({
             shouldShowOrderComments,
             updateAddress,
             validateMaxLength,
+            storeCurrencyCode
         };
 
         if (useSingleShippingFormFunctionComponent) {

@@ -352,7 +352,6 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
             selectedMethod.id === PaymentMethodId.CheckoutcomGooglePay ||
             selectedMethod.id === PaymentMethodId.Converge ||
             selectedMethod.id === PaymentMethodId.Humm ||
-            selectedMethod.id === PaymentMethodId.Laybuy ||
             selectedMethod.id === PaymentMethodId.Quadpay ||
             selectedMethod.id === PaymentMethodId.SagePay ||
             selectedMethod.id === PaymentMethodId.Sezzle ||
