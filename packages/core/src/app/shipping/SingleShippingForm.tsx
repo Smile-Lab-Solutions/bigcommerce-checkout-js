@@ -18,7 +18,7 @@ import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/loca
 
 import {
     type AddressFormValues,
-    B2BExtraAddressFieldsSessionStorage,
+    B2BExtraFieldsSessionStorage,
     getAddressFormFieldsValidationSchema,
     getTranslateAddressError,
     isEqualAddress,
@@ -27,7 +27,7 @@ import {
 } from '../address';
 import { isErrorWithType } from '../common/error';
 import { withFormikExtended } from '../common/form';
-import { getCustomFormFieldsValidationSchema, getExtraFormFieldsValidationSchema } from '../formFields';
+import { getAddressExtraFieldsValidationSchema, getCustomFormFieldsValidationSchema } from '../formFields';
 import { PaymentMethodId } from '../payment/paymentMethod';
 import { Fieldset, Form } from '../ui/form';
 
@@ -100,7 +100,6 @@ const SingleShippingForm: React.FC<
         isLoading,
         isShippingStepPending,
         isValid,
-        validateForm,
         methodId,
         onUnhandledError = noop,
         setFieldValue,
@@ -117,12 +116,12 @@ const SingleShippingForm: React.FC<
     }) => {
     const { shipping: { hideBillingSameAsShippingCheck } } = useCapabilities();
 
-    const propsRef = useRef({ values, shippingAddress });
+    const propsRef = useRef({ values, shippingAddress, isValid });
     const debouncedUpdateAddressRef = useRef<
         DebouncedFunc<(address: Address, includeShippingOptions: boolean) => Promise<void>> | undefined
     >(undefined);
 
-    propsRef.current = { values, shippingAddress };
+    propsRef.current = { values, shippingAddress, isValid };
 
     const [isResettingAddress, setIsResettingAddress] = useState(false);
     const [isUpdatingShippingData, setIsUpdatingShippingData] = useState(false);
@@ -194,7 +193,7 @@ const SingleShippingForm: React.FC<
                 shippingAddress: mapAddressToFormValues(
                     getFields(shippingAddress?.countryCode),
                     shippingAddress,
-                    B2BExtraAddressFieldsSessionStorage.SHIPPING_KEY,
+                    B2BExtraFieldsSessionStorage.SHIPPING_KEY,
                 ),
             });
         }
@@ -223,26 +222,15 @@ const SingleShippingForm: React.FC<
     };
 
     const handleFieldChange = async (name: string) => {
-        let updatedValues = propsRef.current.values;
-
-        if (name === 'countryCode' && propsRef.current.values.shippingAddress) {
-            updatedValues = {
-                ...propsRef.current.values,
-                shippingAddress: {
-                    ...propsRef.current.values.shippingAddress,
-                    stateOrProvince: '',
-                    stateOrProvinceCode: '',
-                },
-            };
-            setValues(updatedValues);
+        if (name === 'countryCode') {
+            setFieldValue('shippingAddress.stateOrProvince', '');
+            setFieldValue('shippingAddress.stateOrProvinceCode', '');
         }
 
-        const errors = await validateForm(updatedValues);
-        
-        const addressErrors = errors.shippingAddress;
+        // Enqueue the following code to run after Formik has run validation
+        await new Promise((resolve) => setTimeout(resolve));
 
-        // Only update address if there are no address errors
-        if (addressErrors && Object.keys(addressErrors).length > 0) {
+        if (!propsRef.current.isValid) {
             return;
         }
 
@@ -360,7 +348,7 @@ export default withLanguage(
             shippingAddress: mapAddressToFormValues(
                 getFields(shippingAddress?.countryCode),
                 shippingAddress,
-                B2BExtraAddressFieldsSessionStorage.SHIPPING_KEY,
+                B2BExtraFieldsSessionStorage.SHIPPING_KEY,
             ),
         }),
         isInitialValid: ({ shippingAddress, getFields, language, validateMaxLength }) => {
@@ -370,7 +358,7 @@ export default withLanguage(
             const formValues = mapAddressToFormValues(
                 fields,
                 shippingAddress,
-                B2BExtraAddressFieldsSessionStorage.SHIPPING_KEY,
+                B2BExtraFieldsSessionStorage.SHIPPING_KEY,
             );
 
             return getAddressFormFieldsValidationSchema({
@@ -396,7 +384,7 @@ export default withLanguage(
                               translate,
                               formFields: fields,
                           }).concat(
-                              getExtraFormFieldsValidationSchema({
+                              getAddressExtraFieldsValidationSchema({
                                   translate,
                                   formFields: fields,
                               }),

@@ -55,7 +55,6 @@ const PaymentMethodComponent: FunctionComponent<
 
     if (
         method.id === PaymentMethodId.Humm ||
-        method.id === PaymentMethodId.Laybuy ||
         method.type === PaymentMethodProviderType.Hosted
     ) {
         return (
