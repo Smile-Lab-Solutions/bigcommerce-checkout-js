@@ -190,11 +190,6 @@ export function getPaymentMethodTitle(
                 titleText: storeCurrency === 'USD' ? 'Pay later' : methodDisplayName,
                 titleSubText: '',
             },
-            [PaymentMethodId.Laybuy]: {
-                logoUrl: cdnPath('/img/payment-providers/laybuy-checkout-header.png'),
-                titleText: 'Buy now and pay over 6 weekly interest-free instalments',
-                titleSubText: '',
-            },
             [PaymentMethodType.Paypal]: {
                 // TODO: method.id === PaymentMethodId.BraintreeVenmo should be removed after the PAYPAL-1380.checkout_button_strategies_update experiment removal
                 logoUrl:
@@ -319,6 +314,16 @@ export function getPaymentMethodTitle(
                 titleSubText: 'Pay with your HSA/FSA card',
             },
         };
+
+        if (method.gateway === PaymentMethodId.WorldpayAccess) {
+            if (method.id === PaymentMethodId.WorldpayAccessOpenBanking) {
+                return { logoUrl: '', titleText: methodDisplayName, titleSubText: '' };
+            }
+
+            if (method.id === 'credit_card' || method.id === PaymentMethodId.WorldpayAccess) {
+                return { logoUrl: '', titleText: language.translate('payment.credit_debit_card_text'), titleSubText: '' };
+            }
+        }
 
         if (method.gateway === PaymentMethodId.BlueSnapDirect) {
             if (method.id === 'credit_card') {

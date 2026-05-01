@@ -352,7 +352,6 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
             selectedMethod.id === PaymentMethodId.CheckoutcomGooglePay ||
             selectedMethod.id === PaymentMethodId.Converge ||
             selectedMethod.id === PaymentMethodId.Humm ||
-            selectedMethod.id === PaymentMethodId.Laybuy ||
             selectedMethod.id === PaymentMethodId.Quadpay ||
             selectedMethod.id === PaymentMethodId.SagePay ||
             selectedMethod.id === PaymentMethodId.Sezzle ||
@@ -575,7 +574,7 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
         }));
     };
 
-    const setValidationSchema = (
+    const setValidationSchema = useCallback((
         method: PaymentMethod,
         schema: ObjectSchema<Partial<PaymentFormValues>> | null,
     ): void => {
@@ -586,7 +585,7 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
         }
 
         validationSchemasRef.current[uniqueId] = schema;
-    };
+    }, []);
 
     const loadPaymentMethodsOrThrow = async (): Promise<void> => {
         const {
