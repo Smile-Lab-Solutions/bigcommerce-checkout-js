@@ -2,6 +2,81 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.787.0](https://github.com/bigcommerce/checkout-js/compare/v1.786.1...v1.787.0) (2026-05-05)
+
+
+### Features
+
+* **payment:** PI-5142 [Oney] Add Oney payment method ([#2965](https://github.com/bigcommerce/checkout-js/issues/2965)) ([051a116](https://github.com/bigcommerce/checkout-js/commit/051a116999393e3b1aff1cb5668039ac40402aa5))
+
+### [1.786.1](https://github.com/bigcommerce/checkout-js/compare/v1.786.0...v1.786.1) (2026-05-05)
+
+## [1.786.0](https://github.com/bigcommerce/checkout-js/compare/v1.785.0...v1.786.0) (2026-05-04)
+
+
+### Features
+
+* **payment:** Stripe payments methods filter ([#2948](https://github.com/bigcommerce/checkout-js/issues/2948)) ([a96caa6](https://github.com/bigcommerce/checkout-js/commit/a96caa6fcd5bbc776d2ccd6771219c4b7d2799da))
+
+## [1.785.0](https://github.com/bigcommerce/checkout-js/compare/v1.784.0...v1.785.0) (2026-05-04)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9817 Add excludePPSDKFilter ([#2990](https://github.com/bigcommerce/checkout-js/issues/2990)) ([fc6b751](https://github.com/bigcommerce/checkout-js/commit/fc6b7517b2847354ba95fc11f95ee48a38fc9411))
+
+## [1.784.0](https://github.com/bigcommerce/checkout-js/compare/v1.783.1...v1.784.0) (2026-05-04)
+
+
+### Features
+
+* **payment:** Add provider section container on top of payment methods list ([#2944](https://github.com/bigcommerce/checkout-js/issues/2944)) ([a5b3143](https://github.com/bigcommerce/checkout-js/commit/a5b31432c50721703311e31d49463363e6c35eef))
+* **payment:** enable Stripe Adaptive Pricing element ([#2949](https://github.com/bigcommerce/checkout-js/issues/2949)) ([492b63e](https://github.com/bigcommerce/checkout-js/commit/492b63ef74742e607728d72122195e5c879d1e13))
+
+### [1.783.1](https://github.com/bigcommerce/checkout-js/compare/v1.783.0...v1.783.1) (2026-05-04)
+
+## [1.783.0](https://github.com/bigcommerce/checkout-js/compare/v1.782.3...v1.783.0) (2026-05-04)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9817 Introduce paymentMethodFilters ([#2979](https://github.com/bigcommerce/checkout-js/issues/2979)) ([09e573d](https://github.com/bigcommerce/checkout-js/commit/09e573d073130606e6723811c9e9e58c318135fb))
+
+### [1.782.3](https://github.com/bigcommerce/checkout-js/compare/v1.782.2...v1.782.3) (2026-05-01)
+
+### [1.782.2](https://github.com/bigcommerce/checkout-js/compare/v1.782.1...v1.782.2) (2026-05-01)
+
+### [1.782.1](https://github.com/bigcommerce/checkout-js/compare/v1.782.0...v1.782.1) (2026-04-30)
+
+## [1.782.0](https://github.com/bigcommerce/checkout-js/compare/v1.781.6...v1.782.0) (2026-04-30)
+
+
+### Features
+
+* **checkout:** CHECKOUT-9826 shipping and billing step warning message when no addresses ([#2978](https://github.com/bigcommerce/checkout-js/issues/2978)) ([ef3c809](https://github.com/bigcommerce/checkout-js/commit/ef3c80947d508ea648f7302b3f2d323c2c00602b))
+
+### [1.781.6](https://github.com/bigcommerce/checkout-js/compare/v1.781.5...v1.781.6) (2026-04-30)
+
+### [1.781.5](https://github.com/bigcommerce/checkout-js/compare/v1.781.4...v1.781.5) (2026-04-29)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9970 Remove experiment ([#2976](https://github.com/bigcommerce/checkout-js/issues/2976)) ([b0cf127](https://github.com/bigcommerce/checkout-js/commit/b0cf127dfff4ec0007de52804b1b7f3eed3be4cf))
+
+### [1.781.4](https://github.com/bigcommerce/checkout-js/compare/v1.781.3...v1.781.4) (2026-04-29)
+
+### [1.781.3](https://github.com/bigcommerce/checkout-js/compare/v1.781.2...v1.781.3) (2026-04-29)
+
+### [1.781.2](https://github.com/bigcommerce/checkout-js/compare/v1.781.1...v1.781.2) (2026-04-29)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-9783 Consolidate Animation Configs ([#2975](https://github.com/bigcommerce/checkout-js/issues/2975)) ([ac93cc8](https://github.com/bigcommerce/checkout-js/commit/ac93cc8a6502fb066dd2f4f3a2f9c37847b04641))
+
+### [1.781.1](https://github.com/bigcommerce/checkout-js/compare/v1.781.0...v1.781.1) (2026-04-29)
+
 ## [1.781.0](https://github.com/bigcommerce/checkout-js/compare/v1.780.0...v1.781.0) (2026-04-28)
 
 
