@@ -199,15 +199,11 @@ export function getPaymentMethodTitle(
                 titleText: '',
                 titleSubText: '',
                 subtitle: (props: PaymentMethodSubtitleProps): ReactNode => {
-                    if (isExperimentEnabled(checkoutSettings, 'CHECKOUT-9450.lazy_load_payment_strategies', false)) {
-                        if (method.id === PaymentMethodId.BraintreePaypalCredit || method.id === PaymentMethodId.BraintreePaypal) {
-                            return <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />;
-                        }
-
-                        return null;
+                    if (method.id === PaymentMethodId.BraintreePaypalCredit || method.id === PaymentMethodId.BraintreePaypal) {
+                        return <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />;
                     }
 
-                    return <BraintreePaypalCreditBanner containerId='braintree-banner-container' {...props} />;
+                    return null;
                 },
             },
             [PaymentMethodId.Quadpay]: {
