@@ -57,6 +57,11 @@ import {
     PaymentMethodProviderType,
 } from './paymentMethod';
 import { getFilteredPaymentMethodsWithDefault } from './paymentMethodFilters';
+import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
+import _ from 'lodash';
+
+import { terraceFinanceSubmit, flexSubmit, partiallySubmit } from './paymentMethod/CustomMethodsSubmit';
+
 
 export interface PaymentProps {
     capabilities: Capabilities;
@@ -265,32 +270,7 @@ const Payment= (props: PaymentProps & WithCheckoutPaymentProps & WithLanguagePro
                 !selectedMethod ||
                 selectedMethod.type === PaymentMethodProviderType.Hosted ||
                 selectedMethod.type === PaymentMethodProviderType.PPSDK ||
-                selectedMethod.skipRedirectConfirmationAlert ||
-            selectedMethod.gateway === PaymentMethodId.BlueSnapDirect ||
-            selectedMethod.gateway === PaymentMethodId.BlueSnapV2 ||
-            selectedMethod.id === PaymentMethodId.AmazonPay ||
-            selectedMethod.id === PaymentMethodId.CBAMPGS ||
-            selectedMethod.id === PaymentMethodId.Checkoutcom ||
-            selectedMethod.id === PaymentMethodId.CheckoutcomGooglePay ||
-            selectedMethod.id === PaymentMethodId.Converge ||
-            selectedMethod.id === PaymentMethodId.Humm ||
-            selectedMethod.id === PaymentMethodId.Quadpay ||
-            selectedMethod.id === PaymentMethodId.SagePay ||
-            selectedMethod.id === PaymentMethodId.Sezzle ||
-            selectedMethod.id === PaymentMethodId.WorldpayAccess ||
-            selectedMethod.id === PaymentMethodId.Zip ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV2 ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV2GooglePay ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV3 ||
-            selectedMethod.gateway === PaymentMethodId.AdyenV3GooglePay ||
-            selectedMethod.gateway === PaymentMethodId.Afterpay ||
-            selectedMethod.gateway === PaymentMethodId.Clearpay ||
-            selectedMethod.gateway === PaymentMethodId.Checkoutcom ||
-            selectedMethod.gateway === PaymentMethodId.Mollie ||
-            selectedMethod.gateway === PaymentMethodId.StripeV3 ||
-            selectedMethod.gateway === PaymentMethodId.Partially ||
-            selectedMethod.gateway === PaymentMethodId.TerraceFinance ||
-            selectedMethod.gateway === PaymentMethodId.Flex
+                selectedMethod.skipRedirectConfirmationAlert
             ) {
                 return;
             }

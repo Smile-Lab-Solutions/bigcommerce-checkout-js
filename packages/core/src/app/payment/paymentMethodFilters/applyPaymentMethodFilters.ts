@@ -7,6 +7,7 @@ import { boltAndBraintreeFilter } from './boltAndBraintreeFilter';
 import { excludePPSDKFilter } from './excludePPSDKFilter';
 import { multiShippingFilter } from './multiShippingFilter';
 import { selectedHostedPaymentFilter } from './selectedHostedPaymentFilter';
+import { inStoreFilter } from './inStoreFilter';
 
 // Order matters. selectedHostedPaymentFilter must run last because it can
 // collapse the list to a single method when a hosted payment is already in flight.
@@ -15,6 +16,7 @@ const FILTERS: PaymentMethodFilter[] = [
     boltAndBraintreeFilter,
     multiShippingFilter,
     excludePPSDKFilter,
+    inStoreFilter,
     selectedHostedPaymentFilter,
 ];
 
