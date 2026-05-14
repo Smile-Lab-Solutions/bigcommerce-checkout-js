@@ -12,10 +12,8 @@ import {
     withLanguage,
     type WithLanguageProps,
 } from '@bigcommerce/checkout/locale';
-import { Alert, AlertType, LoadingSpinner } from '@bigcommerce/checkout/ui';
+import { Alert, AlertType, Button, ButtonVariant, Form, LoadingSpinner } from '@bigcommerce/checkout/ui';
 
-import { Button, ButtonVariant } from '../ui/button';
-import { Form } from '../ui/form';
 import { Modal, ModalHeader } from '../ui/modal';
 
 import EmailField from './EmailField';
