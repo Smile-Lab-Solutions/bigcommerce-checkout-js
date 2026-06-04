@@ -1,8 +1,15 @@
-import { type Coupon, type Fee, type GiftCertificate, type OrderFee, type Tax } from '@bigcommerce/checkout-sdk';
+import {
+    type Coupon,
+    type Fee,
+    type GiftCertificate,
+    type OrderFee,
+    type Tax,
+} from '@bigcommerce/checkout-sdk';
 import React, { type FunctionComponent, memo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
+import isOrderFee from './isOrderFee';
 import OrderSummaryDiscount from './OrderSummaryDiscount';
 import OrderSummaryPrice from './OrderSummaryPrice';
 

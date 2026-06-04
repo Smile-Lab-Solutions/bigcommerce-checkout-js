@@ -2,16 +2,34 @@ import { type CheckoutSelectors, type RequestError } from '@bigcommerce/checkout
 import { memoizeOne } from '@bigcommerce/memoize';
 import { type FieldProps, type FormikProps, withFormik } from 'formik';
 import { noop } from 'lodash';
-import React, { type FunctionComponent, type KeyboardEvent, memo, type ReactNode, useCallback } from 'react';
+import React, {
+    type FunctionComponent,
+    type KeyboardEvent,
+    memo,
+    type ReactNode,
+    useCallback,
+} from 'react';
 import { object, string } from 'yup';
 
 import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { Alert, AlertType, Button, ButtonVariant, type FormContextType, FormProvider, Label, TextInput } from '@bigcommerce/checkout/ui';
-
-import { FormField } from '../ui/form';
-import { Toggle } from '../ui/toggle';
+import {
+    TranslatedString,
+    withLanguage,
+    type WithLanguageProps,
+} from '@bigcommerce/checkout/locale';
+import {
+    Alert,
+    AlertType,
+    Button,
+    ButtonVariant,
+    type FormContextType,
+    FormField,
+    FormProvider,
+    Label,
+    TextInput,
+    Toggle,
+} from '@bigcommerce/checkout/ui';
 
 import AppliedRedeemables, { type AppliedRedeemablesProps } from './AppliedRedeemables';
 
@@ -127,8 +145,8 @@ const RedeemableForm: FunctionComponent<
 > = ({ appliedRedeemableError, isApplyingRedeemable, storeCurrencyCode2, clearError = noop, submitForm, language }) => {
     const {
         checkoutState: {
-            statuses: { isSubmittingOrder }
-        }
+            statuses: { isSubmittingOrder },
+        },
     } = useCheckout();
 
     const handleSubmitForm = (setSubmitted: FormContextType['setSubmitted']) => {
@@ -138,7 +156,7 @@ const RedeemableForm: FunctionComponent<
 
         setSubmitted(true);
         submitForm();
-    }
+    };
 
     const handleKeyDown = useCallback(
         memoizeOne((setSubmitted: FormContextType['setSubmitted']) => (event: KeyboardEvent) => {
@@ -204,16 +222,18 @@ const RedeemableForm: FunctionComponent<
 
     const renderInput = useCallback(
         (setSubmitted: FormContextType['setSubmitted']) =>
-            ({ field }: FieldProps) =>
-                (
-                    <>
-                        {appliedRedeemableError &&
-                            appliedRedeemableError.errors &&
-                            appliedRedeemableError.errors[0] && (
-                                <Alert type={AlertType.Error}>
-                                    {renderErrorMessage(appliedRedeemableError.errors[0].code, appliedRedeemableError.errors[0].message)}
-                                </Alert>
-                            )}
+            ({ field }: FieldProps) => (
+                <>
+                    {appliedRedeemableError &&
+                        appliedRedeemableError.errors &&
+                        appliedRedeemableError.errors[0] && (
+                            <Alert type={AlertType.Error}>
+                                {renderErrorMessage(
+                                    appliedRedeemableError.errors[0].code,
+                                    appliedRedeemableError.errors[0].message,
+                                )}
+                            </Alert>
+                        )}
 
                         <div className="form-prefixPostfix">
                             {storeCurrencyCode2 === 'USD' && (
@@ -236,20 +256,20 @@ const RedeemableForm: FunctionComponent<
                                 />
                             )}
 
-                            <Button
-                                className="form-prefixPostfix-button--postfix body-bold"
-                                disabled={isSubmittingOrder()}
-                                id="applyRedeemableButton"
-                                isLoading={isApplyingRedeemable}
-                                onClick={handleSubmit(setSubmitted)}
-                                testId="redeemableEntry-submit"
-                                variant={ButtonVariant.Secondary}
-                            >
-                                <TranslatedString id="redeemable.apply_action" />
-                            </Button>
-                        </div>
-                    </>
-                ),
+                        <Button
+                            className="form-prefixPostfix-button--postfix body-bold"
+                            disabled={isSubmittingOrder()}
+                            id="applyRedeemableButton"
+                            isLoading={isApplyingRedeemable}
+                            onClick={handleSubmit(setSubmitted)}
+                            testId="redeemableEntry-submit"
+                            variant={ButtonVariant.Secondary}
+                        >
+                            <TranslatedString id="redeemable.apply_action" />
+                        </Button>
+                    </div>
+                </>
+            ),
         [
             appliedRedeemableError,
             handleKeyDown,

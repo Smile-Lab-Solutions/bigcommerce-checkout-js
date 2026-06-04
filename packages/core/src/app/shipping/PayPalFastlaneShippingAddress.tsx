@@ -3,7 +3,7 @@ import {
     type Consignment,
     type Country,
     type CustomerAddress,
-    type FormField
+    type FormField,
 } from '@bigcommerce/checkout-sdk';
 import React, { type FC, useEffect, useRef, useState } from 'react';
 
@@ -18,12 +18,12 @@ import { type ShippingAddressProps } from './ShippingAddress';
 import ShippingAddressForm from './ShippingAddressForm';
 
 export interface PayPalFastlaneShippingAddressProps extends ShippingAddressProps {
-    methodId?: string,
-    shippingAddress?:  Address,
+    methodId?: string;
+    shippingAddress?: Address;
     consignments: Consignment[];
     countries?: Country[];
-    formFields: FormField[],
-    handleFieldChange(fieldName: string, value: string): void,
+    formFields: FormField[];
+    handleFieldChange(fieldName: string, value: string): void;
     onAddressSelect(address: Address): void;
     storeCurrencyCode: string;
 }
@@ -95,7 +95,10 @@ export const PayPalFastlaneShippingAddress: FC<PayPalFastlaneShippingAddressProp
 
     return (
         <LoadingOverlay hideContentWhenLoading isLoading={isLoadingStrategy || isLoading}>
-            {methodId && isPayPalFastlaneMethod(methodId) && shippingAddress && shouldShowPayPalFastlaneShippingForm ? (
+            {methodId &&
+            isPayPalFastlaneMethod(methodId) &&
+            shippingAddress &&
+            shouldShowPayPalFastlaneShippingForm ? (
                 <PayPalFastlaneShippingAddressForm
                     address={shippingAddress}
                     countries={countries}

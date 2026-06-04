@@ -5,9 +5,7 @@ import React, { type FunctionComponent, memo, useState } from 'react';
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { ConfirmationModal } from '@bigcommerce/checkout/ui';
-
-import { Legend } from '../ui/form';
+import { ConfirmationModal, Legend } from '@bigcommerce/checkout/ui';
 
 import './ShippingHeader.scss';
 
@@ -24,16 +22,19 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
     shouldShowMultiShipping,
     cartHasPromotionalItems,
 }) => {
-    const [isSingleShippingConfirmationModalOpen, setIsSingleShippingConfirmationModalOpen] = useState(false);
-    const [isMultiShippingUnavailableModalOpen, setIsMultiShippingUnavailableModalOpen] = useState(false);
+    const [isSingleShippingConfirmationModalOpen, setIsSingleShippingConfirmationModalOpen] =
+        useState(false);
+    const [isMultiShippingUnavailableModalOpen, setIsMultiShippingUnavailableModalOpen] =
+        useState(false);
 
     const handleShipToSingleConfirmation = () => {
         setIsSingleShippingConfirmationModalOpen(false);
         onMultiShippingChange();
-    }
+    };
 
     const showConfirmationModal = shouldShowMultiShipping && isMultiShippingMode;
-    const showMultiShippingUnavailableModal = shouldShowMultiShipping && !isMultiShippingMode && cartHasPromotionalItems;
+    const showMultiShippingUnavailableModal =
+        shouldShowMultiShipping && !isMultiShippingMode && cartHasPromotionalItems;
 
     return (
         <>
@@ -60,10 +61,12 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                             onRequestClose={() => setIsSingleShippingConfirmationModalOpen(false)}
                         />
                         <a
-                            className='body-cta'
+                            className="body-cta"
                             data-test="shipping-mode-toggle"
                             href="#"
-                            onClick={preventDefault(() => setIsSingleShippingConfirmationModalOpen(true))}
+                            onClick={preventDefault(() =>
+                                setIsSingleShippingConfirmationModalOpen(true),
+                            )}
                         >
                             <TranslatedString id="shipping.ship_to_single" />
                         </a>
@@ -80,33 +83,41 @@ const ShippingHeader: FunctionComponent<ShippingHeaderProps> = ({
                             onRequestClose={() => setIsMultiShippingUnavailableModalOpen(false)}
                         />
                         <a
-                            className='body-cta'
+                            className="body-cta"
                             data-test="shipping-mode-toggle"
                             href="#"
-                            onClick={preventDefault(() => setIsMultiShippingUnavailableModalOpen(true))}
+                            onClick={preventDefault(() =>
+                                setIsMultiShippingUnavailableModalOpen(true),
+                            )}
                         >
                             <TranslatedString id="shipping.ship_to_multi" />
                         </a>
                     </>
                 )}
-                {!showConfirmationModal && !showMultiShippingUnavailableModal && shouldShowMultiShipping && (
-                    <a
-                        className='body-cta'
-                        data-test="shipping-mode-toggle"
-                        href="#"
-                        onClick={preventDefault(onMultiShippingChange)}
-                    >
-                        <TranslatedString
-                            id={isMultiShippingMode ? 'shipping.ship_to_single' : 'shipping.ship_to_multi'}
-                        />
-                    </a>
-                )}
+                {!showConfirmationModal &&
+                    !showMultiShippingUnavailableModal &&
+                    shouldShowMultiShipping && (
+                        <a
+                            className="body-cta"
+                            data-test="shipping-mode-toggle"
+                            href="#"
+                            onClick={preventDefault(onMultiShippingChange)}
+                        >
+                            <TranslatedString
+                                id={
+                                    isMultiShippingMode
+                                        ? 'shipping.ship_to_single'
+                                        : 'shipping.ship_to_multi'
+                                }
+                            />
+                        </a>
+                    )}
             </div>
             <div>
                 <strong style={{ fontSize: '16px' }}>Note: We do not ship to P.O. boxes</strong>
             </div>
         </>
     );
-}
+};
 
 export default memo(ShippingHeader);

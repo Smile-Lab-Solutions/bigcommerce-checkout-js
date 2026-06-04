@@ -3,10 +3,9 @@ import React, { lazy } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { useThemeContext } from '@bigcommerce/checkout/contexts';
-import { CartSummarySkeleton, LazyContainer } from '@bigcommerce/checkout/ui';
+import { CartSummarySkeleton, LazyContainer, MobileView } from '@bigcommerce/checkout/ui';
 
 import { retry } from '../../common/utility';
-import { MobileView } from '../../ui/responsive';
 
 const CartSummaryComponent = lazy(() =>
     retry(
@@ -49,17 +48,19 @@ export const CartSummary: React.FC<CartSummaryProps> = ({ isMultiShippingMode })
         <MobileView>
             {(matched) => {
                 if (matched) {
-                    if(themeV2) {
+                    if (themeV2) {
                         return (
                             <LazyContainer loadingSkeleton={<></>}>
                                 <aside aria-label="Cart Summary" className="layout-cart">
-                                    <CartSummaryDrawerV2 isMultiShippingMode={isMultiShippingMode} />
+                                    <CartSummaryDrawerV2
+                                        isMultiShippingMode={isMultiShippingMode}
+                                    />
                                     <Extension region={ExtensionRegion.SummaryAfter} />
                                 </aside>
                             </LazyContainer>
-                        ) 
+                        );
                     }
-                    
+
                     return (
                         <LazyContainer loadingSkeleton={<></>}>
                             <Extension region={ExtensionRegion.SummaryAfter} />

@@ -11,6 +11,11 @@ import { type CheckoutContextProps} from '@bigcommerce/checkout/contexts';
 import { withCheckout } from '../checkout';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
+import resolveCheckoutButton from './resolveCheckoutButton';
+
+const CheckoutButtonV1Resolver = lazy(
+    () => import(/* webpackChunkName: "wallet-button-v1-resolver" */ './WalletButtonV1Resolver'),
+);
 
 export interface CheckoutButtonListProps {
     hideText?: boolean;
@@ -28,12 +33,20 @@ interface WithCheckoutCheckoutButtonListProps {
     checkoutService: CheckoutService;
 }
 
-const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps & CheckoutButtonListProps> = ({
+const CheckoutButtonList: FunctionComponent<
+    WithCheckoutCheckoutButtonListProps & CheckoutButtonListProps
+> = ({
+    checkoutService,
+    checkoutState,
+    hideText = false,
+    isInitializing = false,
     methodIds = [],
     checkEmbeddedSupport,
     onError,
 }) => {
-    const supportedMethodIds = getSupportedMethodIds(methodIds);
+    const { language } = useLocale();
+    const paymentMethods = checkoutState.data.getPaymentMethods();
+    const supportedMethodIds = getSupportedMethodIds(methodIds, paymentMethods);
 
     if (supportedMethodIds.length === 0) {
         return null;
@@ -103,8 +116,8 @@ const CheckoutButtonList: FunctionComponent<WithCheckoutCheckoutButtonListProps 
 };
 
 function mapToCheckoutButtonListProps({
-  checkoutState,
-  checkoutService,
+    checkoutState,
+    checkoutService,
 }: CheckoutContextProps): WithCheckoutCheckoutButtonListProps | null {
     return {
         checkoutService,

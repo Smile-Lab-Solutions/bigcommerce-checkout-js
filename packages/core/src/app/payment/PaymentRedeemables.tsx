@@ -2,20 +2,23 @@ import React, { type FunctionComponent, memo } from 'react';
 
 import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { Fieldset } from '@bigcommerce/checkout/ui';
+import { Fieldset, Legend } from '@bigcommerce/checkout/ui';
 
 import { mapToRedeemableProps, Redeemable, type RedeemableProps } from '../cart';
 import { withCheckout } from '../checkout';
 import { isExperimentEnabled } from '../common/utility';
-import { Legend } from '../ui/form';
 
 const PaymentRedeemables: FunctionComponent<RedeemableProps> = (redeemableProps) => {
     const { checkoutState } = useCheckout();
     const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
-    const isMultiCouponEnabled = isExperimentEnabled(checkoutSettings, 'CHECKOUT-9674.multi_coupon_cart_checkout', false);
+    const isMultiCouponEnabled = isExperimentEnabled(
+        checkoutSettings,
+        'CHECKOUT-9674.multi_coupon_cart_checkout',
+        false,
+    );
 
     return (
-        <Fieldset 
+        <Fieldset
             additionalClassName="redeemable-payments"
             legend={
                 <Legend hidden>
