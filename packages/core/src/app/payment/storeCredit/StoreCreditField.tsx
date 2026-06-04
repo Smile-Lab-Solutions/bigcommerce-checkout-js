@@ -3,10 +3,12 @@ import React, { type FunctionComponent, useCallback, useMemo } from 'react';
 
 import { useCheckout } from '@bigcommerce/checkout/contexts';
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedString, withCurrency, type WithCurrencyProps } from '@bigcommerce/checkout/locale';
-
-import { CheckboxInput } from '../../ui/form';
-import { Tooltip, TooltipTrigger } from '../../ui/tooltip';
+import {
+    TranslatedString,
+    withCurrency,
+    type WithCurrencyProps,
+} from '@bigcommerce/checkout/locale';
+import { CheckboxInput, Tooltip, TooltipTrigger } from '@bigcommerce/checkout/ui';
 
 export interface StoreCreditFieldProps {
     availableStoreCredit: number;
@@ -26,8 +28,8 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
 }) => {
     const {
         checkoutState: {
-            statuses: { isSubmittingOrder }
-        }
+            statuses: { isSubmittingOrder },
+        },
     } = useCheckout();
 
     const handleChange = useCallback((event: any) => onChange(event.target.checked), [onChange]);

@@ -1,13 +1,4 @@
-import {
-    type Address,
-    type CheckoutParams,
-    type CheckoutSelectors,
-    type Consignment,
-    type FormField,
-    type RequestOptions,
-    type ShippingInitializeOptions,
-    type ShippingRequestOptions,
-} from '@bigcommerce/checkout-sdk';
+import { type Address, type FormField } from '@bigcommerce/checkout-sdk';
 import { type FormikProps } from 'formik';
 import { debounce, type DebouncedFunc, isEqual, noop } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -28,11 +19,15 @@ import {
 } from '../address';
 import { isErrorWithType } from '../common/error';
 import { withFormikExtended } from '../common/form';
-import { getAddressExtraFieldsValidationSchema, getCustomFormFieldsValidationSchema } from '../formFields';
+import {
+    getAddressExtraFieldsValidationSchema,
+    getCustomFormFieldsValidationSchema,
+} from '../formFields';
 import { PaymentMethodId } from '../payment/paymentMethod';
 
 import BillingSameAsShippingField from './BillingSameAsShippingField';
 import hasSelectedShippingOptions from './hasSelectedShippingOptions';
+import { useShipping } from './hooks/useShipping';
 import isSelectedShippingOptionValid from './isSelectedShippingOptionValid';
 import ShippingAddress from './ShippingAddress';
 import { SHIPPING_ADDRESS_FIELDS } from './ShippingAddressFields';
@@ -41,28 +36,16 @@ import ShippingFormFooter from './ShippingFormFooter';
 export interface SingleShippingFormProps {
     isBillingSameAsShipping: boolean;
     cartHasChanged: boolean;
-    consignments: Consignment[];
     customerMessage: string;
-    defaultShippingExpectationMessage?: string;
-    isLoading: boolean;
-    isShippingStepPending: boolean;
     methodId?: string;
     shippingAddress?: Address;
     shippingAutosaveDelay?: number;
-    shouldShowOrderComments: boolean;
     isInitialValueLoaded: boolean;
     shippingFormRenderTimestamp?: number;
     validateMaxLength: boolean;
-    deinitialize(options: ShippingRequestOptions): Promise<CheckoutSelectors>;
-    deleteConsignments(): Promise<Address | undefined>;
     getFields(countryCode?: string): FormField[];
-    initialize(options: ShippingInitializeOptions): Promise<CheckoutSelectors>;
     onSubmit(values: SingleShippingFormValues): void;
     onUnhandledError?(error: Error): void;
-    updateAddress(
-        address: Partial<Address>,
-        options?: RequestOptions<CheckoutParams>,
-    ): Promise<CheckoutSelectors>;
 }
 
 export interface SingleShippingFormValues {
@@ -87,36 +70,42 @@ const PAYMENT_METHOD_VALID = ['amazonpay'];
 const SingleShippingForm: React.FC<
     SingleShippingFormProps & WithLanguageProps & FormikProps<SingleShippingFormValues>
 > = ({
-        cartHasChanged,
+    cartHasChanged,
+    customerMessage,
+    getFields,
+    isBillingSameAsShipping,
+    isInitialValueLoaded,
+    isValid,
+    methodId,
+    onUnhandledError = noop,
+    setFieldValue,
+    setValues,
+    shippingAddress,
+    shippingAutosaveDelay = SHIPPING_AUTOSAVE_DELAY,
+    shippingFormRenderTimestamp,
+    validateMaxLength,
+    values,
+}) => {
+    const {
+        shipping: { hideBillingSameAsShippingCheck },
+        userJourney: { hasAddressExtraFields },
+    } = useCapabilities();
+    const {
         consignments,
-        customerMessage,
-        deinitialize,
+        deinitializeShippingMethod: deinitialize,
         deleteConsignments,
-        getFields,
-        initialize,
-        isBillingSameAsShipping,
-        isInitialValueLoaded,
+        initializeShippingMethod: initialize,
         isLoading,
         isShippingStepPending,
-        isValid,
-        methodId,
-        onUnhandledError = noop,
-        setFieldValue,
-        setValues,
-        shippingAddress,
-        shippingAutosaveDelay = SHIPPING_AUTOSAVE_DELAY,
-        shippingFormRenderTimestamp,
-        validateMaxLength,
         defaultShippingExpectationMessage,
         shouldShowOrderComments,
-        updateAddress,
-        values,
-    }) => {
-    const { shipping: { hideBillingSameAsShippingCheck } } = useCapabilities();
+        updateShippingAddress: updateAddress,
+    } = useShipping();
 
     const propsRef = useRef({ values, shippingAddress, isValid });
     const debouncedUpdateAddressRef = useRef<
-        DebouncedFunc<(address: Address, includeShippingOptions: boolean) => Promise<void>> | undefined
+        | DebouncedFunc<(address: Address, includeShippingOptions: boolean) => Promise<void>>
+        | undefined
     >(undefined);
 
     propsRef.current = { values, shippingAddress, isValid };
@@ -126,9 +115,9 @@ const SingleShippingForm: React.FC<
     const [hasRequestedShippingOptions, setHasRequestedShippingOptions] = useState(false);
 
     const stateOrProvinceCodeFormField = useMemo(() => {
-        return getFields(
-            values.shippingAddress?.countryCode,
-        ).find(({ name }) => name === 'stateOrProvinceCode');
+        return getFields(values.shippingAddress?.countryCode).find(
+            ({ name }) => name === 'stateOrProvinceCode',
+        );
     }, [getFields, values.shippingAddress?.countryCode]);
 
     useEffect(() => {
@@ -173,7 +162,10 @@ const SingleShippingForm: React.FC<
             !values.shippingAddress?.stateOrProvinceCode &&
             shippingAddress?.countryCode === values.shippingAddress?.countryCode
         ) {
-            setFieldValue('shippingAddress.stateOrProvinceCode', shippingAddress.stateOrProvinceCode);
+            setFieldValue(
+                'shippingAddress.stateOrProvinceCode',
+                shippingAddress.stateOrProvinceCode,
+            );
         }
     }, [
         stateOrProvinceCodeFormField,
@@ -200,18 +192,22 @@ const SingleShippingForm: React.FC<
     const updateAddressWithFormData = (includeShippingOptions: boolean) => {
         const { values: currentValues, shippingAddress: currentShippingAddress } = propsRef.current;
         const addressForm = currentValues.shippingAddress;
-        const updatedShippingAddress =
-            addressForm && mapAddressFromFormValues(addressForm);
+        const updatedShippingAddress = addressForm && mapAddressFromFormValues(addressForm);
 
         let newIncludeShippingOptions = includeShippingOptions;
 
         if (Array.isArray(currentShippingAddress?.customFields)) {
             newIncludeShippingOptions =
-                !isEqual(currentShippingAddress?.customFields, updatedShippingAddress?.customFields) ||
-                includeShippingOptions;
+                !isEqual(
+                    currentShippingAddress?.customFields,
+                    updatedShippingAddress?.customFields,
+                ) || includeShippingOptions;
         }
 
-        if (!updatedShippingAddress || isEqualAddress(updatedShippingAddress, currentShippingAddress)) {
+        if (
+            !updatedShippingAddress ||
+            isEqualAddress(updatedShippingAddress, currentShippingAddress)
+        ) {
             return;
         }
 
@@ -258,6 +254,12 @@ const SingleShippingForm: React.FC<
         setIsResettingAddress(true);
 
         try {
+            if (hasAddressExtraFields) {
+                B2BExtraFieldsSessionStorage.removeFields(
+                    B2BExtraFieldsSessionStorage.SHIPPING_KEY,
+                );
+            }
+
             const address = await deleteConsignments();
 
             setValues({

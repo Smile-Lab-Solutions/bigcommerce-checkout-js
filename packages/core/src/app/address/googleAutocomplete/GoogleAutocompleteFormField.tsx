@@ -4,9 +4,8 @@ import { type FieldProps } from 'formik';
 import React, { type FunctionComponent, memo, useCallback, useMemo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { type AutocompleteItem, Label } from '@bigcommerce/checkout/ui';
+import { type AutocompleteItem, FormField, Label } from '@bigcommerce/checkout/ui';
 
-import { FormField } from '../../ui/form';
 import {
     getAddressFormFieldInputId,
     getAddressFormFieldLabelId,
@@ -47,10 +46,9 @@ const GoogleAutocompleteFormField: FunctionComponent<GoogleAutocompleteFormField
 
     const inputProps = useMemo(
         () => ({
-            className: classNames(
-                'form-input optimizedCheckout-form-input',
-                { 'floating-input floating-form-field-input': isFloatingLabelEnabled },
-            ),
+            className: classNames('form-input optimizedCheckout-form-input', {
+                'floating-input floating-form-field-input': isFloatingLabelEnabled,
+            }),
             id: getAddressFormFieldInputId(name),
             'aria-labelledby': labelId,
             placeholder: isFloatingLabelEnabled ? ' ' : placeholder,
@@ -89,8 +87,12 @@ const GoogleAutocompleteFormField: FunctionComponent<GoogleAutocompleteFormField
     );
 
     const renderLabel = isFloatingLabelEnabled ? null : (
-        <Label additionalClassName="body-regular" htmlFor={inputProps.id} id={labelId}
-            isFloatingLabelEnabled={isFloatingLabelEnabled}>
+        <Label
+            additionalClassName="body-regular"
+            htmlFor={inputProps.id}
+            id={labelId}
+            isFloatingLabelEnabled={isFloatingLabelEnabled}
+        >
             {labelContent}
         </Label>
     );

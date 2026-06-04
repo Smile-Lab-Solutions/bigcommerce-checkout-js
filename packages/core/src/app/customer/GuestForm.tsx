@@ -4,23 +4,36 @@ import React, { type FunctionComponent, memo, type ReactNode, useCallback, useEf
 import { object, string } from 'yup';
 
 import { useCheckout, useThemeContext } from '@bigcommerce/checkout/contexts';
-import { TranslatedString, withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
+import {
+    TranslatedString,
+    withLanguage,
+    type WithLanguageProps,
+} from '@bigcommerce/checkout/locale';
 import { PayPalFastlaneWatermark } from '@bigcommerce/checkout/paypal-fastlane-integration';
-import { BasicFormField, Button, ButtonVariant, Fieldset, Form } from '@bigcommerce/checkout/ui';
+import {
+    BasicFormField,
+    Button,
+    ButtonVariant,
+    Fieldset,
+    Form,
+    Legend,
+} from '@bigcommerce/checkout/ui';
 
 import { getPrivacyPolicyValidationSchema, PrivacyPolicyField } from '../privacyPolicy';
-import { Legend } from '../ui/form';
 
 import EmailField from './EmailField';
 import SubscribeField from './SubscribeField';
 import { SubscribeSessionStorage } from './SubscribeSessionStorage';
 
-function getShouldSubscribeValue(requiresMarketingConsent: boolean, defaultShouldSubscribe: boolean) {
+function getShouldSubscribeValue(
+    requiresMarketingConsent: boolean,
+    defaultShouldSubscribe: boolean,
+) {
     if (SubscribeSessionStorage.getSubscribeStatus()) {
         return true;
     }
 
-    return requiresMarketingConsent ? false : defaultShouldSubscribe
+    return requiresMarketingConsent ? false : defaultShouldSubscribe;
 }
 
 export interface GuestFormProps {
@@ -62,9 +75,7 @@ const GuestForm: FunctionComponent<
     shouldShowEmailWatermark,
     setFieldValue,
 }) => {
-    const {
-        selectedState: config,
-    } = useCheckout(({ data }) => data.getConfig());
+    const { selectedState: config } = useCheckout(({ data }) => data.getConfig());
     const { themeV2 } = useThemeContext();
 
     const renderField = useCallback(
@@ -78,7 +89,7 @@ const GuestForm: FunctionComponent<
         void setFieldValue(
             'shouldSubscribe',
             getShouldSubscribeValue(requiresMarketingConsent, defaultShouldSubscribe),
-            );
+        );
     }, [requiresMarketingConsent, defaultShouldSubscribe]);
 
     if (!config) {
@@ -86,13 +97,8 @@ const GuestForm: FunctionComponent<
     }
 
     const {
-        checkoutSettings: {
-            shouldRedirectToStorefrontForAuth,
-        },
-        links: {
-            checkoutLink,
-            loginLink,
-        }
+        checkoutSettings: { shouldRedirectToStorefrontForAuth },
+        links: { checkoutLink, loginLink },
     } = config;
 
     const handleLogin: () => void = () => {
@@ -103,7 +109,7 @@ const GuestForm: FunctionComponent<
         }
 
         return onShowLogin();
-    }
+    };
 
     return (
         <Form
@@ -118,7 +124,7 @@ const GuestForm: FunctionComponent<
                     </Legend>
                 }
             >
-                {(themeV2 && !isLoading) && (
+                {themeV2 && !isLoading && (
                     <p className="customer-login-link body-regular">
                         <TranslatedString id="customer.login_text" />{' '}
                         <a
@@ -135,7 +141,10 @@ const GuestForm: FunctionComponent<
 
                 <div className="customerEmail-container">
                     <div className="customerEmail-body">
-                        <EmailField isFloatingLabelEnabled={isFloatingLabelEnabled} onChange={onChangeEmail}/>
+                        <EmailField
+                            isFloatingLabelEnabled={isFloatingLabelEnabled}
+                            onChange={onChangeEmail}
+                        />
 
                         {shouldShowEmailWatermark && <PayPalFastlaneWatermark />}
 
@@ -150,7 +159,7 @@ const GuestForm: FunctionComponent<
                         })}
                     >
                         <Button
-                            className='customerEmail-button body-bold'
+                            className="customerEmail-button body-bold"
                             id="checkout-customer-continue"
                             isLoading={isLoading}
                             testId="customer-continue-as-guest-button"
@@ -163,11 +172,14 @@ const GuestForm: FunctionComponent<
                 </div>
 
                 {privacyPolicyUrl && (
-                    <PrivacyPolicyField isExpressPrivacyPolicy={isExpressPrivacyPolicy} url={privacyPolicyUrl} />
+                    <PrivacyPolicyField
+                        isExpressPrivacyPolicy={isExpressPrivacyPolicy}
+                        url={privacyPolicyUrl}
+                    />
                 )}
 
-                {(!themeV2 && !isLoading) && (
-                    <p className='customer-login-link'>
+                {!themeV2 && !isLoading && (
+                    <p className="customer-login-link">
                         <TranslatedString id="customer.login_text" />{' '}
                         <a
                             data-test="customer-continue-button"
@@ -195,13 +207,20 @@ export default withLanguage(
             requiresMarketingConsent,
         }) => ({
             email,
-            shouldSubscribe: getShouldSubscribeValue(requiresMarketingConsent, defaultShouldSubscribe),
+            shouldSubscribe: getShouldSubscribeValue(
+                requiresMarketingConsent,
+                defaultShouldSubscribe,
+            ),
             privacyPolicy: false,
         }),
         handleSubmit: (values, { props: { onContinueAsGuest } }) => {
             onContinueAsGuest(values);
         },
-        validationSchema: ({ language, privacyPolicyUrl, isExpressPrivacyPolicy }: GuestFormProps & WithLanguageProps) => {
+        validationSchema: ({
+            language,
+            privacyPolicyUrl,
+            isExpressPrivacyPolicy,
+        }: GuestFormProps & WithLanguageProps) => {
             const email = string()
                 .email(language.translate('customer.email_invalid_error'))
                 .max(256)
