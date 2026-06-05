@@ -74,7 +74,7 @@ const PaymentMethodList: FunctionComponent<
                 cdnBasePath,
                 checkoutSettings,
                 storeCountryCode,
-            , storeCurrency)(paymentMethod);
+                storeCurrency)(paymentMethod);
 
             return titleText || methodName;
         }

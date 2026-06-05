@@ -745,7 +745,7 @@ const Checkout = ({
                             </ol>
                         </div>
                     </>
-                )}
+                }
                 <CartSummary isMultiShippingMode={state.isMultiShippingMode} />
             </div>
             {errorModal}

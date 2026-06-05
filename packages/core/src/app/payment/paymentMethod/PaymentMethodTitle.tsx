@@ -378,7 +378,8 @@ export function getPaymentMethodTitle(
                 return {
                     logoUrl: '',
                     titleText: language.translate('payment.credit_debit_card_text'),
-               , titleSubText: '' };
+                    titleSubText: '' 
+                };
             }
         }
 
@@ -397,7 +398,7 @@ export function getPaymentMethodTitle(
                     titleText: language.translate(
                         'payment.bluesnap_direct_local_bank_transfer_label',
                     ),
-               , titleSubText: '' };
+                    titleSubText: '' };
             }
         }
 
@@ -434,7 +435,7 @@ export function getPaymentMethodTitle(
             return {
                 logoUrl: method.logoUrl || '',
                 titleText: language.translate('payment.ratepay.payment_method_title'),
-            , titleSubText: '' };
+                titleSubText: '' };
         }
 
         return (
@@ -487,7 +488,7 @@ const PaymentMethodTitle: FunctionComponent<
         cdnBasePath,
         checkoutSettings,
         storeCountryCode,
-    , storeCurrency)(method);
+        storeCurrency)(method);
 
     const getSelectedCardType = () => {
         if (!isSelected) {
@@ -569,16 +570,26 @@ const PaymentMethodTitle: FunctionComponent<
                         className={classNames(
                             'paymentProviderHeader-img',
                             { 'paymentProviderHeader-img-applePay': method.id === 'applepay' },
-                            {
-                                'paymentProviderHeader-img-googlePay':
-                                    method.id.includes('googlepay'),
-                            },
+                            { 'paymentProviderHeader-img-googlePay': method.id.includes('googlepay') },
                         )}
                         data-test="payment-method-logo"
                         src={logoUrl}
-                        id={method.id}
                     />
-                )}
+                )} */}
+
+                {/* Paypal payment second icon */}
+                {/* {method.id === 'paypalcommerce' && (
+                    <>
+                        <div style={{margin: '0.5rem 1rem 0.5rem 1rem', borderLeft: '1px solid black'}}></div>
+                        <img
+                            alt={methodName}
+                            className="paymentProviderHeader-img"
+                            data-test="payment-method-logo"
+                            src='https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-pp-credit-blue.png'
+                            id='paypalcommerceSecondIcon'
+                        />
+                    </>
+                )} */}
 
                 {titleText && (
                     <div

@@ -401,7 +401,7 @@ const Payment = (
                 onSubmitError = noop,
                 refreshB2BPaymentMethods,
                 submitOrder,
-                analyticsTracker,,
+                analyticsTracker,
             loadCheckout
             } = props;
 
