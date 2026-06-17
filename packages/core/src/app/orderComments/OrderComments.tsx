@@ -2,9 +2,7 @@ import { type FieldProps } from 'formik';
 import React, { type FunctionComponent, useCallback, useMemo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { Fieldset, Label, TextInput } from '@bigcommerce/checkout/ui';
-
-import { FormField, Legend } from '../ui/form';
+import { Fieldset, FormField, Label, Legend, TextInput } from '@bigcommerce/checkout/ui';
 
 const OrderComments: FunctionComponent = () => {
     const renderLabel = useCallback(
@@ -17,7 +15,9 @@ const OrderComments: FunctionComponent = () => {
     );
 
     const renderInput = useCallback(
-        ({ field }: FieldProps) => <TextInput {...field} autoComplete="off" id="orderComment" maxLength={2000} />,
+        ({ field }: FieldProps) => (
+            <TextInput {...field} autoComplete="off" id="orderComment" maxLength={2000} />
+        ),
         [],
     );
 
@@ -32,7 +32,12 @@ const OrderComments: FunctionComponent = () => {
 
     return (
         <Fieldset legend={legend} testId="checkout-shipping-comments">
-            <FormField id="orderComment" input={renderInput} label={renderLabel} name="orderComment" />
+            <FormField
+                id="orderComment"
+                input={renderInput}
+                label={renderLabel}
+                name="orderComment"
+            />
         </Fieldset>
     );
 };

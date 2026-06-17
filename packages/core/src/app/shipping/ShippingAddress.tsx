@@ -67,16 +67,11 @@ const ShippingAddress: FunctionComponent<ShippingAddressProps> = (props) => {
                 shippingAddress={shippingAddress}
                 storeCurrencyCode={storeCurrencyCode}
             />
-        )
+        );
     }
 
     if (methodId === 'amazonpay' && shippingAddress) {
-        return (
-            <AmazonPayShippingAddress
-                {...props}
-                shippingAddress={shippingAddress}
-            />
-        );
+        return <AmazonPayShippingAddress {...props} shippingAddress={shippingAddress} />;
     }
 
     return (

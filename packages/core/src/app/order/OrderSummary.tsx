@@ -52,13 +52,17 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
     const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
     const checkout = checkoutState.data.getCheckout();
     const order = checkoutState.data.getOrder();
-    
-    const isMultiCouponEnabled = isExperimentEnabled(checkoutSettings, 'CHECKOUT-9674.multi_coupon_cart_checkout', false);
+
+    const isMultiCouponEnabled = isExperimentEnabled(
+        checkoutSettings,
+        'CHECKOUT-9674.multi_coupon_cart_checkout',
+        false,
+    );
     const isMultiCouponEnabledForCheckout = isMultiCouponEnabled && !!checkout;
     const isMultiCouponEnabledForOrder = isMultiCouponEnabled && !checkout && !!order;
-    
+
     let totalDiscount;
-    
+
     if (isMultiCouponEnabledForCheckout) {
         totalDiscount = checkout.totalDiscount;
     }
@@ -83,17 +87,18 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
 
             <Extension region={ExtensionRegion.SummaryLastItemAfter} />
 
-            {isMultiCouponEnabledForCheckout || isMultiCouponEnabledForOrder
-                ? <NewOrderSummarySubtotals
-                        fees={orderSummarySubtotalsProps.fees}
-                        giftWrappingAmount={orderSummarySubtotalsProps.giftWrappingAmount}
-                        handlingAmount={orderSummarySubtotalsProps.handlingAmount}
-                        isOrderConfirmation={isMultiCouponEnabledForOrder}
-                        isTaxIncluded={isTaxIncluded}
-                        storeCreditAmount={orderSummarySubtotalsProps.storeCreditAmount}
-                        taxes={taxes}
-                    />
-                : <OrderSummarySection>
+            {isMultiCouponEnabledForCheckout || isMultiCouponEnabledForOrder ? (
+                <NewOrderSummarySubtotals
+                    fees={orderSummarySubtotalsProps.fees}
+                    giftWrappingAmount={orderSummarySubtotalsProps.giftWrappingAmount}
+                    handlingAmount={orderSummarySubtotalsProps.handlingAmount}
+                    isOrderConfirmation={isMultiCouponEnabledForOrder}
+                    isTaxIncluded={isTaxIncluded}
+                    storeCreditAmount={orderSummarySubtotalsProps.storeCreditAmount}
+                    taxes={taxes}
+                />
+            ) : (
+                <OrderSummarySection>
                     <OrderSummarySubtotals
                         isTaxIncluded={isTaxIncluded}
                         taxes={taxes}
@@ -101,7 +106,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                     />
                     {additionalLineItems}
                 </OrderSummarySection>
-            }
+            )}
 
             <OrderSummarySection>
                 <OrderSummaryTotal
@@ -109,18 +114,19 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                     shopperCurrencyCode={shopperCurrency.code}
                     storeCurrencyCode={storeCurrency.code}
                 />
-                {(isTotalDiscountVisible && totalDiscount) &&
+                {isTotalDiscountVisible && totalDiscount && (
                     <div className="total-savings">
                         <TranslatedHtml
                             data={{ totalDiscount: currency.toCustomerCurrency(totalDiscount) }}
                             id="redeemable.total_savings_text"
                         />
                     </div>
-                }
+                )}
                 {shopperCurrency.code !== 'AUD' && (
                     <p>Pay in Full or Spread the cost with our payment options</p>
                 )}
             </OrderSummarySection>
+
         </article>
     );
 };

@@ -40,22 +40,16 @@ const ShippingForm = ({
         consignments,
         countries,
         customerMessage,
-        defaultShippingExpectationMessage,
-        deleteConsignments,
-        deinitializeShippingMethod: deinitialize,
         getFields,
         hasMultiShippingEnabled,
-        isLoading,
-        initializeShippingMethod: initialize,
-        isShippingStepPending,
         isNoCountriesErrorOnCheckoutEnabled,
         methodId,
-        shouldShowOrderComments,
         shippingAddress,
         validateMaxLength,
-        updateShippingAddress: updateAddress
     } = useShipping();
-    const { extensionState: { shippingFormRenderTimestamp } } = useExtensions();
+    const {
+        extensionState: { shippingFormRenderTimestamp },
+    } = useExtensions();
 
     useEffect(() => {
         if (shippingFormRenderTimestamp) {
@@ -71,24 +65,31 @@ const ShippingForm = ({
 
     useEffect(() => {
         if (isInitialValueLoaded && countries.length === 0 && isNoCountriesErrorOnCheckoutEnabled) {
-            onUnhandledError(new CustomError({
-                name: 'no_countries_available',
-                message: getLanguageService().translate('shipping.no_countries_available_message'),
-                title: getLanguageService().translate('shipping.no_countries_available_heading'),
-            }));
+            onUnhandledError(
+                new CustomError({
+                    name: 'no_countries_available',
+                    message: getLanguageService().translate(
+                        'shipping.no_countries_available_message',
+                    ),
+                    title: getLanguageService().translate(
+                        'shipping.no_countries_available_heading',
+                    ),
+                }),
+            );
         }
     }, [isInitialValueLoaded, countries.length]);
 
     const getMultiShippingForm = () => {
-        return <MultiShippingForm
-            cartHasChanged={cartHasChanged}
-            customerMessage={customerMessage}
-            defaultCountryCode={shippingAddress?.countryCode}
-            isLoading={isLoading}
-            onSubmit={onMultiShippingSubmit}
-            onUnhandledError={onUnhandledError}
-            storeCurrencyCode={storeCurrencyCode}
-        />;
+        return (
+            <MultiShippingForm
+                cartHasChanged={cartHasChanged}
+                customerMessage={customerMessage}
+                defaultCountryCode={shippingAddress?.countryCode}
+                onSubmit={onMultiShippingSubmit}
+                onUnhandledError={onUnhandledError}
+                storeCurrencyCode={storeCurrencyCode}
+        />
+        );
     };
 
     if (isInitialValueLoaded && countries.length === 0 && isNoCountriesErrorOnCheckoutEnabled) {
@@ -100,24 +101,15 @@ const ShippingForm = ({
     ) : (
         <SingleShippingForm
             cartHasChanged={cartHasChanged}
-            consignments={consignments}
             customerMessage={customerMessage}
-            defaultShippingExpectationMessage={defaultShippingExpectationMessage}
-            deinitialize={deinitialize}
-            deleteConsignments={deleteConsignments}
             getFields={getFields}
-            initialize={initialize}
             isBillingSameAsShipping={isBillingSameAsShipping}
             isInitialValueLoaded={isInitialValueLoaded}
-            isLoading={isLoading}
-            isShippingStepPending={isShippingStepPending}
             methodId={methodId}
             onSubmit={onSingleShippingSubmit}
             onUnhandledError={onUnhandledError}
             shippingAddress={shippingAddress}
             shippingFormRenderTimestamp={shippingFormRenderTimestamp}
-            shouldShowOrderComments={shouldShowOrderComments}
-            updateAddress={updateAddress}
             validateMaxLength={validateMaxLength}
             storeCurrencyCode={storeCurrencyCode}
         />

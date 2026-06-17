@@ -1,9 +1,7 @@
 import React, { type FunctionComponent, memo } from 'react';
 
 import { TranslatedHtml } from '@bigcommerce/checkout/locale';
-import { Fieldset } from '@bigcommerce/checkout/ui';
-
-import { CheckboxFormField } from '../ui/form';
+import { CheckboxFormField, Fieldset } from '@bigcommerce/checkout/ui';
 
 const PrivacyPolicyCheckboxFieldLink: FunctionComponent<{ url: string }> = ({ url }) => (
     <CheckboxFormField
@@ -20,7 +18,7 @@ const PrivacyPolicyFieldset: FunctionComponent<{ url: string }> = ({ url }) => (
 );
 
 const PrivacyPolicyAutoConsent: FunctionComponent<{ url: string }> = ({ url }) => (
-    <p className='body-regular'>
+    <p className="body-regular">
         <TranslatedHtml data={{ url }} id="privacy_policy_auto_consent.label" />
     </p>
 );
@@ -29,7 +27,6 @@ const PrivacyPolicyField: FunctionComponent<{ url: string; isExpressPrivacyPolic
     url,
     isExpressPrivacyPolicy,
 }) => {
-
     if (isExpressPrivacyPolicy) {
         return <PrivacyPolicyAutoConsent url={url} />;
     }

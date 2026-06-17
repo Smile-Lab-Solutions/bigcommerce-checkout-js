@@ -1,10 +1,12 @@
 import { type PaymentMethod } from '@bigcommerce/checkout-sdk';
 
-import { type PaymentMethodFilter, type PaymentMethodFilterContext } from '@bigcommerce/checkout/payment-integration-api';
+import {
+    type PaymentMethodFilter,
+    type PaymentMethodFilterContext,
+} from '@bigcommerce/checkout/payment-integration-api';
 import { stripeMethodsFiltering } from '@bigcommerce/checkout/stripe-utils';
 
 import { boltAndBraintreeFilter } from './boltAndBraintreeFilter';
-import { excludePPSDKFilter } from './excludePPSDKFilter';
 import { multiShippingFilter } from './multiShippingFilter';
 import { selectedHostedPaymentFilter } from './selectedHostedPaymentFilter';
 import { inStoreFilter } from './inStoreFilter';
@@ -15,7 +17,6 @@ const FILTERS: PaymentMethodFilter[] = [
     stripeMethodsFiltering,
     boltAndBraintreeFilter,
     multiShippingFilter,
-    excludePPSDKFilter,
     inStoreFilter,
     selectedHostedPaymentFilter,
 ];
