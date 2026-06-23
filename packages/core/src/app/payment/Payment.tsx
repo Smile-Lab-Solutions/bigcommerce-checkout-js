@@ -58,6 +58,7 @@ import {
 import { EMPTY_ARRAY, isExperimentEnabled } from '../common/utility';
 import { TermsConditionsType } from '../termsConditions';
 
+import { buildB2BMetadataOptions, clearB2BMetadataStorage } from './b2bMetadata';
 import CartStockPositionsChangedModal from './CartStockPositionsChangedModal';
 import mapSubmitOrderErrorMessage, { mapSubmitOrderErrorTitle } from './mapSubmitOrderErrorMessage';
 import mapToOrderRequestBody from './mapToOrderRequestBody';
@@ -82,6 +83,7 @@ export interface PaymentProps {
 }
 
 interface WithCheckoutPaymentProps {
+    addressExtraFields?: FormField[];
     availableStoreCredit: number;
     b2bToken?: string;
     cart?: Cart;
@@ -110,6 +112,7 @@ interface WithCheckoutPaymentProps {
     loadCheckout(): Promise<CheckoutSelectors>;
     loadPaymentMethods(): Promise<CheckoutSelectors>;
     refreshB2BPaymentMethods: CheckoutService['refreshB2BPaymentMethods'];
+    submitB2BMetadata: CheckoutService['persistB2BMetadata'];
     submitOrder(values: OrderRequestBody): Promise<CheckoutSelectors>;
     checkoutServiceSubscribe: CheckoutService['subscribe'];
 }
@@ -146,7 +149,7 @@ const Payment = (
     const lastFormValuesRef = useRef<PaymentFormValues | null>(null);
 
     const {
-        orderConfirmation: { persistB2BMetadata },
+        orderConfirmation: { persistB2BMetadata, invoiceRedirect },
         userJourney: { disableStoreCredit },
     } = useCapabilities();
 
@@ -385,6 +388,23 @@ const Payment = (
             });
     };
 
+    const persistB2BMetadataIfNeeded = async (): Promise<void> => {
+        const { addressExtraFields, orderExtraFields, submitB2BMetadata } = props;
+
+        if (!persistB2BMetadata) {
+            return;
+        }
+
+        const metadataPayload = buildB2BMetadataOptions(invoiceRedirect, {
+            orderExtraFields,
+            addressExtraFields,
+        });
+
+        await submitB2BMetadata(metadataPayload);
+
+        clearB2BMetadataStorage();
+    };
+
     const handleSubmit = useCallback(
         async (values: PaymentFormValues) => {
             const {
@@ -422,6 +442,8 @@ const Payment = (
                     mapToOrderRequestBody(values, isPaymentDataRequired()),
                 );
                 const order = state.data.getOrder();
+
+                await persistB2BMetadataIfNeeded();
 
                 analyticsTracker.paymentComplete();
 
@@ -573,11 +595,7 @@ const Payment = (
                 checkoutServiceSubscribe,
             } = props;
 
-            if (disableStoreCredit) {
-                if (props.isStoreCreditApplied) {
-                    await handleStoreCreditChange(false);
-                }
-            } else if (usableStoreCredit) {
+            if (!disableStoreCredit && usableStoreCredit) {
                 await handleStoreCreditChange(true);
             }
 
@@ -611,6 +629,8 @@ const Payment = (
                     ],
                 });
                 const order = state.data.getOrder();
+
+                await persistB2BMetadataIfNeeded();
 
                 onFinalize(order?.orderId);
             } catch (error) {
@@ -663,6 +683,7 @@ const Payment = (
             <ChecklistSkeleton isLoading={!state.isReady}>
                 {shouldShowPaymentForm && (
                     <PaymentForm
+                        additionalField={props.capabilities.payment.additionalField}
                         availableStoreCredit={props.availableStoreCredit}
                         defaultGatewayId={props.defaultMethod?.gateway}
                         defaultMethodId={props.defaultMethod?.id || ''}
@@ -717,6 +738,7 @@ export function mapToPaymentProps(
 ): WithCheckoutPaymentProps | null {
     const {
         data: {
+            getAddressExtraFields,
             getCart,
             getCheckout,
             getConfig,
@@ -762,6 +784,10 @@ export function mapToPaymentProps(
         ? getOrderExtraFields()
         : undefined;
 
+    const addressExtraFields = capabilities.userJourney.hasAddressExtraFields
+        ? getAddressExtraFields()
+        : undefined;
+
     const { defaultMethod, filteredMethods } = getFilteredPaymentMethodsWithDefault({
         checkout,
         checkoutSettings: config.checkoutSettings,
@@ -774,6 +800,7 @@ export function mapToPaymentProps(
     return {
         applyStoreCredit: checkoutService.applyStoreCredit,
         availableStoreCredit: customer.storeCredit,
+        addressExtraFields,
         b2bToken: checkoutState.data.getB2BToken(),
         cart: getCart(),
         consignments,
@@ -793,6 +820,7 @@ export function mapToPaymentProps(
         orderExtraFields,
         orderId: checkout.orderId,
         refreshB2BPaymentMethods: checkoutService.refreshB2BPaymentMethods,
+        submitB2BMetadata: checkoutService.persistB2BMetadata,
         shouldExecuteSpamCheck: checkout.shouldExecuteSpamCheck,
         shouldLocaliseErrorMessages:
             features['PAYMENTS-6799.localise_checkout_payment_error_messages'],

@@ -27,6 +27,7 @@ import OrderSummaryPrice from './OrderSummaryPrice';
 import OrderSummarySection from './OrderSummarySection';
 import OrderSummarySubtotals, { type OrderSummarySubtotalsProps } from './OrderSummarySubtotals';
 import OrderSummaryTotal from './OrderSummaryTotal';
+import { removeBundledItems } from './removeBundledItems';
 
 export interface OrderSummaryDrawerProps {
     children: ReactNode;
@@ -58,11 +59,15 @@ const OrderSummaryModal: FunctionComponent<
     ...orderSummarySubtotalsProps
 }) => {
     const { currency } = useLocale();
-    const { checkoutState } = useCheckout();
+    const {
+        selectedState: { config, checkout, order },
+    } = useCheckout(({ data }) => ({
+        config: data.getConfig(),
+        checkout: data.getCheckout(),
+        order: data.getOrder(),
+    }));
     const { themeV2 } = useThemeContext();
-    const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
-    const checkout = checkoutState.data.getCheckout();
-    const order = checkoutState.data.getOrder();
+    const { checkoutSettings } = config ?? {};
 
     const isMultiCouponEnabled = isExperimentEnabled(
         checkoutSettings,
@@ -89,10 +94,15 @@ const OrderSummaryModal: FunctionComponent<
     const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
     const isTotalDiscountVisible = Boolean(totalDiscount && totalDiscount > 0);
 
+    // The item list (OrderSummaryItems) receives the raw line items so it can do its own
+    // experiment-aware bundle grouping. The subheader count, however, must exclude bundle
+    // children so the "X items" total matches the desktop summary.
+    const nonBundledItems = removeBundledItems(items);
+
     const subHeaderText = (
         <OrderModalSummarySubheader
             amountWithCurrency={<ShopperCurrency amount={total} />}
-            items={items}
+            items={nonBundledItems}
             shopperCurrencyCode={shopperCurrency.code}
             storeCurrencyCode={storeCurrency.code}
         />
@@ -126,7 +136,7 @@ const OrderSummaryModal: FunctionComponent<
             onRequestClose={onRequestClose}
         >
             <OrderSummarySection>
-                <OrderSummaryItems displayLineItemsCount={false} items={items} />
+                <OrderSummaryItems displayLineItemsCount={false} isMobileCartModal items={items} />
             </OrderSummarySection>
             {isMultiCouponEnabledForCheckout || isMultiCouponEnabledForOrder ? (
                 <NewOrderSummarySubtotals

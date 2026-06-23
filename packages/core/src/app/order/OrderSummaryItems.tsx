@@ -1,4 +1,5 @@
-import { type LineItemMap } from '@bigcommerce/checkout-sdk';
+import { type DigitalItem, type LineItemMap, type PhysicalItem } from '@bigcommerce/checkout-sdk';
+import classNames from 'classnames';
 import React, {
     type FunctionComponent,
     type ReactElement,
@@ -10,14 +11,16 @@ import React, {
 import { TransitionGroup } from 'react-transition-group';
 
 import { useCheckout } from '@bigcommerce/checkout/contexts';
-import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import {
     CollapseCSSTransition,
     IconChevronDown,
     IconChevronUp,
     isSmallScreen,
+    Switch,
 } from '@bigcommerce/checkout/ui';
+
+import { isExperimentEnabled } from '../common/utility';
 
 import getBackorderCount from './getBackorderCount';
 import getItemsCount from './getItemsCount';
@@ -26,7 +29,16 @@ import mapFromDigital from './mapFromDigital';
 import mapFromGiftCertificate from './mapFromGiftCertificate';
 import mapFromPhysical from './mapFromPhysical';
 import OrderSummaryItem from './OrderSummaryItem';
-import removeBundledItems from './removeBundledItems';
+import { removeAndBundleItemsTogether, removeBundledItems } from './removeBundledItems';
+
+// Module-scoped to survive the responsive remount. Safe as MobileView mounts only one instance at a time.
+let backorderDetailsExpanded = false;
+
+const getBackorderDetailsExpanded = (): boolean => backorderDetailsExpanded;
+
+export const setBackorderDetailsExpanded = (value: boolean): void => {
+    backorderDetailsExpanded = value;
+};
 
 interface AnimatedProductItemProps {
     children: ReactNode;
@@ -62,82 +74,74 @@ const COLLAPSED_ITEMS_LIMIT_SMALL_SCREEN = 3;
 export interface OrderSummaryItemsProps {
     displayLineItemsCount: boolean;
     items: LineItemMap;
+    isMobileCartModal?: boolean;
 }
 
-const ItemCount = ({
-    items,
+const SummaryHeading = ({
+    displayLineItemsCount,
     nonBundledItems,
     showBackorderDetails,
-    setShowBackorderDetails,
+    showBackorderToggle,
+    toggleBackorderDetails,
 }: {
-    items: LineItemMap;
+    displayLineItemsCount: boolean;
     nonBundledItems: LineItemMap;
-    setShowBackorderDetails: React.Dispatch<React.SetStateAction<boolean>>;
     showBackorderDetails: boolean;
-}): ReactElement => {
-    const { checkoutState } = useCheckout();
-    const backorderCount = getBackorderCount(items);
-    const config = checkoutState.data.getConfig();
-    const shouldDisplayBackorderDetails =
-        !!config?.inventorySettings?.shouldDisplayBackorderMessagesOnStorefront &&
-        (!!config?.inventorySettings?.showQuantityOnBackorder ||
-            !!config?.inventorySettings?.showBackorderMessage);
-
-    return (
-        <h3
-            className="cart-section-heading optimizedCheckout-contentPrimary body-medium"
-            data-test="cart-count-total"
-        >
-            <TranslatedString
-                data={{ count: getItemsCount(nonBundledItems) }}
-                id="cart.item_count_text"
+    showBackorderToggle: boolean;
+    toggleBackorderDetails(): void;
+}): ReactElement => (
+    <div
+        className={classNames('cart-section-heading-container', {
+            'cart-section-heading-container--switch-only': !displayLineItemsCount,
+        })}
+    >
+        {displayLineItemsCount && (
+            <h3
+                className="cart-section-heading optimizedCheckout-contentPrimary body-medium"
+                data-test="cart-count-total"
+            >
+                <TranslatedString
+                    data={{ count: getItemsCount(nonBundledItems) }}
+                    id="cart.item_count_text"
+                />
+            </h3>
+        )}
+        {showBackorderToggle && (
+            <Switch
+                checked={showBackorderDetails}
+                label={<TranslatedString id="cart.backorder_details" />}
+                onChange={toggleBackorderDetails}
+                testId="cart-backorder-link"
             />
-            {shouldDisplayBackorderDetails && backorderCount > 0 && (
-                <a
-                    className="cart-backorder-link"
-                    data-test="cart-backorder-link"
-                    href="#"
-                    onClick={preventDefault(() => setShowBackorderDetails((prev) => !prev))}
-                >
-                    {showBackorderDetails && (
-                        <>
-                            <TranslatedString id="cart.hide_backorder_details" />
-                            <IconChevronUp />
-                        </>
-                    )}
-                    {!showBackorderDetails && (
-                        <>
-                            <TranslatedString id="cart.show_backorder_details" />
-                            <IconChevronDown />
-                        </>
-                    )}
-                </a>
-            )}
-        </h3>
-    );
-};
+        )}
+    </div>
+);
 
 const ProductList = ({
     items,
     isExpanded,
     collapsedLimit,
     showBackorderDetails,
+    bundleItemsMap,
+    pickListExperimentEnabled,
 }: {
     items: LineItemMap;
     isExpanded: boolean;
     collapsedLimit: number;
     showBackorderDetails: boolean;
+    bundleItemsMap?: Map<string | number, Array<PhysicalItem | DigitalItem>>;
+    pickListExperimentEnabled?: boolean;
 }): ReactElement => {
     const summaryItems = [
         ...items.physicalItems
             .slice()
             .sort((item) => item.variantId)
-            .map((item) => mapFromPhysical(item)),
+            .map((item) => mapFromPhysical(item, bundleItemsMap, pickListExperimentEnabled)),
         ...items.giftCertificates.slice().map(mapFromGiftCertificate),
         ...items.digitalItems
             .slice()
             .sort((item) => item.variantId)
-            .map(mapFromDigital),
+            .map((item) => mapFromDigital(item, bundleItemsMap, pickListExperimentEnabled)),
         ...(items.customItems || []).map(mapFromCustom),
     ].slice(0, isExpanded ? undefined : collapsedLimit);
 
@@ -186,10 +190,47 @@ const CartActions = ({
 const OrderSummaryItems = ({
     displayLineItemsCount = true,
     items,
+    isMobileCartModal = false,
 }: OrderSummaryItemsProps): ReactElement => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [showBackorderDetails, setShowBackorderDetails] = useState(false);
-    const nonBundledItems = removeBundledItems(items);
+    const [showBackorderDetails, setShowBackorderDetails] = useState(getBackorderDetailsExpanded);
+    const { selectedState: config } = useCheckout(({ data }) => data.getConfig());
+
+    const toggleBackorderDetails = useCallback(() => {
+        setShowBackorderDetails((prev) => {
+            const next = !prev;
+
+            setBackorderDetailsExpanded(next);
+
+            return next;
+        });
+    }, []);
+
+    const backorderCount = getBackorderCount(items);
+    const shouldDisplayBackorderDetails =
+        !!config?.inventorySettings?.shouldDisplayBackorderMessagesOnStorefront &&
+        (!!config?.inventorySettings?.showQuantityOnBackorder ||
+            !!config?.inventorySettings?.showBackorderMessage);
+    const pickListExperimentEnabled = config
+        ? isExperimentEnabled(config.checkoutSettings, 'BACK-425.update_bundle_item_ux', false)
+        : false;
+
+    // On the mobile cart modal, bundle children are not rendered while the bundle experiment is
+    // off, so gate the backorder toggle behind the experiment there to stop it appearing when
+    // only hidden bundle children are backordered.
+    const showBackorderToggle =
+        shouldDisplayBackorderDetails &&
+        backorderCount > 0 &&
+        (!isMobileCartModal || pickListExperimentEnabled);
+
+    // Only expand line-item backorder details when the toggle is actually available; otherwise the
+    // persisted (module-scoped) selection could expand details on a surface where the toggle is
+    // hidden (e.g. the mobile cart modal with the bundle experiment off).
+    const expandBackorderDetails = showBackorderToggle && showBackorderDetails;
+
+    const { nonBundledItems, bundleItemsMap } = pickListExperimentEnabled
+        ? removeAndBundleItemsTogether(items)
+        : { nonBundledItems: removeBundledItems(items), bundleItemsMap: undefined };
 
     const collapsedLimit = isSmallScreen()
         ? COLLAPSED_ITEMS_LIMIT_SMALL_SCREEN
@@ -207,19 +248,22 @@ const OrderSummaryItems = ({
 
     return (
         <>
-            {displayLineItemsCount && (
-                <ItemCount
-                    items={items}
+            {(displayLineItemsCount || showBackorderToggle) && (
+                <SummaryHeading
+                    displayLineItemsCount={displayLineItemsCount}
                     nonBundledItems={nonBundledItems}
-                    setShowBackorderDetails={setShowBackorderDetails}
                     showBackorderDetails={showBackorderDetails}
+                    showBackorderToggle={showBackorderToggle}
+                    toggleBackorderDetails={toggleBackorderDetails}
                 />
             )}
             <ProductList
+                bundleItemsMap={bundleItemsMap}
                 collapsedLimit={collapsedLimit}
                 isExpanded={isExpanded}
                 items={nonBundledItems}
-                showBackorderDetails={showBackorderDetails}
+                pickListExperimentEnabled={pickListExperimentEnabled}
+                showBackorderDetails={expandBackorderDetails}
             />
 
             {shouldShowActions && <CartActions isExpanded={isExpanded} onToggle={handleToggle} />}

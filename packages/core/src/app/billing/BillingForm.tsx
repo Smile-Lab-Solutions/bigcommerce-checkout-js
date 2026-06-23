@@ -1,6 +1,11 @@
-import { type Address, type FormField, isExtraField } from '@bigcommerce/checkout-sdk/essential';
+import {
+    type Address,
+    type CustomerAddress,
+    type FormField,
+    isExtraField,
+} from '@bigcommerce/checkout-sdk/essential';
 import { type FormikProps, withFormik } from 'formik';
-import React, { type RefObject, useRef, useState } from 'react';
+import React, { type RefObject, useEffect, useRef, useState } from 'react';
 import { lazy } from 'yup';
 
 import { useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
@@ -18,13 +23,13 @@ import {
     Form,
     LoadingOverlay,
 } from '@bigcommerce/checkout/ui';
+import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
 
 import {
     AddressForm,
     type AddressFormValues,
     AddressSelect,
     AddressType,
-    B2BExtraFieldsSessionStorage,
     getAddressFormFieldsValidationSchema,
     getTranslateAddressError,
     isValidCustomerAddress,
@@ -63,19 +68,20 @@ const BillingForm = ({
     const addressFormRef: RefObject<HTMLFieldSetElement> = useRef(null);
     const { isPayPalFastlaneEnabled, paypalFastlaneAddresses } = usePayPalFastlaneAddress();
 
-    const { checkoutService, checkoutState } = useCheckout();
+    const {
+        checkoutService,
+        selectedState: { customer, config, cart, isUpdatingBillingAddress, isUpdatingCheckout },
+    } = useCheckout(({ data, statuses }) => ({
+        customer: data.getCustomer(),
+        config: data.getConfig(),
+        cart: data.getCart(),
+        isUpdatingBillingAddress: statuses.isUpdatingBillingAddress(),
+        isUpdatingCheckout: statuses.isUpdatingCheckout(),
+    }));
     const {
         billing: { hideSaveToAddressBookCheck, restrictManualAddressEntry },
-        userJourney: { hasAddressExtraFields },
+        userJourney: { hasAddressExtraFields, hasCompanyAddressBook },
     } = useCapabilities();
-
-    const {
-        data: { getCustomer, getConfig, getCart },
-        statuses: { isUpdatingBillingAddress, isUpdatingCheckout },
-    } = checkoutState;
-    const customer = getCustomer();
-    const config = getConfig();
-    const cart = getCart();
 
     if (!config || !customer || !cart) {
         throw new Error('checkout data is not available');
@@ -101,16 +107,36 @@ const BillingForm = ({
             billingAddresses,
             getFields(billingAddress.countryCode),
         );
-    const isUpdating = isUpdatingBillingAddress() || isUpdatingCheckout();
+    const isUpdating = isUpdatingBillingAddress || isUpdatingCheckout;
     const { enableOrderComments } = config.checkoutSettings;
     const shouldShowOrderComments = enableOrderComments && getShippableItemsCount(cart) < 1;
     const shouldShowSaveAddress = !hideSaveToAddressBookCheck && !isGuest;
+
+    // Once the address form opens (selected address is invalid or no longer matches a
+    // book entry), the stored book id can't faithfully represent it, so drop it.
+    useEffect(() => {
+        if (
+            hasCompanyAddressBook &&
+            !hasValidCustomerAddress &&
+            B2BSessionStorage.getAddressId(B2BSessionStorage.billingAddressIdKey)
+        ) {
+            B2BSessionStorage.remove(B2BSessionStorage.billingAddressIdKey);
+        }
+    }, [hasCompanyAddressBook, hasValidCustomerAddress]);
 
     const handleSelectAddress = async (address: Partial<Address>) => {
         setIsResettingAddress(true);
 
         try {
             await checkoutService.updateBillingAddress(address);
+
+            B2BSessionStorage.remove(B2BSessionStorage.billingAddressIdKey);
+
+            const selectedAddressId = (address as CustomerAddress).id;
+
+            if (hasCompanyAddressBook && selectedAddressId) {
+                B2BSessionStorage.set(B2BSessionStorage.billingAddressIdKey, selectedAddressId);
+            }
         } catch (error) {
             if (error instanceof Error) {
                 onUnhandledError(error);
@@ -122,7 +148,7 @@ const BillingForm = ({
 
     const handleUseNewAddress = () => {
         if (hasAddressExtraFields) {
-            B2BExtraFieldsSessionStorage.removeFields(B2BExtraFieldsSessionStorage.BILLING_KEY);
+            B2BSessionStorage.remove(B2BSessionStorage.billingExtraFieldsKey);
         }
 
         void handleSelectAddress({});
@@ -193,25 +219,11 @@ export default withLanguage(
             ...mapAddressToFormValues(
                 getFields(billingAddress && billingAddress.countryCode),
                 billingAddress,
-                B2BExtraFieldsSessionStorage.BILLING_KEY,
+                B2BSessionStorage.billingExtraFieldsKey,
             ),
             orderComment: customerMessage,
         }),
-        isInitialValid: ({ billingAddress, getFields, language }) => {
-            if (!billingAddress) return false;
-
-            const fields = getFields(billingAddress.countryCode);
-            const formValues = mapAddressToFormValues(
-                fields,
-                billingAddress,
-                B2BExtraFieldsSessionStorage.BILLING_KEY,
-            );
-
-            return getAddressFormFieldsValidationSchema({
-                language,
-                formFields: fields,
-            }).isValidSync(formValues);
-        },
+        validateOnMount: true,
         validationSchema: ({
             language,
             getFields,

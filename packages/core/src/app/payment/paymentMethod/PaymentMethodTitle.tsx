@@ -248,12 +248,6 @@ export function getPaymentMethodTitle(
                 logoUrl: cdnPath('/img/payment-providers/zip.png'),
                 titleText: language.translate('payment.zip_display_name_text'),
             },
-            [PaymentMethodType.Barclaycard]: {
-                logoUrl: cdnPath(
-                    `/img/payment-providers/barclaycard_${method.id.toLowerCase()}.png`,
-                ),
-                titleText: '',
-            },
             [PaymentMethodId.AdyenV2]: {
                 logoUrl: `https://checkoutshopper-live.adyen.com/checkoutshopper/images/logos/${
                     method.method === 'scheme' ? 'card' : method.method
@@ -503,7 +497,7 @@ const PaymentMethodTitle: FunctionComponent<
                         ) : (
                             <TranslatedString
                                 data={{
-                                    currency: poConfig?.currency ?? '',
+                                    currency: poConfig?.creditLimitCheck?.currency ?? '',
                                     name: titleText,
                                 }}
                                 id="payment.errors.disabled_PO_number_currency_mismatch"
