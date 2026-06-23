@@ -279,13 +279,6 @@ export function getPaymentMethodTitle(
                 titleText: 'Pay in 4 interest free installments',
                 titleSubText: '',
             },
-            [PaymentMethodType.Barclaycard]: {
-                logoUrl: cdnPath(
-                    `/img/payment-providers/barclaycard_${method.id.toLowerCase()}.png`,
-                ),
-                titleText: '',
-                titleSubText: '',
-            },
             [PaymentMethodId.AdyenV2]: {
                 logoUrl: `https://checkoutshopper-live.adyen.com/checkoutshopper/images/logos/${
                     method.method === 'scheme' ? 'card' : method.method
@@ -670,7 +663,7 @@ const PaymentMethodTitle: FunctionComponent<
                         ) : (
                             <TranslatedString
                                 data={{
-                                    currency: poConfig?.currency ?? '',
+                                    currency: poConfig?.creditLimitCheck?.currency ?? '',
                                     name: titleText,
                                 }}
                                 id="payment.errors.disabled_PO_number_currency_mismatch"

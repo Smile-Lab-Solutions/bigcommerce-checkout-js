@@ -12,7 +12,7 @@ import {
     Fieldset,
 } from '@bigcommerce/checkout/ui';
 
-import { EMPTY_ARRAY, isFloatingLabelEnabled } from '../common/utility';
+import { EMPTY_ARRAY, isExperimentEnabled, isFloatingLabelEnabled } from '../common/utility';
 
 import {
     type AddressFormProps,
@@ -42,19 +42,23 @@ const AddressForm: React.FC<AddressFormProps> = ({
     }) => {
     const { language } = useLocale();
     const {
-        checkoutState: {
-            data: { getConfig, getBillingCountries, getShippingCountries },
-        },
-    } = useCheckout();
-
-    const config = getConfig();
-    const countries =
-        (type === AddressType.Billing ? getBillingCountries() : getShippingCountries()) ||
-        EMPTY_ARRAY;
+        selectedState: { config, countries },
+    } = useCheckout(({ data }) => ({
+        config: data.getConfig(),
+        countries:
+            (type === AddressType.Billing
+                ? data.getBillingCountries()
+                : data.getShippingCountries()) ?? EMPTY_ARRAY,
+    }));
     const googleMapsApiKey = config?.checkoutSettings.googleMapsApiKey || '';
     const isFloatingLabelEnabledValue = config
         ? isFloatingLabelEnabled(config.checkoutSettings)
         : false;
+    const isNewPhoneValidationExperimentEnabled = isExperimentEnabled(
+        config?.checkoutSettings,
+        'CHECKOUT-9019.use_new_phone_number_validation',
+        false,
+    );
     const countriesWithAutocomplete = ['US', 'CA', 'AU', 'NZ', 'GB'];
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -189,6 +193,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
                                 inputId={getAddressFormFieldInputId(addressFieldName)}
                                 // stateOrProvince can sometimes be a dropdown or input, so relying on id is not sufficient
                                 isFloatingLabelEnabled={isFloatingLabelEnabledValue}
+                                isNewPhoneValidationExperimentEnabled={
+                                    isNewPhoneValidationExperimentEnabled
+                                }
                                 key={`${field.id}-${field.name}`}
                                 label={
                                     field.custom || isExtraField(field) ? (
@@ -207,6 +214,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
                                 onChange={handleDynamicFormFieldChange(addressFieldName)}
                                 parentFieldName={getParentFieldName()}
                                 placeholder={getPlaceholderValue(field, translatedPlaceholderId)}
+                                selectedCountry={countryCode}
                             />
                         );
                     })}

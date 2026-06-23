@@ -1,7 +1,7 @@
 import { type Coupon } from '@bigcommerce/checkout-sdk';
 import { useState } from 'react';
 
-import { useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
+import { useCapabilities, useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
 
 import { EMPTY_ARRAY } from '../common/utility';
 import { hasSelectedShippingOptions } from '../shipping';
@@ -41,27 +41,47 @@ interface UseMultiCouponValues {
 export const useMultiCoupon = (): UseMultiCouponValues => {
     const [couponError, setCouponError] = useState<string | null>(null);
 
-    const { checkoutState, checkoutService } = useCheckout();
-    const { language } = useLocale();
-
     const {
-        data: { getConfig, getCheckout, getOrder },
-        statuses: { isSubmittingOrder, isPending, isApplyingCoupon, isApplyingGiftCertificate },
-    } = checkoutState;
-    const { checkoutSettings } = getConfig() ?? {};
-    const checkout = getCheckout();
-    const order = getOrder();
+        selectedState: {
+            config,
+            checkout,
+            order,
+            coupons,
+            giftCertificates,
+            isSubmittingOrder,
+            isPending,
+            isApplyingCoupon,
+            isApplyingGiftCertificate,
+        },
+        checkoutService,
+    } = useCheckout(({ data, statuses }) => ({
+        config: data.getConfig(),
+        checkout: data.getCheckout(),
+        order: data.getOrder(),
+        coupons: data.getCoupons(),
+        giftCertificates: data.getGiftCertificates(),
+        isSubmittingOrder: statuses.isSubmittingOrder(),
+        isPending: statuses.isPending(),
+        isApplyingCoupon: statuses.isApplyingCoupon(),
+        isApplyingGiftCertificate: statuses.isApplyingGiftCertificate(),
+    }));
+    const { language } = useLocale();
+    const {
+        userJourney: { disableCoupon, disableGiftCertificate },
+    } = useCapabilities();
+
+    const { checkoutSettings } = config ?? {};
 
     if (!checkoutSettings || !(checkout || order)) {
         throw new Error('Checkout or order is not available');
     }
 
-    const shouldDisableCouponForm = isSubmittingOrder() || isPending();
+    const shouldDisableCouponForm = isSubmittingOrder || isPending;
 
-    const appliedCoupons = checkoutState.data.getCoupons() ?? EMPTY_ARRAY;
+    const appliedCoupons = coupons ?? EMPTY_ARRAY;
 
     const appliedGiftCertificates =
-        checkoutState.data.getGiftCertificates()?.map(({ code, used }) => ({
+        giftCertificates?.map(({ code, used }) => ({
             code,
             amount: used,
         })) ?? EMPTY_ARRAY;
@@ -69,15 +89,23 @@ export const useMultiCoupon = (): UseMultiCouponValues => {
     const applyCouponOrGiftCertificate = async (code: string) => {
         const { applyCoupon, applyGiftCertificate, clearError } = checkoutService;
 
-        try {
-            await applyGiftCertificate(code);
-        } catch (error) {
-            if (error instanceof Error) {
-                await clearError(error);
-            }
+        if (!disableGiftCertificate) {
+            try {
+                await applyGiftCertificate(code);
 
-            await applyCoupon(code);
+                return;
+            } catch (error) {
+                if (disableCoupon) {
+                    throw error;
+                }
+
+                if (error instanceof Error) {
+                    await clearError(error);
+                }
+            }
         }
+
+        await applyCoupon(code);
     };
 
     const removeCoupon = async (code: string) => {
@@ -122,7 +150,7 @@ export const useMultiCoupon = (): UseMultiCouponValues => {
         appliedCoupons,
         appliedGiftCertificates,
         couponError,
-        isApplyingCouponOrGiftCertificate: isApplyingCoupon() || isApplyingGiftCertificate(),
+        isApplyingCouponOrGiftCertificate: isApplyingCoupon || isApplyingGiftCertificate,
         isCouponFormCollapsed: checkoutSettings.isCouponCodeCollapsed,
         isCouponFormDisabled: shouldDisableCouponForm,
         uiDetails,

@@ -14,6 +14,7 @@ import { OrderSummaryContainer } from './OrderSummaryContainer';
 import { loadOwlCarousel } from '../../../../../../scripts/custom/orderConfirmation';
 
 interface OrderConfirmationPageProps {
+    cannotCreatePersonalAccount: boolean;
     order: Order;
     supportEmail: string;
     supportPhoneNumber: string | undefined;
@@ -33,6 +34,7 @@ interface OrderConfirmationPageProps {
 }
 
 export const OrderConfirmationPage = ({
+    cannotCreatePersonalAccount,
     currency,
     error,
     isShippingDiscountDisplayEnabled,
