@@ -345,6 +345,10 @@ export default withLanguage(
                 try {
                     await applyGiftCertificate(code);
                 } catch (error) {
+                    if (disableCoupon) {
+                        throw error;
+                    }
+
                     if (error instanceof Error) {
                         clearError(error);
                     }

@@ -34,7 +34,6 @@ interface OrderConfirmationPageProps {
 }
 
 export const OrderConfirmationPage = ({
-    cannotCreatePersonalAccount,
     currency,
     error,
     isShippingDiscountDisplayEnabled,
