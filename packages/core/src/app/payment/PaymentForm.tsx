@@ -1,4 +1,5 @@
 import {
+    type Capabilities,
     ExtensionRegion,
     type FormField,
     type PaymentMethod,
@@ -6,7 +7,7 @@ import {
 import { type FormikProps, type FormikState, withFormik, type WithFormikConfig } from 'formik';
 import { isEmpty, isNil, noop, omitBy } from 'lodash';
 import React, { type FunctionComponent, memo, useCallback, useContext, useMemo } from 'react';
-import { type ObjectSchema } from 'yup';
+import { object, type ObjectSchema, string } from 'yup';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
 import { useCapabilities, useCheckout } from '@bigcommerce/checkout/contexts';
@@ -17,15 +18,16 @@ import {
 } from '@bigcommerce/checkout/locale';
 import { type PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
 import { Fieldset, Form, FormContext, Legend } from '@bigcommerce/checkout/ui';
+import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
 
-import { B2BExtraFieldsSessionStorage, getTranslateAddressError } from '../address';
+import { getTranslateAddressError } from '../address';
 import { isExperimentEnabled } from '../common/utility';
 import { getOrderExtraFieldsValidationSchema } from '../formFields';
 import { TermsConditions } from '../termsConditions';
 
+import AdditionalPaymentField from './AdditionalPaymentField';
 import getPaymentValidationSchema from './getPaymentValidationSchema';
 import InvoicePaymentCommentField from './InvoicePaymentCommentField';
-import { InvoicePaymentCommentSessionStorage } from './InvoicePaymentCommentSessionStorage';
 import { NoPaymentMethods } from './NoPaymentMethods';
 import { getInitialOrderExtraFieldsValues, OrderExtraFieldsFieldset } from './orderExtraFields';
 import {
@@ -42,6 +44,7 @@ import SpamProtectionField from './SpamProtectionField';
 import { StoreCreditField, StoreCreditOverlay } from './storeCredit';
 
 export interface PaymentFormProps {
+    additionalField?: Capabilities['payment']['additionalField'];
     availableStoreCredit?: number;
     disableStoreCredit?: boolean;
     defaultGatewayId?: string;
@@ -73,6 +76,7 @@ export interface PaymentFormProps {
 const PaymentForm: FunctionComponent<
     PaymentFormProps & FormikProps<PaymentFormValues> & WithLanguageProps
 > = ({
+    additionalField,
     availableStoreCredit = 0,
     disableStoreCredit = false,
     didExceedSpamLimit,
@@ -127,11 +131,11 @@ const PaymentForm: FunctionComponent<
         );
     }, [selectedMethod]);
 
-    const { checkoutState } = useCheckout();
+    const { selectedState: config } = useCheckout(({ data }) => data.getConfig());
     const {
         payment: { invoicePaymentComment },
     } = useCapabilities();
-    const { checkoutSettings } = checkoutState.data.getConfig() ?? {};
+    const { checkoutSettings } = config ?? {};
     const poMethodDisabledReason = usePoMethodDisabledReason(selectedMethod);
     const isSubmitDisabled = shouldDisableSubmit || Boolean(poMethodDisabledReason);
     const shouldShowSubmitButtonWhenPaymentNotRequired = isExperimentEnabled(
@@ -195,6 +199,13 @@ const PaymentForm: FunctionComponent<
             )}
 
             <PaymentRedeemables />
+
+            {additionalField && (
+                <AdditionalPaymentField
+                    isRequired={additionalField.required}
+                    label={additionalField.label}
+                />
+            )}
 
             {isTermsConditionsRequired && (
                 <TermsConditions
@@ -316,8 +327,8 @@ const PaymentMethodListFieldset: FunctionComponent<PaymentMethodListFieldsetProp
 const paymentFormConfig: WithFormikConfig<PaymentFormProps & WithLanguageProps, PaymentFormValues> =
     {
         mapPropsToValues: ({ defaultGatewayId, defaultMethodId, orderExtraFields }) => {
-            const storedOrderExtraFields = B2BExtraFieldsSessionStorage.getFields(
-                B2BExtraFieldsSessionStorage.ORDER_KEY,
+            const storedOrderExtraFields = B2BSessionStorage.get(
+                B2BSessionStorage.orderExtraFieldsKey,
             );
 
             return {
@@ -351,7 +362,12 @@ const paymentFormConfig: WithFormikConfig<PaymentFormProps & WithLanguageProps, 
                     orderExtraFields,
                     storedOrderExtraFields,
                 ),
-                invoicePaymentComment: InvoicePaymentCommentSessionStorage.get(),
+                invoicePaymentComment: B2BSessionStorage.getValue(
+                    B2BSessionStorage.invoiceCommentKey,
+                ),
+                additionalPaymentField: B2BSessionStorage.getValue(
+                    B2BSessionStorage.additionalPaymentFieldKey,
+                ),
             };
         },
 
@@ -359,17 +375,16 @@ const paymentFormConfig: WithFormikConfig<PaymentFormProps & WithLanguageProps, 
             const {
                 orderExtraFields,
                 invoicePaymentComment: _invoicePaymentComment,
+                additionalPaymentField: _additionalPaymentField,
                 ...rest
             } = values as PaymentFormValues & {
                 orderExtraFields?: Record<string, unknown>;
                 invoicePaymentComment?: string;
+                additionalPaymentField?: string;
             };
 
             if (orderExtraFields && Object.keys(orderExtraFields).length > 0) {
-                B2BExtraFieldsSessionStorage.setFields(
-                    B2BExtraFieldsSessionStorage.ORDER_KEY,
-                    orderExtraFields,
-                );
+                B2BSessionStorage.set(B2BSessionStorage.orderExtraFieldsKey, orderExtraFields);
             }
 
             onSubmit(
@@ -378,6 +393,7 @@ const paymentFormConfig: WithFormikConfig<PaymentFormProps & WithLanguageProps, 
         },
 
         validationSchema: ({
+            additionalField,
             isPaymentDataRequired,
             language,
             isTermsConditionsRequired = false,
@@ -391,16 +407,31 @@ const paymentFormConfig: WithFormikConfig<PaymentFormProps & WithLanguageProps, 
                 language,
             });
 
-            if (!orderExtraFields || orderExtraFields.length === 0) {
-                return paymentSchema;
+            const withOrderExtraFields =
+                orderExtraFields && orderExtraFields.length > 0
+                    ? paymentSchema.concat(
+                          getOrderExtraFieldsValidationSchema({
+                              formFields: orderExtraFields,
+                              translate: getTranslateAddressError(orderExtraFields, language),
+                          }),
+                      )
+                    : paymentSchema;
+
+            if (additionalField?.required) {
+                return withOrderExtraFields.concat(
+                    object({
+                        additionalPaymentField: string()
+                            .trim()
+                            .required(
+                                language.translate('payment.errors.field_required_error', {
+                                    label: additionalField.label,
+                                }),
+                            ),
+                    }) as ObjectSchema<Partial<PaymentFormValues>>,
+                );
             }
 
-            return paymentSchema.concat(
-                getOrderExtraFieldsValidationSchema({
-                    formFields: orderExtraFields,
-                    translate: getTranslateAddressError(orderExtraFields, language),
-                }),
-            );
+            return withOrderExtraFields;
         },
     };
 

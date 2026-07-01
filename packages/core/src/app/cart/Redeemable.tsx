@@ -31,6 +31,8 @@ import {
     Toggle,
 } from '@bigcommerce/checkout/ui';
 
+import { getRedeemableLabelId } from '../coupon/utils';
+
 import AppliedRedeemables, { type AppliedRedeemablesProps } from './AppliedRedeemables';
 
 export interface RedeemableFormValues {
@@ -49,6 +51,8 @@ export type ReedemableChildrenProps = Pick<
 
 export type RedeemableProps = {
     appliedRedeemableError?: RequestError;
+    disableCoupon?: boolean;
+    disableGiftCertificate?: boolean;
     isApplyingRedeemable?: boolean;
     isRemovingRedeemable?: boolean;
     removedRedeemableError?: RequestError;
@@ -63,7 +67,19 @@ export type RedeemableProps = {
 
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
-    > = ({ shouldCollapseCouponCode, showAppliedRedeemables, storeCurrencyCode, ...formProps }) => {
+    > = ({
+    disableCoupon,
+    disableGiftCertificate,
+    shouldCollapseCouponCode,
+    showAppliedRedeemables,
+    storeCurrencyCode, ...formProps
+}) => {
+    if (disableCoupon && disableGiftCertificate) {
+        return null;
+    }
+
+    const toggleLabelId = getRedeemableLabelId(disableGiftCertificate, disableCoupon);
+
 
         return (
             <Toggle openByDefault={!shouldCollapseCouponCode}>
@@ -82,7 +98,7 @@ const Redeemable: FunctionComponent<
                            <TranslatedString id="redeemable.toggle_action_us" />
                         )}
                         {storeCurrencyCode !== 'USD' && (
-                            <TranslatedString id="redeemable.toggle_action" />
+                            <TranslatedString id={toggleLabelId} />
                                 )}
                     </a>
                         )}
@@ -108,7 +124,7 @@ const Redeemable: FunctionComponent<
                                     <TranslatedString id="redeemable.toggle_action_us" />
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
-                                    <TranslatedString id="redeemable.toggle_action" />
+                                    <TranslatedString id={toggleLabelId} />
                                         )}
                             </b>
                         </span>
@@ -143,11 +159,14 @@ const Redeemable: FunctionComponent<
 const RedeemableForm: FunctionComponent<
     Partial<RedeemableProps> & FormikProps<RedeemableFormValues> & WithLanguageProps
 > = ({ appliedRedeemableError, isApplyingRedeemable, storeCurrencyCode2, clearError = noop, submitForm, language }) => {
+    // Keeping it as a function intentionally to have memoizeOne behavior unchanged
     const {
         checkoutState: {
             statuses: { isSubmittingOrder },
         },
-    } = useCheckout();
+    } = useCheckout(({ statuses }) => ({
+        isSubmittingOrder: statuses.isSubmittingOrder(),
+    }));
 
     const handleSubmitForm = (setSubmitted: FormContextType['setSubmitted']) => {
         if (isSubmittingOrder()) {
@@ -310,19 +329,32 @@ export default withLanguage(
 
         async handleSubmit(
             { redeemableCode },
-            { props: { applyCoupon, applyGiftCertificate, clearError } },
+            {
+                props: {
+                    applyCoupon,
+                    applyGiftCertificate,
+                    clearError,
+                    disableCoupon,
+                    disableGiftCertificate,
+                },
+            },
         ) {
             const code = redeemableCode.trim();
 
-            try {
-                await applyGiftCertificate(code);
-            } catch (error) {
-                if (error instanceof Error) {
-                    clearError(error);
-                }
+            if (!disableGiftCertificate) {
+                try {
+                    await applyGiftCertificate(code);
+                } catch (error) {
+                    if (disableCoupon) {
+                        throw error;
+                    }
 
-                applyCoupon(code);
+                    if (error instanceof Error) {
+                        clearError(error);
+                    }
+                }
             }
+            await applyCoupon(code);
         },
 
         validationSchema({ language, storeCurrencyCode }: RedeemableProps & WithLanguageProps) {
