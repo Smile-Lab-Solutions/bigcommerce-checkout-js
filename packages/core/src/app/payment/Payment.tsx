@@ -447,6 +447,7 @@ const Payment = (
                 analyticsTracker.paymentComplete();
 
                 onSubmit(order?.orderId);
+            }
             } catch (error) {
                 analyticsTracker.paymentRejected();
 
