@@ -161,6 +161,7 @@ const ConsignmentAddressSelector = ({
                 onRequestClose={handleCloseAddAddressForm}
                 onSaveAddress={handleSaveAddress}
                 selectedAddress={isGuest ? selectedAddress : undefined}
+                shouldShowSaveAddress={hasCompanyAddressBook}
                 storageKey={storageKey}
                 storeCurrencyCode={storeCurrencyCode}
             />

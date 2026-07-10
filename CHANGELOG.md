@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.830.4](https://github.com/bigcommerce/checkout-js/compare/v1.830.3...v1.830.4) (2026-07-10)
+
+### [1.830.3](https://github.com/bigcommerce/checkout-js/compare/v1.830.2...v1.830.3) (2026-07-09)
+
+### [1.830.2](https://github.com/bigcommerce/checkout-js/compare/v1.830.1...v1.830.2) (2026-07-09)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10180 Initialize checklist formik with correct value ([#3143](https://github.com/bigcommerce/checkout-js/issues/3143)) ([d3e4afc](https://github.com/bigcommerce/checkout-js/commit/d3e4afc88b2263f33ec3242d78914f344185b541))
+
+### [1.830.1](https://github.com/bigcommerce/checkout-js/compare/v1.830.0...v1.830.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10190 Fix StylelintWebpackPlugin linting files outside packages ([#3144](https://github.com/bigcommerce/checkout-js/issues/3144)) ([22fdccd](https://github.com/bigcommerce/checkout-js/commit/22fdccd48d26a8144e1fc32f85d4a210407a341f))
+
+## [1.830.0](https://github.com/bigcommerce/checkout-js/compare/v1.829.0...v1.830.0) (2026-07-06)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10026 Add new Google Places API services ([#3135](https://github.com/bigcommerce/checkout-js/issues/3135)) ([b0b09b5](https://github.com/bigcommerce/checkout-js/commit/b0b09b536ec7e91940dd199babc00536a41c175b))
+
+## [1.829.0](https://github.com/bigcommerce/checkout-js/compare/v1.828.0...v1.829.0) (2026-07-06)
+
+
+### Features
+
+* **checkout:** Migrate CBA MPGS to Resolver Configuration ([#3075](https://github.com/bigcommerce/checkout-js/issues/3075)) ([8693dc2](https://github.com/bigcommerce/checkout-js/commit/8693dc23c83cc87740527907f78481d0bdd16d0a))
+
+## [1.828.0](https://github.com/bigcommerce/checkout-js/compare/v1.827.3...v1.828.0) (2026-07-06)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10149 attach temporary billing component in payment step ([#3138](https://github.com/bigcommerce/checkout-js/issues/3138)) ([bd2747b](https://github.com/bigcommerce/checkout-js/commit/bd2747b5c90d4a74bcbbca4b133a288862476d53))
+
+### [1.827.3](https://github.com/bigcommerce/checkout-js/compare/v1.827.2...v1.827.3) (2026-07-03)
+
+### [1.827.2](https://github.com/bigcommerce/checkout-js/compare/v1.827.1...v1.827.2) (2026-07-02)
+
+### [1.827.1](https://github.com/bigcommerce/checkout-js/compare/v1.827.0...v1.827.1) (2026-07-02)
+
+## [1.827.0](https://github.com/bigcommerce/checkout-js/compare/v1.826.2...v1.827.0) (2026-07-02)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10114 Save shouldSaveAddress Flag for Multi-shipping ([#3132](https://github.com/bigcommerce/checkout-js/issues/3132)) ([dfa7778](https://github.com/bigcommerce/checkout-js/commit/dfa777875753def0eb32cf140a37a8ad03e1de60))
+
+### [1.826.2](https://github.com/bigcommerce/checkout-js/compare/v1.826.1...v1.826.2) (2026-07-01)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10139 Bring back optional validation ([#3134](https://github.com/bigcommerce/checkout-js/issues/3134)) ([0146359](https://github.com/bigcommerce/checkout-js/commit/0146359ffdd35cc72169e3392ff94cfa5f04969c))
+
 ### [1.826.1](https://github.com/bigcommerce/checkout-js/compare/v1.826.0...v1.826.1) (2026-07-01)
 
 ## [1.826.0](https://github.com/bigcommerce/checkout-js/compare/v1.825.0...v1.826.0) (2026-07-01)
