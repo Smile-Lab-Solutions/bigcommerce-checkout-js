@@ -48,7 +48,7 @@ const SaveAddress: FunctionComponent<
     values,
     setFieldValue,
     isLoading,
-    onRequestClose,
+    onRequestClose, shouldShowSaveAddress,
     storeCurrencyCode,
 }) => (
     <Form autoComplete="on">
@@ -57,7 +57,7 @@ const SaveAddress: FunctionComponent<
                 countryCode={values.countryCode}
                 formFields={getFields(values.countryCode)}
                 setFieldValue={setFieldValue}
-                shouldShowSaveAddress={false}
+                shouldShowSaveAddress={shouldShowSaveAddress}
                 type={AddressType.Shipping}
                 storeCurrencyCode={storeCurrencyCode}
             />
