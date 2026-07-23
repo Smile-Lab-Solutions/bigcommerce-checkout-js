@@ -33,7 +33,10 @@ import {
 import { type ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { OrderConfirmationPageSkeleton } from '@bigcommerce/checkout/ui';
-import { navigateToOrderConfirmation as navigateToOrderConfirmationUtility } from '@bigcommerce/checkout/utility';
+import {
+    CannotCreatePersonalAccountSessionStorage,
+    navigateToOrderConfirmation as navigateToOrderConfirmationUtility,
+} from '@bigcommerce/checkout/utility';
 
 import { withAnalytics } from '../analytics';
 import { EmptyCartMessage } from '../cart';
@@ -100,6 +103,7 @@ export interface WithCheckoutProps {
     isGuestEnabled: boolean;
     isLoadingCheckout: boolean;
     isPending: boolean;
+    isPersistingB2BMetadata: boolean;
     isPriceHiddenFromGuests: boolean;
     isShowingWalletButtonsOnTop: boolean;
     isShippingDiscountDisplayEnabled: boolean;
@@ -141,6 +145,7 @@ const Checkout = ({
     language,
     cartUrl,
     isPending,
+    isPersistingB2BMetadata,
     isPriceHiddenFromGuests,
     containerId,
     embeddedStylesheet,
@@ -151,7 +156,7 @@ const Checkout = ({
     const capabilities = useCapabilities();
     const {
         userJourney: { requiresB2BToken, quoteConfig },
-        orderConfirmation: { invoiceRedirect },
+        orderConfirmation: { cannotCreatePersonalAccount, invoiceRedirect },
     } = capabilities;
     const { fetchB2BToken } = useB2BToken();
     const { checkoutService } = useCheckout(() => undefined);
@@ -167,7 +172,7 @@ const Checkout = ({
     });
 
     useEffect(() => {
-        if (quoteConfig?.id) {
+        if (quoteConfig?.id || invoiceRedirect) {
             return deleteCartOnExit(checkoutService);
         }
     }, []);
@@ -264,6 +269,10 @@ const Checkout = ({
 
             return;
         }
+
+        CannotCreatePersonalAccountSessionStorage.setCannotCreatePersonalAccount(
+            cannotCreatePersonalAccount,
+        );
 
         void navigateToOrderConfirmationUtility(orderId);
     }, []);
@@ -421,13 +430,20 @@ const Checkout = ({
         (isBillingSameAsShipping: boolean): void => {
             setState((prev) => ({ ...prev, isBillingSameAsShipping }));
 
-            if (isBillingSameAsShipping) {
+            if (isBillingSameAsShipping || themeV2) {
                 navigateToNextIncompleteStep();
             } else {
                 navigateToStep(CheckoutStepType.Billing);
             }
         },
-        [navigateToNextIncompleteStep, navigateToStep],
+        [navigateToNextIncompleteStep, navigateToStep, themeV2],
+    );
+
+    const handleBillingSameAsShippingChange = useCallback(
+        (isBillingSameAsShipping: boolean): void => {
+            setState((prev) => ({ ...prev, isBillingSameAsShipping }));
+        },
+        [],
     );
 
     const handleShippingSignIn = useCallback((): void => {
@@ -533,12 +549,14 @@ const Checkout = ({
                         checkEmbeddedSupport={checkEmbeddedSupport}
                         consignments={consignments}
                         errorLogger={errorLogger}
+                        isBillingSameAsShipping={isBillingSameAsShipping}
                         isEmbedded={isEmbedded()}
                         isUsingMultiShipping={
                             cart && consignments
                                 ? isUsingMultiShipping(consignments, cart.lineItems)
                                 : false
                         }
+                        onBillingSameAsShippingChange={handleBillingSameAsShippingChange}
                         onCartChangedError={handleCartChangedError}
                         onEdit={handleEditStep}
                         onExpanded={handleExpanded}
@@ -687,7 +705,9 @@ const Checkout = ({
         };
     }, []);
 
-    if (state.isRedirecting) {
+    // The payment step unmounts once the order is placed, so show the confirmation skeleton
+    // while B2B metadata persists to avoid a blank page.
+    if (state.isRedirecting || isPersistingB2BMetadata) {
         return <OrderConfirmationPageSkeleton />;
     }
 

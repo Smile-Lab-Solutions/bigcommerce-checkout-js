@@ -1,14 +1,15 @@
-import { type CheckoutSelectors } from '@bigcommerce/checkout-sdk';
+import { type CheckoutSelectors, type CustomerAddress } from '@bigcommerce/checkout-sdk';
 import { noop } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useCapabilities } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { AddressFormSkeleton, ConfirmationModal } from '@bigcommerce/checkout/ui';
-import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
 
 import {
     AddressType,
+    decodeAddressLabel,
+    getShouldSaveAddress,
     isEqualAddress,
     mapAddressFromFormValues,
     setDefaultAddress,
@@ -74,8 +75,9 @@ function Shipping({
     } = useShipping();
     const {
         shipping: { restrictManualAddressEntry },
-        userJourney: { hasCompanyAddressBook },
+        userJourney: { hasCompanyAddressBook, hasAddressLabel },
     } = useCapabilities();
+    const decode = (address: CustomerAddress) => decodeAddressLabel(address, hasAddressLabel);
 
     useEffect(() => {
         const initializeShipping = async () => {
@@ -91,6 +93,7 @@ function Shipping({
                         type: AddressType.Shipping,
                         currentAddress: shippingAddress,
                         addresses: customer.addresses,
+                        decode,
                         updateAddress: updateShippingAddress,
                     });
                 }
@@ -124,6 +127,7 @@ function Shipping({
                         type: AddressType.Shipping,
                         currentAddress: consignments[0].shippingAddress,
                         addresses: customer.addresses,
+                        decode,
                         updateAddress: updateShippingAddress,
                     });
                 }
@@ -148,24 +152,18 @@ function Shipping({
 
     const handleSingleShippingSubmit = async (values: SingleShippingFormValues) => {
         const updatedShippingAddress =
-            values.shippingAddress &&
-            mapAddressFromFormValues(
-                values.shippingAddress,
-                B2BSessionStorage.shippingExtraFieldsKey,
-            );
+            values.shippingAddress && mapAddressFromFormValues(values.shippingAddress);
         const promises: Array<Promise<CheckoutSelectors>> = [];
         const hasRemoteBilling = hasRemoteBillingFn(methodId);
 
         if (
             !isEqualAddress(updatedShippingAddress, shippingAddress) ||
-            shippingAddress?.shouldSaveAddress !== updatedShippingAddress?.shouldSaveAddress
+            getShouldSaveAddress(shippingAddress) !== getShouldSaveAddress(updatedShippingAddress)
         ) {
             promises.push(updateShippingAddress(updatedShippingAddress || {}));
         }
 
         if (values.billingSameAsShipping && updatedShippingAddress && !hasRemoteBilling) {
-            B2BSessionStorage.copyShippingToBilling();
-
             if (!isEqualAddress(updatedShippingAddress, billingAddress)) {
                 promises.push(updateBillingAddress(updatedShippingAddress));
             }

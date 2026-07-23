@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 
 import { useCapabilities } from '@bigcommerce/checkout/contexts';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
 
 import {
     AddressFormModal,
     type AddressFormValues,
     AddressSelect,
     AddressType,
+    decodeAddressLabel,
     isValidAddress,
     mapAddressFromFormValues,
 } from '../address';
@@ -43,7 +43,7 @@ const ConsignmentAddressSelector = ({
     const [createCustomerAddressError, setCreateCustomerAddressError] = useState<Error>();
 
     const {
-        userJourney: { hasCompanyAddressBook },
+        userJourney: { hasCompanyAddressBook, hasAddressLabel },
     } = useCapabilities();
 
     const {
@@ -52,19 +52,22 @@ const ConsignmentAddressSelector = ({
         updateConsignment,
         createCustomerAddress,
         customer,
-        validateMaxLength,
         getConsignments: getPreviousConsignments,
     } = useShipping();
 
-    const storageKey = B2BSessionStorage.getConsignmentKey(consignment?.id ?? '');
-
     // TODO: add filter for addresses
-    const addresses = customer.addresses || EMPTY_ARRAY;
+    const addresses = (customer.addresses || EMPTY_ARRAY).map((address) =>
+        decodeAddressLabel(address, hasAddressLabel),
+    );
+    const decodedSelectedAddress =
+        selectedAddress && decodeAddressLabel(selectedAddress, hasAddressLabel);
 
     const isGuest = customer.isGuest;
 
-    const handleSelectAddress = async (address: Address) => {
-        if (!isValidAddress(address, getFields(address.countryCode), validateMaxLength)) {
+    const handleSelectAddress = async (rawAddress: Address) => {
+        const address = decodeAddressLabel(rawAddress, hasAddressLabel);
+
+        if (!isValidAddress(address, getFields(address.countryCode), true)) {
             return onUnhandledError(new AssignItemInvalidAddressError());
         }
 
@@ -116,7 +119,7 @@ const ConsignmentAddressSelector = ({
     };
 
     const handleSaveAddress = async (addressFormValues: AddressFormValues) => {
-        const address = mapAddressFromFormValues(addressFormValues, storageKey);
+        const address = mapAddressFromFormValues(addressFormValues);
 
         await handleSelectAddress(address);
 
@@ -158,14 +161,13 @@ const ConsignmentAddressSelector = ({
                 isOpen={isOpenNewAddressModal}
                 onRequestClose={handleCloseAddAddressForm}
                 onSaveAddress={handleSaveAddress}
-                selectedAddress={isGuest ? selectedAddress : undefined}
+                selectedAddress={isGuest ? decodedSelectedAddress : undefined}
                 shouldShowSaveAddress={hasCompanyAddressBook}
-                storageKey={storageKey}
             />
             {isGuest ? (
                 <GuestCustomerAddressSelector
                     onUseNewAddress={handleUseNewAddress}
-                    selectedAddress={selectedAddress}
+                    selectedAddress={decodedSelectedAddress}
                 />
             ) : (
                 <AddressSelect
@@ -173,7 +175,7 @@ const ConsignmentAddressSelector = ({
                     onSelectAddress={handleSelectAddress}
                     onUseNewAddress={handleUseNewAddress}
                     placeholderText={<TranslatedString id="shipping.choose_shipping_address" />}
-                    selectedAddress={selectedAddress}
+                    selectedAddress={decodedSelectedAddress}
                     showSingleLineAddress
                     type={AddressType.Shipping}
                 />

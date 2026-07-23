@@ -3,7 +3,12 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
-import { CheckoutProvider, ExtensionProvider, LocaleContext } from '@bigcommerce/checkout/contexts';
+import {
+    CheckoutProvider,
+    ExtensionProvider,
+    LocaleContext,
+    ThemeContext,
+} from '@bigcommerce/checkout/contexts';
 import { createLocaleContext } from '@bigcommerce/checkout/locale';
 import { render, screen } from '@bigcommerce/checkout/test-utils';
 
@@ -35,13 +40,13 @@ describe('SingleShippingForm', () => {
         shippingAddress: getShippingAddress(),
         customerMessage: '',
         cartHasChanged: false,
+        hasAddressLabel: false,
         isBillingSameAsShipping: false,
         isInitialValueLoaded: true,
         shippingFormRenderTimestamp: undefined,
         onSubmit: jest.fn(),
         getFields: jest.fn(() => addressFormFields),
         onUnhandledError: jest.fn(),
-        validateMaxLength: false,
     };
 
     const shippingAutosaveDelay = 500;
@@ -339,6 +344,17 @@ describe('SingleShippingForm', () => {
 
     it('does not render billing same as shipping checkbox for amazon pay', async () => {
         renderSingleShippingFormComponent({ methodId: 'amazonpay' });
+
+        expect(screen.queryByTestId('billingSameAsShipping')).not.toBeInTheDocument();
+    });
+
+    it('does not render billing same as shipping checkbox under themeV2', async () => {
+        // Under themeV2 the toggle moves to the payment step's billing block.
+        render(
+            <ThemeContext.Provider value={{ themeV2: true }}>
+                {createSingleShippingFormComponent()}
+            </ThemeContext.Provider>,
+        );
 
         expect(screen.queryByTestId('billingSameAsShipping')).not.toBeInTheDocument();
     });

@@ -12,7 +12,9 @@ import { PhoneFormField, type PhoneFormFieldProps } from './PhoneFormField';
 
 const mockIsValidNumber = jest.fn();
 const mockSetCountry = jest.fn();
+const mockSetNumber = jest.fn();
 const mockGetSelectedCountryData = jest.fn();
+const mockGetNumber = jest.fn(() => '');
 
 jest.mock('@intl-tel-input/react', () => ({
     __esModule: true,
@@ -26,9 +28,13 @@ jest.mock('@intl-tel-input/react', () => ({
     >(({ inputProps, onChangeNumber, value }, ref) => {
         useImperativeHandle(ref, () => ({
             getInstance: () => ({
+                getNumber: mockGetNumber,
                 getSelectedCountryData: mockGetSelectedCountryData,
+                isActive: () => true,
                 isValidNumber: mockIsValidNumber,
+                promise: Promise.resolve(),
                 setCountry: mockSetCountry,
+                setNumber: mockSetNumber,
             }),
         }));
 
@@ -69,10 +75,27 @@ describe('PhoneFormField', () => {
             </LocaleContext.Provider>,
         );
 
+    const renderWithSelectedCountry = (selectedCountry: string) => (
+        <LocaleContext.Provider value={localeContextMock}>
+            <Formik initialValues={{ phone: '' }} onSubmit={jest.fn()}>
+                <FormProvider initialIsSubmitted>
+                    <PhoneFormField
+                        id="phone"
+                        label="Phone Number"
+                        name="phone"
+                        selectedCountry={selectedCountry}
+                    />
+                </FormProvider>
+            </Formik>
+        </LocaleContext.Provider>
+    );
+
     beforeEach(() => {
+        mockGetNumber.mockClear();
         mockGetSelectedCountryData.mockClear();
         mockIsValidNumber.mockClear();
         mockSetCountry.mockClear();
+        mockSetNumber.mockClear();
     });
 
     it('renders IntlTelInput', () => {
@@ -110,6 +133,32 @@ describe('PhoneFormField', () => {
         );
 
         expect(mockSetCountry).not.toHaveBeenCalled();
+    });
+
+    it('retries auto-set country on a later selectedCountry change if setCountry previously threw', () => {
+        mockSetCountry.mockImplementationOnce(() => {
+            throw new Error('Invalid iso2 code');
+        });
+
+        const { rerender } = render(renderWithSelectedCountry('US'));
+
+        expect(mockSetCountry).toHaveBeenCalledTimes(1);
+
+        rerender(renderWithSelectedCountry('CA'));
+
+        expect(mockSetCountry).toHaveBeenCalledTimes(2);
+        expect(mockSetCountry).toHaveBeenLastCalledWith('ca');
+        expect(screen.getByTestId('phone-text')).toBeInTheDocument();
+    });
+
+    it('does not re-apply auto-set country on a later selectedCountry change once it already succeeded', () => {
+        const { rerender } = render(renderWithSelectedCountry('US'));
+
+        expect(mockSetCountry).toHaveBeenCalledTimes(1);
+
+        rerender(renderWithSelectedCountry('CA'));
+
+        expect(mockSetCountry).toHaveBeenCalledTimes(1);
     });
 
     it('shows a validation error when the phone number is invalid', async () => {

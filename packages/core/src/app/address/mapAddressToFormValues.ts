@@ -7,7 +7,9 @@ import {
 } from '@bigcommerce/checkout-sdk/essential';
 
 import { DynamicFormFieldType } from '@bigcommerce/checkout/ui';
-import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
+
+import getAddressExtraFields from './getAddressExtraFields';
+import getShouldSaveAddress from './getShouldSaveAddress';
 
 export type AddressFormValues = Pick<
     Address,
@@ -20,10 +22,7 @@ export type AddressFormValues = Pick<
 export default function mapAddressToFormValues(
     fields: FormField[],
     address?: Address,
-    storageKey?: string,
 ): AddressFormValues {
-    const storedExtraFields = storageKey ? B2BSessionStorage.get(storageKey) : undefined;
-
     const values = {
         ...fields.reduce((addressFormValues, field) => {
             const { name, custom, fieldType, default: defaultValue } = field;
@@ -38,12 +37,11 @@ export default function mapAddressToFormValues(
                 const rawFieldId = name.startsWith(B2B_EXTRA_FIELD_PREFIX)
                     ? name.slice(B2B_EXTRA_FIELD_PREFIX.length)
                     : name;
-                const extraFieldValue = address?.extraFields?.find(
+                const extraFieldValue = getAddressExtraFields(address).find(
                     ({ fieldId }) => fieldId === rawFieldId,
                 )?.fieldValue;
 
-                addressFormValues.extraFields[name] =
-                    extraFieldValue ?? storedExtraFields?.[name] ?? defaultValue ?? '';
+                addressFormValues.extraFields[name] = extraFieldValue ?? defaultValue ?? '';
 
                 return addressFormValues;
             }
@@ -80,8 +78,11 @@ export default function mapAddressToFormValues(
         }, {} as AddressFormValues),
     };
 
-    values.shouldSaveAddress =
-        address && address.shouldSaveAddress !== undefined ? address.shouldSaveAddress : true;
+    values.shouldSaveAddress = getShouldSaveAddress(address);
+
+    if (address?.label !== undefined) {
+        values.label = address.label;
+    }
 
     // Manually backfill stateOrProvince to avoid Formik warning (uncontrolled to controlled input)
     if (values.stateOrProvince === undefined) {
