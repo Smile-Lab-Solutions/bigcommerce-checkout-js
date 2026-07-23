@@ -8,6 +8,7 @@ import {
     AddressForm,
     AddressSelect,
     AddressType,
+    decodeAddressLabel,
     isValidCustomerAddress,
     reorderAddressFormFields,
 } from '../address';
@@ -43,13 +44,18 @@ const ShippingAddressForm = ({
     onFieldChange,
         storeCurrencyCode
 }: ShippingAddressFormProps & ConnectFormikProps<SingleShippingFormValues>): ReactElement => {
-    const { selectedState: customer } = useCheckout(({ data }) => data.getCustomer());
+    const {
+        selectedState: { customer },
+    } = useCheckout(({ data }) => ({ customer: data.getCustomer() }));
     const { themeV2 } = useThemeContext();
     const {
         shipping: { hideSaveToAddressBookCheck, restrictManualAddressEntry },
+        userJourney: { hasAddressLabel },
     } = useCapabilities();
 
-    const addresses = customer?.addresses || [];
+    const rawAddresses = customer?.addresses || [];
+    const addresses = rawAddresses.map((address) => decodeAddressLabel(address, hasAddressLabel));
+    const decodedShippingAddress = decodeAddressLabel(shippingAddress, hasAddressLabel);
     const shouldShowSaveAddress = !hideSaveToAddressBookCheck && !customer?.isGuest;
 
     const setFieldValue = (fieldName: string, fieldValue: string) => {
@@ -80,9 +86,9 @@ const ShippingAddressForm = ({
         }
     };
 
-    const hasAddresses = addresses && addresses.length > 0;
+    const hasAddresses = rawAddresses.length > 0;
     const hasValidCustomerAddress = isValidCustomerAddress(
-        shippingAddress,
+        decodedShippingAddress,
         addresses,
         formFields,
         validateMaxLength,
@@ -115,7 +121,9 @@ const ShippingAddressForm = ({
                             addresses={addresses}
                             onSelectAddress={onAddressSelect}
                             onUseNewAddress={onUseNewAddress}
-                            selectedAddress={hasValidCustomerAddress ? shippingAddress : undefined}
+                            selectedAddress={
+                                hasValidCustomerAddress ? decodedShippingAddress : undefined
+                            }
                             type={AddressType.Shipping}
                         />
                     </LoadingOverlay>

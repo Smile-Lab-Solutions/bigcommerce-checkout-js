@@ -2,7 +2,14 @@ import IntlTelInput, { type IntlTelInputRef } from '@intl-tel-input/react';
 import 'intl-tel-input/styles';
 import classNames from 'classnames';
 import { type FieldProps } from 'formik';
-import React, { type FunctionComponent, type RefObject, useCallback, useEffect } from 'react';
+import { noop } from 'lodash';
+import React, {
+    type FunctionComponent,
+    type RefObject,
+    useCallback,
+    useEffect,
+    useRef,
+} from 'react';
 
 import { isIso2 } from '../../utils';
 
@@ -25,21 +32,68 @@ export const PhoneInput: FunctionComponent<PhoneInputProps> = ({
     selectedCountry,
     intlTelInputRef,
 }) => {
+    const isPhoneCountryAutoSetRef = useRef(false);
+
+    const currentValue = value ? String(value) : '';
+
+    const currentValueRef = useRef(currentValue);
+
+    currentValueRef.current = currentValue;
+
+    // sync initial Formik value ourselves
+    // the library's value prop has a bug with stale values that caused an infinite loop
+    // see #incident-20260711-2475 for details
     useEffect(() => {
-        if (!selectedCountry || value) {
+        const intlTelInputInstance = intlTelInputRef.current?.getInstance();
+
+        if (!intlTelInputInstance) {
+            return;
+        }
+
+        void intlTelInputInstance.promise
+            .then(() => {
+                const latestValue = currentValueRef.current;
+
+                if (intlTelInputInstance.getNumber() !== latestValue) {
+                    intlTelInputInstance.setNumber(latestValue);
+                }
+            })
+            .catch(noop);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentValue]);
+
+    useEffect(() => {
+        if (!selectedCountry || value || isPhoneCountryAutoSetRef.current) {
             return;
         }
 
         const selectedCountryInIsoFormat = selectedCountry.toLowerCase();
 
-        if (isIso2(selectedCountryInIsoFormat)) {
-            intlTelInputRef.current?.getInstance()?.setCountry(selectedCountryInIsoFormat);
+        if (!isIso2(selectedCountryInIsoFormat)) {
+            return;
+        }
+
+        try {
+            const intlTelInputInstance = intlTelInputRef.current?.getInstance();
+
+            if (intlTelInputInstance) {
+                intlTelInputInstance.setCountry(selectedCountryInIsoFormat);
+                isPhoneCountryAutoSetRef.current = true;
+            }
+        } catch {
+            // Defensive: the underlying library throws for unrecognized iso2 codes.
+            // Ref stays unset so a later, different selectedCountry can still be applied.
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCountry]);
 
     const handleChangeNumber = useCallback(
         (newPhoneNumber: string) => {
+            // Ignore no-op emissions fired by the library itself
+            if (newPhoneNumber === currentValueRef.current) {
+                return;
+            }
+
             void setFieldValue(name, newPhoneNumber);
         },
         [name, setFieldValue],
@@ -72,7 +126,6 @@ export const PhoneInput: FunctionComponent<PhoneInputProps> = ({
                 ref={intlTelInputRef}
                 separateDialCode={false}
                 strictRejectAnimation={false}
-                value={value ? String(value) : ''}
             />
         </span>
     );
