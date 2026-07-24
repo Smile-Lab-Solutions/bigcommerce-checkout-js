@@ -136,5 +136,6 @@ export const useBilling = ({ onReady, onUnhandledError }: UseBillingOptions) => 
         showNoAddressesWarning,
         updateBillingAddress,
         updateCheckout: checkoutService.updateCheckout,
+        config
     };
 };

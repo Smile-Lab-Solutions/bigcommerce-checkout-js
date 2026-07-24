@@ -40,6 +40,7 @@ export interface PaymentBillingFormProps {
     onBillingSameAsShippingChange(isBillingSameAsShipping: boolean): void;
     onUnhandledError(error: Error): void;
     updateBillingAddress(address: Partial<Address>): Promise<unknown>;
+    storeCurrencyCode: string;
 }
 
 const PaymentBillingFormComponent = ({
@@ -55,6 +56,7 @@ const PaymentBillingFormComponent = ({
     onBillingSameAsShippingChange,
     onUnhandledError,
     updateBillingAddress,
+    storeCurrencyCode
 }: PaymentBillingFormProps & WithLanguageProps & FormikProps<PaymentBillingFormValues>) => {
     const [isResettingAddress, setIsResettingAddress] = useState(false);
     const { isPayPalFastlaneEnabled, paypalFastlaneAddresses } = usePayPalFastlaneAddress();
@@ -227,6 +229,7 @@ const PaymentBillingFormComponent = ({
                                     setFieldValue={setFieldValue}
                                     shouldShowSaveAddress={shouldShowSaveAddress}
                                     type={AddressType.Billing}
+                                    storeCurrencyCode={storeCurrencyCode}
                                 />
                             </AddressFormSkeleton>
                         )}

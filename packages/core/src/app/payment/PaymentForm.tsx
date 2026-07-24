@@ -152,6 +152,8 @@ const PaymentForm: FunctionComponent<
     const hideSubmitPaymentButton =
         shouldHidePaymentSubmitButton || (isPaymentDataRequired() && isEmpty(methods));
 
+    const storeCurrencyCode = config != null ? config.currency.code : ""; 
+
     if (shouldExecuteSpamCheck) {
         return (
             <SpamProtectionField
@@ -206,6 +208,7 @@ const PaymentForm: FunctionComponent<
                     methodId={selectedMethod?.id}
                     onBillingSameAsShippingChange={onBillingSameAsShippingChange ?? noop}
                     onUnhandledError={onUnhandledError ?? noop}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             )}
 

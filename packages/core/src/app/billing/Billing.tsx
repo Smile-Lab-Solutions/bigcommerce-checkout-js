@@ -26,6 +26,7 @@ const Billing = ({ navigateNextStep, onReady, onUnhandledError }: BillingProps):
         showNoAddressesWarning,
         updateBillingAddress,
         updateCheckout,
+        config
     } = useBilling({ onReady, onUnhandledError });
 
     const handleSubmit = async ({

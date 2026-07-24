@@ -18,6 +18,7 @@ export interface PaymentBillingBlockProps {
     isBillingSameAsShipping: boolean;
     onBillingSameAsShippingChange(isBillingSameAsShipping: boolean): void;
     onUnhandledError(error: Error): void;
+    storeCurrencyCode: string;
 }
 
 export const PaymentBillingBlock: FunctionComponent<PaymentBillingBlockProps> = ({
@@ -25,6 +26,7 @@ export const PaymentBillingBlock: FunctionComponent<PaymentBillingBlockProps> = 
     isBillingSameAsShipping,
     onBillingSameAsShippingChange,
     onUnhandledError,
+    storeCurrencyCode
 }) => {
     const {
         billingAddress,
@@ -106,6 +108,7 @@ export const PaymentBillingBlock: FunctionComponent<PaymentBillingBlockProps> = 
                     onPersist={handlePersist}
                     onUnhandledError={onUnhandledError}
                     updateBillingAddress={updateBillingAddress}
+                    storeCurrencyCode={storeCurrencyCode}
                 />
             </div>
         </AddressFormSkeleton>
