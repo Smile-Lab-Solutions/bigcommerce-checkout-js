@@ -33,7 +33,6 @@ export interface AddressFormProps {
     isLoading: boolean;
     shouldShowSaveAddress?: boolean;
     defaultCountryCode?: string;
-    storageKey?: string;
     getFields(countryCode?: string): FormField[];
     onSaveAddress(address: AddressFormValues): void;
     onRequestClose?(): void;
@@ -84,11 +83,10 @@ const SaveAddressForm = withLanguage(
         handleSubmit: (values, { props: { onSaveAddress } }) => {
             onSaveAddress(values);
         },
-        mapPropsToValues: ({ getFields, selectedAddress, storageKey }) =>
+        mapPropsToValues: ({ getFields, selectedAddress }) =>
             mapAddressToFormValues(
                 getFields(selectedAddress && selectedAddress.countryCode),
                 selectedAddress,
-                storageKey,
             ),
         validationSchema: ({ language, getFields }: AddressFormProps & WithLanguageProps) =>
             lazy<Partial<AddressFormValues>>((values) =>

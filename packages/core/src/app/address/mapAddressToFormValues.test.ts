@@ -1,7 +1,6 @@
-import { type Address, type FormField } from '@bigcommerce/checkout-sdk';
+import { type Address, type CustomerAddress, type FormField } from '@bigcommerce/checkout-sdk';
 
-import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
-
+import { getAddress, getCustomerAddressB2B } from './address.mock';
 import { getFormFields } from './formField.mock';
 import mapAddressToFormValues from './mapAddressToFormValues';
 
@@ -113,9 +112,7 @@ describe('mapAddressToFormValues', () => {
         expect(result.extraFields?.b2bExtraField_100).toBe('');
     });
 
-    describe('session storage precedence', () => {
-        const storageKey = 'test_storage_key';
-
+    describe('extra field value precedence', () => {
         const extraField: FormField = {
             custom: false,
             default: 'Default Corp',
@@ -125,42 +122,76 @@ describe('mapAddressToFormValues', () => {
             required: false,
         };
 
-        afterEach(() => {
-            B2BSessionStorage.remove(storageKey);
-        });
-
-        it('prefers extra field value from address over session storage', () => {
+        it('prefers the extra field value from the address over the field default', () => {
             const fields: FormField[] = [...getFormFields(), extraField];
-
-            B2BSessionStorage.set(storageKey, {
-                b2bExtraField_100: 'Stored Corp',
-            });
 
             const address = {
                 firstName: 'John',
                 extraFields: [{ fieldId: '100', fieldValue: 'Address Corp' }],
             } as Address;
 
-            const result = mapAddressToFormValues(fields, address, storageKey);
+            const result = mapAddressToFormValues(fields, address);
 
             expect(result.extraFields?.b2bExtraField_100).toBe('Address Corp');
         });
 
-        it('falls back to session storage when address has no value for the extra field', () => {
+        it('falls back to the field default when the address has no value for the extra field', () => {
             const fields: FormField[] = [...getFormFields(), extraField];
-
-            B2BSessionStorage.set(storageKey, {
-                b2bExtraField_100: 'Stored Corp',
-            });
 
             const address = {
                 firstName: 'John',
                 extraFields: [],
             } as unknown as Address;
 
-            const result = mapAddressToFormValues(fields, address, storageKey);
+            const result = mapAddressToFormValues(fields, address);
 
-            expect(result.extraFields?.b2bExtraField_100).toBe('Stored Corp');
+            expect(result.extraFields?.b2bExtraField_100).toBe('Default Corp');
+        });
+
+        it('reads extra field values from b2b.extraFields for a company address', () => {
+            const fields: FormField[] = [...getFormFields(), extraField];
+
+            const address: CustomerAddress = {
+                ...getAddress(),
+                id: 1,
+                type: 'residential',
+                b2b: getCustomerAddressB2B({
+                    extraFields: [{ fieldId: '100', fieldValue: 'Company Corp' }],
+                }),
+            };
+
+            const result = mapAddressToFormValues(fields, address);
+
+            expect(result.extraFields?.b2bExtraField_100).toBe('Company Corp');
+        });
+    });
+
+    describe('shouldSaveAddress', () => {
+        it('defaults to true when no address is provided', () => {
+            const result = mapAddressToFormValues(getFormFields());
+
+            expect(result.shouldSaveAddress).toBe(true);
+        });
+
+        it('keeps the explicit shouldSaveAddress value of a checkout address', () => {
+            const result = mapAddressToFormValues(getFormFields(), {
+                ...getAddress(),
+                shouldSaveAddress: false,
+            });
+
+            expect(result.shouldSaveAddress).toBe(false);
+        });
+
+        it('seeds false for a saved customer address', () => {
+            const address: CustomerAddress = {
+                ...getAddress(),
+                id: 1,
+                type: 'residential',
+            };
+
+            const result = mapAddressToFormValues(getFormFields(), address);
+
+            expect(result.shouldSaveAddress).toBe(false);
         });
     });
 });

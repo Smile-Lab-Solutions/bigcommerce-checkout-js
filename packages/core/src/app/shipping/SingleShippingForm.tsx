@@ -1,20 +1,19 @@
-import { type Address, type CustomerAddress, type FormField } from '@bigcommerce/checkout-sdk';
+import { type Address, type FormField } from '@bigcommerce/checkout-sdk';
 import { type FormikProps } from 'formik';
 import { debounce, type DebouncedFunc, isEqual, noop } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { lazy, object } from 'yup';
 
-import { useCapabilities } from '@bigcommerce/checkout/contexts';
+import { useCapabilities, useThemeContext } from '@bigcommerce/checkout/contexts';
 import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/locale';
 import { Fieldset, Form } from '@bigcommerce/checkout/ui';
-import { B2BSessionStorage } from '@bigcommerce/checkout/utility';
 
 import {
     type AddressFormValues,
+    decodeAddressLabel,
     getAddressFormFieldsValidationSchema,
     getTranslateAddressError,
     isEqualAddress,
-    isValidCustomerAddress,
     mapAddressFromFormValues,
     mapAddressToFormValues,
 } from '../address';
@@ -38,12 +37,12 @@ export interface SingleShippingFormProps {
     isBillingSameAsShipping: boolean;
     cartHasChanged: boolean;
     customerMessage: string;
+    hasAddressLabel: boolean;
     methodId?: string;
     shippingAddress?: Address;
     shippingAutosaveDelay?: number;
     isInitialValueLoaded: boolean;
     shippingFormRenderTimestamp?: number;
-    validateMaxLength: boolean;
     getFields(countryCode?: string): FormField[];
     onSubmit(values: SingleShippingFormValues): void;
     onUnhandledError?(error: Error): void;
@@ -75,6 +74,7 @@ const SingleShippingForm: React.FC<
     cartHasChanged,
     customerMessage,
     getFields,
+    hasAddressLabel,
     isBillingSameAsShipping,
     isInitialValueLoaded,
     isValid,
@@ -85,16 +85,14 @@ const SingleShippingForm: React.FC<
     shippingAddress,
     shippingAutosaveDelay = SHIPPING_AUTOSAVE_DELAY,
     shippingFormRenderTimestamp,
-    validateMaxLength,
     values,
 }) => {
     const {
         shipping: { hideBillingSameAsShippingCheck },
-        userJourney: { hasAddressExtraFields, hasCompanyAddressBook },
     } = useCapabilities();
+    const { themeV2 } = useThemeContext();
     const {
         consignments,
-        customer,
         deinitializeShippingMethod: deinitialize,
         deleteConsignments,
         initializeShippingMethod: initialize,
@@ -105,13 +103,6 @@ const SingleShippingForm: React.FC<
         updateShippingAddress: updateAddress,
         storeCurrencyCode
     } = useShipping();
-
-    const hasValidShippingCustomerAddress = isValidCustomerAddress(
-        shippingAddress,
-        customer.addresses,
-        getFields(shippingAddress?.countryCode),
-        validateMaxLength,
-    );
 
     const propsRef = useRef({ values, shippingAddress, isValid });
     const debouncedUpdateAddressRef = useRef<
@@ -124,18 +115,6 @@ const SingleShippingForm: React.FC<
     const [isResettingAddress, setIsResettingAddress] = useState(false);
     const [isUpdatingShippingData, setIsUpdatingShippingData] = useState(false);
     const [hasRequestedShippingOptions, setHasRequestedShippingOptions] = useState(false);
-
-    // Once the address form opens (selected address is invalid or no longer matches a
-    // book entry), the stored book id can't faithfully represent it, so drop it.
-    useEffect(() => {
-        if (
-            hasCompanyAddressBook &&
-            !hasValidShippingCustomerAddress &&
-            B2BSessionStorage.getAddressId(B2BSessionStorage.shippingAddressIdKey)
-        ) {
-            B2BSessionStorage.remove(B2BSessionStorage.shippingAddressIdKey);
-        }
-    }, [hasCompanyAddressBook, hasValidShippingCustomerAddress]);
 
     const stateOrProvinceCodeFormField = useMemo(() => {
         return getFields(values.shippingAddress?.countryCode).find(
@@ -205,8 +184,7 @@ const SingleShippingForm: React.FC<
                 orderComment: customerMessage,
                 shippingAddress: mapAddressToFormValues(
                     getFields(shippingAddress?.countryCode),
-                    shippingAddress,
-                    B2BSessionStorage.shippingExtraFieldsKey,
+                    decodeAddressLabel(shippingAddress, hasAddressLabel),
                 ),
             });
         }
@@ -262,14 +240,6 @@ const SingleShippingForm: React.FC<
         try {
             await updateAddress(address);
 
-            B2BSessionStorage.remove(B2BSessionStorage.shippingAddressIdKey);
-
-            const selectedAddressId = (address as CustomerAddress).id;
-
-            if (hasCompanyAddressBook && selectedAddressId) {
-                B2BSessionStorage.set(B2BSessionStorage.shippingAddressIdKey, selectedAddressId);
-            }
-
             setValues({
                 ...propsRef.current.values,
                 shippingAddress: mapAddressToFormValues(getFields(address.countryCode), address),
@@ -286,16 +256,11 @@ const SingleShippingForm: React.FC<
 
         try {
             const address = await deleteConsignments();
-
-            if (hasAddressExtraFields) {
-                B2BSessionStorage.remove(B2BSessionStorage.shippingExtraFieldsKey);
-            }
-
-            B2BSessionStorage.remove(B2BSessionStorage.shippingAddressIdKey);
+            const decoded = decodeAddressLabel(address, hasAddressLabel);
 
             setValues({
                 ...propsRef.current.values,
-                shippingAddress: mapAddressToFormValues(getFields(address?.countryCode), address),
+                shippingAddress: mapAddressToFormValues(getFields(decoded?.countryCode), decoded),
             });
         } catch (error) {
             onUnhandledError(error);
@@ -319,6 +284,7 @@ const SingleShippingForm: React.FC<
 
     const shouldShowBillingSameAsShipping =
         !hideBillingSameAsShippingCheck &&
+        !themeV2 &&
         !PAYMENT_METHOD_VALID.some((method) => method === methodId);
 
     return (
@@ -338,7 +304,6 @@ const SingleShippingForm: React.FC<
                     onUnhandledError={onUnhandledError}
                     onUseNewAddress={handleUseNewAddress}
                     shippingAddress={shippingAddress}
-                    validateMaxLength={validateMaxLength}
                     storeCurrencyCode={storeCurrencyCode}
                 />
                 {shouldShowBillingSameAsShipping && (
@@ -371,6 +336,7 @@ export default withLanguage(
         mapPropsToValues: ({
             getFields,
             shippingAddress,
+            hasAddressLabel,
             isBillingSameAsShipping,
             customerMessage,
         }) => ({
@@ -378,8 +344,7 @@ export default withLanguage(
             orderComment: customerMessage,
             shippingAddress: mapAddressToFormValues(
                 getFields(shippingAddress?.countryCode),
-                shippingAddress,
-                B2BSessionStorage.shippingExtraFieldsKey,
+                decodeAddressLabel(shippingAddress, hasAddressLabel),
             ),
         }),
         validateOnMount: true,
@@ -387,7 +352,6 @@ export default withLanguage(
             language,
             getFields,
             methodId,
-            validateMaxLength,
         }: SingleShippingFormProps & WithLanguageProps) =>
             shouldHaveCustomValidation(methodId)
                 ? object({
@@ -411,7 +375,7 @@ export default withLanguage(
                           getAddressFormFieldsValidationSchema({
                               language,
                               formFields: getFields(formValues?.countryCode),
-                              validateMaxLength,
+                              validateMaxLength: true,
                               countryCode: formValues.countryCode,
                           }),
                       ),
