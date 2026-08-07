@@ -84,7 +84,6 @@ import _ from 'lodash';
 
 import { terraceFinanceSubmit, flexSubmit, partiallySubmit } from './paymentMethod/CustomMethodsSubmit';
 
-
 export interface PaymentProps {
     capabilities: Capabilities;
     errorLogger: ErrorLogger;
