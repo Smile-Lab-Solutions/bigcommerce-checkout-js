@@ -33,47 +33,28 @@ import {
 
 import { getRedeemableLabelId } from '../coupon/utils';
 
-import AppliedRedeemables, { type AppliedRedeemablesProps } from './AppliedRedeemables';
-
 export interface RedeemableFormValues {
     redeemableCode: string;
 }
 
-export type ReedemableChildrenProps = Pick<
-    RedeemableProps,
-    | 'onRemovedCoupon'
-    | 'onRemovedGiftCertificate'
-    | 'isRemovingGiftCertificate'
-    | 'isRemovingCoupon'
-    | 'coupons'
-    | 'giftCertificates'
->;
-
-export type RedeemableProps = {
+export interface RedeemableProps {
     appliedRedeemableError?: RequestError;
     disableCoupon?: boolean;
     disableGiftCertificate?: boolean;
     isApplyingRedeemable?: boolean;
     isRemovingRedeemable?: boolean;
     removedRedeemableError?: RequestError;
-    showAppliedRedeemables?: boolean;
     shouldCollapseCouponCode?: boolean;
     applyCoupon(code: string): Promise<CheckoutSelectors>;
     applyGiftCertificate(code: string): Promise<CheckoutSelectors>;
     clearError(error: Error): void;
     storeCurrencyCode?: string;
     storeCurrencyCode2?: string;
-} & AppliedRedeemablesProps;
+}
 
 const Redeemable: FunctionComponent<
     RedeemableProps & WithLanguageProps & FormikProps<RedeemableFormValues>
-    > = ({
-    disableCoupon,
-    disableGiftCertificate,
-    shouldCollapseCouponCode,
-    showAppliedRedeemables,
-    storeCurrencyCode, ...formProps
-}) => {
+    > = ({ disableCoupon, disableGiftCertificate, shouldCollapseCouponCode, storeCurrencyCode, ...formProps }) => {
     if (disableCoupon && disableGiftCertificate) {
         return null;
     }
@@ -147,8 +128,7 @@ const Redeemable: FunctionComponent<
                 {(isOpen || !shouldCollapseCouponCode) && (
                             <div data-test="redeemable-collapsable" id="redeemable-collapsable">
                                 <RedeemableForm {...formProps} />
-                                {showAppliedRedeemables && <AppliedRedeemables {...formProps} />}
-                            </div>
+                                </div>
                         )}
                     </>
                 )}
@@ -276,7 +256,7 @@ const RedeemableForm: FunctionComponent<
                             )}
 
                         <Button
-                            className="form-prefixPostfix-button--postfix body-bold"
+                            className="form-prefixPostfix-button--postfix optimizedCheckout-contentPrimary body-bold"
                             disabled={isSubmittingOrder()}
                             id="applyRedeemableButton"
                             isLoading={isApplyingRedeemable}

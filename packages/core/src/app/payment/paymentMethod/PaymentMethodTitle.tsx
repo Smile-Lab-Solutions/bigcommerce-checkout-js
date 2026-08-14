@@ -586,7 +586,7 @@ const PaymentMethodTitle: FunctionComponent<
 
                 {titleText && (
                     <div
-                        className="paymentProviderHeader-name sub-header"
+                        className="paymentProviderHeader-name optimizedCheckout-headingSecondary sub-header"
                         data-test="payment-method-name"
                      
                         style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>

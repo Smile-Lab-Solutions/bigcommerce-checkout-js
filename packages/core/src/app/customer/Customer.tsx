@@ -10,7 +10,7 @@ import {
 import { noop } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useAnalytics } from '@bigcommerce/checkout/contexts';
+import { useAnalytics, useCheckout } from '@bigcommerce/checkout/contexts';
 
 import type CheckoutStepStatus from '../checkout/CheckoutStepStatus';
 import { isErrorWithType } from '../common/error';
@@ -82,6 +82,7 @@ const Customer: React.FC<CustomerProps> = ({
     const { analyticsTracker } = useAnalytics();
 
     const customerData = useCustomer();
+    const { errorLogger } = useCheckout(() => undefined);
 
     // Initialize draftEmail on mount
     useEffect(() => {
@@ -110,6 +111,11 @@ const Customer: React.FC<CustomerProps> = ({
                             createStripeUPECustomerStrategy,
                             createStripeLinkV2CustomerStrategy,
                         ],
+                        onErrorLog: (error: unknown) => {
+                            errorLogger?.log(
+                                error instanceof Error ? error : new Error(String(error)),
+                            );
+                        },
                     });
                 }
             } catch (error) {

@@ -3,7 +3,7 @@ import { find, get, noop } from 'lodash';
 import React, { type FunctionComponent, memo, useCallback, useMemo } from 'react';
 
 import { useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
-import { Checklist, ChecklistItem } from '@bigcommerce/checkout/ui';
+import { Checklist, ChecklistItem, LoadingOverlay } from '@bigcommerce/checkout/ui';
 
 import { connectFormik, type ConnectFormikProps } from '../../common/form';
 import { isMobile } from '../../common/utility';
@@ -88,48 +88,49 @@ const PaymentMethodList: FunctionComponent<
             <div aria-live="assertive" className="is-srOnly" role="status">
                 {titleText}
             </div>
-            <Checklist
-                defaultSelectedItemId={values.paymentProviderRadio}
-                isDisabled={isInitializingPayment}
-                name="paymentProviderRadio"
-                onSelect={handleSelect}
-            >
-                {methods.map((method) => {
-                    const value = getUniquePaymentMethodId(method.id, method.gateway);
-                    const showOnlyOnMobileDevices = get(
-                        method,
-                        'initializationData.showOnlyOnMobileDevices',
-                        false,
-                    );
+            <LoadingOverlay isLoading={Boolean(isInitializingPayment)}>
+                <Checklist
+                    defaultSelectedItemId={values.paymentProviderRadio}
+                    name="paymentProviderRadio"
+                    onSelect={handleSelect}
+                >
+                    {methods.map((method) => {
+                        const value = getUniquePaymentMethodId(method.id, method.gateway);
+                        const showOnlyOnMobileDevices = get(
+                            method,
+                            'initializationData.showOnlyOnMobileDevices',
+                            false,
+                        );
 
-                    if (showOnlyOnMobileDevices && !isMobile()) {
-                        return;
-                    }
+                        if (showOnlyOnMobileDevices && !isMobile()) {
+                            return;
+                        }
 
-                    return (
-                        <PaymentMethodListItem
-                            disabledReason={
-                                method === chequeMethod ? chequeDisabledReason : undefined
-                            }
-                            isDisabled={isInitializingPayment}
-                            isEmbedded={isEmbedded}
-                            isUsingMultiShipping={isUsingMultiShipping}
-                            key={value}
-                            method={method}
-                            onUnhandledError={onUnhandledError}
-                            value={value}
-                        />
-                    );
-                })}
-            </Checklist>
+                        return (
+                            <PaymentMethodListItem
+                                disabledReason={
+                                    method === chequeMethod ? chequeDisabledReason : undefined
+                                }
+                                isEmbedded={isEmbedded}
+                                isInitializingPayment={isInitializingPayment}
+                                isUsingMultiShipping={isUsingMultiShipping}
+                                key={value}
+                                method={method}
+                                onUnhandledError={onUnhandledError}
+                                value={value}
+                            />
+                        );
+                    })}
+                </Checklist>
+            </LoadingOverlay>
         </>
     );
 };
 
 interface PaymentMethodListItemProps {
     disabledReason?: PoDisabledReason;
-    isDisabled?: boolean;
     isEmbedded?: boolean;
+    isInitializingPayment?: boolean;
     isUsingMultiShipping?: boolean;
     method: PaymentMethod;
     value: string;
@@ -138,8 +139,8 @@ interface PaymentMethodListItemProps {
 
 const PaymentMethodListItem: FunctionComponent<PaymentMethodListItemProps> = ({
     disabledReason,
-    isDisabled,
     isEmbedded,
+    isInitializingPayment,
     isUsingMultiShipping,
     method,
     onUnhandledError,
@@ -176,7 +177,8 @@ const PaymentMethodListItem: FunctionComponent<PaymentMethodListItemProps> = ({
         <ChecklistItem
             content={renderPaymentMethod}
             htmlId={`radio-${value}`}
-            isDisabled={isDisabled || Boolean(disabledReason)}
+            isDisabled={Boolean(disabledReason)}
+            isReadOnly={isInitializingPayment}
             label={renderPaymentMethodTitle}
             value={value}
         />
