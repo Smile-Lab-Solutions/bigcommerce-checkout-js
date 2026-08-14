@@ -51,8 +51,8 @@ import {
 
 import { type PaymentContextProps } from './PaymentContext';
 
-// Controllable billing save for the themeV2 pre-submit gate. Other tests keep
-// themeV2 off, so the block never renders and this stays unused there.
+// Controllable billing save for the enhancedThemeV1 pre-submit gate. Other tests keep
+// enhancedThemeV1 off, so the block never renders and this stays unused there.
 
 let mockEnsureBillingAddressSaved: jest.Mock<Promise<boolean>>;
 
@@ -248,7 +248,22 @@ describe('Payment step', () => {
         expect(window.location.replace).toHaveBeenCalledWith('/order-confirmation');
     });
 
-    it('does not place the order when embedded billing (themeV2) is invalid', async () => {
+    it('does not place the order when embedded billing (enhancedThemeV1) is invalid', async () => {
+        const enhancedThemeV1Config = {
+            ...checkoutSettings,
+            storeConfig: {
+                ...checkoutSettings.storeConfig,
+                checkoutSettings: {
+                    ...checkoutSettings.storeConfig.checkoutSettings,
+                    checkoutUserExperienceSettings: {
+                        ...checkoutSettings.storeConfig.checkoutSettings
+                            .checkoutUserExperienceSettings,
+                        checkoutV2Theme: true,
+                    },
+                },
+            },
+        };
+
         mockEnsureBillingAddressSaved = jest.fn<Promise<boolean>, []>().mockResolvedValue(false);
 
         const location = window.location;
@@ -263,7 +278,7 @@ describe('Payment step', () => {
         });
 
         checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling, {
-            config: themeV2Config,
+            config: enhancedThemeV1Config,
         });
 
         const submitOrderSpy = jest.spyOn(checkoutService, 'submitOrder');
@@ -272,18 +287,33 @@ describe('Payment step', () => {
 
         await checkout.waitForPaymentStep();
 
-        await act(async () => userEvent.click(screen.getByText('Place Order')));
+        await act(async () => userEvent.click(screen.getByText('Place order')));
 
         expect(mockEnsureBillingAddressSaved).toHaveBeenCalled();
         expect(submitOrderSpy).not.toHaveBeenCalled();
         expect(window.location.replace).not.toHaveBeenCalled();
     });
 
-    it('disables Place Order while the embedded billing (themeV2) address is being persisted', async () => {
+    it('disables Place Order while the embedded billing (enhancedThemeV1) address is being persisted', async () => {
+        const enhancedThemeV1Config = {
+            ...checkoutSettings,
+            storeConfig: {
+                ...checkoutSettings.storeConfig,
+                checkoutSettings: {
+                    ...checkoutSettings.storeConfig.checkoutSettings,
+                    checkoutUserExperienceSettings: {
+                        ...checkoutSettings.storeConfig.checkoutSettings
+                            .checkoutUserExperienceSettings,
+                        checkoutV2Theme: true,
+                    },
+                },
+            },
+        };
+
         mockEnsureBillingAddressSaved = jest.fn<Promise<boolean>, []>().mockResolvedValue(true);
 
         checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling, {
-            config: themeV2Config,
+            config: enhancedThemeV1Config,
         });
 
         // Keep the billing-address update in flight so isUpdatingBillingAddress
