@@ -20,6 +20,7 @@ export interface OrderSummarySubtotalsProps {
     storeCreditAmount?: number;
     taxes?: Tax[];
     isOrderConfirmation?: boolean;
+    isReorder?: boolean;
 }
 
 const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
@@ -30,6 +31,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
     storeCreditAmount,
     taxes,
     isOrderConfirmation = false,
+    isReorder
 }) => {
     const {
         appliedGiftCertificates,
@@ -78,7 +80,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
                 <OrderSummaryPrice
                     amount={shipping}
                     amountBeforeDiscount={shippingBeforeDiscount}
-                    label={<TranslatedString id="cart.shipping_text" />}
+                    label={isReorder ? (<TranslatedString id="cart.shipping_text_reorder" />) : (<TranslatedString id="cart.shipping_text" />)}
                     testId="cart-shipping"
                     zeroLabel={<TranslatedString id="cart.free_text" />}
                 />

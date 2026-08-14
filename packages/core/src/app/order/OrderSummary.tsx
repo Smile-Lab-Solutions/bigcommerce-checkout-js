@@ -77,6 +77,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                 isTaxIncluded={isTaxIncluded}
                 storeCreditAmount={orderSummarySubtotalsProps.storeCreditAmount}
                 taxes={taxes}
+                isReorder={isReorder}
             />
 
             <OrderSummarySection>

@@ -203,3 +203,9 @@ body.has-activeCartSummarySheet {
 .enhancedThemeV1:has(.cart-summary-collapsed-bar) .layout {
     padding-bottom: #{5 * spacing("single")};
 }
+
+@media(min-width: 1281px) {
+    .redeemable-payments {
+        display:none
+    }
+}
