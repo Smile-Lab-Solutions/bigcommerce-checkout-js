@@ -47,7 +47,7 @@ const ShippingAddressForm = ({
     const {
         selectedState: { customer },
     } = useCheckout(({ data }) => ({ customer: data.getCustomer() }));
-    const { themeV2 } = useThemeContext();
+    const { enhancedThemeV1 } = useThemeContext();
     const {
         shipping: { hideSaveToAddressBookCheck, restrictManualAddressEntry },
         userJourney: { hasAddressLabel },
@@ -94,23 +94,23 @@ const ShippingAddressForm = ({
         validateMaxLength,
     );
 
-        if (formFields.length > 0){
-            // Remove company field
-            const companyIndex = formFields.findIndex(x => x.name === 'company');
-            if (companyIndex > 0){
-                formFields.splice(companyIndex, 1);
-            }
-
-            // Only remove state/province for countries except US
-            if (formAddress && formAddress.countryCode !== 'US'){
-                const stateOrProvinceIndex = formFields.findIndex(x => x.name === 'stateOrProvince');
-                if (stateOrProvinceIndex > 0){
-                    formFields.splice(stateOrProvinceIndex, 1);
-                }
-            }
+    if (formFields.length > 0) {
+        // Remove company field
+        const companyIndex = formFields.findIndex(x => x.name === 'company');
+        if (companyIndex > 0) {
+            formFields.splice(companyIndex, 1);
         }
 
-    const sortedFormFields = themeV2 ? reorderAddressFormFields(formFields) : formFields;
+        // Only remove state/province for countries except US
+        if (formAddress && formAddress.countryCode !== 'US') {
+            const stateOrProvinceIndex = formFields.findIndex(x => x.name === 'stateOrProvince');
+            if (stateOrProvinceIndex > 0) {
+                formFields.splice(stateOrProvinceIndex, 1);
+            }
+        }
+    }
+
+    const sortedFormFields = enhancedThemeV1 ? reorderAddressFormFields(formFields) : formFields;
 
     return (
         <Fieldset id="checkoutShippingAddress">

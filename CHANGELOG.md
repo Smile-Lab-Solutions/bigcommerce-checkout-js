@@ -2,6 +2,112 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.865.0](https://github.com/bigcommerce/checkout-js/compare/v1.864.3...v1.865.0) (2026-08-13)
+
+
+### Features
+
+* **payment:** PAYPAL-6856 added error callback for BT FL ([692347a](https://github.com/bigcommerce/checkout-js/commit/692347a4f7d2c79d557c556214f853f130785f73))
+
+### [1.864.3](https://github.com/bigcommerce/checkout-js/compare/v1.864.2...v1.864.3) (2026-08-13)
+
+
+### Code Refactoring
+
+* **checkout:** CHECKOUT-10325 Fix Flaky Test ([#3247](https://github.com/bigcommerce/checkout-js/issues/3247)) ([f7341d5](https://github.com/bigcommerce/checkout-js/commit/f7341d50142302ee26d0e945b1761c315ab3fcc4))
+* **checkout:** CHECKOUT-10325 Remove Multi-coupon Experiment ([#3246](https://github.com/bigcommerce/checkout-js/issues/3246)) ([22e1543](https://github.com/bigcommerce/checkout-js/commit/22e154378226e6611a960799a483b787a6f4ebc1))
+
+### [1.864.2](https://github.com/bigcommerce/checkout-js/compare/v1.864.1...v1.864.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10299 Get gift certificates from payments for order page ([#3245](https://github.com/bigcommerce/checkout-js/issues/3245)) ([d3e9fb0](https://github.com/bigcommerce/checkout-js/commit/d3e9fb05835d3092b54c506be7a87a73a5fab30e))
+
+### [1.864.1](https://github.com/bigcommerce/checkout-js/compare/v1.864.0...v1.864.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10316 Resolve WebDav issues ([#3241](https://github.com/bigcommerce/checkout-js/issues/3241)) ([65b434b](https://github.com/bigcommerce/checkout-js/commit/65b434b4cf57d94b661a73977883e2b396c8754d))
+
+## [1.864.0](https://github.com/bigcommerce/checkout-js/compare/v1.863.1...v1.864.0) (2026-08-12)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10198 add fallback colors for new theme ([#3244](https://github.com/bigcommerce/checkout-js/issues/3244)) ([6997d97](https://github.com/bigcommerce/checkout-js/commit/6997d97e2d77df99581dd1cf5143fe769918c98c))
+
+### [1.863.1](https://github.com/bigcommerce/checkout-js/compare/v1.863.0...v1.863.1) (2026-08-11)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10266 Adjust checkout step button naming for enhanced theme ([#3230](https://github.com/bigcommerce/checkout-js/issues/3230)) ([437ab0b](https://github.com/bigcommerce/checkout-js/commit/437ab0b6d7cb2db135f8f3eeed798a4e137f5ad6))
+
+## [1.863.0](https://github.com/bigcommerce/checkout-js/compare/v1.862.0...v1.863.0) (2026-08-11)
+
+
+### Features
+
+* **payment:** PAYPAL-6856 added onErrorLog callback for BCP FL ([8f59eb4](https://github.com/bigcommerce/checkout-js/commit/8f59eb42a1f3771e845472809208081ea962342c))
+
+## [1.862.0](https://github.com/bigcommerce/checkout-js/compare/v1.861.1...v1.862.0) (2026-08-11)
+
+
+### Features
+
+* **payment:** PAYPAL-6856 added onErrorLog callback ([c16ef6a](https://github.com/bigcommerce/checkout-js/commit/c16ef6ae037bde48b63902a9c876b73d4a0864b9))
+* **payment:** PAYPAL-6856 added onErrorLog callback ([bdd7583](https://github.com/bigcommerce/checkout-js/commit/bdd7583248b08a1c949030e1bf57b03384818df5))
+* **payment:** PAYPAL-6856 added onErrorLog callback ([348d990](https://github.com/bigcommerce/checkout-js/commit/348d990b73ff9e79ef301c214ed1fb09f49077bb))
+* **payment:** PAYPAL-6856 added onErrorLog callback ([4f45def](https://github.com/bigcommerce/checkout-js/commit/4f45defaa638f14c60bd773f94863d6139e7713e))
+* **payment:** PAYPAL-6856 added onErrorLog callback ([1a685a4](https://github.com/bigcommerce/checkout-js/commit/1a685a415bdd21398a7ffa4119956ce78e0a532a))
+* **payment:** PAYPAL-6856 PPCP FL  added onErrorLog callback ([eea074b](https://github.com/bigcommerce/checkout-js/commit/eea074b94a4a4cbe8112fe71b3267e7596f0c792))
+
+### [1.861.1](https://github.com/bigcommerce/checkout-js/compare/v1.861.0...v1.861.1) (2026-08-11)
+
+## [1.861.0](https://github.com/bigcommerce/checkout-js/compare/v1.860.1...v1.861.0) (2026-08-11)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10198 update themeV2 styles to work with dark variant from cornerstone ([#3228](https://github.com/bigcommerce/checkout-js/issues/3228)) ([b44a9f4](https://github.com/bigcommerce/checkout-js/commit/b44a9f4e2edd4853ef3b62daabb4d03fac957138))
+
+### [1.860.1](https://github.com/bigcommerce/checkout-js/compare/v1.860.0...v1.860.1) (2026-08-10)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10310 Exclude stores with phone placeholders from feature rollout ([#3232](https://github.com/bigcommerce/checkout-js/issues/3232)) ([5aebfb6](https://github.com/bigcommerce/checkout-js/commit/5aebfb67434cf01c47481fee744a5ed307495774))
+
+## [1.860.0](https://github.com/bigcommerce/checkout-js/compare/v1.859.0...v1.860.0) (2026-08-10)
+
+
+### Features
+
+* **payment:** PI-5384 [AdyenV3] [FE] Disable Place order button when Adyen script is not loaded ([#3234](https://github.com/bigcommerce/checkout-js/issues/3234)) ([49b6642](https://github.com/bigcommerce/checkout-js/commit/49b6642a53f4b1096f93b0d29f72dcfaebed3e53))
+
+## [1.859.0](https://github.com/bigcommerce/checkout-js/compare/v1.858.0...v1.859.0) (2026-08-10)
+
+
+### Features
+
+* **payment:** PAYPAL-6856 bumped checkout-sdk-js version ([21bb1a4](https://github.com/bigcommerce/checkout-js/commit/21bb1a4b0b5d32649b5dcf1820cd4da4d89bf95b))
+
+## [1.858.0](https://github.com/bigcommerce/checkout-js/compare/v1.857.0...v1.858.0) (2026-08-10)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10208 Accessibility - payment radio buttons keyboard operable ([20cc0cf](https://github.com/bigcommerce/checkout-js/commit/20cc0cfae06555e84f20734fb86be25dce226a5e))
+* **checkout:** CHECKOUT-10208 Guard payment method selection during initialisation ([8d8aac1](https://github.com/bigcommerce/checkout-js/commit/8d8aac1f4dd9b32892dcc349aa7632751d95369a))
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10208 Block payment method selection during init without disabling radios ([2ee2a08](https://github.com/bigcommerce/checkout-js/commit/2ee2a085a10cf0f50ddc4e802ae1a25e742da699))
+* **checkout:** CHECKOUT-10208 Remove redundant comment on isReadOnly prop ([a7354d5](https://github.com/bigcommerce/checkout-js/commit/a7354d561a1b0cecad9de0da38fe759491da8113))
+
 ## [1.857.0](https://github.com/bigcommerce/checkout-js/compare/v1.856.0...v1.857.0) (2026-08-06)
 
 

@@ -157,7 +157,7 @@ const PaymentForm: FunctionComponent<
     }, [selectedMethod]);
 
     const { selectedState: config } = useCheckout(({ data }) => data.getConfig());
-    const { themeV2 } = useThemeContext();
+    const { enhancedThemeV1 } = useThemeContext();
     const {
         payment: { invoicePaymentComment },
     } = useCapabilities();
@@ -243,7 +243,7 @@ const PaymentForm: FunctionComponent<
                 />
             )}
 
-            {themeV2 && (
+            {enhancedThemeV1 && (
                 <PaymentBillingBlock
                     isBillingSameAsShipping={isBillingSameAsShipping ?? true}
                     methodId={selectedMethod?.id}
@@ -333,7 +333,7 @@ const PaymentMethodListFieldset: FunctionComponent<PaymentMethodListFieldsetProp
     values,
 }) => {
     const { setSubmitted } = useContext(FormContext);
-    const { themeV2 } = useThemeContext();
+    const { enhancedThemeV1 } = useThemeContext();
 
     const handlePaymentMethodSelect = useCallback(
         (method: PaymentMethod) => {
@@ -363,7 +363,7 @@ const PaymentMethodListFieldset: FunctionComponent<PaymentMethodListFieldsetProp
     return (
         <Fieldset
             legend={
-                <Legend hidden={themeV2}>
+                <Legend hidden={enhancedThemeV1}>
                     <TranslatedString id="payment.payment_methods_text" />
                 </Legend>
             }

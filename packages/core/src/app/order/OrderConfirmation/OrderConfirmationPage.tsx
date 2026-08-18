@@ -28,7 +28,6 @@ interface OrderConfirmationPageProps {
     siteLink: string;
     currency: StoreCurrency;
     shopperCurrency: ShopperCurrency;
-    isShippingDiscountDisplayEnabled: boolean;
     error: Error | undefined;
     onErrorModalClose(): void;
 }
@@ -36,7 +35,6 @@ interface OrderConfirmationPageProps {
 export const OrderConfirmationPage = ({
     currency,
     error,
-    isShippingDiscountDisplayEnabled,
     onErrorModalClose,
     order,
     shopperCurrency,
@@ -89,7 +87,6 @@ export const OrderConfirmationPage = ({
 
         <OrderSummaryContainer
             currency={currency}
-            isShippingDiscountDisplayEnabled={isShippingDiscountDisplayEnabled}
             order={order}
             shopperCurrency={shopperCurrency}
         />
