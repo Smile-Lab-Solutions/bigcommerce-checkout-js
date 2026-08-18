@@ -96,6 +96,14 @@ const Redeemable: FunctionComponent<
                                             <i>Sorry, discount codes cannot be used with Partial.ly</i>
                                         )}
                                     </p>
+                                    <p>
+                                        {storeCurrencyCode === 'USD' && (
+                                            <i>Promo codes not applicable for re-orders</i>
+                                        )}
+                                        {storeCurrencyCode !== 'USD' && (
+                                            <i>Discount codes not applicable for re-orders</i>
+                                        )}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -120,6 +128,20 @@ const Redeemable: FunctionComponent<
                                 )}
                                 {storeCurrencyCode !== 'USD' && (
                                     <i>Sorry, discount codes cannot be used with Partial.ly</i>
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className='checkout-notifications'>
+                    <div className="notification notification--info">
+                        <div className="notification__content">
+                            <p>
+                                {storeCurrencyCode === 'USD' && (
+                                    <i>Promo codes not applicable for re-orders</i>
+                                )}
+                                {storeCurrencyCode !== 'USD' && (
+                                    <i>Discount codes not applicable for re-orders</i>
                                 )}
                             </p>
                         </div>
@@ -266,6 +288,17 @@ const RedeemableForm: FunctionComponent<
                         >
                             <TranslatedString id="redeemable.apply_action" />
                         </Button>
+                    </div>
+                    <div className="applied-coupons-list" style={{marginTop:'0.75rem'}}>
+                        <Alert
+                            additionalClassName='no-padding'
+                            type={AlertType.Info}>
+                                <ul style={{background:'#f5f5f5'}}>
+                                    <li>
+                                        <span>Promo codes not applicable for re-orders</span>
+                                    </li>
+                                </ul>
+                        </Alert>
                     </div>
                 </>
             ),

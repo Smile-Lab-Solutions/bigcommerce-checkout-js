@@ -106,6 +106,17 @@ export const CouponForm: FunctionComponent = () => {
                 )}
                 <ManageCouponsAndGiftCertificates />
             </div>
+            <div className="applied-coupons-list">
+                <Alert
+                    additionalClassName={enhancedThemeV1 ? '' : 'no-padding'}
+                    type={AlertType.Info}>
+                        <ul style={{background:'#f5f5f5'}}>
+                            <li>
+                                <span>Promo codes not applicable for re-orders</span>
+                            </li>
+                        </ul>
+                </Alert>
+            </div>
         </>
     );
 };
