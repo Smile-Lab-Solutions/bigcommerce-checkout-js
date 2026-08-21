@@ -8,12 +8,8 @@ import React, { type FunctionComponent, memo } from 'react';
 
 import {
     type CheckoutContextProps,
-    useCapabilities,
-    useLocale,
+    useCapabilities
 } from '@bigcommerce/checkout/contexts';
-import { TranslatedString } from '@bigcommerce/checkout/locale';
-import { LazyContainer } from '@bigcommerce/checkout/ui';
-
 import { withCheckout } from '../checkout';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
