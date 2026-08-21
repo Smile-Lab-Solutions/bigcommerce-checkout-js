@@ -109,7 +109,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                 {shopperCurrency.code !== 'AUD' && (
                     <p>Pay in Full or Spread the cost with our payment options</p>
                 )}
-
+            </OrderSummarySection>
         </article>
     );
 };
