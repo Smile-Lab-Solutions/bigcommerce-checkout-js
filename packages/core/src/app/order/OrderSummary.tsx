@@ -7,15 +7,17 @@ import {
 import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import { Extension } from '@bigcommerce/checkout/checkout-extension';
-import { useCheckout, useLocale } from '@bigcommerce/checkout/contexts';
+import { useCheckout, useLocale, useThemeContext } from '@bigcommerce/checkout/contexts';
 import { TranslatedHtml } from '@bigcommerce/checkout/locale';
 
 import { OrderSummarySubtotals, type OrderSummarySubtotalsProps } from '../coupon';
 
+import getItemsCount from './getItemsCount';
 import OrderSummaryHeader from './OrderSummaryHeader';
 import OrderSummaryItems from './OrderSummaryItems';
 import OrderSummarySection from './OrderSummarySection';
 import OrderSummaryTotal from './OrderSummaryTotal';
+import { getNonBundledItems } from './removeBundledItems';
 
 export interface OrderSummaryProps {
     lineItems: LineItemMap;
@@ -42,6 +44,7 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
         lineItems.physicalItems.some(x => x.sku.startsWith('SPARE'));
 
     const { currency } = useLocale();
+    const { enhancedThemeV1 } = useThemeContext();
 
     const {
         selectedState: { checkout, order },
@@ -59,12 +62,21 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
 
     const isTotalDiscountVisible = Boolean(totalDiscount && totalDiscount > 0);
 
+    // Must match the de-bundling in OrderSummaryItems so the header count equals the item list.
+    const { nonBundledItems } = getNonBundledItems(lineItems, order?.bundledItems);
+
     return (
         <article className="cart optimizedCheckout-orderSummary" data-test="cart">
-            {showHeader && <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>}
+            {showHeader && (
+                <OrderSummaryHeader
+                    itemsCount={enhancedThemeV1 ? getItemsCount(nonBundledItems) : undefined}
+                >
+                    {headerLink}
+                </OrderSummaryHeader>
+            )}
 
             <OrderSummarySection>
-                <OrderSummaryItems displayLineItemsCount items={lineItems} />
+                <OrderSummaryItems displayLineItemsCount={!enhancedThemeV1} items={lineItems} />
             </OrderSummarySection>
 
             <Extension region={ExtensionRegion.SummaryLastItemAfter} />
@@ -97,7 +109,6 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
                 {shopperCurrency.code !== 'AUD' && (
                     <p>Pay in Full or Spread the cost with our payment options</p>
                 )}
-            </OrderSummarySection>
 
         </article>
     );

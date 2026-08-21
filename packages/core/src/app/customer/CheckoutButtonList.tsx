@@ -6,7 +6,13 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { type FunctionComponent, memo } from 'react';
 
-import { type CheckoutContextProps } from '@bigcommerce/checkout/contexts';
+import {
+    type CheckoutContextProps,
+    useCapabilities,
+    useLocale,
+} from '@bigcommerce/checkout/contexts';
+import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { LazyContainer } from '@bigcommerce/checkout/ui';
 
 import { withCheckout } from '../checkout';
 
@@ -45,7 +51,15 @@ const CheckoutButtonList: FunctionComponent<
     onError,
 }) => {
     //const { language } = useLocale();
+    const {
+        userJourney: { disableWalletButtons },
+    } = useCapabilities();
     const paymentMethods = checkoutState.data.getPaymentMethods();
+
+    if (disableWalletButtons) {
+        return null;
+    }
+
     const supportedMethodIds = getSupportedMethodIds(methodIds, paymentMethods);
 
     if (supportedMethodIds.length === 0) {
