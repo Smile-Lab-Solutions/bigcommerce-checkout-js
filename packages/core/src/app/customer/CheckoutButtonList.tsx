@@ -11,17 +11,16 @@ import {
     useCapabilities
 } from '@bigcommerce/checkout/contexts';
 import { withCheckout } from '../checkout';
-import { retry } from '../common/utility';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
 //import resolveCheckoutButton from './resolveCheckoutButton';
 
-const CheckoutButtonV1Resolver = lazy(() =>
-    retry(
-        () =>
-            import(/* webpackChunkName: "wallet-button-v1-resolver" */ './WalletButtonV1Resolver'),
-    ),
-);
+// const CheckoutButtonV1Resolver = lazy(() =>
+//     retry(
+//         () =>
+//             import(/* webpackChunkName: "wallet-button-v1-resolver" */ './WalletButtonV1Resolver'),
+//     ),
+// );
 
 export interface CheckoutButtonListProps {
     hideText?: boolean;
