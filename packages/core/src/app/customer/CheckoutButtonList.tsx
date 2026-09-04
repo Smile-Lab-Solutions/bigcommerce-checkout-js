@@ -6,15 +6,20 @@ import {
 } from '@bigcommerce/checkout-sdk';
 import React, { type FunctionComponent, memo } from 'react';
 
-import { type CheckoutContextProps } from '@bigcommerce/checkout/contexts';
-
+import {
+    type CheckoutContextProps,
+    useCapabilities
+} from '@bigcommerce/checkout/contexts';
 import { withCheckout } from '../checkout';
 
 import { getSupportedMethodIds } from './getSupportedMethods';
 //import resolveCheckoutButton from './resolveCheckoutButton';
 
-// const CheckoutButtonV1Resolver = lazy(
-//     () => import(/* webpackChunkName: "wallet-button-v1-resolver" */ './WalletButtonV1Resolver'),
+// const CheckoutButtonV1Resolver = lazy(() =>
+//     retry(
+//         () =>
+//             import(/* webpackChunkName: "wallet-button-v1-resolver" */ './WalletButtonV1Resolver'),
+//     ),
 // );
 
 export interface CheckoutButtonListProps {
@@ -45,7 +50,15 @@ const CheckoutButtonList: FunctionComponent<
     onError,
 }) => {
     //const { language } = useLocale();
+    const {
+        userJourney: { disableWalletButtons },
+    } = useCapabilities();
     const paymentMethods = checkoutState.data.getPaymentMethods();
+
+    if (disableWalletButtons) {
+        return null;
+    }
+
     const supportedMethodIds = getSupportedMethodIds(methodIds, paymentMethods);
 
     if (supportedMethodIds.length === 0) {

@@ -178,7 +178,7 @@ const PaymentSubmitButton: FunctionComponent<
                         methodId as PaymentMethodId,
                     ),
                 },
-                enhancedThemeV1 ? 'header' : 'sub-header',
+                'sub-header',
             )}
             data-test="payment-submit-button"
             disabled={isInitializing || isSubmitting || isDisabled}

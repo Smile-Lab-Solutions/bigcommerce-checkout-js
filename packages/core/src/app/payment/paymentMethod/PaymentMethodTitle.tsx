@@ -150,6 +150,11 @@ export function getPaymentMethodTitle(
                 titleText: method.logoUrl ? '' : methodDisplayName,
                 titleSubText: ''
             },
+            [PaymentMethodId.BigCommercePaymentsInvoices]: {
+                logoUrl: method.logoUrl || '',
+                titleText: methodDisplayName,
+                titleSubText: '',
+            },
             [PaymentMethodId.PaypalCommerce]: {
                 logoUrl: cdnPath('/img/payment-providers/paypal_commerce_logo.svg'),
                 titleText: '',
