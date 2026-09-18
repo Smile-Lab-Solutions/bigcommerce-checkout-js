@@ -211,6 +211,12 @@ body.has-activeCartSummarySheet {
     padding-bottom: #{5 * spacing("single")};
 }
 
+.cart-taxItem--subtotal {
+    @include enhancedThemeV1 {
+        margin-top: spacing("half");
+    }
+}
+
 @media(min-width: 1281px) {
     .redeemable-payments {
         display:none
