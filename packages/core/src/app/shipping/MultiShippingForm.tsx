@@ -15,6 +15,7 @@ import { useMultiShippingConsignmentItems } from './hooks/useMultishippingConsig
 import { useShipping } from './hooks/useShipping';
 import isSelectedShippingOptionValid from './isSelectedShippingOptionValid';
 import MultiShippingFormFooter from './MultiShippingFormFooter';
+import { ShippingExpectationMessage } from './ShippingExpectationMessage';
 import { type MultiShippingConsignmentData } from './MultishippingType';
 import './MultiShippingForm.scss';
 import NewConsignment from './NewConsignment';
@@ -40,8 +41,13 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
 }: MultiShippingFormProps) => {
     const [errorConsignmentNumber, setErrorConsignmentNumber] = useState<number | undefined>();
 
-    const { consignments, shouldShowOrderComments, shippingQuoteFailedMessage, isLoading } =
-        useShipping();
+    const {
+        consignments,
+        defaultShippingExpectationMessage,
+        shouldShowOrderComments,
+        shippingQuoteFailedMessage,
+        isLoading,
+    } = useShipping();
     const {
         unassignedItems: { lineItems: unassignedLineItems, shippableItemsCount },
         consignmentList,
@@ -108,6 +114,7 @@ const MultiShippingForm: FunctionComponent<MultiShippingFormProps> = ({
 
     return (
         <>
+            <ShippingExpectationMessage message={defaultShippingExpectationMessage} />
             {renderAllocatedBanner(shippableItemsCount)}
             {consignmentList.map((consignment: MultiShippingConsignmentData) => (
                 <ConsignmentListItem
