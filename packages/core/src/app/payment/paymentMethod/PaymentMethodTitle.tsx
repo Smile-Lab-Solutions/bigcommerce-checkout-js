@@ -341,7 +341,7 @@ export function getPaymentMethodTitle(
             [PaymentMethodId.Partially]: {
                 logoUrl: method.logoUrl ? method.logoUrl : '',
                 titleText: methodDisplayName,
-                titleSubText: 'For people with a bad or zero credit',
+                titleSubText: '',
             },
             // Cash on Delivery is used for Bread
             ['cod']: {
