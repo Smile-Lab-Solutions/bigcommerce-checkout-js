@@ -7,8 +7,6 @@ import {
 import classNames from 'classnames';
 import React, { type ReactElement } from 'react';
 
-import { useThemeContext } from '@bigcommerce/checkout/contexts';
-
 import { ErrorModal } from '../../common/error';
 import { isEmbedded } from '../../embeddedCheckout';
 import { type SignUpFormValues } from '../../guestSignup';
@@ -96,6 +94,3 @@ export const OrderConfirmationPage = ({
             <ErrorModal error={error} onClose={onErrorModalClose} shouldShowErrorCode={false} />
         </div>
     );
-
-    return enhancedThemeV1 ? <div className="enhancedThemeV1">{content}</div> : content;
-};
