@@ -85,12 +85,12 @@ export const OrderConfirmationPage = ({
 
         {loadOwlCarousel()}
 
-        <OrderSummaryContainer
-            currency={currency}
-            order={order}
-            shopperCurrency={shopperCurrency}
-        />
+            <OrderSummaryContainer
+                currency={currency}
+                order={order}
+                shopperCurrency={shopperCurrency}
+            />
 
-        <ErrorModal error={error} onClose={onErrorModalClose} shouldShowErrorCode={false} />
-    </div>
-);
+            <ErrorModal error={error} onClose={onErrorModalClose} shouldShowErrorCode={false} />
+        </div>
+    );

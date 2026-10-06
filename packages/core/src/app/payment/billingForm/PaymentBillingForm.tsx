@@ -34,14 +34,19 @@ export interface PaymentBillingFormProps {
     customerMessage: string;
     isLoading: boolean;
     isBillingSameAsShipping: boolean;
+    isUsingMultiShipping: boolean;
     getFields(countryCode?: string): FormField[];
     // Persists the billing address (updateBillingAddress). Must throw on failure
     // so the pre-submit ensureBillingAddressSaved can block the order.
     onPersist(values: BillingFormValues): Promise<void>;
     onBillingSameAsShippingChange(isBillingSameAsShipping: boolean): void;
-    onBillingCountryChange(countryCode: string, addressValues: AddressFormValues): void;
+    onBillingCountryChange(
+        countryCode: string,
+        addressValues: AddressFormValues,
+        orderComment: string,
+    ): void;
+    onSelectAddress(address: Partial<Address>, orderComment: string): Promise<unknown>;
     onUnhandledError(error: Error): void;
-    updateBillingAddress(address: Partial<Address>): Promise<unknown>;
     storeCurrencyCode: string;
 }
 
@@ -50,6 +55,7 @@ const PaymentBillingFormComponent = ({
     getFields,
     billingAddress,
     isLoading,
+    isUsingMultiShipping,
     setFieldValue,
     setTouched,
     validateForm,
@@ -57,8 +63,8 @@ const PaymentBillingFormComponent = ({
     onPersist,
     onBillingSameAsShippingChange,
     onBillingCountryChange,
+    onSelectAddress,
     onUnhandledError,
-    updateBillingAddress,
     storeCurrencyCode
 }: PaymentBillingFormProps & WithLanguageProps & FormikProps<PaymentBillingFormValues>) => {
     const [isResettingAddress, setIsResettingAddress] = useState(false);
@@ -112,7 +118,10 @@ const PaymentBillingFormComponent = ({
     const shouldShowOrderComments = enableOrderComments && !hasShippableItems;
     const shouldShowSaveAddress = !hideSaveToAddressBookCheck && !isGuest;
     const shouldShowBillingSameAsShipping =
-        !shouldRenderStaticAddress && !hideBillingSameAsShippingCheck && hasShippableItems;
+        !shouldRenderStaticAddress &&
+        !hideBillingSameAsShippingCheck &&
+        !isUsingMultiShipping &&
+        hasShippableItems;
     const isBillingAddressCollapsed =
         shouldShowBillingSameAsShipping && values.billingSameAsShipping;
 
@@ -176,7 +185,7 @@ const PaymentBillingFormComponent = ({
         setIsResettingAddress(true);
 
         try {
-            await updateBillingAddress(address);
+            await onSelectAddress(address, values.orderComment);
         } catch (error) {
             if (error instanceof Error) {
                 onUnhandledError(error);
@@ -195,11 +204,11 @@ const PaymentBillingFormComponent = ({
             if (fieldName === 'countryCode' && typeof value === 'string' && value) {
                 const {
                     billingSameAsShipping: _billingSameAsShipping,
-                    orderComment: _orderComment,
+                    orderComment,
                     ...addressValues
                 } = values;
 
-                onBillingCountryChange(value, addressValues);
+                onBillingCountryChange(value, addressValues, orderComment);
             }
         },
         [onBillingCountryChange, values],
