@@ -723,11 +723,7 @@ const Payment = (
 
         dismissMethodsRefreshAlert();
 
-        setState((prevState) => ({ ...prevState, isReady: false }));
-
         await loadPaymentMethodsOrThrow();
-
-        setState((prevState) => ({ ...prevState, isReady: true }));
     };
 
     const getContextValue = memoizeOne(() => {
@@ -969,7 +965,7 @@ const Payment = (
         (props.isLoadingBillingCountries ||
             props.isUpdatingBillingAddress ||
             props.isUpdatingCheckout);
-    const isReloadingPaymentMethods = enhancedThemeV1 && props.isLoadingPaymentMethods;
+    const isReloadingPaymentMethods = props.isLoadingPaymentMethods;
     const isPlacingOrder = enhancedThemeV1 && props.isSubmittingOrder;
 
     return (
@@ -989,7 +985,7 @@ const Payment = (
                         isEmbedded={props.isEmbedded}
                         isInitializingPayment={props.isInitializingPayment}
                         isPaymentDataRequired={props.isPaymentDataRequired}
-                        isReloadingPaymentMethods={isReloadingPaymentMethods}
+                        isReloadingPaymentMethods={enhancedThemeV1 && isReloadingPaymentMethods}
                         isStoreCreditApplied={props.isStoreCreditApplied}
                         isTermsConditionsRequired={props.isTermsConditionsRequired}
                         isUsingMultiShipping={props.isUsingMultiShipping}
