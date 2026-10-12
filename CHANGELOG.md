@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.911.1](https://github.com/bigcommerce/checkout-js/compare/v1.911.0...v1.911.1) (2026-10-01)
+
+## [1.911.0](https://github.com/bigcommerce/checkout-js/compare/v1.910.0...v1.911.0) (2026-09-30)
+
+
+### Features
+
+* **payment:** show the save-card option for Stripe Google Pay ([#3366](https://github.com/bigcommerce/checkout-js/issues/3366)) ([e1983dd](https://github.com/bigcommerce/checkout-js/commit/e1983ddeeb6bb06acb986836ffd434d9354f15e9))
+
+## [1.910.0](https://github.com/bigcommerce/checkout-js/compare/v1.909.1...v1.910.0) (2026-09-30)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10434 fix order confirmation page styling ([#3375](https://github.com/bigcommerce/checkout-js/issues/3375)) ([d0787e5](https://github.com/bigcommerce/checkout-js/commit/d0787e5e3cf5a19785cbae17b71264865493b979))
+
+### [1.909.1](https://github.com/bigcommerce/checkout-js/compare/v1.909.0...v1.909.1) (2026-09-29)
+
+## [1.909.0](https://github.com/bigcommerce/checkout-js/compare/v1.908.0...v1.909.0) (2026-09-28)
+
+
+### Features
+
+* **billing:** CHECKOUT-10431 Uncheck same shipping checkbox if multi shipping is used ([#3368](https://github.com/bigcommerce/checkout-js/issues/3368)) ([e675d84](https://github.com/bigcommerce/checkout-js/commit/e675d846ab0cce8c2824687195cc69476c0b1248))
+
+## [1.908.0](https://github.com/bigcommerce/checkout-js/compare/v1.907.1...v1.908.0) (2026-09-28)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10432 Add enhancedThemeV1 for order confirmation ([#3360](https://github.com/bigcommerce/checkout-js/issues/3360)) ([ba64a69](https://github.com/bigcommerce/checkout-js/commit/ba64a69c861d2ccbc184fcb9605aacb9d26a3daf))
+
+### [1.907.1](https://github.com/bigcommerce/checkout-js/compare/v1.907.0...v1.907.1) (2026-09-28)
+
+## [1.907.0](https://github.com/bigcommerce/checkout-js/compare/v1.906.1...v1.907.0) (2026-09-27)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10434 Enhanced theme UI polish and order placement loader ([#3365](https://github.com/bigcommerce/checkout-js/issues/3365)) ([ce168da](https://github.com/bigcommerce/checkout-js/commit/ce168da79d5ec97038626ee01a2b6f480abbaa30))
+
 ### [1.906.1](https://github.com/bigcommerce/checkout-js/compare/v1.906.0...v1.906.1) (2026-09-25)
 
 ## [1.906.0](https://github.com/bigcommerce/checkout-js/compare/v1.905.4...v1.906.0) (2026-09-24)
