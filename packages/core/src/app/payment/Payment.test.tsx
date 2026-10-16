@@ -31,6 +31,7 @@ import {
     CheckoutPreset,
     checkoutSettings,
     checkoutWithBillingEmail,
+    checkoutWithShipping,
     checkoutWithShippingAndBilling,
     customer,
     orderResponse,
@@ -348,6 +349,52 @@ describe('Payment step', () => {
         expect(await screen.findByTestId('loading-overlay')).toBeInTheDocument();
     });
 
+    it('overlays the payment form and disables Place Order while methods reload for a cart total change', async () => {
+        checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling);
+
+        render(<CheckoutTest {...defaultProps} />);
+
+        await checkout.waitForPaymentStep();
+
+        let resolvePaymentsResponse!: () => void;
+        const paymentsResponseBlocker = new Promise<void>((resolve) => {
+            resolvePaymentsResponse = resolve;
+        });
+
+        checkout.setRequestHandler(
+            http.get('/api/storefront/payments', async () => {
+                await paymentsResponseBlocker;
+
+                return HttpResponse.json(payments);
+            }),
+        );
+        checkout.updateCheckout('put', '/checkout/*', {
+            ...checkoutWithShippingAndBilling,
+            grandTotal: checkoutWithShippingAndBilling.grandTotal + 1,
+        });
+
+        await act(async () => {
+            await checkoutService.updateCheckout({ customerMessage: 'gift wrap please' });
+        });
+
+        await screen.findByTestId('loading-overlay');
+
+        const placeOrderButton = screen.getByRole<HTMLButtonElement>('button', {
+            name: /place order/i,
+        });
+
+        expect(placeOrderButton.disabled).toBe(true);
+
+        await act(async () => {
+            resolvePaymentsResponse();
+        });
+
+        await waitFor(() =>
+            expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument(),
+        );
+        expect(placeOrderButton.disabled).toBe(false);
+    });
+
     describe('billing country change (enhancedThemeV1)', () => {
         const scrollIntoViewMock = jest.fn();
 
@@ -615,9 +662,43 @@ describe('Payment step', () => {
             );
         });
 
-        // The cart total path unmounts the payment form behind the loading skeleton, so
-        // the fallback here comes from the remount re-seeding Formik rather than from
-        // the effect in PaymentForm.
+        it('keeps the selected method after a cart total reload', async () => {
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling, {
+                config: enhancedThemeV1Config,
+            });
+
+            const loadPaymentMethodsSpy = jest.spyOn(checkoutService, 'loadPaymentMethods');
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForPaymentStep();
+
+            await act(async () =>
+                userEvent.click(screen.getByRole('radio', { name: 'Cash on Delivery' })),
+            );
+
+            const callsBeforeTotalChange = loadPaymentMethodsSpy.mock.calls.length;
+
+            checkout.updateCheckout('put', '/checkout/*', {
+                ...checkoutWithShippingAndBilling,
+                grandTotal: checkoutWithShippingAndBilling.grandTotal + 1,
+            });
+
+            await act(async () => {
+                await checkoutService.updateCheckout({ customerMessage: 'gift wrap please' });
+            });
+
+            await waitFor(() =>
+                expect(loadPaymentMethodsSpy.mock.calls.length).toBeGreaterThan(
+                    callsBeforeTotalChange,
+                ),
+            );
+
+            expect(
+                screen.getByRole('radio', { name: 'Cash on Delivery', checked: true }),
+            ).toBeInTheDocument();
+        });
+
         it('falls back to the default method after a cart total reload', async () => {
             checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling, {
                 config: enhancedThemeV1Config,
@@ -819,6 +900,116 @@ describe('Payment step', () => {
             });
 
             expect(loadPaymentMethodsSpy).toHaveBeenCalledTimes(initialCalls);
+        });
+    });
+
+    describe('geo billing country fallback (enhancedThemeV1)', () => {
+        const checkoutWithGeoBillingCountry = {
+            ...checkoutWithShipping,
+            billingAddress: {
+                ...checkoutWithShipping.billingAddress,
+                country: 'Australia',
+                countryCode: 'AU',
+            },
+        };
+
+        let requestOrder: string[];
+        let billingAddressPutBody: Record<string, unknown> | undefined;
+
+        const trackPaymentMethodsRequest = () =>
+            checkout.setRequestHandler(
+                http.get('/api/storefront/payments', () => {
+                    requestOrder.push('payment-methods');
+
+                    return HttpResponse.json(payments);
+                }),
+            );
+
+        beforeEach(() => {
+            requestOrder = [];
+            billingAddressPutBody = undefined;
+            mockEnsureBillingAddressSaved = jest.fn<Promise<boolean>, []>().mockResolvedValue(true);
+        });
+
+        it('persists the geo country as billing country before loading payment methods', async () => {
+            checkout.setRequestHandler(
+                http.put('/api/storefront/checkouts/*/billing-address/*', async ({ request }) => {
+                    requestOrder.push('billing-address');
+                    billingAddressPutBody = (await request.json()) as Record<string, unknown>;
+
+                    return HttpResponse.json(checkoutWithGeoBillingCountry);
+                }),
+            );
+            trackPaymentMethodsRequest();
+
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithShipping, {
+                config: enhancedThemeV1Config,
+            });
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForPaymentStep();
+
+            expect(billingAddressPutBody).toEqual(
+                expect.objectContaining({
+                    countryCode: checkoutSettings.context.geoCountryCode,
+                    email: checkoutWithShipping.billingAddress?.email,
+                }),
+            );
+            expect(requestOrder.slice(0, 2)).toEqual(['billing-address', 'payment-methods']);
+            expect(checkoutService.getState().data.getCheckout()?.billingAddress?.countryCode).toBe(
+                'AU',
+            );
+        });
+
+        it('does not persist the billing country when one is already saved', async () => {
+            const updateBillingAddressSpy = jest.fn();
+
+            checkout.setRequestHandler(
+                http.put('/api/storefront/checkouts/*/billing-address/*', () => {
+                    updateBillingAddressSpy();
+
+                    return HttpResponse.json(checkoutWithShippingAndBilling);
+                }),
+            );
+
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithShippingAndBilling, {
+                config: enhancedThemeV1Config,
+            });
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForPaymentStep();
+
+            expect(updateBillingAddressSpy).not.toHaveBeenCalled();
+        });
+
+        it('still loads payment methods and logs a warning when persisting fails', async () => {
+            checkout.setRequestHandler(
+                http.put('/api/storefront/checkouts/*/billing-address/*', () => {
+                    requestOrder.push('billing-address');
+
+                    return HttpResponse.json({ type: 'unknown_error' }, { status: 500 });
+                }),
+            );
+            trackPaymentMethodsRequest();
+
+            checkoutService = checkout.use(CheckoutPreset.CheckoutWithShipping, {
+                config: enhancedThemeV1Config,
+            });
+
+            render(<CheckoutTest {...defaultProps} />);
+
+            await checkout.waitForPaymentStep();
+
+            expect(requestOrder).toContain('payment-methods');
+            expect(screen.getByRole('radio', { name: 'Pay in Store' })).toBeInTheDocument();
+            expect(defaultProps.errorLogger.log).toHaveBeenCalledWith(
+                expect.anything(),
+                undefined,
+                'warning',
+                expect.objectContaining({ stage: 'persist-geo-billing-country' }),
+            );
         });
     });
 
