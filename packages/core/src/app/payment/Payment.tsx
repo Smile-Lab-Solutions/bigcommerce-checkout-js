@@ -753,6 +753,7 @@ const Payment = (
     const getContextValue = memoizeOne(() => {
         return {
             disableSubmit,
+            reloadPaymentMethods: () => loadPaymentMethodsOrThrow(),
             setEnsureBillingAddressSaved,
             setSubmit,
             setValidationSchema,

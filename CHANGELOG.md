@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.922.2](https://github.com/bigcommerce/checkout-js/compare/v1.922.1...v1.922.2) (2026-10-21)
+
+### [1.922.1](https://github.com/bigcommerce/checkout-js/compare/v1.922.0...v1.922.1) (2026-10-21)
+
+## [1.922.0](https://github.com/bigcommerce/checkout-js/compare/v1.921.0...v1.922.0) (2026-10-20)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10507 reload payment methods on checking `same as shipping` checkbox ([#3416](https://github.com/bigcommerce/checkout-js/issues/3416)) ([387912e](https://github.com/bigcommerce/checkout-js/commit/387912e98c631a17ed461aeb4954459f3d4f054c))
+
+## [1.921.0](https://github.com/bigcommerce/checkout-js/compare/v1.920.1...v1.921.0) (2026-10-20)
+
+
+### Features
+
+* **payment:** Add Eway Rapid to the new resolver ([#3409](https://github.com/bigcommerce/checkout-js/issues/3409)) ([77ef727](https://github.com/bigcommerce/checkout-js/commit/77ef72716b007f2ea4977a3a80d0e744cbbf7479))
+
+### [1.920.1](https://github.com/bigcommerce/checkout-js/compare/v1.920.0...v1.920.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **shipping:** CHECKOUT-10463 Check for checkout and config before rendering shipping step ([#3415](https://github.com/bigcommerce/checkout-js/issues/3415)) ([b21b57f](https://github.com/bigcommerce/checkout-js/commit/b21b57ff09ab6f69e025da8952ba9ca9b1c4d99c))
+
+## [1.920.0](https://github.com/bigcommerce/checkout-js/compare/v1.919.0...v1.920.0) (2026-10-20)
+
+
+### Features
+
+* **customer:** CHECKOUT-10472 Redirect shopper to buyer portal for b2b stores ([#3414](https://github.com/bigcommerce/checkout-js/issues/3414)) ([596fc2b](https://github.com/bigcommerce/checkout-js/commit/596fc2b75706c934afbeee8042b74b4e72e6a553))
+
+## [1.919.0](https://github.com/bigcommerce/checkout-js/compare/v1.918.0...v1.919.0) (2026-10-19)
+
+
+### Features
+
+* **payment:** Add HPS to the new resolver ([#3408](https://github.com/bigcommerce/checkout-js/issues/3408)) ([27f9e7a](https://github.com/bigcommerce/checkout-js/commit/27f9e7acda795581190ecae8291d641581858f1d))
+
+## [1.918.0](https://github.com/bigcommerce/checkout-js/compare/v1.917.0...v1.918.0) (2026-10-19)
+
+
+### Features
+
+* **payment:** Add Clover to the new resolver ([#3403](https://github.com/bigcommerce/checkout-js/issues/3403)) ([bba8f6f](https://github.com/bigcommerce/checkout-js/commit/bba8f6fd713369e83c8b9408fb7d8a9b62d69e04))
+
+## [1.917.0](https://github.com/bigcommerce/checkout-js/compare/v1.916.7...v1.917.0) (2026-10-19)
+
+
+### Features
+
+* **paymnet:** Migrate AuthorizeNet to Resolver Configuration ([#3395](https://github.com/bigcommerce/checkout-js/issues/3395)) ([1900934](https://github.com/bigcommerce/checkout-js/commit/19009347a622369a001690999443ea50054730fe))
+
+### [1.916.7](https://github.com/bigcommerce/checkout-js/compare/v1.916.6...v1.916.7) (2026-10-19)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10475 Make ApplePay container hidden when unavailable ([#3406](https://github.com/bigcommerce/checkout-js/issues/3406)) ([f4c2032](https://github.com/bigcommerce/checkout-js/commit/f4c2032dec420372b3fab5b8f5518cb569d5be0a))
+
 ### [1.916.6](https://github.com/bigcommerce/checkout-js/compare/v1.916.5...v1.916.6) (2026-10-15)
 
 ### [1.916.5](https://github.com/bigcommerce/checkout-js/compare/v1.916.4...v1.916.5) (2026-10-14)
