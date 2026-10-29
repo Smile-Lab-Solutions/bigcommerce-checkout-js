@@ -194,6 +194,7 @@ const Payment = (
     const [methodsRefreshAlert, setMethodsRefreshAlert] = useState<
         PaymentMethodsRefreshAlertData | undefined
     >();
+    const [isPriceChangedAlertVisible, setIsPriceChangedAlertVisible] = useState(false);
 
     const isReadyRef = useRef(state.isReady);
     const grandTotalChangeUnsubscribe = useRef<() => void>();
@@ -533,8 +534,23 @@ const Payment = (
             // surfaced inline by the billing form.
             const ensureBillingAddressSaved = ensureBillingAddressSavedRef.current;
 
-            if (ensureBillingAddressSaved && !(await ensureBillingAddressSaved())) {
-                return;
+            if (ensureBillingAddressSaved) {
+                const getGrandTotal = () =>
+                    checkoutService.getState().data.getCheckout()?.grandTotal;
+                const grandTotalBeforeSave = getGrandTotal();
+
+                setIsPriceChangedAlertVisible(false);
+
+                if (!(await ensureBillingAddressSaved())) {
+                    return;
+                }
+
+                // Saving the billing address can change tax: let the shopper review it.
+                if (getGrandTotal() !== grandTotalBeforeSave) {
+                    setIsPriceChangedAlertVisible(true);
+
+                    return;
+                }
             }
 
             try {
@@ -613,6 +629,7 @@ const Payment = (
     };
 
     const dismissMethodsRefreshAlert = useCallback(() => setMethodsRefreshAlert(undefined), []);
+    const dismissPriceChangedAlert = useCallback(() => setIsPriceChangedAlertVisible(false), []);
 
     const setSelectedMethod = useCallback((method?: PaymentMethod): void => {
         setState((prevState) =>
@@ -674,6 +691,11 @@ const Payment = (
         (ensureBillingAddressSaved: EnsureBillingAddressSaved | null): void => {
             ensureBillingAddressSavedRef.current = ensureBillingAddressSaved;
         },
+        [],
+    );
+
+    const ensureBillingAddressSaved = useCallback(
+        async (): Promise<boolean | undefined> => ensureBillingAddressSavedRef.current?.(),
         [],
     );
 
@@ -753,6 +775,7 @@ const Payment = (
     const getContextValue = memoizeOne(() => {
         return {
             disableSubmit,
+            ensureBillingAddressSaved,
             reloadPaymentMethods: () => loadPaymentMethodsOrThrow(),
             setEnsureBillingAddressSaved,
             setSubmit,
@@ -1014,6 +1037,7 @@ const Payment = (
                         isEmbedded={props.isEmbedded}
                         isInitializingPayment={props.isInitializingPayment}
                         isPaymentDataRequired={props.isPaymentDataRequired}
+                        isPriceChangedAlertVisible={isPriceChangedAlertVisible}
                         isReloadingPaymentMethods={enhancedThemeV1 && isReloadingPaymentMethods}
                         isStoreCreditApplied={props.isStoreCreditApplied}
                         isTermsConditionsRequired={props.isTermsConditionsRequired}
@@ -1023,6 +1047,7 @@ const Payment = (
                         onBillingSameAsShippingChange={props.onBillingSameAsShippingChange}
                         onMethodSelect={handleMethodSelect}
                         onMethodsRefreshAlertDismiss={dismissMethodsRefreshAlert}
+                        onPriceChangedAlertDismiss={dismissPriceChangedAlert}
                         onStoreCreditChange={handleStoreCreditChange}
                         onSubmit={handleSubmit}
                         onUnhandledError={handleError}

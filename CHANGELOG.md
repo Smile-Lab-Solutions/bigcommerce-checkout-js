@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.926.5](https://github.com/bigcommerce/checkout-js/compare/v1.926.4...v1.926.5) (2026-10-29)
+
+### [1.926.4](https://github.com/bigcommerce/checkout-js/compare/v1.926.3...v1.926.4) (2026-10-29)
+
+### [1.926.3](https://github.com/bigcommerce/checkout-js/compare/v1.926.2...v1.926.3) (2026-10-29)
+
+### [1.926.2](https://github.com/bigcommerce/checkout-js/compare/v1.926.1...v1.926.2) (2026-10-29)
+
+### [1.926.1](https://github.com/bigcommerce/checkout-js/compare/v1.926.0...v1.926.1) (2026-10-28)
+
+## [1.926.0](https://github.com/bigcommerce/checkout-js/compare/v1.925.2...v1.926.0) (2026-10-28)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10461 add opt-in experiment helper for custom checkouts ([#3436](https://github.com/bigcommerce/checkout-js/issues/3436)) ([2de4eef](https://github.com/bigcommerce/checkout-js/commit/2de4eef8aa63d5890239b854cc764b233e48f3e3))
+
+### [1.925.2](https://github.com/bigcommerce/checkout-js/compare/v1.925.1...v1.925.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* **payment:** PI-5734 [Google Pay] fix error on redirect after a 3DS challenge failure ([#3432](https://github.com/bigcommerce/checkout-js/issues/3432)) ([b5250da](https://github.com/bigcommerce/checkout-js/commit/b5250da2cb659faf3554ed8182429e22ac643cf1))
+
+### [1.925.1](https://github.com/bigcommerce/checkout-js/compare/v1.925.0...v1.925.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-7259 ppcp billing form validation ([#3429](https://github.com/bigcommerce/checkout-js/issues/3429)) ([5c19c9b](https://github.com/bigcommerce/checkout-js/commit/5c19c9bb2d4167eeda1b51e805a2a47602abc2de))
+
+## [1.925.0](https://github.com/bigcommerce/checkout-js/compare/v1.924.1...v1.925.0) (2026-10-27)
+
+
+### Features
+
+* **payment:** PAYPAL-7266 Add Billing address form validation for enhanced checkout experience ([#3423](https://github.com/bigcommerce/checkout-js/issues/3423)) ([2c0e52c](https://github.com/bigcommerce/checkout-js/commit/2c0e52cc824687bb6bac011571958ac5c86f9ed3))
+
+### [1.924.1](https://github.com/bigcommerce/checkout-js/compare/v1.924.0...v1.924.1) (2026-10-27)
+
+## [1.924.0](https://github.com/bigcommerce/checkout-js/compare/v1.923.0...v1.924.0) (2026-10-23)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10461 bump sdk version ([#3424](https://github.com/bigcommerce/checkout-js/issues/3424)) ([3bd2e53](https://github.com/bigcommerce/checkout-js/commit/3bd2e539eea49df59e1e7abb6c01e1d4566eaf9f))
+
+## [1.923.0](https://github.com/bigcommerce/checkout-js/compare/v1.922.2...v1.923.0) (2026-10-22)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10520 save billing address on change of postal code and state ([#3421](https://github.com/bigcommerce/checkout-js/issues/3421)) ([0614d48](https://github.com/bigcommerce/checkout-js/commit/0614d4855f83a0c402d9b67a0d5ba26054fb0852))
+
 ### [1.922.2](https://github.com/bigcommerce/checkout-js/compare/v1.922.1...v1.922.2) (2026-10-21)
 
 ### [1.922.1](https://github.com/bigcommerce/checkout-js/compare/v1.922.0...v1.922.1) (2026-10-21)
