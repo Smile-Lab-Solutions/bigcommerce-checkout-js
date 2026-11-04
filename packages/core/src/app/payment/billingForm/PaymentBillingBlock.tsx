@@ -19,6 +19,7 @@ export interface PaymentBillingBlockProps {
     methodId?: string;
     isBillingSameAsShipping: boolean;
     isUsingMultiShipping: boolean;
+    onAddressEditingChange?(isEditing: boolean): void;
     onBillingSameAsShippingChange(isBillingSameAsShipping: boolean): void;
     onUnhandledError(error: Error): void;
     storeCurrencyCode: string;
@@ -28,6 +29,7 @@ export const PaymentBillingBlock: FunctionComponent<PaymentBillingBlockProps> = 
     methodId,
     isBillingSameAsShipping,
     isUsingMultiShipping,
+    onAddressEditingChange,
     onBillingSameAsShippingChange,
     onUnhandledError,
     storeCurrencyCode
@@ -170,6 +172,7 @@ export const PaymentBillingBlock: FunctionComponent<PaymentBillingBlockProps> = 
                     isLoading={isInitializing}
                     isUsingMultiShipping={isUsingMultiShipping}
                     methodId={methodId}
+                    onAddressEditingChange={onAddressEditingChange}
                     onBillingCountryChange={handleBillingCountryChange}
                     onBillingSameAsShippingChange={handleBillingSameAsShippingChange}
                     onPersist={handlePersist}
