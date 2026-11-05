@@ -110,7 +110,6 @@ describe('Checkout', () => {
             paymentRejected: jest.fn(),
             paymentComplete: jest.fn(),
             exitCheckout: jest.fn(),
-            walletButtonClick: jest.fn(),
         };
         defaultProps = {
             checkoutId: 'x',
@@ -536,6 +535,8 @@ describe('Checkout', () => {
 
                 await checkout.waitForShippingStep();
 
+                expect(await screen.findByTestId('cart-edit-link')).toBeInTheDocument();
+
                 jest.spyOn(checkoutService, 'signOutCustomer').mockRejectedValue({
                     type: 'checkout_not_available',
                 });
@@ -547,6 +548,7 @@ describe('Checkout', () => {
                 expect(reloadLocation).not.toHaveBeenCalled();
                 expect(screen.queryByTestId('checkout-customer-guest')).not.toBeInTheDocument();
                 expect(screen.queryByTestId('sign-out-link')).not.toBeInTheDocument();
+                expect(screen.queryByTestId('cart-edit-link')).not.toBeInTheDocument();
             });
         });
 
