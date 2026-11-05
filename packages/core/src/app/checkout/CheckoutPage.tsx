@@ -505,10 +505,6 @@ const Checkout = ({
         analyticsTracker.exitCheckout();
     }, []);
 
-    const handleWalletButtonClick = useCallback((methodName: string): void => {
-        analyticsTracker.walletButtonClick(methodName);
-    }, []);
-
     const reloadWindow = useCallback((): void => {
         setState((prevState) => ({ ...prevState, error: undefined }));
 
@@ -547,7 +543,6 @@ const Checkout = ({
                         onSignOutError={handleError}
                         onSubscribeToNewsletter={handleNewsletterSubscription}
                         onUnhandledError={handleUnhandledError}
-                        onWalletButtonClick={handleWalletButtonClick}
                         step={step}
                         viewType={customerViewType}
                     />
@@ -790,27 +785,29 @@ const Checkout = ({
         }
     }
 
-        return (
-            <div className={classNames('remove-checkout-step-numbers', { 'is-embedded': isEmbedded() }, { 'themeV2': enhancedThemeV1 })} data-test="checkout-page-container" id="checkout-page-container">
-                <div className="layout optimizedCheckout-contentPrimary">
-                    {state.isCartEmpty ?
-                        <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />
-                        :<>
-                            <div className="layout-main">
-                                <div style={{ padding: '1.5rem 0px' }}>
-                                    <a className="modal-header-link cart-modal-link" href={cartUrl} style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className='arrowLeft'></div>
-                                        Edit Cart
-                                    </a>
-                                </div>
-                                <CheckoutHeader
-                                    activeStepType={state.activeStepType}
-                                    buttonConfigs={state.buttonConfigs}
-                                    checkEmbeddedSupport={checkEmbeddedSupport}
-                                    defaultStepType={state.defaultStepType}
-                                    onUnhandledError={handleUnhandledError}
-                                    onWalletButtonClick={handleWalletButtonClick}
-                                />
+    return (
+        <div
+            className={classNames(
+                'remove-checkout-step-numbers',
+                { 'is-embedded': isEmbedded() },
+                { enhancedThemeV1 },
+            )}
+            data-test="checkout-page-container"
+            id="checkout-page-container"
+        >
+            <div className="layout optimizedCheckout-contentPrimary">
+                {state.isCartEmpty ? (
+                    <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />
+                ) : (
+                    <>
+                        <div className="layout-main">
+                            <CheckoutHeader
+                                activeStepType={state.activeStepType}
+                                buttonConfigs={state.buttonConfigs}
+                                checkEmbeddedSupport={checkEmbeddedSupport}
+                                defaultStepType={state.defaultStepType}
+                                onUnhandledError={handleUnhandledError}
+                            />
 
                             <ol className="checkout-steps">
                                 {stepsRef.current
@@ -826,9 +823,10 @@ const Checkout = ({
                                     )}
                             </ol>
                         </div>
+
+                        <CartSummary isMultiShippingMode={state.isMultiShippingMode} />
                     </>
-                }
-                <CartSummary isMultiShippingMode={state.isMultiShippingMode} />
+                )}
             </div>
             {errorModal}
         </div>

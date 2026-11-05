@@ -10,8 +10,13 @@ import {
     type CheckoutContextProps,
     useCapabilities
 } from '@bigcommerce/checkout/contexts';
+import { AutoVaultingDisclaimer } from '@bigcommerce/checkout/instrument-utils';
+import { TranslatedString } from '@bigcommerce/checkout/locale';
+import { LazyContainer } from '@bigcommerce/checkout/ui';
+
 import { withCheckout } from '../checkout';
 
+import { getAutoVaultingMethodNames } from './getAutoVaultingMethodNames';
 import { getSupportedMethodIds } from './getSupportedMethods';
 //import resolveCheckoutButton from './resolveCheckoutButton';
 
@@ -29,7 +34,6 @@ export interface CheckoutButtonListProps {
     checkEmbeddedSupport?(methodIds: string[]): void;
     deinitialize(options: CustomerRequestOptions): void;
     initialize(options: CustomerInitializeOptions): void;
-    onClick?(methodId: string): void;
     onError?(error: Error): void;
 }
 
@@ -47,7 +51,9 @@ const CheckoutButtonList: FunctionComponent<
     //isInitializing = false,
     methodIds = [],
     checkEmbeddedSupport,
-    onError,
+    deinitialize,
+    initialize,
+    onError = noop,
 }) => {
     //const { language } = useLocale();
     const {

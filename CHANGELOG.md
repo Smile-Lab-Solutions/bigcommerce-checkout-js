@@ -2,6 +2,103 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.932.3](https://github.com/bigcommerce/checkout-js/compare/v1.932.2...v1.932.3) (2026-11-05)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10539 No cart summary when cart is empty after sign out ([#3450](https://github.com/bigcommerce/checkout-js/issues/3450)) ([facc1e9](https://github.com/bigcommerce/checkout-js/commit/facc1e91adec5717169b12f73374afcd37fed79a))
+
+### [1.932.2](https://github.com/bigcommerce/checkout-js/compare/v1.932.1...v1.932.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10554 Preserve company names containing slash ([#3452](https://github.com/bigcommerce/checkout-js/issues/3452)) ([c89aee3](https://github.com/bigcommerce/checkout-js/commit/c89aee34847a48c979c1f1280dbc6a527b1fa0b3))
+
+### [1.932.1](https://github.com/bigcommerce/checkout-js/compare/v1.932.0...v1.932.1) (2026-11-05)
+
+## [1.932.0](https://github.com/bigcommerce/checkout-js/compare/v1.931.0...v1.932.0) (2026-11-04)
+
+
+### Features
+
+* **payment:** Move Quickbooks to the new resolver ([#3440](https://github.com/bigcommerce/checkout-js/issues/3440)) ([eb99bd7](https://github.com/bigcommerce/checkout-js/commit/eb99bd728093868c35539aa205a6138bf07a1957))
+
+## [1.931.0](https://github.com/bigcommerce/checkout-js/compare/v1.930.1...v1.931.0) (2026-11-04)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#3370](https://github.com/bigcommerce/checkout-js/issues/3370)) ([b6ead6f](https://github.com/bigcommerce/checkout-js/commit/b6ead6f35e7ff8e2b3a6714a862e11baaaa11971))
+* **other:** LOCAL-1444 delivery translation ([#3381](https://github.com/bigcommerce/checkout-js/issues/3381)) ([7c72f8f](https://github.com/bigcommerce/checkout-js/commit/7c72f8f96b6e661db16cae81da6c3e1bc44ea56c))
+* **other:** LOCAL-1444 delivery translation ([#3400](https://github.com/bigcommerce/checkout-js/issues/3400)) ([479ccc6](https://github.com/bigcommerce/checkout-js/commit/479ccc6238c0496b0c546ced9d9a6b4869b6807e))
+* **other:** LOCAL-1444 delivery translation ([#3412](https://github.com/bigcommerce/checkout-js/issues/3412)) ([c445a36](https://github.com/bigcommerce/checkout-js/commit/c445a36a12c26e2880c5b2e8f95664890c300ca3))
+* **other:** LOCAL-1444 delivery translation ([#3430](https://github.com/bigcommerce/checkout-js/issues/3430)) ([19c87aa](https://github.com/bigcommerce/checkout-js/commit/19c87aa9387f468dd0d52ad967739c134406fcb2))
+* **other:** LOCAL-1444 delivery translation ([#3446](https://github.com/bigcommerce/checkout-js/issues/3446)) ([7c90e4a](https://github.com/bigcommerce/checkout-js/commit/7c90e4a2193dee83763f83456f6b8d93398b46c4))
+
+### [1.930.1](https://github.com/bigcommerce/checkout-js/compare/v1.930.0...v1.930.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* **payment:** PI-5846 Cardinal BIN profiling timeout is treated as fatal in CyberSource v2 3DS flow, aborting checkout before enrollment check ([#3447](https://github.com/bigcommerce/checkout-js/issues/3447)) ([0d710ce](https://github.com/bigcommerce/checkout-js/commit/0d710ce6d8e63e0ca7a1c7e95aa33db3f8bce2af))
+
+## [1.930.0](https://github.com/bigcommerce/checkout-js/compare/v1.929.0...v1.930.0) (2026-11-03)
+
+
+### Features
+
+* **payment:** Move NMI to the new resolver ([#3435](https://github.com/bigcommerce/checkout-js/issues/3435)) ([3b6bbff](https://github.com/bigcommerce/checkout-js/commit/3b6bbffa1c5134eff4e11b86195e6cc80efe0e14))
+
+## [1.929.0](https://github.com/bigcommerce/checkout-js/compare/v1.928.0...v1.929.0) (2026-11-02)
+
+
+### Features
+
+* **checkout:** Enable phone validation for PayPal Fastlane behind experiment ([#3444](https://github.com/bigcommerce/checkout-js/issues/3444)) ([c302f6c](https://github.com/bigcommerce/checkout-js/commit/c302f6c4072b21b14f9322f28b03da1f63f91483))
+
+
+### Bug Fixes
+
+* **checkout:** CHECKOUT-10541 Show error for unavailable shipping country ([#3445](https://github.com/bigcommerce/checkout-js/issues/3445)) ([4370b57](https://github.com/bigcommerce/checkout-js/commit/4370b5771530446add622238e1ead2af02fe5c70))
+
+## [1.928.0](https://github.com/bigcommerce/checkout-js/compare/v1.927.1...v1.928.0) (2026-11-02)
+
+
+### Features
+
+* **payment:** show auto-vaulting disclaimer under wallet buttons ([#3441](https://github.com/bigcommerce/checkout-js/issues/3441)) ([6debf9d](https://github.com/bigcommerce/checkout-js/commit/6debf9d0bf372df3e747bac10a318733af6f4628))
+
+### [1.927.1](https://github.com/bigcommerce/checkout-js/compare/v1.927.0...v1.927.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* **shipping:** STRIPE-1780 use country as city fallback in Stripe shipping form ([#3431](https://github.com/bigcommerce/checkout-js/issues/3431)) ([8304d7c](https://github.com/bigcommerce/checkout-js/commit/8304d7c1bd3194ad1a994f1bffaeedb156a660d6))
+
+
+### Code Refactoring
+
+* **payment:** PAYPAL-6032 removed PayPal Commmerce Fastlane Analytics and Wallet Button onClick event ([#3410](https://github.com/bigcommerce/checkout-js/issues/3410)) ([45f57e8](https://github.com/bigcommerce/checkout-js/commit/45f57e859dae180cefa90a894846226f90e0a99f))
+
+## [1.927.0](https://github.com/bigcommerce/checkout-js/compare/v1.926.6...v1.927.0) (2026-11-02)
+
+
+### Features
+
+* **payment:** PAYPAL-7266 Add Billing address form validation for enhanced checkout experience ([252a441](https://github.com/bigcommerce/checkout-js/commit/252a4416bac3b54ac4b37fc25eccd869e9b651bc))
+
+
+### Bug Fixes
+
+* **payment:** PAYPAL-7267 fixed BCP billing form validation ([77754b4](https://github.com/bigcommerce/checkout-js/commit/77754b42c853a1fca1e043c1354971053c598e69))
+* **payment:** PAYPAL-7267 fixed BCP billing form validation ([1f1340a](https://github.com/bigcommerce/checkout-js/commit/1f1340a17e3716228998f0e2902455a43c138cd5))
+* **payment:** PAYPAL-7267 fixed BCP billing form validation ([bbb7ca0](https://github.com/bigcommerce/checkout-js/commit/bbb7ca0fa31b1135490982b1034b115c2f6f7a14))
+* **payment:** PAYPAL-7267 fixed BCP billing form validation ([c452c80](https://github.com/bigcommerce/checkout-js/commit/c452c804b6ec4fedab57b738da29f1d30fc1e8b7))
+
+### [1.926.6](https://github.com/bigcommerce/checkout-js/compare/v1.926.5...v1.926.6) (2026-10-29)
+
 ### [1.926.5](https://github.com/bigcommerce/checkout-js/compare/v1.926.4...v1.926.5) (2026-10-29)
 
 ### [1.926.4](https://github.com/bigcommerce/checkout-js/compare/v1.926.3...v1.926.4) (2026-10-29)
