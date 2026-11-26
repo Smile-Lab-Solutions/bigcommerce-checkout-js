@@ -10,10 +10,8 @@ import {
     type CheckoutContextProps,
     useCapabilities
 } from '@bigcommerce/checkout/contexts';
-import { AutoVaultingDisclaimer } from '@bigcommerce/checkout/instrument-utils';
 import { withCheckout } from '../checkout';
 
-import { getAutoVaultingMethodNames } from './getAutoVaultingMethodNames';
 import { getSupportedMethodIds } from './getSupportedMethods';
 //import resolveCheckoutButton from './resolveCheckoutButton';
 
@@ -48,8 +46,6 @@ const CheckoutButtonList: FunctionComponent<
     //isInitializing = false,
     methodIds = [],
     checkEmbeddedSupport,
-    deinitialize,
-    initialize,
     onError = noop,
 }) => {
     //const { language } = useLocale();
@@ -82,11 +78,11 @@ const CheckoutButtonList: FunctionComponent<
         }
     }
 
-    const autoVaultingMethodNames = getAutoVaultingMethodNames(
-        language,
-        supportedMethodIds,
-        paymentMethods,
-    );
+    // const autoVaultingMethodNames = getAutoVaultingMethodNames(
+    //     language,
+    //     supportedMethodIds,
+    //     paymentMethods,
+    // );
 
     // const renderButtons = () => {
     //     return supportedMethodIds.map((methodId) => {
@@ -134,12 +130,12 @@ const CheckoutButtonList: FunctionComponent<
                 {renderButtons()}
             </div> */}
 
-            {autoVaultingMethodNames.length > 0 && (
+            {/* {autoVaultingMethodNames.length > 0 && (
                 <AutoVaultingDisclaimer
                     translationData={{ methodNames: autoVaultingMethodNames }}
                     translationId="remote.auto_vaulting_disclaimer_text"
                 />
-            )}
+            )} */}
         </>
     );
 };
