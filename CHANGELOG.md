@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.936.3](https://github.com/bigcommerce/checkout-js/compare/v1.936.2...v1.936.3) (2026-11-19)
+
+### [1.936.2](https://github.com/bigcommerce/checkout-js/compare/v1.936.1...v1.936.2) (2026-11-19)
+
+### [1.936.1](https://github.com/bigcommerce/checkout-js/compare/v1.936.0...v1.936.1) (2026-11-19)
+
+## [1.936.0](https://github.com/bigcommerce/checkout-js/compare/v1.935.0...v1.936.0) (2026-11-11)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10448 Improve Billing Address Options for Multi-shipping ([#3454](https://github.com/bigcommerce/checkout-js/issues/3454)) ([242dc51](https://github.com/bigcommerce/checkout-js/commit/242dc517c260037711b303a7c71a635e3c899761))
+
+## [1.935.0](https://github.com/bigcommerce/checkout-js/compare/v1.934.4...v1.935.0) (2026-11-11)
+
+
+### Features
+
+* **other:** LOCAL-1444 delivery translation ([#3455](https://github.com/bigcommerce/checkout-js/issues/3455)) ([aab4559](https://github.com/bigcommerce/checkout-js/commit/aab4559cb29512c9293da17f1c9adf4336c29fd3))
+
+### [1.934.4](https://github.com/bigcommerce/checkout-js/compare/v1.934.3...v1.934.4) (2026-11-10)
+
+### [1.934.3](https://github.com/bigcommerce/checkout-js/compare/v1.934.2...v1.934.3) (2026-11-10)
+
+### [1.934.2](https://github.com/bigcommerce/checkout-js/compare/v1.934.1...v1.934.2) (2026-11-10)
+
+
+### Bug Fixes
+
+* **provider:** PI-5771 Use boltapp.com for Bolt privacy and terms links ([856a280](https://github.com/bigcommerce/checkout-js/commit/856a280867b8fe71fec6ad30e462d6ab041668c2))
+
+### [1.934.1](https://github.com/bigcommerce/checkout-js/compare/v1.934.0...v1.934.1) (2026-11-10)
+
+## [1.934.0](https://github.com/bigcommerce/checkout-js/compare/v1.933.0...v1.934.0) (2026-11-09)
+
+
+### Features
+
+* **payment:** STRIPE-1783 Improve Stripe Link load time with onReady hook in Stripe OCS checkout ([#3453](https://github.com/bigcommerce/checkout-js/issues/3453)) ([1639886](https://github.com/bigcommerce/checkout-js/commit/163988652bc7dc8e554c167e462e32e926953c98))
+
+## [1.933.0](https://github.com/bigcommerce/checkout-js/compare/v1.932.4...v1.933.0) (2026-11-08)
+
+
+### Features
+
+* **checkout:** CHECKOUT-10495 Show cart unavailable message when signing in without a cart ([#3451](https://github.com/bigcommerce/checkout-js/issues/3451)) ([4b483de](https://github.com/bigcommerce/checkout-js/commit/4b483def47b1b32e79525a6634d0c0ac34f41c0f))
+
+### [1.932.4](https://github.com/bigcommerce/checkout-js/compare/v1.932.3...v1.932.4) (2026-11-05)
+
 ### [1.932.3](https://github.com/bigcommerce/checkout-js/compare/v1.932.2...v1.932.3) (2026-11-05)
 
 
