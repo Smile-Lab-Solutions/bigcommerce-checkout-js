@@ -28,8 +28,6 @@ import PaymentMethodId from './PaymentMethodId';
 import PaymentMethodProviderType from './PaymentMethodProviderType';
 import PaymentMethodType from './PaymentMethodType';
 import PartiallyPaymentMethod from './PartiallyPaymentMethod';
-import TerraceFinancePaymentMethod from './TerraceFinancePaymentMethod';
-import FlexPaymentMethod from './FlexPaymentMethod';
 
 export interface PaymentMethodProps {
     method: PaymentMethod;
@@ -91,15 +89,6 @@ const PaymentMethodComponent: FunctionComponent<
     if (method.gateway === PaymentMethodId.Partially) {
         return <PartiallyPaymentMethod { ...props } />;
     }
-
-    if (method.gateway === PaymentMethodId.TerraceFinance) {
-        return <TerraceFinancePaymentMethod { ...props } />;
-    }
-
-    if (method.gateway === PaymentMethodId.Flex) {
-        return <FlexPaymentMethod { ...props } />;
-    }
-
 
     // NOTE: Some payment methods have `method` as `credit-card` but they are
     // actually not. Therefore, as a workaround, we are doing the following

@@ -72,9 +72,7 @@ enum PaymentMethodId {
     WorldpayAccessOpenBanking = 'open_banking',
     Zip = 'zip',
     TdOnlineMartGooglePay = 'googlepaytdonlinemart',
-    Partially = 'partially',
-    TerraceFinance = 'terracefinance',
-    Flex = 'flex'
+    Partially = 'partially'
 }
 
 export default PaymentMethodId;

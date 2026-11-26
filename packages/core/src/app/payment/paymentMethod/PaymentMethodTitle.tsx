@@ -363,16 +363,6 @@ export function getPaymentMethodTitle(
             //     titleText: 'Pay over 6 months 0% APR',
             //     titleSubText: 'For people with a 600+ FICO credit score',
             // },
-            [PaymentMethodId.TerraceFinance]: {
-                logoUrl: method.logoUrl ? method.logoUrl : '',
-                titleText: methodDisplayName,
-                titleSubText: 'Payment solutions tailored for you',
-            },
-            [PaymentMethodId.Flex]: {
-                logoUrl: method.logoUrl ? method.logoUrl : '',
-                titleText: methodDisplayName,
-                titleSubText: 'Pay with your HSA/FSA card',
-            },
         };
 
         if (method.gateway === PaymentMethodId.WorldpayAccess) {
@@ -607,12 +597,7 @@ const PaymentMethodTitle: FunctionComponent<
                         data-test="payment-method-name"
                      
                         style={method.id === 'partially' ? {display: 'block'} : {display: 'contents'}}>
-                        {method.id === 'flex'
-                            ?
-                            (<CreditCardIconList cardTypes={['visa', 'mastercard']} />)
-                            :
-                            (<p style={{ marginBottom: '0px', fontSize: '1.15rem', marginTop: '0.5rem', fontWeight: '500' }}>{titleText}</p>)
-                        }
+                        <p style={{ marginBottom: '0px', fontSize: '1.15rem', marginTop: '0.5rem', fontWeight: '500' }}>{titleText}</p>
                     </div>
                 )}
 
@@ -632,19 +617,6 @@ const PaymentMethodTitle: FunctionComponent<
                                         :
                                         <i>Sorry, discount codes cannot be used with Partial.ly</i>
                                     }
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* US Terrace Finance promo code info */}
-                {method.gateway === PaymentMethodId.TerraceFinance && (
-                    <div className='checkout-notifications merchant' style={{ width: '100%' }}>
-                        <div className="notification notification--info">
-                            <div className="notification__content">
-                                <p>
-                                    <i>Sorry, promo codes cannot be used with Terrace Finance</i>
                                 </p>
                             </div>
                         </div>

@@ -106,7 +106,7 @@ import { type PaymentMethodsRefreshAlertData } from './PaymentMethodsRefreshAler
 import { loadPartiallyJs } from '../../../../../scripts/custom/partially.js';
 import _ from 'lodash';
 
-import { terraceFinanceSubmit, flexSubmit, partiallySubmit } from './paymentMethod/CustomMethodsSubmit';
+import { partiallySubmit } from './paymentMethod/CustomMethodsSubmit';
 
 export interface PaymentProps {
     capabilities: Capabilities;
@@ -558,15 +558,7 @@ const Payment = (
                     await refreshB2BPaymentMethods();
                 }
 
-                if (selectedMethod?.id === 'terracefinance') {
-                disableSubmit(selectedMethod, true);
-                terraceFinanceSubmit(await loadCheckout(), handleError);
-                disableSubmit(selectedMethod, false);
-            } else if (selectedMethod?.id === 'flex') {
-                disableSubmit(selectedMethod, true);
-                flexSubmit(await loadCheckout(), handleError);
-                disableSubmit(selectedMethod, false);
-            } else if (selectedMethod?.id === 'partially'){
+                if (selectedMethod?.id === 'partially'){
                 disableSubmit(selectedMethod, true);
                 partiallySubmit(await loadCheckout(), handleError);
                 disableSubmit(selectedMethod, false);
@@ -1142,21 +1134,10 @@ export function mapToPaymentProps(
         // Only for US payment methods
         // Billing address and currency must match
         if ((checkout.billingAddress?.countryCode === 'US' && config.shopperCurrency.code === 'USD')) {
-            // Adding Terrace Finance
-            // Check TF is set for store and if not a reorder
-            if (inStoreMethod[0].config.displayName?.includes('Terrace Finance PIS') && !isReorder) {
-                methods = methods.concat(getTerraceFinanceMethod());
-            }
-
             // Adding Partially
             if (inStoreMethod[0].config.displayName?.includes('Partially PIS') && !isReorder) {
                 methods = methods.concat(getPartiallyMethod());
                 loadPartiallyJs();
-            }
-
-            // Adding Flex
-            if (inStoreMethod[0].config.displayName?.includes('Flex PIS')) {
-                methods = methods.concat(getFlexMethod());
             }
         }
 
@@ -1177,12 +1158,10 @@ export function mapToPaymentProps(
         //  Method ID is used which is a different value than the commented list below
         // Debit/credit Card (nmi)
         // Affirm (affirm)
-        // Terrace Finance (terracefinance)
         // Paypal (paypalcommerce)
         // Venmo (paypalcommercevenmo)
         // Klarna (pay_over_time)
         // Afterpay (pay_by_installment)
-        // Flex (flex)
         // Zip (quadpay)
         // Partially (partially)
         // Bread Pay (cod)
@@ -1190,12 +1169,10 @@ export function mapToPaymentProps(
         let paymentOrder = [ 
             'nmi',
             'affirm',
-            'terracefinance',
             'paypalcommerce',
             'paypalcommercevenmo',
             'pay_over_time',
             'pay_by_installment',
-            'flex',
             'quadpay',
             'partially',
             'cod',
@@ -1302,46 +1279,6 @@ export function getPartiallyMethod(): PaymentMethod {
             testMode: false,
             returnUrl: `${window.location.origin}/checkout`,
             redirectUrl: `${window.location.origin}/pages/complete`
-        },
-        type: 'PAYMENT_TYPE_API',
-        skipRedirectConfirmationAlert: false
-    };
-}
-
-export function getTerraceFinanceMethod(): PaymentMethod {
-    return {
-        id: 'terracefinance',
-        gateway: 'terracefinance',
-        logoUrl: 'https://terracefinance.com/wp-content/uploads/2019/12/Terrace-Logo-Retina-360px.png',
-        method: 'external',
-        supportedCards: [],
-        config: {
-            displayName: '$99 due today. Up to 12 month term',
-            helpText: '',
-            merchantId: 'terracefinance',
-            testMode: false,
-            returnUrl: `${window.location.origin}/checkout`,
-            redirectUrl: `${window.location.origin}/pages/complete`
-        },
-        type: 'PAYMENT_TYPE_API',
-        skipRedirectConfirmationAlert: false
-    };
-}
-
-export function getFlexMethod(): PaymentMethod {
-    return {
-        id: 'flex',
-        gateway: 'flex',
-        logoUrl: 'https://cdn.instasmile.com/new-website/images/icons-merchants/icon-merchant-flex-navy.png',
-        method: 'external',
-        supportedCards: [],
-        config: {
-            displayName: 'Display right: Flex',
-            helpText: '',
-            merchantId: 'flex',
-            testMode: false,
-            returnUrl: `${window.location.origin}/checkout`,
-            redirectUrl: `${window.location.origin}/pages/complete/`
         },
         type: 'PAYMENT_TYPE_API',
         skipRedirectConfirmationAlert: false

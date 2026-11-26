@@ -120,14 +120,6 @@ const PaymentSubmitButtonText: FunctionComponent<PaymentSubmitButtonTextProps> =
             return <TranslatedString id="payment.partially_continue_action" />;
         }
 
-        if (methodGateway === PaymentMethodId.TerraceFinance) {
-            return <TranslatedString id="payment.terracefinance_continue_action" />;
-        }
-
-        if (methodGateway === PaymentMethodId.Flex) {
-            return <TranslatedString id="payment.flex_continue_action" />;
-        }
-
         if (methodId === PaymentMethodId.Affirm) {
             return <TranslatedString id="payment.affirm_continue_action" />;
         }
