@@ -45,7 +45,6 @@ export interface CustomerProps {
     onSignIn?(): void;
     onSignInError?(error: Error): void;
     onUnhandledError?(error: Error): void;
-    onWalletButtonClick?(methodName: string): void;
 }
 
 export interface CustomerState {
@@ -70,7 +69,6 @@ const Customer: React.FC<CustomerProps> = ({
     onSignIn = noop,
     onSignInError = noop,
     onUnhandledError = noop,
-    onWalletButtonClick = noop,
 }) => {
     const [state, setState] = useState<CustomerState>({
         isEmailLoginFormOpen: false,
@@ -403,7 +401,6 @@ const Customer: React.FC<CustomerProps> = ({
                     isSubscribed={isSubscribed}
                     isWalletButtonsOnTop={isWalletButtonsOnTop}
                     onUnhandledError={onUnhandledError}
-                    onWalletButtonClick={onWalletButtonClick}
                     step={step}
                 />
             )}

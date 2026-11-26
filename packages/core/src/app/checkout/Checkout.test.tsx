@@ -8,6 +8,7 @@ import {
 import * as jestDomMatchers from '@testing-library/jest-dom/matchers';
 import userEvent from '@testing-library/user-event';
 import { noop } from 'lodash';
+import { http, HttpResponse } from 'msw';
 import React, { act, type FunctionComponent } from 'react';
 
 import { ExtensionService } from '@bigcommerce/checkout/checkout-extension';
@@ -23,7 +24,11 @@ import {
     LocaleProvider,
     ThemeProvider,
 } from '@bigcommerce/checkout/contexts';
-import { reloadLocation, replaceLocation } from '@bigcommerce/checkout/dom-utils';
+import {
+    reloadLocation,
+    replaceLocation,
+    setTopLocationHref,
+} from '@bigcommerce/checkout/dom-utils';
 import { getLanguageService } from '@bigcommerce/checkout/locale';
 import { CHECKOUT_ROOT_NODE_ID } from '@bigcommerce/checkout/payment-integration-api';
 import {
@@ -58,6 +63,7 @@ jest.mock('@bigcommerce/checkout/dom-utils', () => ({
     ...jest.requireActual('@bigcommerce/checkout/dom-utils'),
     reloadLocation: jest.fn(),
     replaceLocation: jest.fn(),
+    setTopLocationHref: jest.fn(),
 }));
 
 describe('Checkout', () => {
@@ -89,6 +95,7 @@ describe('Checkout', () => {
 
         (replaceLocation as jest.Mock).mockClear();
         (reloadLocation as jest.Mock).mockClear();
+        (setTopLocationHref as jest.Mock).mockClear();
 
         checkoutService = createCheckoutService();
         extensionService = new ExtensionService(checkoutService, createErrorLogger());
@@ -110,7 +117,6 @@ describe('Checkout', () => {
             paymentRejected: jest.fn(),
             paymentComplete: jest.fn(),
             exitCheckout: jest.fn(),
-            walletButtonClick: jest.fn(),
         };
         defaultProps = {
             checkoutId: 'x',
@@ -442,6 +448,81 @@ describe('Checkout', () => {
                 expect(stepCompletedCount()).toBeGreaterThan(stepsCompleted);
             });
 
+            describe('when the cart is no longer available after signing in', () => {
+                const cartUnavailableMessage =
+                    "Your cart is no longer available. You're now signed in. Select OK to return to your cart and add your items again.";
+
+                const useExperiment = (isOn: boolean, isCustomCheckout = false) => {
+                    checkout.setRequestHandler(
+                        http.get('/api/storefront/checkout-settings', () =>
+                            HttpResponse.json({
+                                ...checkoutSettings,
+                                storeConfig: {
+                                    ...checkoutSettings.storeConfig,
+                                    checkoutSettings: {
+                                        ...checkoutSettings.storeConfig.checkoutSettings,
+                                        isCustomCheckout,
+                                        features: {
+                                            'CHECKOUT-10495.login_without_cart_on_checkout': isOn,
+                                        },
+                                    },
+                                },
+                            }),
+                        ),
+                    );
+
+                    jest.spyOn(checkoutService, 'signInCustomer').mockRejectedValue({
+                        type: 'checkout_not_available',
+                    });
+                };
+
+                it('shows the cart unavailable message and returns to the cart when the experiment is on', async () => {
+                    useExperiment(true);
+
+                    render(<CheckoutTest {...defaultProps} />);
+
+                    await checkout.waitForCustomerStep();
+                    await showLoginForm();
+                    await submitLoginForm();
+
+                    expect(await screen.findByText(cartUnavailableMessage)).toBeInTheDocument();
+
+                    await act(async () => {
+                        await userEvent.click(screen.getByRole('button', { name: 'Ok' }));
+                    });
+
+                    expect(setTopLocationHref).toHaveBeenCalledWith(
+                        checkoutSettings.storeConfig.links.cartLink,
+                    );
+                });
+
+                it('does not show the cart unavailable message for a custom checkout', async () => {
+                    useExperiment(true, true);
+
+                    render(<CheckoutTest {...defaultProps} />);
+
+                    await checkout.waitForCustomerStep();
+                    await showLoginForm();
+                    await submitLoginForm();
+
+                    expect(screen.queryByText(cartUnavailableMessage)).not.toBeInTheDocument();
+                    expect(setTopLocationHref).not.toHaveBeenCalled();
+                });
+
+                it('does not show the cart unavailable message when the experiment is off', async () => {
+                    useExperiment(false);
+
+                    render(<CheckoutTest {...defaultProps} />);
+
+                    await checkout.waitForCustomerStep();
+                    await showLoginForm();
+                    await submitLoginForm();
+
+                    expect(screen.queryByText(cartUnavailableMessage)).not.toBeInTheDocument();
+                    expect(setTopLocationHref).not.toHaveBeenCalled();
+                });
+            });
+
             it('reloads the page after creating an account when the capability is enabled', async () => {
                 render(<CheckoutTest {...defaultProps} capabilities={reloadCapabilities} />);
 
@@ -536,6 +617,8 @@ describe('Checkout', () => {
 
                 await checkout.waitForShippingStep();
 
+                expect(await screen.findByTestId('cart-edit-link')).toBeInTheDocument();
+
                 jest.spyOn(checkoutService, 'signOutCustomer').mockRejectedValue({
                     type: 'checkout_not_available',
                 });
@@ -547,6 +630,7 @@ describe('Checkout', () => {
                 expect(reloadLocation).not.toHaveBeenCalled();
                 expect(screen.queryByTestId('checkout-customer-guest')).not.toBeInTheDocument();
                 expect(screen.queryByTestId('sign-out-link')).not.toBeInTheDocument();
+                expect(screen.queryByTestId('cart-edit-link')).not.toBeInTheDocument();
             });
         });
 

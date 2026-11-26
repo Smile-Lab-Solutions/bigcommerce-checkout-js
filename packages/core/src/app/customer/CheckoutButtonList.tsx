@@ -10,8 +10,10 @@ import {
     type CheckoutContextProps,
     useCapabilities
 } from '@bigcommerce/checkout/contexts';
+import { AutoVaultingDisclaimer } from '@bigcommerce/checkout/instrument-utils';
 import { withCheckout } from '../checkout';
 
+import { getAutoVaultingMethodNames } from './getAutoVaultingMethodNames';
 import { getSupportedMethodIds } from './getSupportedMethods';
 //import resolveCheckoutButton from './resolveCheckoutButton';
 
@@ -29,7 +31,6 @@ export interface CheckoutButtonListProps {
     checkEmbeddedSupport?(methodIds: string[]): void;
     deinitialize(options: CustomerRequestOptions): void;
     initialize(options: CustomerInitializeOptions): void;
-    onClick?(methodId: string): void;
     onError?(error: Error): void;
 }
 
@@ -47,7 +48,9 @@ const CheckoutButtonList: FunctionComponent<
     //isInitializing = false,
     methodIds = [],
     checkEmbeddedSupport,
-    onError,
+    deinitialize,
+    initialize,
+    onError = noop,
 }) => {
     //const { language } = useLocale();
     const {
@@ -78,6 +81,12 @@ const CheckoutButtonList: FunctionComponent<
             return null;
         }
     }
+
+    const autoVaultingMethodNames = getAutoVaultingMethodNames(
+        language,
+        supportedMethodIds,
+        paymentMethods,
+    );
 
     // const renderButtons = () => {
     //     return supportedMethodIds.map((methodId) => {
@@ -124,6 +133,13 @@ const CheckoutButtonList: FunctionComponent<
             <div className="checkoutRemote">
                 {renderButtons()}
             </div> */}
+
+            {autoVaultingMethodNames.length > 0 && (
+                <AutoVaultingDisclaimer
+                    translationData={{ methodNames: autoVaultingMethodNames }}
+                    translationId="remote.auto_vaulting_disclaimer_text"
+                />
+            )}
         </>
     );
 };

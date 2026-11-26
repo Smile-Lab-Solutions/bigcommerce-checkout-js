@@ -42,6 +42,7 @@ import { withLanguage, type WithLanguageProps } from '@bigcommerce/checkout/loca
 import { OrderConfirmationPageSkeleton } from '@bigcommerce/checkout/ui';
 import {
     CannotCreatePersonalAccountSessionStorage,
+    isExperimentEnabledWithOptIn,
     navigateToOrderConfirmation as navigateToOrderConfirmationUtility,
 } from '@bigcommerce/checkout/utility';
 
@@ -378,6 +379,47 @@ const Checkout = ({
         }
     }, []);
 
+    const handleSignInError = useCallback(
+        (error: Error): void => {
+            const checkoutSettings = checkoutService.getState().data.getConfig()?.checkoutSettings;
+
+            if (
+                isExperimentEnabledWithOptIn(
+                    checkoutSettings,
+                    'CHECKOUT-10495.login_without_cart_on_checkout',
+                ) &&
+                isErrorWithType(error) &&
+                error.type === 'checkout_not_available'
+            ) {
+                checkoutService.clearError(error);
+                setState((prevState) => ({
+                    ...prevState,
+                    error: Object.assign(new Error(error.message), {
+                        type: 'sign_in_cart_unavailable',
+                    }),
+                }));
+
+                return;
+            }
+
+            handleError(error);
+        },
+        [handleError],
+    );
+
+    const getCloseErrorModalHandler = (action: string) => {
+        switch (action) {
+            case 'reload':
+                return reloadWindow;
+
+            case 'cart_page':
+                return () => setTopLocationHref(cartUrl);
+
+            default:
+                return handleCloseErrorModal;
+        }
+    };
+
     const handleUnhandledError = useCallback((error: Error): void => {
         handleError(error);
 
@@ -505,10 +547,6 @@ const Checkout = ({
         analyticsTracker.exitCheckout();
     }, []);
 
-    const handleWalletButtonClick = useCallback((methodName: string): void => {
-        analyticsTracker.walletButtonClick(methodName);
-    }, []);
-
     const reloadWindow = useCallback((): void => {
         setState((prevState) => ({ ...prevState, error: undefined }));
 
@@ -542,12 +580,11 @@ const Checkout = ({
                         onExpanded={handleExpanded}
                         onReady={handleReady}
                         onSignIn={handleCustomerAuthenticated}
-                        onSignInError={handleError}
+                        onSignInError={handleSignInError}
                         onSignOut={handleSignOut}
                         onSignOutError={handleError}
                         onSubscribeToNewsletter={handleNewsletterSubscription}
                         onUnhandledError={handleUnhandledError}
-                        onWalletButtonClick={handleWalletButtonClick}
                         step={step}
                         viewType={customerViewType}
                     />
@@ -784,7 +821,7 @@ const Checkout = ({
                 <ErrorModal
                     error={state.error}
                     message={message}
-                    onClose={action === 'reload' ? reloadWindow : handleCloseErrorModal}
+                    onClose={getCloseErrorModalHandler(action)}
                 />
             );
         }
@@ -809,8 +846,7 @@ const Checkout = ({
                                     checkEmbeddedSupport={checkEmbeddedSupport}
                                     defaultStepType={state.defaultStepType}
                                     onUnhandledError={handleUnhandledError}
-                                    onWalletButtonClick={handleWalletButtonClick}
-                                />
+                                    />
 
                             <ol className="checkout-steps">
                                 {stepsRef.current
@@ -826,9 +862,10 @@ const Checkout = ({
                                     )}
                             </ol>
                         </div>
+
+                        <CartSummary isMultiShippingMode={state.isMultiShippingMode} />
                     </>
                 }
-                <CartSummary isMultiShippingMode={state.isMultiShippingMode} />
             </div>
             {errorModal}
         </div>
